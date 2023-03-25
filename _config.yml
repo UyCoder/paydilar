@@ -1,16 +1,16 @@
 # Site settings
-name: name
-email: email
+name: ahmed
+email: ahmedBughra@gmail.com
 url: url
 description: "A blog and a portfolio"
 author: "author"
 title: "BlogFolio"
 permalink: pretty
-baseurl: /jekyll-theme-blogfolio
+baseurl: /paydilar
 
 # social
 github:
-  username: username
+  username: UyCoder
 
 twitter:
-  username: username
+  username: ahmedBughra
