@@ -1,5 +1,5 @@
 .footer {
-  background-color: whitesmoke;
+  background-color: #c7c7c7;
   padding: 3rem 1.5rem 6rem;
 }
 
@@ -11,7 +11,7 @@ body {
   position: relative;
   padding-bottom: 6rem;
   min-height: 100%;
-  font-family: "Crimson Text", "Georgia", serif;
+  font-family: "alkatip";
 }
 
 .page-footer {
@@ -31,6 +31,22 @@ body {
 }
 
 .hero.is-primary {
-  background-color: #FF8C69;
+  background-color: #057cbd;
   color: white;
+}
+
+@font-face {
+  font-family: 'alkatip';
+  src: url('../fonts/ALKATIP-TOR.woff2') format('woff2'),
+  url('../fonts/ALKATIP-TOR.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.is-2 {
+  font-size: 1.7rem !important;
+}
+
+.content {
+  direction: rtl ;
 }

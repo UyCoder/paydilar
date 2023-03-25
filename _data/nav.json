@@ -1,10 +1,10 @@
 {
     "items": [{
-            "name": "Portfolio",
+            "name": "مەن كىم",
             "link": "/portfolio/"
         },
         {
-            "name": "About",
+            "name": "بلوگ ھەققىدە",
             "link": "/about/"
         }
     ]
