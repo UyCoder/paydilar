@@ -38,7 +38,8 @@ _تەخمىنەن ئوقۇش ۋاقتى 2 مىنۇت_
 
 بۇ توربەتنىڭ ئادرېسى:
 
-https://uycoder.github.io/gpt-uyghur
+ [https://uycoder.github.io/gpt-uyghur](https://uycoder.github.io/gpt-uyghur)
+
 
 
 <style type="text/css" media="screen">
