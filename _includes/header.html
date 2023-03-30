@@ -7,6 +7,19 @@
             <p class="subtitle is-4">
                 <em>{{ site.data.header.message }}</em>
             </p>
+            <p style="font-size: small;  color: white ; text-align: center" id="random-sentence"></p>
+            <script>
+                fetch('https://raw.githubusercontent.com/UyCoder/paydilar/master/hikmetler/hikmetler.txt')
+                    .then(response => response.text())
+                    .then(text => {
+                        const sentences = text.split('. ');
+                        const randomIndex = Math.floor(Math.random() * sentences.length);
+                        const randomSentence = sentences[randomIndex];
+                        const prefixedSentence = " - " + randomSentence;
+                        const suffixedSentence = prefixedSentence + " - ";
+                        document.getElementById('random-sentence').textContent = suffixedSentence;
+                    });
+            </script>
         </div>
     </div>
 </section>
