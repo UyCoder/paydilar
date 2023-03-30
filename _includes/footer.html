@@ -1,18 +1,31 @@
-<footer class="page-footer">
+<footer class="page-footer" style="alignment: center !important; text-align: center ; background-color: #057cbd ">
     <div class="container">
         <div class="columns">
             <div class="column is-4">
-                <div class="content">
-                    <p>
-                        <small>
-                            <span> نەشىر ھوقۇقى </span>
-                            <a target="_blank" href="https://uycoder.github.io/paydilar/">پايدىلار</a>
-                            <span> بلوگىغا تەۋە </span>
-                            <span> / </span>
-                            <span> قوللىنىلغان تېخنىكا </span>
-                            <a target="_blank" href="https://jekyllrb.com/">Jekyll</a>
+                <p style="font-size: small;  color: white " id="random-sentence"></p>
+                <script>
+                    fetch('https://raw.githubusercontent.com/UyCoder/texture/master/hikmetler.txt')
+                        .then(response => response.text())
+                        .then(text => {
+                            const sentences = text.split('. ');
+                            const randomIndex = Math.floor(Math.random() * sentences.length);
+                            const randomSentence = sentences[randomIndex];
+                            const prefixedSentence = "« " + randomSentence;
+                            const suffixedSentence = prefixedSentence + " »";
+                            document.getElementById('random-sentence').textContent = suffixedSentence;
+                        });
+                </script>
+
+                <div class="content" >
+                        <small >
+                            <span  style=" color: #c7c7c7 "> نەشىر ھوقۇقى </span>
+                            <a style=" color: white ; font-weight: bold"  style=" color: #c7c7c7 " target="_blank" href="https://uycoder.github.io/paydilar/">پايدىلار بلوگى</a>
+                            <span style=" color: #c7c7c7 ">غا تەۋە </span>
+                            <span style=" color: #c7c7c7 "> / </span>
+                            <span style=" color: #c7c7c7 "> قوللىنىلغان تېخنىكا </span>
+                            <a style=" color: white ; font-weight: bold" target="_blank" href="https://jekyllrb.com/">Jekyll</a>
                         </small>
-                    </p>
+
                 </div>
             </div>
         </div>
