@@ -50,3 +50,7 @@ body {
 .content {
   direction: rtl ;
 }
+
+.column.is-4 {
+  flex: auto !important;
+}

@@ -6,6 +6,10 @@
         {
             "name": "بلوگ ھەققىدە",
             "link": "/about/"
-        }
+        },
+      {
+        "name": "تەھرىرلىك قۇراللىرى",
+        "link": "https://uycoder.github.io/gpt-uyghur/"
+      }
     ]
 }
