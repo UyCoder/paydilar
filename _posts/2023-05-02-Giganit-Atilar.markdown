@@ -25,74 +25,253 @@ _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
 2023- يىلى 5- ئاينىڭ 1- كۈنى
 
-ھەممە شائىر ئاناملا دېدى،
-ئاتىلىرى يوقمىكەن ئەستە.
-
-ئۇلار شۇنداق ئاتىلار ئىدى،
-يولۋاسنىمۇ قويغان ھەۋەستە.
-
-<p/>
-
-ئۇلار شۇنداق ئاتىلار ئىدى،
-نى گۈزەللەر بولغانتى شەيدا.
-
-خەنجەر بولۇپ قادىلار ئىدى،
-بولسا مەلئۇن ھەر جايدا پەيدا.
-
-<p/>
-
-نەيزىسىنىڭ ئۇچىدا چولپان،
-قىلىچىدا تاڭنىڭ يالقۇنى.
-
-ۋەتەن ئىشقى ئوقلارغا قالقان،
-ئايىغىدا قاننىڭ دولقۇنى.
-
-<p/>
-
-يىڭنىلەرگە رەھمەت ئوقۇلدى،
-جەڭگاھ بىلەن ئۇنتۇلدى ئوقيا.
-
-كۈسەيلەرگە داستان پۈتۈلدى،
-قىلىچ بىلەن يارالدى دۇنيا.
-
-<p/>
-
-بىز ئاتالدۇق بەزمىدە يىگىت،
-ئاھ جان ئاتىلار جەڭلەردە شەھىد.
-
-<p/>
-
-توقاچ بەرسە ئانام تونۇردىن،
-ئەرك بەرگەن ئاتام جەڭلەردە.
-
-كۆينەك بەرسە ئانام ماتادىن،
-بايراق بەرگەن ئاتام زەپەردە.
-
-<p/>
-
-مەن يىقىلسام ئانام يىغلىدى،
-ئاتام سىلكىپ مىندۈردى ئاتقا.
-
-جاپالاردا راسا تاۋلىدى،
-خار قىلماي دەپ ياۋلارغا ياتقا.
-
-<p/>
-
-مىڭ يىگىتنىڭ مېھنەت لەرزى بار،
-قولىدىكى ھەربىر قاداقتا.
-
-ھەر كۈلكەمنىڭ پۈتمەس قەرزى بار،
-ئۇ ئىشلەتكەن خەنجەر ساداقتا.
-
-بىز ئاتالدۇق بەزمىدە يىگىت،
-ئاھ جان ئاتىلار جەڭلەردە شەھىد.
-
-
-<p/>
 
 
 
 
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1726;&#1749;&#1605;&#1605;&#1749;
+&#1588;&#1575;&#1574;&#1609;&#1585;
+&#1574;&#1575;&#1606;&#1575;&#1605;&#1604;&#1575;
+&#1583;&#1744;&#1583;&#1609;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1575;&#1578;&#1609;&#1604;&#1609;&#1585;&#1609;
+&#1610;&#1608;&#1602;&#1605;&#1609;&#1603;&#1749;&#1606;
+&#1574;&#1749;&#1587;&#1578;&#1749;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1735;&#1604;&#1575;&#1585;
+&#1588;&#1735;&#1606;&#1583;&#1575;&#1602;
+&#1574;&#1575;&#1578;&#1609;&#1604;&#1575;&#1585;
+&#1574;&#1609;&#1583;&#1609;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1610;&#1608;&#1604;&#1739;&#1575;&#1587;&#1606;&#1609;&#1605;&#1735;
+&#1602;&#1608;&#1610;&#1594;&#1575;&#1606;
+&#1726;&#1749;&#1739;&#1749;&#1587;&#1578;&#1749;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1574;&#1735;&#1604;&#1575;&#1585;
+&#1588;&#1735;&#1606;&#1583;&#1575;&#1602;
+&#1574;&#1575;&#1578;&#1609;&#1604;&#1575;&#1585;
+&#1574;&#1609;&#1583;&#1609;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1606;&#1609; &#1711;&#1736;&#1586;&#1749;&#1604;&#1604;&#1749;&#1585;
+&#1576;&#1608;&#1604;&#1594;&#1575;&#1606;&#1578;&#1609;
+&#1588;&#1749;&#1610;&#1583;&#1575;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1582;&#1749;&#1606;&#1580;&#1749;&#1585;
+&#1576;&#1608;&#1604;&#1735;&#1662;
+&#1602;&#1575;&#1583;&#1609;&#1604;&#1575;&#1585;
+&#1574;&#1609;&#1583;&#1609;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1576;&#1608;&#1604;&#1587;&#1575;
+&#1605;&#1749;&#1604;&#1574;&#1735;&#1606; &#1726;&#1749;&#1585;
+&#1580;&#1575;&#1610;&#1583;&#1575; &#1662;&#1749;&#1610;&#1583;&#1575;</span><span
+dir=LTR></span><span dir=LTR style='font-size:13.0pt;line-height:107%;
+font-family:"UKIJ Tuz",serif'><span dir=LTR></span>.</span><span lang=AR-SA
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1606;&#1749;&#1610;&#1586;&#1609;&#1587;&#1609;&#1606;&#1609;&#1709;
+&#1574;&#1735;&#1670;&#1609;&#1583;&#1575;
+&#1670;&#1608;&#1604;&#1662;&#1575;&#1606;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1602;&#1609;&#1604;&#1609;&#1670;&#1609;&#1583;&#1575;
+&#1578;&#1575;&#1709;&#1606;&#1609;&#1709;
+&#1610;&#1575;&#1604;&#1602;&#1735;&#1606;&#1609;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1739;&#1749;&#1578;&#1749;&#1606;
+&#1574;&#1609;&#1588;&#1602;&#1609;
+&#1574;&#1608;&#1602;&#1604;&#1575;&#1585;&#1594;&#1575;
+&#1602;&#1575;&#1604;&#1602;&#1575;&#1606;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1575;&#1610;&#1609;&#1594;&#1609;&#1583;&#1575;
+&#1602;&#1575;&#1606;&#1606;&#1609;&#1709;
+&#1583;&#1608;&#1604;&#1602;&#1735;&#1606;&#1609;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1610;&#1609;&#1709;&#1606;&#1609;&#1604;&#1749;&#1585;&#1711;&#1749;
+&#1585;&#1749;&#1726;&#1605;&#1749;&#1578;
+&#1574;&#1608;&#1602;&#1735;&#1604;&#1583;&#1609;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1580;&#1749;&#1709;&#1711;&#1575;&#1726;
+&#1576;&#1609;&#1604;&#1749;&#1606;
+&#1574;&#1735;&#1606;&#1578;&#1735;&#1604;&#1583;&#1609;
+&#1574;&#1608;&#1602;&#1610;&#1575;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1603;&#1736;&#1587;&#1749;&#1610;&#1604;&#1749;&#1585;&#1711;&#1749;
+&#1583;&#1575;&#1587;&#1578;&#1575;&#1606;
+&#1662;&#1736;&#1578;&#1736;&#1604;&#1583;&#1609;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1602;&#1609;&#1604;&#1609;&#1670;
+&#1576;&#1609;&#1604;&#1749;&#1606;
+&#1610;&#1575;&#1585;&#1575;&#1604;&#1583;&#1609;
+&#1583;&#1735;&#1606;&#1610;&#1575;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1576;&#1609;&#1586;
+&#1574;&#1575;&#1578;&#1575;&#1604;&#1583;&#1735;&#1602;
+&#1576;&#1749;&#1586;&#1605;&#1609;&#1583;&#1749;
+&#1610;&#1609;&#1711;&#1609;&#1578;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1575;&#1726; &#1580;&#1575;&#1606;
+&#1574;&#1575;&#1578;&#1609;&#1604;&#1575;&#1585;
+&#1580;&#1749;&#1709;&#1604;&#1749;&#1585;&#1583;&#1749; &#1588;&#1749;&#1726;&#1609;&#1583;</span><span
+dir=LTR></span><span dir=LTR style='font-size:13.0pt;line-height:107%;
+font-family:"UKIJ Tuz",serif'><span dir=LTR></span>.</span><span lang=AR-SA
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1578;&#1608;&#1602;&#1575;&#1670;
+&#1576;&#1749;&#1585;&#1587;&#1749; &#1574;&#1575;&#1606;&#1575;&#1605;
+&#1578;&#1608;&#1606;&#1735;&#1585;&#1583;&#1609;&#1606;&#1548;</span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1749;&#1585;&#1603;
+&#1576;&#1749;&#1585;&#1711;&#1749;&#1606; &#1574;&#1575;&#1578;&#1575;&#1605;
+&#1580;&#1749;&#1709;&#1604;&#1749;&#1585;&#1583;&#1749;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1603;&#1734;&#1610;&#1606;&#1749;&#1603;
+&#1576;&#1749;&#1585;&#1587;&#1749; &#1574;&#1575;&#1606;&#1575;&#1605;
+&#1605;&#1575;&#1578;&#1575;&#1583;&#1609;&#1606;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1576;&#1575;&#1610;&#1585;&#1575;&#1602;
+&#1576;&#1749;&#1585;&#1711;&#1749;&#1606; &#1574;&#1575;&#1578;&#1575;&#1605;
+&#1586;&#1749;&#1662;&#1749;&#1585;&#1583;&#1749;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1605;&#1749;&#1606;
+&#1610;&#1609;&#1602;&#1609;&#1604;&#1587;&#1575;&#1605;
+&#1574;&#1575;&#1606;&#1575;&#1605;
+&#1610;&#1609;&#1594;&#1604;&#1609;&#1583;&#1609;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1575;&#1578;&#1575;&#1605; &#1587;&#1609;&#1604;&#1603;&#1609;&#1662;
+&#1605;&#1609;&#1606;&#1583;&#1736;&#1585;&#1583;&#1609;
+&#1574;&#1575;&#1578;&#1602;&#1575;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1580;&#1575;&#1662;&#1575;&#1604;&#1575;&#1585;&#1583;&#1575;
+&#1585;&#1575;&#1587;&#1575;
+&#1578;&#1575;&#1739;&#1604;&#1609;&#1583;&#1609;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1582;&#1575;&#1585;
+&#1602;&#1609;&#1604;&#1605;&#1575;&#1610; &#1583;&#1749;&#1662;
+&#1610;&#1575;&#1739;&#1604;&#1575;&#1585;&#1594;&#1575;
+&#1610;&#1575;&#1578;&#1602;&#1575;</span><span dir=LTR></span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1605;&#1609;&#1709;
+&#1610;&#1609;&#1711;&#1609;&#1578;&#1606;&#1609;&#1709;
+&#1605;&#1744;&#1726;&#1606;&#1749;&#1578; &#1604;&#1749;&#1585;&#1586;&#1609;
+&#1576;&#1575;&#1585;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1602;&#1608;&#1604;&#1609;&#1583;&#1609;&#1603;&#1609;
+&#1726;&#1749;&#1585;&#1576;&#1609;&#1585;
+&#1602;&#1575;&#1583;&#1575;&#1602;&#1578;&#1575;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.<br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1726;&#1749;&#1585;
+&#1603;&#1736;&#1604;&#1603;&#1749;&#1605;&#1606;&#1609;&#1709;
+&#1662;&#1736;&#1578;&#1605;&#1749;&#1587; &#1602;&#1749;&#1585;&#1586;&#1609;
+&#1576;&#1575;&#1585;&#1548;</span><span dir=LTR style='font-size:13.0pt;
+line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1735;
+&#1574;&#1609;&#1588;&#1604;&#1749;&#1578;&#1603;&#1749;&#1606;
+&#1582;&#1749;&#1606;&#1580;&#1749;&#1585;
+&#1587;&#1575;&#1583;&#1575;&#1602;&#1578;&#1575;</span><span dir=LTR></span><span
+dir=LTR style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><span
+dir=LTR></span>.</span><span lang=AR-SA style='font-size:13.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='margin-bottom:0in;margin-bottom:
+.0001pt;text-align:center'><span dir=LTR style='font-size:9.0pt;line-height:
+107%;font-family:"UKIJ Tuz",serif'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal align=center dir=RTL style='text-align:center'><span
+lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'>&#1576;&#1609;&#1586;
+&#1574;&#1575;&#1578;&#1575;&#1604;&#1583;&#1735;&#1602;
+&#1576;&#1749;&#1586;&#1605;&#1609;&#1583;&#1749;
+&#1610;&#1609;&#1711;&#1609;&#1578;&#1548;</span><span dir=LTR
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><br>
+</span><span lang=AR-SA style='font-size:13.0pt;line-height:107%;font-family:
+"UKIJ Tuz",serif'>&#1574;&#1575;&#1726; &#1580;&#1575;&#1606;
+&#1574;&#1575;&#1578;&#1609;&#1604;&#1575;&#1585;
+&#1580;&#1749;&#1709;&#1604;&#1749;&#1585;&#1583;&#1749; &#1588;&#1749;&#1726;&#1609;&#1583;</span><span
+dir=LTR></span><span dir=LTR style='font-size:13.0pt;line-height:107%;
+font-family:"UKIJ Tuz",serif'><span dir=LTR></span>.</span><span lang=AR-SA
+style='font-size:13.0pt;line-height:107%;font-family:"UKIJ Tuz",serif'><o:p></o:p></span></p>
 
 
 
