@@ -10,7 +10,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 گىگانت ئاتىلار
 (نەسر)
 
-<img src="../pics/giganitAtilar.jpg">
+<img src="https://github.com/UyCoder/paydilar/blob/3dfba3a91060774d41cdc50328f6655285caa403/pics/giganitAtilar.jpg">
 
 ئى ئاتىلار، قۇدرەتلىك ئاللاھ تائالا سىلەرنى نەقەدەر بەقۇۋۋەت ۋە گىگانت ياراتقان ھە!
 
