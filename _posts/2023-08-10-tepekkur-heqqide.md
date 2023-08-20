@@ -5,7 +5,7 @@ date: 2023-08-19 12:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
-<img src="" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/deepThinking.png" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
 **بسم الله الرحمن الرحيم**
