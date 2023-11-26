@@ -7,7 +7,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/deepThinking.png" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/photo_2023-11-26_18-56-47.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
 
