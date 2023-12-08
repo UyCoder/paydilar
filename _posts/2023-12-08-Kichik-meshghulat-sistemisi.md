@@ -7,13 +7,13 @@ _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/photo_2023-11-26_18-56-47.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/c7e4307aa832d6f700f44dcc5a93c409e7c4d2d7/pics/TINY11.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
 يەڭگىللىتىلگەن ۋىندوۋس مەشغۇلات سىستېمىسى Tiny11
 ھەممىمىز بىلگىنىدەك ۋىديوس مەشغۇلات سىستېمىلىرى دەسلەپتە ئشىلەپچىقىرىلغاندىن تارتىپ ئىزچىل تەرەققىي قىلىپ كېلىۋاتىدۇ. ھەربىر چوڭ يېڭى نۇسخىسى ئىلان قىلىنغاندا كومپيۇتېر سەپلىمىسىگە نسىبەتەن چوڭ شاللاش بولۇپ كېلىۋاتىدۇ. مۇشۇ سەۋەپتىن 10 يىلدىن بۇرۇنقى كومپيۇتېرلىرىمىز گەرچە نورمال ئشلىسىمۇ سەپلىمىدىكى تۆۋەنلىك سەۋەپلىك نورمال ۋىندۋوس 11 سىستېمىسىنى قاچىلاپ ئىشلىتىشكە بولمايدۇ. بۈگۈنكى ۋىندوۋس 11 نىڭ كومپيۇتېرغا قويىدىغان تەلىپى مۇنداق:
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/photo_2023-11-26_18-56-47.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/win11requirement.png" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 دېمەك، ئىچكى ساقلىغۇچ رام 4 گىگابايتتىن كىچىك ۋە قاتتىق دىسكا بوشلۇقى 64 گىگابايتقا يەتمىگەن كومپيۇتېرلارغا  ۋىندوۋس 11 نى قاچىلاشقا بولمايدۇ.
 ئەمما Tiny11 نامىدىكى يەڭگىللىتىلگەن ۋىدوۋس مەشغۇلات سىستېمىسىنىڭ كومپيۇتېرغا قويىدىغان تەلىپى ناھايىتى تۆۋەن بولۇپ، ئىچكى ساقلىغۇچ  رام 2 گىگابايت ۋە قاتتىق دىسكا سېغىمى 8 گىگابايت بولغان كومپيۇتېرلارغا بىمالال قاچىلىنىپ ئىشلىتىشكە بولىدۇ. [بەزىلەر ھەتتە ئىچكى ساقلىغۇچ  رام 200 مېگابايت بولغان كومپيۇتېرغا سىناپ باققانلىقىنى](https://www.tomshardware.com/news/stripped-down-windows-11-os-runs-on-200-mb-of-ram)، بىرئاز ئاستا بولسىمۇ خاتالىقسىز نورمال ئىشلىگەنلىكىنى ئېيتقان.
