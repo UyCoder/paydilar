@@ -8,7 +8,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 **بسم الله الرحمن الرحيم**
 
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/c7e4307aa832d6f700f44dcc5a93c409e7c4d2d7/pics/TINY11.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/eastTurkistanFlag.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
 مەن گۇگېلنىڭ بارد سۈنئىي ئىدراك پاراڭلىشىش قۇرالىدىن ۋەتەن سىرتىدىكى شەرقىي تۈركىستانلىقلار ۋەتىنىنى ئازات قىلىش ئۈچۈن نېمە ئىشلارنى قىلىشى كېرەك؟ دەپ سوراپ كۆردۈم. گۇگېل باردنىڭ بەرگەن جاۋابىنى ئورتاقلاشقىم كەلدى. نۇرغۇنلىغان ئىسىل تەكلىپلەر بېرىلىپتۇ. بۇ پىكىرنى قىلىۋاتقانلارغا ياخشى بىر پىكىر مەنبەسى بولۇپ قالسا ئەجەپ ئەمەس.
