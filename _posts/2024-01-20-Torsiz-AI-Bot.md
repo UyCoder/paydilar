@@ -8,7 +8,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 **بسم الله الرحمن الرحيم**
 
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/eastTurkistanFlag.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizParangBot.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 **تورسىز ئىشلەيدىغان پاراڭبوت LM Studio نى ئىشلىتىش**
 
