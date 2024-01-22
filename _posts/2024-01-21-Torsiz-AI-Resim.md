@@ -64,7 +64,7 @@ ComfyUI_windows_portable\ComfyUI\models\checkpoints
 
 - يەنە يېڭى ئىزدەش ستونىدىن SaveImage كۆزنىكى ئىزدەپ قۇرۇۋالىمىز. ئاندىن ئۇنىڭ سول تەرىپىدىكى image قىسىمىنى VAE Decode كۆزنىكىنىڭ ئوڭ تەرىپىدىكى IMAGE قىسىمىغا باغلايمىز.
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(1).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 شۇنداق قىلىپ ئەڭ ئاددىي بولغان بىر خىزمەت شارائىتىنى قۇرۇۋالغان بولدۇق. يۇقارقى باسقۇچلار بۇ رامكىنىڭ نورمال ئشىلىشىدە بەك مۇھىم بولۇپ، مەن بۇلارنى يازغاندا بەكمۇ دىققەت قلىپ يازدىم. شۇنىڭدەك سىزمۇ بەكمۇ دىققەت قلىپ باغلاڭ. ھەرقانداق بىر خاتا باغلىنىش نورمال ئىشلىمەسلىكنى كەلتۈرۈپ چىقىرىدۇ.
 
 ئەمدى رەسىم چىقىرىپ باقساق بولىدۇ. بۇنىڭ ئۈچۈن:
@@ -75,18 +75,27 @@ ComfyUI_windows_portable\ComfyUI\models\checkpoints
 3. تور كۆرگۈچنىڭ  ئوڭ تەرىپدىكى Queue Prompt نى باسساقلا ھاسىل قىلىشقا باشلايدۇ. كومپيۇتېرنىڭ سەپلىمىسى، تەڭشەكلىرىمىزنىڭ پەرقلىق بولىشىغا قارىتا بۇ ھاسىل قىلىش ۋاقتى خېلىلا پەرقلىق بولىدۇ. بۇ يەردە بىرمۇنچە تەڭشەكلەر بار، ئالدىرىماي ئىزدىنىپ سىناپ باقسىڭىز بولىدۇ. مەسىلەن، Empty Latent Image دىكى رەسىمنىڭ كەڭلىكى width، ئۇزۇنلۇقى height ۋە بىر قېتىمدا قانچە رەسىم batch_size ھاسىل قىلىشقا ئالاقىدار تەڭشەكلەر بولۇپ، KSampler دىكى تەڭشەكلەر بولسا تەكرار سىناپ كۆرگەندىن كېيىن ئاندى بىلىشكە بولىدىغان تەڭشەكلەردۇر.
 
 مېنىڭ ھاسىل قىلغان بەزى رەسىملىرىم تۆۋەندىكىچە:
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(2).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(3).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(4).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(5).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(6).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(7).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(8).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(9).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(10).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
-
+بۇ رەسىملەرنىڭ ھەممىسى تورسىز شارائىتتا ھاسىل قلىنغان بولۇپ، بەزى كىشىلەرنىڭ ئىسىملىرىنى بىۋاستە يازسىڭىزمۇ نورمال تونىۋېرىدۇ. 
 
 ھەممىزگە پايدىلىق بىر بىلىم بولىشىنى ئۈمۈد قىلىمەن.
 
