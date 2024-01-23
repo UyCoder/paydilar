@@ -102,9 +102,9 @@ ComfyUI_windows_portable\ComfyUI\models\checkpoints
 
 بۇ رەسىملەرنىڭ ھەممىسى تورسىز شارائىتتا ھاسىل قلىنغان بولۇپ، بەزى كىشىلەرنىڭ ئىسىملىرىنى بىۋاستە يازسىڭىزمۇ ھېچقانداق چەكلىمە بەرمەستىن نورمال تونىۋېرىدۇ. مەسىلەن، يىغلاۋاتقان شىجىنپىڭ، دېگەندەك يازسىڭىزمۇ بولىۋېرىدۇ. ئەمما توردىكى نۇسخىلىرىدا كىشى ئىسىملىرىنى چەكلىۋالىدۇ. 
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(9).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/d2903e1c4136c37ad2bdac40eed7d15f168f45a7/pics/ComfyUI-%20(11).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(10).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/d2903e1c4136c37ad2bdac40eed7d15f168f45a7/pics/ComfyUI-%20(12).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
 ComfyUI نىڭ يەنە بەشقا ئىقتىدارلىرىمۇ بار. سىز داۋاملىق ئۆگىنىپ ماڭسىڭىز ھەيران قالارلىق مەشغۇلاتلارنى قىلالايسىز. مەسىلەن:
