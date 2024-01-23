@@ -100,7 +100,14 @@ ComfyUI_windows_portable\ComfyUI\models\checkpoints
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(10).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
-بۇ رەسىملەرنىڭ ھەممىسى تورسىز شارائىتتا ھاسىل قلىنغان بولۇپ، بەزى كىشىلەرنىڭ ئىسىملىرىنى بىۋاستە يازسىڭىزمۇ ھېچقانداق چەكلىمە بەرمەستىن نورمال تونىۋېرىدۇ. مەسىلەن، يىغلاۋاتقان شىجىنپىڭ، دېگەندەك يازسىڭىزمۇ بولىۋېرىدۇ. 
+بۇ رەسىملەرنىڭ ھەممىسى تورسىز شارائىتتا ھاسىل قلىنغان بولۇپ، بەزى كىشىلەرنىڭ ئىسىملىرىنى بىۋاستە يازسىڭىزمۇ ھېچقانداق چەكلىمە بەرمەستىن نورمال تونىۋېرىدۇ. مەسىلەن، يىغلاۋاتقان شىجىنپىڭ، دېگەندەك يازسىڭىزمۇ بولىۋېرىدۇ. ئەمما توردىكى نۇسخىلىرىدا كىشى ئىسىملىرىنى چەكلىۋالىدۇ. 
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(9).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/864a15334035aca6773895c920fd4b7da70e1787/pics/ComfyUI-%20(10).jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+
+ComfyUI نىڭ يەنە بەشقا ئىقتىدارلىرىمۇ بار. سىز داۋاملىق ئۆگىنىپ ماڭسىڭىز ھەيران قالارلىق مەشغۇلاتلارنى قىلالايسىز. مەسىلەن:
 
 - يۇقارقى ئاددىي Checkpoint ئىشلىتىشتىن باشقا يەنە LORA ئىشلىتىپ رەسىمنىڭ ئۈنۈمىنى تېخىمۇ يۇقىرى كۆتۈرگىلى بولىدۇ. ComfyUI نىڭ خىزمەت باسقۇچىغا LORA نى قوشۇپ رەسىم سىزدۇرۇش ئاسان بولۇپ، Checkpoint نىڭ ئارقىسىدىنلا ئىشلىتىدىغان قىلىپ توغرىلاپ بەرسەك بولىدۇ. ئەمما ئاۋۋال LORA ھۆججىتىنى چۈشۈرۈشىمىز لازىم. تۆۋەندىكى ئاددىي ئۇسۇل ئارقىلىق سىناپ باقسىڭىز بولىدۇ:
 
