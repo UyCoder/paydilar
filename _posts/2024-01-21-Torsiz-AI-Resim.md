@@ -122,6 +122,31 @@ https://comfyanonymous.github.io/ComfyUI_examples/upscale_models
 
 https://comfyanonymous.github.io/ComfyUI_examples/img2img
 
+ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان chekcpoint ۋە Lora نىڭ چۈشۈرۈش ئادرېسلىرى ۋە قوللانغاندىكى تەڭشەكلىرى تۆۋەندىكىچە:
+
+1. Checkpoint: realvisxlV30Turbo_v30TurboBakedvae.safetensors
+   Sampler ==> DPM++ SDE Karras
+   Model ==> RealVisXL_V3.0_Turbo
+   Steps ==> 8/6/4
+   CFG ==> 1/2
+2. Checkpoint: zavychromaxl_v31.safetensors
+   Sampler ==> DPM++ 3M SDE Karras / dpmpp_2m_sde_gpu_karras
+   Model ==> zavychromaxl_v31
+   Steps ==> 36/40/30/50/20
+   CFG ==> 3/8.5/5/6/7
+3. Checkpoint: photon_v1.safetensors
+   Control_afrer_generate ==> Randomize
+   sampler_name ==> dpmpp_2m_sde
+   Steps ==> 20
+   CFG ==> 6
+   scheduler ==> karras
+   Latent ==> 720X720
+4. LORA: scared_v2.safetensors
+5. Workflow of ComfyUI: [Simple Work Flow](https://github.com/)
+6. Workflow of ComfyUI: [Generate with Upsaceld Image](https://github.com/)
+7. Workflow of ComfyUI: [Upscale Any Image](https://github.com/)
+8. Workflow of ComfyUI: [Generate With LORA](https://github.com/)
+
 
 ھەممىزگە پايدىلىق بىر بىلىم بولىشىنى ئۈمۈد قىلىمەن.
 
