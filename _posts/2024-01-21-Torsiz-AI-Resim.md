@@ -147,6 +147,32 @@ ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان c
 7. Workflow of ComfyUI: [Upscale Any Image](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/03-UpscaleMyPic.json)
 8. Workflow of ComfyUI: [Generate With LORA](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
 
+بۇلاردىن باشقا يەنە رەسىم چىقارغان ۋاقىتتا بېرىلىدىغان بۇيرۇقلار بەكمۇ مۇھىم. شۇڭا قانداق بۇيرۇق بىلەن بىز خالىغان رەسىمنى ھاسىل قىلىدىغانلىقىمىزنى تۆۋەندىكى توربەتتىكى ئۇچۇرلاردىن ناھايىتى چۈشىنىشلىك ھالدا ئۆگىنەلەيمىز:
+
+- [Themes](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Themes.md)
+- [Design_Styles](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Design_Styles.md)
+- [Digital](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Digital.md)
+- [Artists](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Artists.md)
+- [Drawing_and_Art_Mediums](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Drawing_and_Art_Mediums.md)
+- [Colors_and_Palettes](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Colors_and_Palettes.md)
+- [Materials](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Materials.md)
+- [Objects](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Objects.md)
+- [Material_Properties](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Material_Properties.md)
+- [Lighting](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Lighting.md)
+- [SFX_and_Shaders](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/SFX_and_Shaders.md)
+- [Dimensionality](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Dimensionality.md)
+- [Nature_and_Animals](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Nature_and_Animals.md)
+- [Rainbow_of_Colors](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Rainbow_of_Colors.md)
+- [Camera](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Camera.md)
+- [Outer_Space](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Outer_Space.md)
+- [Perspective](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Perspective.md)
+- [TV_and_Movies](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/TV_and_Movies.md)
+- [Geometry](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Geometry.md)
+- [Structural_Modification](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Structural_Modification.md)
+- [Intangibles](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Intangibles.md)
+- [Miscellaneous](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Miscellaneous.md)
+- [Experimental](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Experimental.md)
+
 
 ھەممىزگە پايدىلىق بىر بىلىم بولىشىنى ئۈمۈد قىلىمەن.
 
