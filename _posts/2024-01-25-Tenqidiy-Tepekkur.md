@@ -7,7 +7,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/95e0a27c91eb77ae1ee89eeea975306d4dd00e79/pics/TorsizResimSizish.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/a4d4b806384e69682cfb3e2cc2f74131b59a100c/pics/tpekkur.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 **تەنقىدىي تەپەككۇر ۋە ئۇنى يېتىلدۈرۈش**
 
