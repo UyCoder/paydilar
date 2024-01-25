@@ -3,7 +3,7 @@ layout: post
 title: "تورسىز رەسىم سىزدۇرۇش"
 date: 2024-01-21 10:00:00 -0500
 ---
-_تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
+_تەخمىنەن ئوقۇش ۋاقتى 8 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
@@ -30,11 +30,11 @@ ComfyUI نىڭ يەنە بىر ئالاھىدىلىكى شۇكى، خالىغا�
 
 ComfyUI نىڭ GitHub ھېسابىدىن ئەڭ يېڭى نۇسخىسىنى چۈشۈرۈرىمىز. ئادرېسى تۆۋەندىكىچە:
 
-https://github.com/comfyanonymous/ComfyUI/releases
+[ComfyUI](https://github.com/comfyanonymous/ComfyUI/releases)
 
 بۇ بەتتىن ئەڭ يېڭى ھۆججىتىنى چۈشۈرسەك بولىدۇ. چۈشۈرگەندە سىزنىڭ ئېكران كارتىڭىزنىڭ NVidea ياكى ئەمەسلىكىگە دىققەت قىلىڭ. مېنىڭ NVidea بولغانلىقى ئۈچۈن تۆۋەندىكى ئادرېستىكىنى نۇسخسىنى چۈشۈرۈپ مۇۋاپپىقىيەتلىك ئىشلەتتىم:
 
-https://github.com/comfyanonymous/ComfyUI/releases/download/latest/ComfyUI_windows_portable_nvidia_cu121_or_cpu.7z
+[ComfyUI Windows Version](https://github.com/comfyanonymous/ComfyUI/releases/download/latest/ComfyUI_windows_portable_nvidia_cu121_or_cpu.7z)
 
 چۈشۈرۈپ بولغاندىن كېيىن 7z ھۆججىتىنىڭ ئىچىدىكى بارلىق ھۆججەتلەرنى يېشىپ چىقىرىۋالىمىز. ئاندىن باشقا ھېچقانداق يەرگە چېقىلماستىن run_nvidia_gpu.bat دېگەن ھۆججەتنى باسساق، ۋىدوۋسنىڭ CMD بۇيرۇق كۆزنىكى چىقىدۇ. ھېچقانداق كۇنۇپكىنى باسماستىن بىرنەچچە سېكۇنت ساقلاپ تۇرۇش كېرەك. ئاندىن ئاپتۇماتىك تور كۆرگۈچ ئېچىلىپ http://127.0.0.1:8188 بېتى ئېچىلىدۇ. بۇ دەل ComfyUI نىڭ نورمال قاچىلانغان ۋە قوللىنىشقا تەييار بولغانلىقىنى بىلدۈرىدۇ.
 
@@ -46,11 +46,11 @@ https://github.com/comfyanonymous/ComfyUI/releases/download/latest/ComfyUI_windo
 
 checkpoint ھالىتىدىكى مۇۋاپپىق رەسىم ھاسىل قىلىش مودېلىنى سىز بىرنەچچە توربەتتىن سىناپ ئىزدەپ كۆرەلەيسىز. ئەمما خۇددىي ئالدىدا بىز ئەسكەرتىپ ئۆتكىنىمىزدەك، كۆپىنچىسى دۇرۇس بولمىغان رەسىملەرنى ھاسىل قىلىش ئۈچۈن ياسالغان. شۇڭا مەن تۆۋەندىكى بىرخىلىنىلا تەۋسىيە قىلىمەن. سىز ئارتۇقچە ئىزدەپ يۈرۈشىڭىزنىڭ ھاجىتى يوق. چۈشۈرۈش ئادرېسى:
 
-https://civitai.com/models/139562/realvisxl-v30-turbo
+[RealVisXL](https://civitai.com/models/139562/realvisxl-v30-turbo)
 
 بۇ مودېلنىڭ ئىسمى RealVisXL V3.0 + Turbo بولۇپ، 6.46 گېگابايت چوڭلىقىدا.
 بۇ ھۆججەتنى چۈشۈرۈپ بولغاندىن كېيىن، ComfyUI نىڭ ھۆججەت قىسقۇچىنى ئېچىپ تۆۋەندىكى ئورۇندىكى checkpoints دېگەن يەرگە كۆچۈرۈپ ئەكلىشىڭىز كېرەك:
-ComfyUI_windows_portable\ComfyUI\models\checkpoints
+`ComfyUI_windows_portable\ComfyUI\models\checkpoints`
 
 3- ComfyUI دا ئەڭ ئاددىي خىزمەت مۇھىتى قۇرۇۋېلىش.
    ئەمدى بىز قوزغىتىلغان ComfyUI بېتىدىكى بارلىق كۆزنەكلەرنى تاقىۋېتىپ، ئەڭ ئاددىي بىر خىزمەت مۇھىتى قۇرىۋالىمىز.
@@ -111,16 +111,16 @@ ComfyUI نىڭ يەنە بەشقا ئىقتىدارلىرىمۇ بار. سىز �
 
 - يۇقارقى ئاددىي Checkpoint ئىشلىتىشتىن باشقا يەنە LORA ئىشلىتىپ رەسىمنىڭ ئۈنۈمىنى تېخىمۇ يۇقىرى كۆتۈرگىلى بولىدۇ. ComfyUI نىڭ خىزمەت باسقۇچىغا LORA نى قوشۇپ رەسىم سىزدۇرۇش ئاسان بولۇپ، Checkpoint نىڭ ئارقىسىدىنلا ئىشلىتىدىغان قىلىپ توغرىلاپ بەرسەك بولىدۇ. ئەمما ئاۋۋال LORA ھۆججىتىنى چۈشۈرۈشىمىز لازىم. تۆۋەندىكى ئاددىي ئۇسۇل ئارقىلىق سىناپ باقسىڭىز بولىدۇ:
 
-https://comfyanonymous.github.io/ComfyUI_examples/lora
+[Lora](https://comfyanonymous.github.io/ComfyUI_examples/lora)
 
 - چاپاق رەسىمنى سۈزۈك رەسىمگە ئايلاندۇرۇش ئۈچۈن تۆۋەندىكى ئۇلىنىشتىكى بويىچە Workflow خىزمەت باسقۇچى قۇرسىڭىز بولىدۇ. ئەمما ئېسىڭىزدە بولسۇنكى چوقۇم ESRGAN غا ئوخشاش upscale سۈزۈكلەشتۈرۈش مودېلىنى چۈشۈرۈپ، ئاندىن models/upscale_models دېگەن ئورۇنغا كۆچۈرۈپ ئەكىلىسىز. ئاندىن تۆۋەندىكىدەك باغلنىش قۇرسىڭىزلا بولىدۇ:
 
-https://comfyanonymous.github.io/ComfyUI_examples/upscale_models
+[Upscale Models](https://comfyanonymous.github.io/ComfyUI_examples/upscale_models)
 
 
 - قولدا سىزىپ قويغان سەت رەسىمدىن پايدىلىنىپ سۈپەتلىك رەسىم ھاسىل قىلىش ئۈچۈن تۆۋەندىكى ئۇلىنىشتىكى بويىچە خىزمەت باسقۇچى workflow قۇرۇپ سىناپ باقسىڭىز بولىدۇ:
 
-https://comfyanonymous.github.io/ComfyUI_examples/img2img
+[Image to Image](https://comfyanonymous.github.io/ComfyUI_examples/img2img)
 
 ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان chekcpoint ۋە Lora نىڭ چۈشۈرۈش ئادرېسلىرى ۋە قوللانغاندىكى تەڭشەكلىرى تۆۋەندىكىچە:
 
