@@ -146,6 +146,19 @@ ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان c
 6. Workflow of ComfyUI: [Generate with Upsaceld Image](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/02-geenrateWithUpscaledPic.json)
 7. Workflow of ComfyUI: [Upscale Any Image](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/03-UpscaleMyPic.json)
 8. Workflow of ComfyUI: [Generate With LORA](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+9. Workflow of ComfyUI: [Compare Checkpoints](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+10. Workflow of ComfyUI: [Image to Image](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+11. Workflow of ComfyUI: [Image with Mask](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+12. Workflow of ComfyUI: [Image to Image 2](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+13. Workflow of ComfyUI: [Hires Fix](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+14. Workflow of ComfyUI: [Image Upscale 4X](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+15. Workflow of ComfyUI: [Knight even morning](https://raw.githubusercontent.com/UyCoder/paydilar/master/ComfyUiWorkFlowJsonFiles/04-WithLora.json)
+
+
+
+
+
+
 
 بۇلاردىن باشقا يەنە رەسىم چىقارغان ۋاقىتتا بېرىلىدىغان بۇيرۇقلار بەكمۇ مۇھىم. شۇڭا قانداق بۇيرۇق بىلەن بىز خالىغان رەسىمنى ھاسىل قىلىدىغانلىقىمىزنى تۆۋەندىكى توربەتتىكى ئۇچۇرلاردىن ناھايىتى چۈشىنىشلىك ھالدا ئۆگىنەلەيمىز:
 
