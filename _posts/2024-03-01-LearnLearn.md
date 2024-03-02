@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "ئۆگىنىش قىلىڭ"
-date: 2024-02-24 10:00:00 -0500
+date: 2024-03-01 10:00:00 -0500
 ---
-_تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
+_تەخمىنەن ئوقۇش ۋاقتى 4 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/LearnLearn.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
