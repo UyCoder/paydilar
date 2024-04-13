@@ -3,7 +3,7 @@ layout: post
 title: "ئۆگىنىشتىكى كەمتەرلىك"
 date: 2029-03-08 10:00:00 -0500
 ---
-_تەخمىنەن ئوقۇش ۋاقتى 11 مىنۇت_
+_تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/kemterlik.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
