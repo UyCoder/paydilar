@@ -3,7 +3,7 @@ layout: post
 title: "خىتاينى چۈشىنىش 5"
 date: 2024-05-05 12:00:00 -0500
 ---
-_تەخمىنەن ئوقۇش ۋاقتى 9 مىنۇت_
+_تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
 **خىتايلارنىڭ تارىختىن تارتىپ قوللىنىپ كېلىۋاتقان سىياسىي پىراگراممىلىرى**
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayningCHokushi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
