@@ -5,7 +5,7 @@ date: 2024-07-05 12:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 9 مىنۇت_
 
-**خىتاينىڭ ئالتۇن دەۋرىنىڭ ئاياغلىشىشى**
+**ئۆڭلۈك سۆيگۈن توپىلىڭى: خىتاينىڭ ئالتۇن دەۋرىنىڭ ئاياغلىشىشى**
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayningCHokushi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
