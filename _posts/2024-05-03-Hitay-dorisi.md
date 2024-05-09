@@ -1,11 +1,12 @@
 ---
 layout: post
-title: "دورا ئۆسۈملۈكلىرى قامۇسى"
-date: 2021-06-21 12:00:00 -0500
+title: "خىتاينى چۈشىنىش 3"
+date: 2024-05-03 12:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 **خىتتاينىڭ "دورا ئۆسۈملۈكلىرى قامۇسى"مۇ ياكى شەيتان قامۇسىمۇ؟**
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayDorisi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 _لۇتپۇللا ئەكرەم_
 
