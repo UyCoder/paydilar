@@ -35,7 +35,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 <a href="https://asiyeuyghur.medium.com/%DA%86%DB%95%D9%83%D9%84%D9%89%D9%85%D9%89%D8%B3%D9%89%D8%B2-%D8%A6%DB%87%D8%B1%DB%87%D8%B4-%DB%8B%DB%95-%D8%A6%DB%87%D9%8A%D8%BA%DB%87%D8%B1%D9%84%D8%A7%D8%B1-360856d749f0"> Medium  </a>
 
 چەكلىمىسىز ئۇرۇش ھەققىدە تۆۋەندىكى ۋىديولارنى كۆرۈپ باقسىڭىز بولىدۇ:
-<iframe width="360" height="203" src="https://www.youtube.com/embed/lA4dxaO5XVk?si=r-RDg2MKES6JZXp-&amp;start=546" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="360" height="203" src="https://www.youtube.com/embed/lA4dxaO5XVk?si=r-RDg2MKES6JZXp-&amp;start=539" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/1Qf85RIQbLA?si=s6U2xbC4R-wwY3i_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/ZbRbA3ANHoo?si=Qrvz-TkumP5aHZ2n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
