@@ -36,7 +36,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 چەكلىمىسىز ئۇرۇش ھەققىدە تۆۋەندىكى ۋىديولارنى كۆرۈپ باقسىڭىز بولىدۇ:
 <iframe width="360" height="203" src="https://www.youtube.com/embed/lA4dxaO5XVk?si=r-RDg2MKES6JZXp-&amp;start=536" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<iframe width="360" height="203" src="https://www.youtube.com/embed/ZbRbA3ANHoo?si=lKFf1-vsbT73z0B3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="360" height="203" src="https://www.youtube.com/embed/1Qf85RIQbLA?si=s6U2xbC4R-wwY3i_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/ZbRbA3ANHoo?si=Qrvz-TkumP5aHZ2n" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
