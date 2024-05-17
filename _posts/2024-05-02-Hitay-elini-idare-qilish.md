@@ -6,6 +6,7 @@ date: 2024-05-02 10:00:00 -0500
 _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 
 # شاڭ جۈن شۇ: خەلقنى كونتۇرۇل قىلىشنىڭ 5 خىل ئۇسۇلى 
+
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/shangjunshi.png" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 
