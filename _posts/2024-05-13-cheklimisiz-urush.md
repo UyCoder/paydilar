@@ -6,6 +6,7 @@ date: 2024-05-13 10:00:00 -0500
 _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 **چەكلىمىسىز ئۇرۇش ۋە ئۇيغۇرلار**
+
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/cheklimisizUrush.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 # چەكلىمىسىز ئۇرۇش ۋە ئۇيغۇرلار

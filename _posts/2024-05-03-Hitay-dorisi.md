@@ -6,7 +6,10 @@ date: 2024-05-03 12:00:00 -0500
 _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 **خىتتاينىڭ "دورا ئۆسۈملۈكلىرى قامۇسى"مۇ ياكى شەيتان قامۇسىمۇ؟**
+
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayDorisi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+## خىتتاينىڭ "دورا ئۆسۈملۈكلىرى قامۇسى"مۇ ياكى شەيتان قامۇسىمۇ؟
 
 _لۇتپۇللا ئەكرەم_
 

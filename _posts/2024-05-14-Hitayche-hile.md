@@ -6,6 +6,7 @@ date: 2024-05-14 12:00:00 -0500
 _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 **خىتايلارنىڭ ئۇيغۇر يېگەنلىكى ھەققىدىكى ئۆز خاتىرىسى**
+
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/ademYeydighanHitay.png" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 ## خىتايلارنىڭ ئۇيغۇر يېگەنلىكى ھەققىدىكى ئۆز خاتىرىسى
