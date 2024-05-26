@@ -1,0 +1,84 @@
+body {
+  font-family: 'alkatip', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  padding: 50px;
+}
+
+h1 {
+  text-align: center;
+  color: #5b5b5b;
+}
+
+hr {
+  margin-bottom: 20px;
+}
+
+#app-container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+#sentence-display, #result-display {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  direction: rtl;
+  padding-right: 12px;
+
+}
+
+#typing-area {
+  font-family: 'alkatip';
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  direction: rtl;
+}
+
+#error-message {
+  color: red;
+  visibility: hidden;
+  direction: rtl;
+}
+
+.error {
+  background-color: #ffdddd;
+  border-color: red;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #5b5b5b;
+  color: white;
+  cursor: pointer;
+  font-family: 'alkatip';
+  font-size: 0.8em;
+}
+
+button:hover {
+  background-color: #474747;
+}
+
+#result-display {
+  font-family: 'alkatip';
+  font-size: 1em;
+  direction: rtl;
+}
+
+@font-face {
+  font-family: 'alkatip';
+  src: url('../fonts/ALKATIP-TOR.woff2') format('woff2'),
+  url('../fonts/ALKATIP-TOR.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
