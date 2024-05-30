@@ -9,6 +9,7 @@ Welcome to my personal blog named `پايدىلار` in Uyghur language. This bl
 4. Open your web browser and go to: `http://127.0.0.1:4000/paydilar/`
 
 ## 🚀 Features
+- Uyghur Keyboard Training App: A new feature designed to contribute to the Uyghur community by providing a simple useful tool for practicing typing in Uyghur. This app also is an opportunity to learn famous Uyghur sayings. 🖥️📚🗣️
 - No need to create a database for this blog. Simply add a new post in the `post` directory with a `.md` file format, and Jekyll will automatically merge it and generate the HTML.
 - Automatically adds new post information to the index page.
 - Jekyll is integrated with Github, making it easy to understand and deploy.
