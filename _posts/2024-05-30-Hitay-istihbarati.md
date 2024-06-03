@@ -7,7 +7,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 3 سائەت_
 
 **خىتاي ئىستىخباراتى**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayQandaqMillet.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Hitayishihbarat.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 # خىتاي ئىستىخباراتىنى چۈشىنىش
 
