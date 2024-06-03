@@ -11,7 +11,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 3 سائەت_
 
 # خىتاي ئىستىخباراتىنى چۈشىنىش
 
-خىتاي ئىستىخباراتىنى چۈشىنىش ئۈچۈن كۆرۈش تەۋسىيە قىلىنغان 3 ۋىديو سۆھبەتلىرى
+خىتاي ئىستىخباراتىنى چۈشىنىش ئۈچۈن كۆرۈش تەۋسىيە قىلىنغان 4 ۋىديو سۆھبەتلىرى
 
 
 مەنبە:
@@ -22,7 +22,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 3 سائەت_
 <iframe width="360" height="203" src="https://www.youtube.com/embed/EuUAiyvQpOw?si=Udtb32L5DTkM7RxZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/124ZZdLn6kg?si=DxLhvcGoALgiZlp0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/lqYS6XkMmAg?si=-0QCTAemO7vlYb1c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+<iframe width="360" height="203" src="https://www.youtube.com/embed/cq_Fu5_1S3Q?si=O17mQzfSWas1uMpL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 
