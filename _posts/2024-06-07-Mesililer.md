@@ -26,7 +26,7 @@ _ئىنستىتۇتىمىز تەرىپىدىن ئېان قىلىنغان بۇ س
 
 
 
-<a href="https://raw.githubusercontent.com/UyCoder/paydilar/master/pdfs/Uyghurche_Report_2018_2.pdf"> 1- قىسىم  </a>
+<a href="https://raw.githubusercontent.com/UyCoder/paydilar/master/pdfs/Uyghurche_Report_2018_2.pdf"> شەرقىي تۈركىستاننىڭ نۆۋەتتىكى مەسىلىلىرى  </a>
 
 
 
