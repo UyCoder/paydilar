@@ -3,7 +3,7 @@ layout: post
 title: "خىتاينى چۈشىنىش 19"
 date: 2024-05-31 10:00:00 -0500
 ---
-_تەخمىنەن كۆرۈش ۋاقتى 1.5 سائەت_
+_تەخمىنەن كۆرۈش ۋاقتى 15 سائەت_
 
 **خىتاي قانداق دۆلەت**
 
@@ -25,6 +25,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 1.5 سائەت_
 
 <iframe width="360" height="203" src="https://www.youtube.com/embed/ID4uf1p2EQ4?si=nynak14egdDVHzJ4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/oimpJNdHzyc?si=cLtw3QCdjYhYlDUo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="360" height="203" src="https://www.youtube.com/embed/u9dfaAWr5OE?si=_SBVPvGC7HZFgecV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 
