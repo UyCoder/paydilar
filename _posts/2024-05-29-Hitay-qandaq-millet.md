@@ -30,6 +30,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 10 سائەت_
 <iframe width="360" height="203" src="https://www.youtube.com/embed/jRKvl3u50_g?si=_TLT0idkaZlGIIF1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="360" height="203" src="https://www.youtube.com/embed/Rr6WXjre1CQ?si=vAGm8gSeufa0NlVR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+<iframe width="360" height="203" src="https://www.youtube.com/embed/8xOGsNZsUv4?si=F5VY_sX22-oCcR0X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 
 <style type="text/css" media="screen">
