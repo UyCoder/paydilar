@@ -3,17 +3,21 @@
             "name": "مەن كىم",
             "link": "/portfolio/"
         },
-        {
-            "name": "بلوگ ھەققىدە",
-            "link": "/about/"
-        },
       {
         "name": "تەھرىرلىك قۇراللىرى",
         "link": "https://uycoder.github.io/gpt-uyghur/"
       },
       {
-        "name": "كۇنۇپكا تاختىسى مەشىقى",
+        "name": "كۇنۇپكا مەشىقى",
         "link": "https://uycoder.github.io/paydilar/UyghurKeyboardTraining/Ug-TrainingApp.html"
+      },
+      {
+        "name": "خەۋەرلەر",
+        "link": "https://uycoder.github.io/paydilar/news/UyghurNews.html"
+      },
+      {
+        "name": "بلوگ ھەققىدە",
+        "link": "/about/"
       }
     ]
 }
