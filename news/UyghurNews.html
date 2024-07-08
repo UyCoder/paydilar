@@ -1,4 +1,6 @@
-<html><head><base href="https://uyghur-global-haber.uyq/" />
+<html>
+<head>
+    <base href="https://uyghur-global-haber.uyq/" />
     <title>ئەڭ يېڭى خەۋەرلەر</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +12,7 @@
             font-weight: 400;
             font-display: swap;
         }
-        .jpg
+
         @font-face {
             font-family: 'ALKATIP Tor';
             src: url('https://raw.githubusercontent.com/UyCoder/paydilar/master/fonts/ALKATIP-TOR.ttf') format('truetype');
@@ -173,8 +175,8 @@
     <button class="category-tab" data-category="sport">ئۇيغۇر ئاگېنتلىقى</button>
     <button class="category-tab" data-category="science">UyghurNet</button>
     <button class="category-tab" data-category="tech">نيۇيورك تايمىس</button>
-    <button class="category-tab" data-category="china">خىتتاي</button>
-    <button class="category-tab" data-category="business">ئىقتىساد</button>
+    <button class="category-tab" data-category="china">خىتتاي ھەققىدە</button>
+    <button class="category-tab" data-category="business" id="business-tab"> خىتاي زۇۋانىدىن خەۋەرلەر</button>
 </div>
 <p style='text-align:center; width: 100%; display: block;'>
     خەۋەرلەر ئەسلى ئېنگىلىزچە بولۇپ، گۇگېل تەرجىمان بىلەنلا ئۇيغۇرچىغا تەرجىمە قىلىندى. شۇڭا بەزى ئىملا ۋە مەزمۇن خاتالىقى كۆرىلىشى مۇمكىن.
@@ -184,11 +186,11 @@
 <script>
     const RSS_FEEDS = {
         world: 'https://www.trt.net.tr/uyghur/all.rss',
-        tech: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-        china: 'https://chinadigitaltimes.net/feed/',
+        sport: 'https://uyghur.uyghurtimes.com/feed/',
         science: 'https://www.uyghurnet.org/ug/feed/',
-        business: 'https://rss.nytimes.com/services/xml/rss/nyt/Business.xml',
-        sport: 'https://uyghur.uyghurtimes.com/feed/'
+        tech: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+        china: 'https://www.scmp.com/rss/4/feed',
+        business: ''
     };
 
     async function translateText(text, targetLanguage = 'ug') {
@@ -263,6 +265,10 @@
             e.target.classList.add('active');
             fetchNews(e.target.dataset.category);
         });
+    });
+
+    document.getElementById('business-tab').addEventListener('click', () => {
+        window.location.href = 'https://uycoder.github.io/paydilar/news/UyghurNews-FromCHineseRss.html';
     });
 
     fetchNews('world');
