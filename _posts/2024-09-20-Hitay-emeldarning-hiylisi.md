@@ -7,7 +7,7 @@ _تەخمىنەن كۆرۈش ۋاقتى 1 مىنۇت_
 
 **خىتاي ئەمەلدارنى ھىيلىسى**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayningGherbiDiyarNeziriyesi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/hitayemeldar1.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 # خىتاي ئەمەلدارنىڭ ھىيلىسى
 
