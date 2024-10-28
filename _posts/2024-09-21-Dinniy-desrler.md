@@ -5,7 +5,7 @@ date: 2024-09-21 10:00:00 -0500
 ---
 _تەخمىنەن كۆرۈش ۋاقتى 1 مىنۇت_
 
-**دىننىي دەرسلەر تەۋسىيەسى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Desrler-1.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

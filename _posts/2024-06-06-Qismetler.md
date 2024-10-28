@@ -5,7 +5,7 @@ date: 2024-06-06 10:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
-**ئۇيغۇرلار دۇچ كېلىۋاتقان قىسمەتلەر**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Qismetlerr.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

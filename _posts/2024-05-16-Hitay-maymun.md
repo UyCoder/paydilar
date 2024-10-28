@@ -5,7 +5,7 @@ date: 2024-05-15 10:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 6 مىنۇت_
 
-**ئېرقىي يوقىتىشنىڭ قېلىپى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayningCHokushi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

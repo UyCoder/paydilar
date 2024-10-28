@@ -5,10 +5,11 @@ date: 2024-05-22 12:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 6 مىنۇت_
 
-**خىتاي پۇقرالىرى ھۆكۈمىتىنىڭ ئۇيغۇرلارغا سېلىۋاتقان زۇلۇمىغا قانداق قارايدۇ؟**
-
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayHelqimeynet.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
+## خىتاي پۇقرالىرى ھۆكۈمىتىنىڭ ئۇيغۇرلارغا سېلىۋاتقان زۇلۇمىغا قانداق قارايدۇ؟ 
 
 2018-يىلى 11-ئاينىڭ 30-كۈنى
 

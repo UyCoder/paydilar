@@ -5,7 +5,7 @@ date: 2024-06-07 10:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 3 مىنۇت_
 
-**شەرقىي تۈركىستاننىڭ نۆۋەتتىكى مەسىلىلىرى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/mesililer.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

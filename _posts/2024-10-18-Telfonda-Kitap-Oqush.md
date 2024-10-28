@@ -5,7 +5,7 @@ date: 2024-10-18 10:00:00 -0500
 ---
 _تەخمىنەن كۆرۈش ۋاقتى 5 مىنۇت_
 
-**كىتاپ ئوقۇش كۈلتۈرى بەرپا قىلىش**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/kitapOqush.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

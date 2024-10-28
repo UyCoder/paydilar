@@ -5,7 +5,7 @@ date: 2024-05-12 12:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 11 مىنۇت_
 
-**نېمە ئۈچۈن خىتايلار ئۇيغۇرلارغا بۇنچە ئۆچمەنلىك قىلىدۇ**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Hitay6.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

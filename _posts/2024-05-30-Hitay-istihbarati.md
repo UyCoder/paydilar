@@ -5,7 +5,7 @@ date: 2024-05-30 10:00:00 -0500
 ---
 _تەخمىنەن كۆرۈش ۋاقتى 5 سائەت_
 
-**خىتاي ئىستىخباراتى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Hitayishihbarat.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

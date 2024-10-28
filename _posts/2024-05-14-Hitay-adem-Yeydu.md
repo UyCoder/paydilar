@@ -5,7 +5,7 @@ date: 2024-05-14 10:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 
-**خىتايچە قىساس ھېكايىسى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayQisas.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

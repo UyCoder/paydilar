@@ -5,7 +5,7 @@ date: 2024-06-04 10:00:00 -0500
 ---
 _تەخمىنەن ئوقۇش ۋاقتى 30 مىنۇت_
 
-**غەربىي دىيار نەزىرىيىسى**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/HitayningGherbiDiyarNeziriyesi.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 

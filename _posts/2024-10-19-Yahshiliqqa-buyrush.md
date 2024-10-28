@@ -5,7 +5,7 @@ date: 2024-10-19 10:00:00 -0500
 ---
 _تەخمىنەن كۆرۈش ۋاقتى 15 مىنۇت_
 
-**ياخشىلىققا بۇيرۇش ۋە يامانلىقتىن توسۇش**
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/yahshiliqqaBuyrush.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
