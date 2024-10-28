@@ -187,11 +187,13 @@ ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان c
 - [Experimental](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Experimental.md)
 
 
+
+بۇ يازمىدا تونۇشتۇرۇلغان ComfyUI نىڭ يېڭى نۇسخىسى چىقىپتۇ. بۇ يېڭى نۇسخىسىنى قاچىلاش تېخىمۇ ئاسانلىشىپتۇ. تۆۋەندىكى ۋىديودىن كۆرۈپ باقسىڭىز بولىدۇ:
+
+<iframe width="360" height="203" src="https://www.youtube.com/embed/_AWnViHDn3M?si=OpQG6SXKHeQKrVjB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ھەممىزگە پايدىلىق بىر بىلىم بولىشىنى ئۈمۈد قىلىمەن.
-
-
-
-
 
 
 
