@@ -418,7 +418,11 @@ Northrop Grummanدوكلاتى سۆزنى ئايلاندۇرۇپ ئولتۇرم�
 
 11-بابنىڭ تەرجىمىسى مۇشۇ يەردە تۈگىدى.
 
+بۇ يازما بىلەن مۇناسىۋەتلىك خىتايلارنىڭ جاسۇسلۇق قانۇنى ھەققىدىكى تۆۋەندىكى لىكسىيەنى كۆرۈپ بېقىشقا ئەرزىيدۇ:
 
+<iframe width="360" height="203" src="https://www.youtube.com/embed/TQ8f0s1Mlzw?si=_GKkAwIf7B4SevNe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+> ئەسكەرتىش: پىدائىيلار ئىكرانى ھازىر كۆپىنچە ھەدىس ئىنكارچىلىرىنىڭ تەشۋىقاتى بولۇش رولىنى ئويناۋاتىدۇ. شۇڭا بۇنىڭغا دىققەت قىلىشىڭىزنى ئۈمۈد قىلىمەن.
 
 
 
