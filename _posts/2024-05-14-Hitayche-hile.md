@@ -40,6 +40,13 @@ _(ئەنقەرە ئۇنىۋېرسىتېتى تىل ۋە تارىخ-جۇغراپ�
 <a href="https://www.facebook.com/DoguTurkistanKulturMerkezi/posts/3691708854263918/">  دوكتور ئۆمەرجان نۇرى  </a>
 
 
+بۇلاردىن باشقا يەنە پىدائىيلار ئىكرانى پروگراممىسىدا مەۋلان ياسىننىڭ خىتايلارنىڭ ئادەم يېيىش ھەققىدىكى لىكسىيەسى بار ئىكەن:
+
+<iframe width="360" height="203" src="https://www.youtube.com/embed/bWKFZkIDsqg?si=8BvaeuG8AmnNnHvv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+> ئەسكەرتىش: پىدائىيلار ئىكرانى ھازىر كۆپىنچە ھەدىس ئىنكارچىلىرىنىڭ تەشۋىقاتى بولۇش رولىنى ئويناۋاتىدۇ. شۇڭا بۇنىڭغا دىققەت قىلىشىڭىزنى ئۈمۈد قىلىمەن.
+
+
 
 <style type="text/css" media="screen">
 body {
