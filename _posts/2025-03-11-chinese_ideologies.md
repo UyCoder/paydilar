@@ -3,9 +3,9 @@ layout: post
 title: "خىتاي ئىدىلوگىيەلىرى"
 date: 2025-03-11 10:00:00 -0500
 ---
-_تەخمىنەن ئوقۇش ۋاقتى 9 مىنۇت_
+_تەخمىنەن ئوقۇش ۋاقتى 13 مىنۇت_
 
-**بسم الله الرحمن الرحيم**
+
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/chineseIdeologies.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
