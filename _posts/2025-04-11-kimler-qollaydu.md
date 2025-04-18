@@ -27,7 +27,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 ## **1. ئامېرىكا قوشما شتاتلىرى:**
 
-<img src="https://cdn.prod.www.spiegel.de/images/e8675425-8e02-4dcf-8fb6-0c07e9f9a9d2_w256_r1_fpx61.32_fpy50.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://cdn.prod.www.spiegel.de/images/e8675425-8e02-4dcf-8fb6-0c07e9f9a9d2_w256_r1_fpx61.32_fpy50.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ئامېرىكا ھازىر دۇنيادا ئۇيغۇرلارنىڭ كىشىلىك ھوقۇق دەپسەندىچىلىكىگە، بولۇپمۇ خىتاي ھۆكۈمىتى تەرىپىدىن يۈرگۈزۈلۈۋاتقان ئىرقىي قىرغىنچىلىق ۋە ئىنسانىيەتكە قارشى جىنايەتلەرگە ئەڭ كۈچلۈك دەرىجىدە كۆڭۈل بۆلىدىغان ۋە بۇ ھەقتە خىتايغا ئەڭ كۆپ ۋە ئەڭ كەسكىن بېسىم ئىشلىتىۋاتقان دۆلەتلەرنىڭ مۇقەررەر ھالدا بىرى. ئامېرىكا ھۆكۈمىتى ۋە پارلامېنتى بۇ جەھەتتە بىر قاتار قانۇنلارنى ماقۇللاپ، خىتاي ئەمەلدارلىرى ۋە شىركەتلىرىگە جازا يۈرگۈزۈپ، خەلقئارا سەھنىدە بۇ مەسىلىنى ئۈزلۈكسىز ئوتتۇرىغا قويۇپ كەلمەكتە. بۇلار ئۇيغۇرلار ئۈچۈن ئىنتايىن مۇھىم ۋە ئىجابىي سىگناللار. لېكىن، شۇنى ئېنىق ئايرىش كېرەككى، **كىشىلىك ھوقۇقنى قوغداش، ئىرقىي قىرغىنچىلىقنى ئېتىراپ قىلىش ۋە ئۇنىڭغا قارشى تۇرۇش بىلەن، بىر مىللەتنىڭ سىياسىي مۇستەقىللىقىنى قوللاش ۋە ئۇنى رەسمىي ئېتىراپ قىلىش ئوتتۇرىسىدا ناھايىتى چوڭ پەرق بار.**
 
@@ -56,7 +56,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **2. روسىيە فېدېراتسىيەسى:**
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVDS_bIHZraV3zSCL_-2lJtVCQwWV7lmSsqw&s" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVDS_bIHZraV3zSCL_-2lJtVCQwWV7lmSsqw&s" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 روسىيەنىڭ پوزىتسىيەسى ئىنتايىن ئېنىق ۋە قەتئىي.
 
@@ -78,7 +78,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **3. تۈركىيە جۇمھۇرىيىتى:**
-<img src="https://i.turkiyetoday.com/image/resize/1600x1067/wp-content/uploads/2024/06/AA-20240605-34789091-34789083-TURKISH_FOREIGN_MINISTER_HAKAN_FIDAN_IN_XINJIANG-1600x1067.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://i.turkiyetoday.com/image/resize/1600x1067/wp-content/uploads/2024/06/AA-20240605-34789091-34789083-TURKISH_FOREIGN_MINISTER_HAKAN_FIDAN_IN_XINJIANG-1600x1067.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 تۈركىيەنىڭ پوزىتسىيەسى بارلىق دۆلەتلەر ئىچىدە ئەڭ مۇرەككەپ، زىددىيەتلىك ۋە نازۇك. بۇ ئۇيغۇرلار بىلەن تۈركىيە ئوتتۇرىسىدىكى چوڭقۇر تارىخىي، مەدەنىي، تىل ۋە ئېتنىك يېقىنلىق، شۇنداقلا تۈركىيەنىڭ ھازىرقى خەلقئارا ۋەزىيەتتىكى گېئوپولىتىكىلىق ئورنى ۋە ئىقتىسادىي رېئاللىقىدىن كېلىپ چىققان.
 
@@ -112,7 +112,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **4. ياۋروپا ئىتتىپاقى (EU) ۋە ئۇنىڭ ئاساسلىق ئەزالىرى (گېرمانىيە، فرانسىيە، ئىسپانىيە قاتارلىقلار):**
-<img src="https://www.euractiv.com/wp-content/uploads/sites/2/2024/01/shutterstock_196161647.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.euractiv.com/wp-content/uploads/sites/2/2024/01/shutterstock_196161647.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ياۋروپا ئىتتىپاقى بىر پۈتۈن گەۋدە سۈپىتىدە ۋە ئۇنىڭ گېرمانىيە، فرانسىيە قاتارلىق يېتەكچى دۆلەتلىرى ئۇيغۇر كىشىلىك ھوقۇق مەسىلىسىگە كۆڭۈل بۆلىدۇ ۋە خىتاينى تەنقىد قىلىپ كېلىۋاتىدۇ. ياۋروپا پارلامېنتى بۇ ھەقتە كۆپ قېتىم قارارلارنى چىقارغان ۋە خىتاي ئەمەلدارلىرىغا قارشى سىمۋول خاراكتېرلىق جازالارنى يۈرگۈزگەن.
 
@@ -143,7 +143,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **5. ئەنگىلىيە (UK):**
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvMjzKhVJt-eayl2OUniyZnKOwK4I7XmcJIw&s" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvMjzKhVJt-eayl2OUniyZnKOwK4I7XmcJIw&s" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ئەنگىلىيەنىڭ پوزىتسىيەسى ئاساسەن ئامېرىكا ۋە ياۋروپا ئىتتىپاقىغا ئوخشىشىپ كېتىدۇ، ئەمما ئۆزىگە خاس ئالاھىدىلىكلىرىمۇ بار.
 
@@ -175,7 +175,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **6. كانادا:**
-<img src="https://www.aljazeera.com/wp-content/uploads/2022/11/2022-11-16T140841Z_1472628731_RC2UMX99NAVB_RTRMADP_3_G20-SUMMIT-XI-TRUDEAU.jpg?resize=770%2C513&quality=80" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.aljazeera.com/wp-content/uploads/2022/11/2022-11-16T140841Z_1472628731_RC2UMX99NAVB_RTRMADP_3_G20-SUMMIT-XI-TRUDEAU.jpg?resize=770%2C513&quality=80" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 كانادانىڭ پوزىتسىيەسى ئاساسەن ئامېرىكا ۋە ئەنگىلىيەگە ئوخشىشىپ كېتىدۇ، كىشىلىك ھوقۇقنى تەكىتلەيدۇ، ئەمما رېئال سىياسەتتىن ھالقىپ كېتەلمەيدۇ.
 
@@ -198,7 +198,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **7. ياپونىيە:**
-<img src="https://www.aljazeera.com/wp-content/uploads/2012/09/2012911152319582734_20.jpeg?resize=770%2C513&quality=80" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.aljazeera.com/wp-content/uploads/2012/09/2012911152319582734_20.jpeg?resize=770%2C513&quality=80" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ياپونىيە خىتاينىڭ بىۋاسىتە قوشنىسى، ئامېرىكىنىڭ مۇھىم ئىتتىپاقدىشى ۋە دۇنيادىكى ئۈچىنچى چوڭ ئىقتىسادىي گەۋدە. ئۇنىڭ پوزىتسىيەسى گېئوپولىتىكىلىق، ئىقتىسادىي ۋە تارىخىي ئامىللارنىڭ تەسىرىدە شەكىللەنگەن.
 
@@ -228,7 +228,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **8. كورىيە جۇمھۇرىيىتى (جەنۇبىي كورىيە):**
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtNPdTg4kZBWhzwiB-S-ly2a0gOEeiq8tzIg&s" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtNPdTg4kZBWhzwiB-S-ly2a0gOEeiq8tzIg&s" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 جەنۇبىي كورىيە خىتاينىڭ يەنە بىر مۇھىم قوشنىسى ۋە ئامېرىكىنىڭ ئىتتىپاقدىشى. ئۇنىڭ پوزىتسىيەسى ئىقتىسادىي مەنپەئەت، بىخەتەرلىك ئەندىشىلىرى ۋە ئامېرىكا بىلەن بولغان مۇناسىۋەت ئوتتۇرىسىدىكى مۇرەككەپ تەڭپۇڭلۇقتا شەكىللىنىدۇ.
 
@@ -251,7 +251,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **9. ھىندىستان:**
-<img src="https://dam.mediacorp.sg/image/upload/s--Zk4O2YYL--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:ap_data-1,w_0.1/f_auto,q_auto/v1/one-cms/core/russia_brics_summit_57727.jpg?itok=MyezNOoY" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://dam.mediacorp.sg/image/upload/s--Zk4O2YYL--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:ap_data-1,w_0.1/f_auto,q_auto/v1/one-cms/core/russia_brics_summit_57727.jpg?itok=MyezNOoY" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ھىندىستان خىتاي بىلەن ئۇزۇن چېگرا لىنىيەسىگە ئىگە، نوپۇسى كۆپ، يادرو قورالىغا ئىگە چوڭ دۆلەت. ئىككى دۆلەت ئوتتۇرىسىدا ئىستراتېگىيەلىك رىقابەت ۋە چېگرا تالاش-تارتىشلىرى مەۋجۇت.
 
@@ -281,7 +281,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **10. پاكىستان ئىسلام جۇمھۇرىيىتى:**
-<img src="http://www.people.com.cn/mediafile/pic/BIG/20191010/35/1171576543632986155.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="http://www.people.com.cn/mediafile/pic/BIG/20191010/35/1171576543632986155.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 پاكىستاننىڭ پوزىتسىيەسى ئىنتايىن ئېنىق ۋە خىتايغا پايدىلىق.
 
@@ -293,7 +293,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
     *   **ئۇيغۇرلارنى قايتۇرۇش:** پاكىستاننىڭ خىتاينىڭ تەلىپىگە بىنائەن پاكىستاندىكى ئۇيغۇرلارنى تۇتۇپ خىتايغا قايتۇرۇپ بەرگەنلىكى ھەققىدە كۆپلىگەن مەلۇماتلار بار.
 
 ## **11. ئوتتۇرا ئاسىيا جۇمھۇرىيەتلىرى (قازاقىستان، قىرغىزىستان، ئۆزبېكىستان، تاجىكىستان، تۈركمەنىستان):**
-<img src="https://dam.mediacorp.sg/image/upload/s--mRyqh56u--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:reuters,w_0.1/f_auto,q_auto/v1/one-cms/core/2023-05-19t044144z_1_lynxmpej4i04m_rtroptp_3_china-centralasia.jpg?itok=d50btMC9" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://dam.mediacorp.sg/image/upload/s--mRyqh56u--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:reuters,w_0.1/f_auto,q_auto/v1/one-cms/core/2023-05-19t044144z_1_lynxmpej4i04m_rtroptp_3_china-centralasia.jpg?itok=d50btMC9" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 بۇ دۆلەتلەر شەرقىي تۈركىستان بىلەن بىۋاسىتە قوشنا بولۇپ، تارىخىي، مەدەنىي ۋە ئېتنىك جەھەتتىن ئۇيغۇرلار بىلەن يېقىن مۇناسىۋەتكە ئىگە. نۇرغۇن ئۇيغۇرلار بۇ دۆلەتلەردە ياشايدۇ، شۇنداقلا بۇ دۆلەتلەردىكى قازاق، قىرغىز، ئۆزبېك قاتارلىق مىللەتلەرنىڭمۇ زور ساندىكى ئۇرۇق-تۇغقانلىرى شەرقىي تۈركىستاندا ياشايدۇ. بۇ ئامىللار ئۇلارنى ئۇيغۇر مەسىلىسىگە بىۋاسىتە چېتىشلىق قىلىدۇ، ئەمما شۇنىڭ بىلەن بىرگە ئىنتايىن قىيىن ۋە نازۇك ئەھۋالغا چۈشۈرۈپ قويىدۇ. (بۇ يەردە قازاقىستاننى ۋەكىل قىلىپ تەھلىل قىلايلى، باشقا دۆلەتلەرنىڭ ئەھۋالىمۇ ئاساسەن ئوخشاش).
 
@@ -304,7 +304,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
     *   **ئىچكى جەمئىيەتتىكى بېسىم ۋە ھۆكۈمەتنىڭ ئەندىشىلىرى:** بۇ دۆلەتلەردە ياشايدىغان ئۇيغۇر ۋە باشقا مىللەتلەرنىڭ شەرقىي تۈركىستاندىكى ئۇرۇق-تۇغقانلىرىنىڭ ئەھۋالىغا كۆڭۈل بۆلۈشى، ھۆكۈمەتكە مەلۇم بېسىم پەيدا قىلىدۇ. بەزىدە ھۆكۈمەتلەر خىتايدىكى "قايتا تەربىيەلەش لاگېرلىرى" غا تۇتۇلغان ئۆز پۇقرالىرىنى (مەسىلەن، جۇڭگو قازاقلىرىنى) قۇتقۇزۇش ئۈچۈن ئاستا-ئاستا دىپلوماتىك ھەرىكەتلەرنى قىلىشى مۇمكىن. ئەمما، ھۆكۈمەتلەر خىتاينى بىۋاسىتە رەنجىتىپ قويۇشتىن، بۆلگۈنچىلىكنى قوللىدى دېگەن نامغا قېلىشتىن ۋە ئۆز دۆلەتلىرىدىكى مۇقىمسىزلىقتىن قاتتىق ئەنسىرەيدۇ. شۇڭا، ئۇلارنىڭ ئۇيغۇر مۇستەقىللىقىنى قوللىشىنى تەسەۋۋۇر قىلغىلى بولمايدۇ، ھەتتا بەزىدە خىتاينىڭ تەلىپى بىلەن ئۇيغۇر پائالىيەتچىلىرىنى تۇتۇپ بېرىش ئەھۋاللىرىمۇ يۈز بېرىدۇ.
 
 ## **12. ئىران ئىسلام جۇمھۇرىيىتى:**
-<img src="https://www.orfonline.org/public/uploads/posts/image/Raisi-tour-to-China.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.orfonline.org/public/uploads/posts/image/Raisi-tour-to-China.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ئىران گەرچە ئۆزىنى ئىسلام دۇنياسىنىڭ ھىمايىچىسى قاتارىدا كۆرسىتىشكە تىرىشسىمۇ، ئۇيغۇر مەسىلىسىدىكى پوزىتسىيەسى پۈتۈنلەي ئىستراتېگىيەلىك ۋە ئىقتىسادىي مەنپەئەتلەر تەرىپىدىن بەلگىلىنىدۇ.
 
@@ -324,7 +324,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **13. ئەرەب دۆلەتلىرى (سەئۇدى ئەرەبىستان، مىسىر، قاتار، ئومان، بىرلەشمە ئەرەب ئەمىرلىكلىرى قاتارلىقلار):**
-<img src="https://dims.apnews.com/dims4/default/a46a5b9/2147483647/strip/true/crop/5000x3331+0+0/resize/599x399!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F3a%2Ff0%2F7423e542f8f093f217a0da8ae5d4%2Fd93feece57c842a7990861f006264357" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://dims.apnews.com/dims4/default/a46a5b9/2147483647/strip/true/crop/5000x3331+0+0/resize/599x399!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F3a%2Ff0%2F7423e542f8f093f217a0da8ae5d4%2Fd93feece57c842a7990861f006264357" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 بۇ دۆلەتلەرنىڭ پوزىتسىيەسى ئومۇمەن ئوخشاش بولۇپ، خىتاي بىلەن بولغان ئىقتىسادىي ۋە سىياسىي مۇناسىۋەتلەرنى ئالدىنقى ئورۇنغا قويىدۇ.
 
@@ -349,7 +349,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **14. شەرقىي جەنۇبىي ئاسىيا دۆلەتلىرى (ھىندونېزىيە، مالايسىيا، سىنگاپور، تايلاند قاتارلىقلار):**
-<img src="https://www.gov.cn/xinwen/2021-11/22/W020220405515025630648.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.gov.cn/xinwen/2021-11/22/W020220405515025630648.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 بۇ رايوندىكى دۆلەتلەر، بولۇپمۇ ھىندونېزىيە ۋە مالايسىيادەك مۇسۇلمان نوپۇسى كۆپ دۆلەتلەرنىڭ پوزىتسىيەسىمۇ ئاساسەن ئىقتىسادىي مەنپەئەت ۋە رايون مۇقىملىقىنى كۆزدە تۇتۇش ئاساسىدا شەكىللەنگەن.
 
@@ -374,7 +374,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **15. ئافغانىستان:**
-<img src="https://media.cnn.com/api/v1/images/stellar/prod/210819180640-china-taliban.jpg?q=x_2,y_0,h_1078,w_1915,c_crop/w_1280" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://media.cnn.com/api/v1/images/stellar/prod/210819180640-china-taliban.jpg?q=x_2,y_0,h_1078,w_1915,c_crop/w_1280" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 ئافغانىستان ئۇزۇن يىللىق ئۇرۇش ۋە مۇقىمسىزلىقتىن كېيىن، ھازىر تالىبان ھاكىمىيىتى ئاستىدا. ئۇنىڭ پوزىتسىيەسى ئۆزىنىڭ ھايات قېلىشى، خەلقئارا ئېتىراپقا ئېرىشىشى ۋە ئىقتىسادىي قىيىنچىلىقتىن قۇتۇلۇشىغا باغلىق.
 
@@ -394,7 +394,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **16. مۇڭغۇلىيە:**
-<img src="https://news.mn/en/wp-content/uploads/sites/3/2022/09/YP3X4RPIPBL3TGGTZF7UHIYZ34.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://news.mn/en/wp-content/uploads/sites/3/2022/09/YP3X4RPIPBL3TGGTZF7UHIYZ34.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 مۇڭغۇلىيە ئىككى چوڭ قوشنىسى – روسىيە ۋە خىتاي ئارىسىغا قىسىلىپ قالغان، دېڭىزغا چىقىش ئېغىزى يوق دۆلەت. ئۇنىڭ تاشقى سىياسىتى ۋە ئىقتىسادى بۇ ئىككى قوشنىسىغا كۈچلۈك دەرىجىدە بېقىندى.
 
@@ -414,7 +414,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **17. يېڭى سۈرىيە :**
-<img src="https://cdn.i-scmp.com/sites/default/files/styles/1020x680/public/d8/images/canvas/2025/02/22/57d5adda-0dfc-4925-a661-29c5492e336b_12e0435b.jpg?itok=E0jAKx25&v=1740209461" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://cdn.i-scmp.com/sites/default/files/styles/1020x680/public/d8/images/canvas/2025/02/22/57d5adda-0dfc-4925-a661-29c5492e336b_12e0435b.jpg?itok=E0jAKx25&v=1740209461" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 سۈرىيەدە يېقىندا زور سىياسىي ئۆزگىرىش يۈز بېرىپ، ئەسەد ھاكىمىيىتى ئاغدۇرۇلدى ۋە يېڭى ئۆتكۈنچى ھۆكۈمەت قۇرۇلۇش باسقۇچىدا تۇرماقتا. ئەھمەد شەرئى رەھبەرلىكىدىكى بۇ يېڭى گۇرۇپپىنىڭ  سۈرىيەدىكى ئۇيغۇرلارغا نىسبەتەن ئىجابىي پوزىتسىيەدە بولغانلىقى ھەققىدىكى ئۇچۇرلار بەزى ئۈمىدلەرنى پەيدا قىلىشى مۇمكىن. ئەمما، رېئاللىق يەنىلا ناھايىتى مۇرەككەپ. نۆۋەتتىكى يېڭى سۈرىيە ھۆكۈمىتى خەلقئارا سەھنىدە ئۇيغۇرلارنىڭ مۇستەقىللىقىنى قوللىغىدەك كۈچتە ئەمەس.
 
@@ -437,7 +437,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **18. يەمەن:**
-<img src="https://www.arabnews.com/sites/default/files/styles/n_670_395/public/2020/02/06/1960461-391658460.jpg?itok=KO8V6bhh" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://www.arabnews.com/sites/default/files/styles/n_670_395/public/2020/02/06/1960461-391658460.jpg?itok=KO8V6bhh" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 يەمەننىڭ ئەھۋالى ئىنتايىن ئېنىق.
 
@@ -456,7 +456,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 
 ## **19. لاتىن ئامېرىكىسى دۆلەتلىرى:**
-<img src="https://image.cnbcfm.com/api/v1/image/107311169-Thumbnail_Digital_Originals_China_in_Latam_Clean.jpg?w=1910&amp;h=1000" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://image.cnbcfm.com/api/v1/image/107311169-Thumbnail_Digital_Originals_China_in_Latam_Clean.jpg?w=1910&amp;h=1000" style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
 
 بۇ ناھايىتى كەڭ ۋە كۆپ خىل بىر رايون بولۇپ، دۆلەتلەرنىڭ سىياسىي تۈزۈلمىسى (سول قانات، ئوڭ قانات)، ئىقتىسادىي ئەھۋالى ۋە تاشقى سىياسەت يۆنىلىشى ئوخشاش ئەمەس. شۇنداقتىمۇ ئومۇمىي بىر يۈزلىنىشنى كۆرۈۋالغىلى بولىدۇ.
 
