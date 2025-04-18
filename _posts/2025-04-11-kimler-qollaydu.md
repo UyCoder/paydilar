@@ -7,7 +7,8 @@ _تەخمىنەن ئوقۇش ۋاقتى 51 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/KimQOllaydu.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/doletlerQandaqSual.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
 
 # مۇستەقىللىقىمىزنى دۇنيادا  كىم قوللايدۇ؟
 

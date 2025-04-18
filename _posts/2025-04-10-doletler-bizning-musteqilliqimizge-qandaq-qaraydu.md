@@ -7,7 +7,8 @@ _تەخمىنەن ئوقۇش ۋاقتى 13 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/doletlerQandaqSual.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/KimQOllaydu.jpeg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+
 
 # مەۋجۇد دۆلەتلەر مۇستەقىللىقىمىزنى قوللامدۇ؟
 
