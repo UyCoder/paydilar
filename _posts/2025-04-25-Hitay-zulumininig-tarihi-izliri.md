@@ -7,7 +7,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 7 مىنۇت_
 
 **بسم الله الرحمن الرحيم**
 
-<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/kutadgubiulikveShangjunshu.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/meng-po.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 # شەرقىي تۈركىستاندىكى زۇلۇملارنىڭ خىتاي تارىخىدىكى ئىزلىرى
 
