@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Speech (Turkish)</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        button {
+            background-color: #009b74;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #007e5a;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Text-to-Speech (Türkçe)</h1>
+
+<textarea id="inputText" rows="4" cols="50" placeholder="Türkçe bir şey yazın..."></textarea><br>
+
+<button id="speakBtn">Konuş</button>
+
+<script>
+    const speakBtn = document.getElementById('speakBtn');
+    const inputText = document.getElementById('inputText');
+
+    // Initialize the voices variable
+    let voices = [];
+
+    // Load voices after they are available
+    speechSynthesis.onvoiceschanged = function() {
+        voices = speechSynthesis.getVoices();
+    };
+
+    speakBtn.addEventListener('click', () => {
+        const text = inputText.value;
+        if (!text) {
+            alert('Lütfen bir metin girin!');
+            return;
+        }
+
+        // Check if the SpeechSynthesis API is available
+        if ('speechSynthesis' in window) {
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'tr-TR'; // Turkish language code
+
+            // Use Turkish voice
+            let turkishVoice = voices.find(voice => voice.lang === 'tr-TR');
+
+            if (turkishVoice) {
+                utterance.voice = turkishVoice;
+            } else {
+                alert('Türkçe sesi bulamadım!');
+            }
+
+            // Speak the text
+            speechSynthesis.speak(utterance);
+        } else {
+            alert('Tarayıcınız sesli okuma desteği sunmamaktadır.');
+        }
+    });
+</script>
+
+</body>
+</html>

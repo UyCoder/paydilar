@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ئۇيغۇرچە بەزى ئىملانى تۈزەتكۈچ</title>
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png">
+
+    <style>
+		@font-face {
+            font-family: 'alkatipTor';
+            src: url('ALKATIPTOR.TTF');
+        }
+
+        *  {
+            direction: rtl ;
+			font-family: 'alkatipTor' !important;
+        }
+		
+      body {
+        background-color: #282c34;
+        color: #b6b5b5;
+      }
+      
+      /*textarea, select, input[type=submit] {*/
+      /*  background-color: #1e2124;*/
+      /*  border: none;*/
+      /*  color: #B4C4AE;*/
+      /*  font-size: 16px;*/
+      /*  padding: 10px;*/
+      /*}*/
+      
+      textarea:focus, select:focus, input[type=submit]:focus {
+        outline: none;
+      }
+	         #b {
+            color: #009b74;
+            font-size: xx-large;
+            text-align: center;
+        }
+
+        textarea {
+          background-color: #1e2124;
+          border: none;
+          color: white;
+          font-size: 16px;
+          padding: 10px;
+          width: 100%;
+        }
+
+      input[type=submit] {
+        background-color: #009b74;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+      
+      input[type=submit]:hover {
+        background-color: #444;
+      }
+	  
+	     /* Style for the navbar */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NV3LWYSZL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-1NV3LWYSZL');
+    </script>
+  </head>
+
+  <body>
+  <div class="navbar" >
+    <a href="IsilTerjiman.html"> تەرجىمان</a>
+    <a href="HikmetlerHezinesi.html" >ھىكمەت</a>
+    <a href="TextToSpeachUy.html"> ئاڭلاش</a>
+    <a href="../index.html">ChatGPT</a>
+    <a href="wordcounter.html"> تېكىست </a>
+    <a href="wordreplacer.html"> ئىملا </a>
+    <a href="teshkil.html">تەشكىل</a>
+    <a href="https://www.yulghun.com/tools/"> يۇلغۇن </a>
+    <a href="https://translate.google.com.tr/?sl=auto&tl=ug&text=I%20can%20translate%20uyghur%20language%20to%20english&op=translate" target="_blank"> Google </a>
+  </div>
+
+<h1 id="b"> .</h1>
+<h1 id="b">ئۇيغۇرچە بەزى ئىملانى تۈزەتكۈچ </h1>
+  <p style="font-size: small;  color: white ; text-align: center " id="random-sentence"></p>
+  <script>
+      fetch('https://raw.githubusercontent.com/UyCoder/paydilar/master/hikmetler/hikmetler.txt')
+          .then(response => response.text())
+          .then(text => {
+              const sentences = text.split('. ');
+              const randomIndex = Math.floor(Math.random() * sentences.length);
+              const randomSentence = sentences[randomIndex];
+              const prefixedSentence = "« " + randomSentence;
+              const suffixedSentence = prefixedSentence + " »";
+              document.getElementById('random-sentence').textContent = suffixedSentence;
+          });
+  </script>
+
+  <br>
+    <textarea id="input-text" style="resize: vertical" rows="10" cols="50" placeholder="تەھرىرلىمەكچى بولغان تېكىستنى كىرگۈزۈڭ"></textarea>
+    <br>
+    <label for="operation-select">قايسى خىلدىكى تۈزىتىش ئېلىپ بارماقچى بولغانلىقىڭىزنى بۇ يەردىن تاللاڭ</label>
+    <br>
+    <select id="operation-select">
+      <option value="remove-double-space">قۇر ئىچىدىكى ئارتۇقچە بوشلۇقلارنى چىقىرىۋېتىش</option>
+      <option value="remove-double-line">ئابزاسلار ئارىسىدىكى ئارتۇقچە بوش قۇرلارنى چىقىرۋېتىش</option>
+      <option value="reverse-arrows">ئۇيغۇرچە قوش تىرناقلار » ۋە « نىڭ يۆنىلىشىنى ئۆزگەرتىش</option>
+      <option value="replace-brackets">يالاڭ تىرناق < ۋە > لەرنى ئۇيغۇرچە « ۋە » لەرگە ئالماشتۇرۇش</option>
+    </select>
+    <br>
+    <input style="color: white ; padding: 10px ; font-weight: normal" type="submit" value="تۈزىتىش" onclick="applyOperation()">
+    
+    <br>
+    <textarea id="output-text" style="resize: vertical" rows="10" cols="50">تۈزىتىلگەن تېكىست بۇ يەردە كۆرۈنىدۇ.</textarea>
+    <script>
+     function applyOperation() {
+  const inputText = document.getElementById("input-text").value;
+  const operationSelect = document.getElementById("operation-select").value;
+  let outputText = "";
+  if (operationSelect === "remove-double-space") {
+    outputText = inputText.replace(/  +/g, " ");
+  } else if (operationSelect === "remove-double-line") {
+    outputText = inputText.replace(/\n\s*\n/g, "\n");
+  } else if (operationSelect === "reverse-arrows") {
+    outputText = inputText.replace(/«|»/g, function(match) {
+      return match === "«" ? "»" : "«";
+    });
+  } else if (operationSelect === "replace-brackets") {
+    outputText = inputText.replace(/</g, "«").replace(/>/g, "»");
+  } 
+  document.getElementById("output-text").value = outputText;
+}
+
+</script>
+  <br>
+  <br>
+
+  <ab style="font-style: italic; font-size: small" id="a" >بۇ كىچىك قۇرالنى مەن ئۇيغۇرچە كىتاپ يازىدىغانلار، تەرجىمانلار ۋە تەھرىر خىزمىتى قىلغانلارنىڭ بەزى خىزمىتىنى ئاسانلاشتۇرۇش ئۈچۈن يېزىپ چىقتىم. </ab>
+
+  <br>
+  <br>
+  <ba id="contact">مېنى بۇ يەردىن ئىزدەڭ</ba>
+  <a href="https://uycoder.github.io/paydilar/">
+    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png"
+         height="25">
+  </a>
+  <a href="https://www.linkedin.com/in/ahmed-bughra/">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/LinkedIn.svg"
+         alt="linkedin" height="25">
+  </a>
+  <a href="https://github.com/Uycoder">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/github.svg"
+         alt="github" height="25">
+  </a>
+  <a href="https://www.hackerrank.com/ahmedbughra">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/hackerrank.svg"
+         alt="hackerrank" height="25">
+  </a>
+  <a href="https://stackoverflow.com/users/16111723/ahmad-ali">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/Stack_Overflow.svg"
+         alt="stackoverflow" height="25">
+  </a>
+
+  </body>
+</html>

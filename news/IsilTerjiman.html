@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ئۇيغۇرچە تەرجىمان</title>
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png">
+
+    <style>
+        @font-face {
+            font-family: 'alkatipTor';
+            src: url('ALKATIPTOR.TTF');
+        }
+
+        *  {
+            direction: rtl ;
+        }
+
+        body {
+            background-color: #282c34;
+            color: #fff;
+            font-family: 'alkatipTor' !important;
+        }
+
+        #input {
+            background-color: #1e2124;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 100px;
+            resize: none;
+            font-family: 'alkatipTor' !important;
+
+        }
+
+        #inputAPIKey {
+            background-color: #1e2124;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 30px;
+            resize: none;
+            direction: ltr !important;
+
+        }
+
+        #output {
+            background-color: #1e2124;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 200px;
+            resize: none;
+            font-family: 'alkatipTor' !important;
+        }
+
+        #outputEn {
+            background-color: #1e2124;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 200px;
+            resize: none;
+            direction: ltr !important;
+        }
+
+        #submit {
+            background-color: #009b74;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-family: 'alkatipTor' !important;
+        }
+
+        #submit:hover {
+            background-color: #444;
+        }
+
+        #a {
+            color: #b6b5b5;
+            font-size: small;
+            padding: 20px;
+            font-style: italic;
+
+        }
+        #b {
+            color: #009b74;
+            font-size: xx-large;
+            text-align: center;
+        }
+
+        #contact {
+            color: #b6b5b5;
+            font-size: small;
+            padding: 20px;
+            font-style: italic;
+            alignment: center;
+
+        }
+
+        /* Style for the navbar */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NV3LWYSZL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-1NV3LWYSZL');
+    </script>
+
+</head>
+<body>
+<div class="navbar" >
+    <a href="IsilTerjiman.html"> تەرجىمان</a>
+    <a href="HikmetlerHezinesi.html" >ھىكمەت</a>
+    <a href="TextToSpeachUy.html"> ئاڭلاش</a>
+    <a href="../index.html">ChatGPT</a>
+    <a href="wordcounter.html"> تېكىست </a>
+    <a href="wordreplacer.html"> ئىملا </a>
+    <a href="teshkil.html">تەشكىل</a>
+    <a href="https://www.yulghun.com/tools/"> يۇلغۇن </a>
+    <a href="https://translate.google.com.tr/?sl=auto&tl=ug&text=I%20can%20translate%20uyghur%20language%20to%20english&op=translate" target="_blank"> Google </a>
+</div>
+
+<h1 id="b"> .</h1>
+<h1 id="b">گۇگېل تەرجىماندىنمۇ ئېسىل تەرجىمان </h1>
+<p style="font-size: small;  color: white ; text-align: center " id="random-sentence"></p>
+<script>
+    fetch('https://raw.githubusercontent.com/UyCoder/paydilar/master/hikmetler/hikmetler.txt')
+        .then(response => response.text())
+        .then(text => {
+            const sentences = text.split('. ');
+            const randomIndex = Math.floor(Math.random() * sentences.length);
+            const randomSentence = sentences[randomIndex];
+            const prefixedSentence = "« " + randomSentence;
+            const suffixedSentence = prefixedSentence + " »";
+            document.getElementById('random-sentence').textContent = suffixedSentence;
+        });
+</script>
+
+<br>
+<p>ئەسلى تېكىستنىڭ تىلىنى تاللاڭ:</p>
+<select style=" font-family: 'alkatipTor'" id="language">
+    <option value="uy">ئۇيغۇرچە</option>
+    <option value="en">ئېنگلىزچە</option>
+    <option value="zh">خىتايچە</option>
+</select>
+
+<textarea id="input" style="resize: vertical" placeholder="ئەسلى تېكىستنى بۇ يەرگە يېزىڭ."></textarea>
+<select style=" font-family: 'alkatipTor'" id="Targetlanguage">
+    <option value="en">ئېنگىلىزچە</option>
+    <option value="uy">ئۇيغۇرچە</option>
+    <option value="zh">خىتايچە</option>
+</select>
+<button id="submit">تەرجىمە قىل</button>
+<textarea id="output" style="resize: vertical" placeholder="تەرجىمە نەتىجىسى بۇ يەردە چىقىدۇ."></textarea>
+<br>
+<br>
+<ab id="a">بۇ كىچىك تەرجىمە قورالى مېنىڭ شەخسىي قىزىقىشىم بىلەنلا يېزىپ چىقىلدى. بۇ قۇرالنىڭ ئۇيغۇرچە تەرجىمە ئۈنۈمى گۇگېلنىڭكىدىن خېلىلا سۈپەتلىك. ئەمما بۇ مۇلازىمەت ھەرقاچان تاقىلىپ قېلىشى مۇمكىن.</ab>
+
+<br>
+<br>
+<ba id="contact">مېنى بۇ يەردىن ئىزدەڭ</ba>
+  <a href="https://uycoder.github.io/paydilar/">
+      <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png"
+           height="25">
+  </a>
+<a href="https://www.linkedin.com/in/ahmed-bughra/">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/LinkedIn.svg"
+         alt="linkedin" height="25">
+</a>
+<a href="https://github.com/Uycoder">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/github.svg"
+         alt="github" height="25">
+</a>
+<a href="https://www.hackerrank.com/ahmedbughra">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/hackerrank.svg"
+         alt="hackerrank" height="25">
+</a>
+<a href="https://stackoverflow.com/users/16111723/ahmad-ali">
+    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/Stack_Overflow.svg"
+         alt="stackoverflow" height="25">
+</a>
+
+<script>
+    const submitButton = document.getElementById('submit');
+    const inputField = document.getElementById('input');
+    const language = document.getElementById('language');
+    const outputField = document.getElementById('output');
+    const targetlanguage = document.getElementById('Targetlanguage');
+
+    submitButton.addEventListener('click', async () => {
+        outputField.value = 'بىردەم ساقلاڭ... تەرجىمە تەلىپى مۇلازىمېتىرغا ئەۋەتىلدى. جاۋاپ ھازىرلا كېلىدۇ.';
+        const inputText = inputField.value;
+
+        const lang = language.value;
+        const targetlang = targetlanguage.value;
+
+        const reponseTrans = await fetch('https://api.niutrans.com/NiuTransServer/translation?from='+lang+'&to='+targetlang+'&apikey=a8a17df6e4a80b5fbe84f12096353df8&src_text='+inputText);
+        const reponseTransData = await reponseTrans.json();
+        const reponseTransText = reponseTransData.tgt_text;
+
+        outputField.value = reponseTransText;
+
+        // Change the direction of the input and output text areas based on the selected language
+        if (lang === 'uy') {
+            inputField.style.direction = 'rtl';
+        } else {
+            inputField.style.direction = 'ltr';
+        }
+
+        if (targetlang === 'uy') {
+            outputField.style.direction = 'rtl';
+        } else {
+            outputField.style.direction = 'ltr';
+        }
+    });
+
+</script>
+
+</body>
+</html>
+
