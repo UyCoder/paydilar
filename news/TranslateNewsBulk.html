@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خەۋەر خۇلاسىلەش ئەپى</title>
+    <title>خەۋەرلەرنى توپ تەرجىمە قىلىش</title>
     <style>
         /* Google Font for better Uyghur script rendering */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
@@ -168,13 +168,26 @@
         .summary-content b {
             color: #0056b3;
         }
+		
+		/* ========================================= */
+    /*      Professional Footer Styles           */
+    /* ========================================= */
+    .site-footer-container {
+        color: #5a6268;            /* A softer text color */
+        padding: 45px 20px;
+        text-align: center;
+        border-top: 1px solid #e7e7e7; /* A subtle top border */
+        direction: rtl; /* For right-to-left Uyghur text */
+    }
+		
+		
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>خەۋەرلەرنى ئاپتوماتىك خۇلاسىلەش ۋە تەھلىل قىلىش</h1>
-
+        <h1>خەۋەرلەرنى توپ تەرجىمە قىلىش</h1>
+ 
         <div class="input-group">
             <label for="apiKey">Gemini API ئاچقۇچى:</label>
             <input type="password" id="apiKey" placeholder="بۇ يەرگە ئۆزىڭىزنىڭ Gemini API ئاچقۇچىنى كىرگۈزۈڭ">
@@ -186,7 +199,7 @@
             <textarea id="textInput" placeholder="خەۋەر مەزمۇنى ياكى ئۇلانمىلارنى ئۆز ئىچىگە ئالغان تېكىستنى بۇ يەرگە چاپلاڭ..."></textarea>
         </div>
 
-        <button id="summarizeBtn">خۇلاسىلە</button>
+        <button id="summarizeBtn">تەرجىمە قىل</button>
 
         <div id="status"></div>
         <div class="loader" id="loader"></div>
@@ -204,6 +217,60 @@
         
         <button id="downloadBtn" style="display:none;">نەتىجىنى چۈشۈرۈش (.txt)</button>
     </div>
+	
+	
+	
+<!-- Step 2: Add the HTML structure. Place this where you want the footer to appear. -->
+<footer class="site-footer-container">
+    <div class="footer-content">
+        
+        <!-- Organization Logo and Link -->
+        <a href="#" title="Bilik Research Center Home"> <!-- TODO: Add the correct link here -->
+            <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Biliklogo.png" 
+                 alt="Bilik Research Center Logo" 
+                 class="footer-logo"
+				 height="100">
+        </a>
+        
+        <!-- Description Text -->
+        <p class="description">
+            بۇ كىچىك قۇرال «بىلىك تەتقىقات مەركىزى» تەرىپىدىن يېزىلدى.
+        </p>
+		
+		 <p class="description">
+      بىلىك تەتقىقات مەركىزى شەرقىي تۈركىستانلىقلارنىڭ ئۆز كىملىكىدە مەۋجۇدلۇقىنى ساقلىشى ۋە دۆلەتچىلىك ئىدىيىسىدە تەرەققىي قىلىشى ئۈچۈن تەتقىقات ئېلىپ بارىدۇ.
+        </p>
+
+        <!-- Social and Professional Links -->
+        <div class="social-links-section">
+            <h4 class="social-title">مېنى بۇ يەردىن ئىزدەڭ</h4>
+            <div class="social-icon-group">
+                <a href="https://uycoder.github.io/paydilar/" target="_blank" rel="noopener noreferrer" title="Paydilar">
+                    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png" alt="Paydilar Icon" height="25">
+                </a>
+                <a href="https://www.linkedin.com/in/ahmed-bughra/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/LinkedIn.svg" alt="LinkedIn" height="25">
+                </a>
+                <a href="https://github.com/Uycoder" target="_blank" rel="noopener noreferrer" title="GitHub">
+                    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/github.svg" alt="GitHub" height="25">
+                </a>
+                <a href="https://www.hackerrank.com/ahmedbughra" target="_blank" rel="noopener noreferrer" title="HackerRank">
+                    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/hackerrank.svg" alt="HackerRank" height="25">
+                </a>
+                <a href="https://stackoverflow.com/users/16111723/ahmad-ali" target="_blank" rel="noopener noreferrer" title="Stack Overflow">
+                    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/Stack_Overflow.svg" alt="Stack Overflow" height="25">
+                </a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+<!-- END: Professional Self-Contained Footer -->	
+		
+	
+	
+	
+	
 
     <script>
         const apiKeyInput = document.getElementById('apiKey');
@@ -280,7 +347,7 @@
             const durationInSeconds = ((endTime - startTime) / 1000).toFixed(2);
             
             summarizeBtn.disabled = false;
-            summarizeBtn.innerText = "خۇلاسىلە";
+            summarizeBtn.innerText = "تەرجىمە قىل";
             loader.style.display = 'none';
             const finalMessage = `تامام! ${urls.length} ئۇلانما بىر تەرەپ قىلىندى. جەمئىي ۋاقىت: ${durationInSeconds} سېكۇنت.`;
             showStatus(finalMessage);
@@ -312,16 +379,17 @@
         async function getSummaryFromGemini(articleText, apiKey) {
             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             
-            const prompt = `تۆۋەندىكى ماقالە مەزمۇنىنى ئوقۇپ، تەلەپ بويىچە  ئۇيغۇر چە تەپسىلىي جاۋاب يېزىپ بېرىڭ:     
-**ماقالىنىڭ تولۇق ئىسمى** ماقالىنىڭ ئىسمىنى تولۇق تەرجىمە قىلىپ بەر				
+            const prompt = `تۆۋەندىكى ماقالە مەزمۇنىنى ئوقۇپ، تەلەپ بويىچە  ئۇيغۇر چە تەپسىلىي جاۋاب يېزىپ بېرىڭ:
+**ماقالىنىڭ تولۇق ئىسمى** ماقالىنىڭ ئىسمىنى تولۇق تەرجىمە قىلىپ بەر			
 0. **يازغۇچى ھەققىدە:** ماقالىنىڭ يازغۇچىنىڭ كىملىكى، قىسقىچە تەرجىمھالى، ماقالە يازغان ۋاقىت قاتارلىقلار سۆزلەنسۇن.
-1. **خۇلاسە:** ماقالىنىڭ قىسقىچە مەزمۇنىنى يېزىڭ. چوقۇم 5 ئابزاستىن كەم بولمىسۇن. ئاساسىي مەزمۇندا چوقۇم مۇشۇ ماقالىدىكى ئەڭ مۇھىم پىكىر چۈشۈپ قالمىسۇن. شۇڭا ئۇزۇنراق يازساڭمۇ مەيلى.
-2. **سانلىق مەلۇماتلار:** ماقالىدىكى پۈتۈن مۇھىم سان-سىفىرلار ۋە ستاتىستىكىلارنى تىزىپ چىقىڭ.
-3. **شەرقىي تۈركىستانلىقلار ئۈچۈن پايدىسى:** بۇ خەۋەردىن بىز، يەنى شەرقىي تۈركىستانلىقلار مۇستەقىللىق يولىمىزدا قانداق پايدا ئالالايمىز؟ قانداق ئىستراتېگىيە ۋە تەدبىرلەرنى قوللىنىشىمىز كېرەك؟ ئەمەلىي مىساللار بىلەن تەپسىلىي ۋە ئەتراپلىق تەھلىل قىلىپ بېرىڭ.
-4. **تارىخىي سېلىشتۈرۈش** ماقالىدىكى ۋەقەلەر بىلەن ئۇيغۇر تارىخىدىكى ۋە دۇنيا سىياسىي تارىخىتىكى ئوخشاش ۋەقەلەرنى سېلىشتۇرۇش.
-5. **خەلقئارالىق مۇناسىۋەتلەر ۋە دەرس** دۆلەتلەر ئارىسىدىكى مۇناسىۋەت، خەلقئارالىق قارىشى ۋە بىز ئۈچۈن سىياسىي ئىبرەتلەر.
-6. **سىياسىي ۋە ئىستراتېگىي نۇقتاينەزەر** دۆلەتلەرنىڭ ئىستراتېگىي خاتالىقلىرى ياكى مۇۋەپپەقىيەتلىرىدىن بىزگە پايدىلىق بولغان نۇقتىلار.
-7. **كىتاپ تەۋسىيە قىلىش:** بۇ ماقالىنىڭ مەزمۇنى بىلەن مۇناسىۋەتلىك ئوقۇشقا تېگىشلىك مۇھىم كىتاپلاردىن بىرنەچچىنى تەۋسىيە قىلىڭ.
+1. **خۇلاسە:** ماقالىنىڭ قىسقىچە مەزمۇنىنى يېزىڭ. ئاساسىي مەزمۇندا چوقۇم مۇشۇ ماقالىدىكى ئەڭ مۇھىم پىكىر چۈشۈپ قالمىسۇن. شۇڭا ئۇزۇنراق يازساڭمۇ مەيلى.
+2. **تولۇق تەرجىمىسى:** ماقالىنى راۋان ئۇيغۇر تىلىدا تەرجىمە قىلىپ بەر. پەقەتلا مەزمۇن چالا قالمىسۇن.
+3. **سانلىق مەلۇماتلار:** ماقالىدىكى پۈتۈن مۇھىم سان-سىفىرلار ۋە ستاتىستىكىلارنى تىزىپ چىقىڭ.
+4. **شەرقىي تۈركىستانلىقلار ئۈچۈن پايدىسى:** بۇ خەۋەردىن بىز، يەنى شەرقىي تۈركىستانلىقلار مۇستەقىللىق يولىمىزدا قانداق پايدا ئالالايمىز؟ قانداق ئىستراتېگىيە ۋە تەدبىرلەرنى قوللىنىشىمىز كېرەك؟ ئەمەلىي مىساللار بىلەن تەپسىلىي ۋە ئەتراپلىق تەھلىل قىلىپ بېرىڭ.
+5. **تارىخىي سېلىشتۈرۈش** ماقالىدىكى ۋەقەلەر بىلەن ئۇيغۇر تارىخىدىكى ۋە دۇنيا سىياسىي تارىخىتىكى ئوخشاش ۋەقەلەرنى سېلىشتۇرۇش.
+6. **خەلقئارالىق مۇناسىۋەتلەر ۋە دەرس** دۆلەتلەر ئارىسىدىكى مۇناسىۋەت، خەلقئارالىق قارىشى ۋە بىز ئۈچۈن سىياسىي ئىبرەتلەر.
+7. **سىياسىي ۋە ئىستراتېگىي نۇقتاينەزەر** دۆلەتلەرنىڭ ئىستراتېگىي خاتالىقلىرى ياكى مۇۋەپپەقىيەتلىرىدىن بىزگە پايدىلىق بولغان نۇقتىلار.
+8. **كىتاپ تەۋسىيە قىلىش:** بۇ ماقالىنىڭ مەزمۇنى بىلەن مۇناسىۋەتلىك ئوقۇشقا تېگىشلىك مۇھىم كىتاپلاردىن بىرنەچچىنى تەۋسىيە قىلىڭ.
 ماقالىدە چوقۇم جۇڭگو دىېمەي خىتاي دەپ ياز.
 شىنجاڭ ئەمەس شەرقىي تۈركىستان دەپ ياز.
 ---
