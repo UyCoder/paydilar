@@ -72,7 +72,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 9 مىنۇت_
 
 ### مەدەنىيەت ئالاقىسى
 
-<img src="http://english.scio.gov.cn/2023-05/26/85630750_9bcae845-dcd9-4221-a803-0c84e0779232.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
+<img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/85630750_9bcae845-dcd9-4221-a803-0c84e0779232.jpg" style="display: block; margin-left: auto; margin-right: auto; width: 80%;">
 
 *   1981-يىلى 7-ئايدا، 6-ئەسىردە ئوماننىڭ شىمالىدىكى سۇھار شەھىرى بىلەن خىتاينىڭ گۇاڭجۇ ئوتتۇرىسىدىكى «دېڭىز يىپەك يولى»نى خاتىرىلەش ئۈچۈن، ئوماننىڭ «سۇھار» قەدىمىي دوستلۇق كېمىسى گۇاڭجۇغا يېتىپ كەلگەن.
 *   1995-يىلى 12-ئايدا، ئومان گۇاڭجۇدا «سۇھار» قەدىمىي كېمە خاتىرە ئابىدىسىنى قۇرۇپ چىقىشقا مەبلەغ سالغان.
