@@ -186,6 +186,9 @@ ComfyUI نى ئىشلىتىش جەريانىدا چۈشۈرۈپ سىنىغان c
 - [Miscellaneous](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Miscellaneous.md)
 - [Experimental](https://github.com/willwulfken/MidJourney-Styles-and-Keywords-Reference/blob/main/Pages/MJ_V4/Style_Pages/Just_The_Style/Experimental.md)
 
+تۆۋەندىكى توربەتتىن سىز كۆپلىگەن سۈپەتلىك رەسىم سىزىش بۇيرۇقلىرىنى تاپالايسىز.
+
+- [سۈنئىي ئىدراكتا رەسىم سىزىش ئۈچۈن قوللىنىدىغان ئىسىل پرومپتلار (بۇيرۇقلار)](https://uycoder.github.io/paydilar/UyghurPrompts.html)
 
 
 بۇ يازمىدا تونۇشتۇرۇلغان ComfyUI نىڭ يېڭى نۇسخىسى چىقىپتۇ. بۇ يېڭى نۇسخىسىنى قاچىلاش تېخىمۇ ئاسانلىشىپتۇ. تۆۋەندىكى ۋىديودىن كۆرۈپ باقسىڭىز بولىدۇ:
