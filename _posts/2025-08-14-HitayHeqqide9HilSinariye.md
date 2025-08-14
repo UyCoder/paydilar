@@ -11,7 +11,7 @@ _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 بۇ يازمىنى ئوقۇشتىن بۇرۇن قازاقىستاندا ياشايدىغان بەختىباي بىلەن خەمىت نەسىردىن ئارىسىدا بولۇپ ئۆتكەن تۆۋەندىكى ئاۋازلىق رەدىيەنى ئاڭلاپ چىقىسىڭىز ئاندىن  بۇ يازمىنىڭ مەقسىتىدىنى چۈشۈنۈپ يېتەلەيسىز.
 
-<iframe src="{{ 'https://raw.githubusercontent.com/UyCoder/paydilar/master/news/BehtibayghaRediye.mp3' | relative_url }}" width="100%" height="60" frameborder="0" scrolling="no"></iframe>
+<iframe width="360" height="203" src="https://www.youtube.com/embed/TPSv87LxcTk?si=qC_okVRnB-8cYLl6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 # بەختىبايغا رەدىيە
 
