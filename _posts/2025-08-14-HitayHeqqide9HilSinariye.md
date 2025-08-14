@@ -11,11 +11,12 @@ _تەخمىنەن ئوقۇش ۋاقتى 5 مىنۇت_
 
 بۇ يازمىنى ئوقۇشتىن بۇرۇن قازاقىستاندا ياشايدىغان بەختىباي بىلەن خەمىت نەسىردىن ئارىسىدا بولۇپ ئۆتكەن تۆۋەندىكى ئاۋازلىق رەدىيەنى ئاڭلاپ چىقىسىڭىز ئاندىن  بۇ يازمىنىڭ مەقسىتىدىنى چۈشۈنۈپ يېتەلەيسىز.
 
-<audio controls style="width: 100%;">
-  <source src="{{ 'https://raw.githubusercontent.com/UyCoder/paydilar/master/news/BehtibayghaRediye.mp3' | relative_url }}" type="audio/mpeg">
+{% raw %}
+<audio controls>
+  <source src="https://raw.githubusercontent.com/UyCoder/paydilar/master/news/BehtibayghaRediye.mp3" type="audio/mpeg">
   بەختىباي ۋە خەمىت نەسىردىن ئارىسىدىكى رەدىيەلەر
 </audio>
-
+{% endraw %}
 
 # بەختىبايغا رەدىيە
 
