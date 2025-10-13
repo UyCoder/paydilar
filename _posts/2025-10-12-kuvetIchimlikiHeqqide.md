@@ -199,6 +199,22 @@ _تەخمىنەن ئوقۇش ۋاقتى 17 مىنۇت_
 شۇڭلاشقا، بارلىق ئۇيغۇر ياشلىرىنى قارا قۇتىدىكى خىمىيەلىك سۇيۇقلۇقتىن ۋاز كېچىپ، ئىسلامنىڭ ساغلاملىق ئەقىدىسىگە، ئەجدادلىرىمىزنىڭ ھېكمىتىگە  ۋە زامانىۋى ئىلىم-پەنگە يۈزلىنىشكە چاقىرىمىز. ھەقىقىي كۈچ-قۇۋۋەت تەبىئىي ئوزۇقلۇقتىن، يېتەرلىك ئۇيقۇدىن، قەرەللىك ھەرىكەتتىن ۋە ئەڭ مۇھىمى ساغلام روھ ۋە ھەقىقىي ئىماندىن كېلىدۇ. كېلىڭلار، بىرلىكتە ساغلام، بىلىملىك، ئىرادىلىك ۋە كۈچلۈك بىر ئەۋلادنى يېتىشتۈرۈپ، شەرقىي تۈركىستاننىڭ ئەركىن ۋە پارلاق كەلگۈسىنى بىرلىكتە يارىتايلى. چۈنكى ساغلام ئەۋلاد – مىللەتنىڭ ئەڭ مۇستەھكەم قورغىنىدۇر.
 
 
+## پايدىلانغان مەنبەلەر
+
+[JackWrestler-Tr](http://www.jackwrestler.com.tr/)
+
+[Are Energy Drinks Bad for You?](https://www.health.harvard.edu/nutrition/are-energy-drinks-bad-for-you#:~:text=Research%20has%20shown%20that%20energy,%2C%20potentially%20life%2Dthreatening%20arrhythmias)
+
+[Energy Drinks](https://pmc.ncbi.nlm.nih.gov/articles/PMC10535526/)
+
+[Are Energy Drinks Bad for You?](https://health.clevelandclinic.org/are-energy-drinks-bad-for-you)
+
+[Energy Drinks Bad for You](https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-q-and-a-are-energy-drinks-bad-for-your-health/)
+
+
+
+
+
 <style type="text/css" media="screen">
 body {
 text-align:center !important;
