@@ -200,6 +200,10 @@ _تەخمىنەن ئوقۇش ۋاقتى 17 مىنۇت_
 
 ## پايدىلانغان مەنبەلەر
 
+[Quran](https://quranenc.com/ug/browse/uyghur_saleh)
+
+[Sahih_Muslim](https://hadeethenc.com/ar/browse/hadith/5493#:~:text=%D8%A7%D9%84%D9%85%D8%A4%D9%85%D9%86%20%D8%A7%D9%84%D9%82%D9%88%D9%8A%20%D8%AE%D9%8A%D8%B1%20%D9%88%D8%A7%D8%AD%D8%A8%20%D8%A7%D9%84%D9%8A%20%D8%A7%D9%84%D9%84%D9%87%20%D9%85%D9%86)
+
 [JackWrestler-Tr](http://www.jackwrestler.com.tr/)
 
 [Are Energy Drinks Bad for You?](https://www.health.harvard.edu/nutrition/are-energy-drinks-bad-for-you#:~:text=Research%20has%20shown%20that%20energy,%2C%20potentially%20life%2Dthreatening%20arrhythmias)
