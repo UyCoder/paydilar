@@ -47,7 +47,7 @@
             margin-top: 15px;
             display: none; /* Initially hidden */
         }
-        
+
         #gemini-api-key {
             width: calc(100% - 20px);
             padding: 10px;
@@ -100,7 +100,7 @@
             color: #333;
             direction: rtl;
         }
-        
+
         #main-app {
             display: none; /* Hide main content initially */
         }
@@ -128,7 +128,7 @@
             max-width: 1400px;
             margin: 20px auto;
         }
-        
+
         #news-container.news-container-ltr {
             direction: ltr;
         }
@@ -142,22 +142,22 @@
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
-            overflow: hidden; 
+            overflow: hidden;
         }
-        
+
         .news-item-content {
-             padding: 20px;
-             display: flex;
-             flex-direction: column;
-             justify-content: space-between;
-             flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
         }
 
         .news-item:hover {
             transform: translateY(-10px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
-        
+
         .news-item-image {
             width: 100%;
             height: 200px;
@@ -204,7 +204,7 @@
             top: 0;
             z-index: 1000;
         }
-        
+
         .category-tabs {
             display: flex;
             justify-content: center;
@@ -229,10 +229,10 @@
             color: #fff;
             transform: scale(1.05);
         }
-        
+
         #mobile-nav-container { display: none; text-align: center; padding: 10px; }
         #mobile-category-select { width: 80%; padding: 10px; font-family: 'ALKATIP Tor', 'UKIJ Ekran', 'Arial', sans-serif; font-size: 1.1em; border-radius: 10px; border: 1px solid #ccc; }
-        
+
         #tts-controls-container { background-color: #333; color: white; padding: 20px; margin-top: 20px; text-align: center; border-radius: 10px; box-shadow: 0 -4px 6px rgba(0,0,0,0.1); }
         #tts-controls-container button { border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-family: 'ALKATIP Tor'; font-size: 1em; }
         #speakAllBtn { background-color: #009b74; color: white; }
@@ -292,7 +292,7 @@
     <div id="translator-selection-content">
         <h2>تەرجىمە ئۇسۇلىنى تاللاڭ</h2>
         <p>خەۋەرلەر ئەسلى ئېنگىلىزچە بولۇپ، سىز تاللىغان ئۇسۇل بويىچە كۆرسىتىلىدۇ.</p>
-        
+
         <div class="translator-option">
             <label> <input type="radio" name="translator" value="original"> ئەسلى تىلدا (ئېنگىلىزچە) كۆرسىتىش </label>
         </div>
@@ -304,11 +304,11 @@
         </div>
         <div class="translator-option">
             <label> <input type="radio" name="translator" value="gemini"> Google Gemini (ئەڭ ياخشى سۈپەت، API ئاچقۇچى كېرەك) </label>
-			<label style="font-size: 15px; font-style: italic; color: grey" >تۆۋەندىكىلەردىن بىرىنى سىناپ باقسىڭىز بولىدۇ:</label>
-			<label style="font-size: 15px; color: grey">AIzaSyCkpkBDY_HmxOQIwEmILG6M-9t2ek6kObU</label>
-			<label style="font-size: 15px; color: grey">AIzaSyCJVkxlcjZ0bhH_RuSeQfJ2mUhpo5eSBt4</label>			
-			<label style="font-size: 15px; color: grey">AIzaSyD5R8LACkmHhs5oGin7Bgw4x5TrRSLX9so</label>			
-			<label style="font-size: 15px; color: grey">AIzaSyAx4RBhcktpftd5m-SYf0RYlDipkW4jsh0</label>	
+            <label style="font-size: 15px; font-style: italic; color: grey" >تۆۋەندىكىلەردىن بىرىنى سىناپ باقسىڭىز بولىدۇ:</label>
+            <label style="font-size: 15px; color: grey">AIzaSyCkpkBDY_HmxOQIwEmILG6M-9t2ek6kObU</label>
+            <label style="font-size: 15px; color: grey">AIzaSyCJVkxlcjZ0bhH_RuSeQfJ2mUhpo5eSBt4</label>
+            <label style="font-size: 15px; color: grey">AIzaSyD5R8LACkmHhs5oGin7Bgw4x5TrRSLX9so</label>
+            <label style="font-size: 15px; color: grey">AIzaSyAx4RBhcktpftd5m-SYf0RYlDipkW4jsh0</label>
         </div>
 
         <div id="gemini-key-container">
@@ -316,7 +316,7 @@
             <input type="password" id="gemini-api-key" placeholder="Enter your Gemini API Key">
             <p style="font-size:0.8em; color:#777;">ئاچقۇچنى <a href="https://aistudio.google.com/app/apikey" target="_blank">بۇ يەردىن</a> ئالالايسىز.</p>
         </div>
-        
+
         <button id="start-app-btn">خەۋەرلەرنى كۆرۈش</button>
     </div>
 </div>
@@ -331,6 +331,7 @@
             <button class="category-tab active" data-category="sana">SANA</button>
             <button class="category-tab" data-category="foreignAffairs">Foreign Affairs</button>
             <button class="category-tab" data-category="foreignPolicy">Foreign Policy</button>
+            <button class="category-tab" data-category="intelligenceOnline">Intelligence Online</button>
             <button class="category-tab" data-category="financialTimes">Financial Times</button>
             <button class="category-tab" data-category="bbcWorld">BBC دۇنيا</button>
             <button class="category-tab" data-category="bbcPolitics">BBC سىياسەت</button>
@@ -351,6 +352,7 @@
                 <option value="sana">SANA</option>
                 <option value="foreignAffairs">Foreign Affairs</option>
                 <option value="foreignPolicy">Foreign Policy</option>
+                <option value="intelligenceOnline">Intelligence Online</option>
                 <option value="bbcWorld">BBC دۇنيا</option>
                 <option value="financialTimes">Financial Times</option>
                 <option value="bbcPolitics">BBC سىياسەت</option>
@@ -428,12 +430,12 @@
 
 <script>
     // --- GLOBAL VARIABLES & CONFIG ---
-    let selectedTranslator = 'google'; 
+    let selectedTranslator = 'google';
     let geminiApiKey = '';
-    const RSS_FEEDS = { sana: 'https://sana.sy/en/?feed=rss2', googleNews: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en', bbcWorld: 'https://feeds.bbci.co.uk/news/world/rss.xml', bbcPolitics: 'https://feeds.bbci.co.uk/news/politics/rss.xml', cnn: 'http://rss.cnn.com/rss/cnn_topstories.rss', foreignAffairs: 'https://www.foreignaffairs.com/rss.xml', foreignPolicy: 'https://foreignpolicy.com/feed/', politico: 'https://rss.politico.com/politics-news.xml', randPubs: 'https://www.rand.org/pubs/new.xml', randCommentary: 'https://www.rand.org/pubs/commentary.xml', financialTimes: 'https://www.ft.com/world?format=rss', wsj: 'https://feeds.content.dowjones.io/public/rss/RSSWorldNews', asiaTimes: 'https://asiatimes.com/feed/', theDiplomat: 'https://thediplomat.com/feed/', alMonitor: 'https://rss.art19.com/the-al-monitor-brief', yahoo: 'https://news.yahoo.com/rss/world', guardian: 'https://www.theguardian.com/us-news/rss', nationalReview: 'https://www.nationalreview.com/feed/', newYorker: 'https://www.newyorker.com/feed/news', uyghurTimes: 'https://uyghur.uyghurtimes.com/feed/', uyghurNet: 'https://www.uyghurnet.org/ug/feed/', scmp: 'https://www.scmp.com/rss/4/feed', cgtnWorld: 'https://www.cgtn.com/subscribe/rss/section/world.xml', cgtnChina: 'https://www.cgtn.com/subscribe/rss/section/china.xml', business: '' };
+    const RSS_FEEDS = { sana: 'https://sana.sy/en/?feed=rss2', googleNews: 'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en', bbcWorld: 'https://feeds.bbci.co.uk/news/world/rss.xml', bbcPolitics: 'https://feeds.bbci.co.uk/news/politics/rss.xml', cnn: 'http://rss.cnn.com/rss/cnn_topstories.rss', foreignAffairs: 'https://www.foreignaffairs.com/rss.xml', foreignPolicy: 'https://foreignpolicy.com/feed/', intelligenceOnline: 'https://feeds.feedburner.com/IntelligenceOnline', politico: 'https://rss.politico.com/politics-news.xml', randPubs: 'https://www.rand.org/pubs/new.xml', randCommentary: 'https://www.rand.org/pubs/commentary.xml', financialTimes: 'https://www.ft.com/world?format=rss', wsj: 'https://feeds.content.dowjones.io/public/rss/RSSWorldNews', asiaTimes: 'https://asiatimes.com/feed/', theDiplomat: 'https://thediplomat.com/feed/', alMonitor: 'https://rss.art19.com/the-al-monitor-brief', yahoo: 'https://news.yahoo.com/rss/world', guardian: 'https://www.theguardian.com/us-news/rss', nationalReview: 'https://www.nationalreview.com/feed/', newYorker: 'https://www.newyorker.com/feed/news', uyghurTimes: 'https://uyghur.uyghurtimes.com/feed/', uyghurNet: 'https://www.uyghurnet.org/ug/feed/', scmp: 'https://www.scmp.com/rss/4/feed', cgtnWorld: 'https://www.cgtn.com/subscribe/rss/section/world.xml', cgtnChina: 'https://www.cgtn.com/subscribe/rss/section/china.xml', business: '' };
     let allNewsTextToRead = '';
     let currentUtterance = null;
-    
+
     // DOM Elements
     const mainApp = document.getElementById('main-app');
     const newsContainer = document.getElementById('news-container');
@@ -458,10 +460,10 @@
     async function translateWithGemini(text, targetLanguage) { if (!text || text.trim() === '') return text; if (!geminiApiKey) { console.error("Gemini API Key is not set."); return `[Gemini ئاچقۇچى يوق] ${text}`; } const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`; const prompt = `Translate the following English text to Uyghur (using Arabic script). Be accurate and natural. Do not add any extra explanations, just provide the translation.\n\nEnglish Text: "${text}"\n\nUyghur Translation:`; const requestBody = { contents: [{ parts: [{ "text": prompt }] }], safetySettings: [ { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" }, { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }, ] }; try { const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }); if (!response.ok) { const errorData = await response.json(); throw new Error(`Gemini API Error (${response.status}): ${errorData.error.message}`); } const data = await response.json(); if (!data.candidates || data.candidates.length === 0) { if (data.promptFeedback && data.promptFeedback.blockReason) { console.error("Gemini prompt blocked:", data.promptFeedback.blockReason); return `[Gemini تەرىپىدىن مەزمۇن چەكلەندى: ${data.promptFeedback.blockReason}]`; } return `[Gemini دىن جاۋاب قايتمىدى] ${text}`; } return data.candidates[0].content.parts[0].text.trim(); } catch (error) { console.error('Error with Gemini translation:', error); return `[Gemini تەرجىمە خاتالىقى: ${error.message}]`; } }
     async function translateText(text, targetLanguage = 'ug') { switch (selectedTranslator) { case 'niutrans': return await translateWithNiuTrans(text, targetLanguage); case 'gemini': return await translateWithGemini(text, targetLanguage); case 'google': default: return await translateWithMyMemory(text, targetLanguage); } }
 
-    function displayNewsItem(container, item, displayedTitle, displayedDescription) { const fullContent = `Title: ${displayedTitle}\nContent: ${displayedDescription}\n\n`; allNewsTextToRead += fullContent; const newsItem = document.createElement('div'); newsItem.classList.add('news-item'); const imageUrl = (item.enclosure && item.enclosure.link && item.enclosure.type.startsWith('image')) ? item.enclosure.link : item.thumbnail; if(imageUrl){ const img = document.createElement('img'); img.src = imageUrl; img.alt = displayedTitle; img.classList.add('news-item-image'); newsItem.appendChild(img); } const contentDiv = document.createElement('div'); contentDiv.classList.add('news-item-content'); const newsTitle = document.createElement('h2'); const newsLink = document.createElement('a'); newsLink.href = item.link; newsLink.target = '_blank'; newsLink.textContent = displayedTitle; newsTitle.appendChild(newsLink); const newsDescriptionElem = document.createElement('p'); if (selectedTranslator === 'original') { newsDescriptionElem.style.fontFamily = 'Arial, sans-serif'; newsTitle.style.fontFamily = 'Arial, sans-serif'; } newsDescriptionElem.textContent = displayedDescription; const newsPubDate = document.createElement('p'); newsPubDate.textContent = new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); newsPubDate.classList.add('pub-date'); contentDiv.appendChild(newsTitle); contentDiv.appendChild(newsDescriptionElem); contentDiv.appendChild(newsPubDate); newsItem.appendChild(contentDiv); container.appendChild(newsItem); }
+    function displayNewsItem(container, item, displayedTitle, displayedDescription) { const fullContent = `خەۋەر تېمىسى: ${displayedTitle}\nخەۋەر مەزمۇنى: ${displayedDescription}\n\n`; allNewsTextToRead += fullContent; const newsItem = document.createElement('div'); newsItem.classList.add('news-item'); const imageUrl = (item.enclosure && item.enclosure.link && item.enclosure.type.startsWith('image')) ? item.enclosure.link : item.thumbnail; if(imageUrl){ const img = document.createElement('img'); img.src = imageUrl; img.alt = displayedTitle; img.classList.add('news-item-image'); newsItem.appendChild(img); } const contentDiv = document.createElement('div'); contentDiv.classList.add('news-item-content'); const newsTitle = document.createElement('h2'); const newsLink = document.createElement('a'); newsLink.href = item.link; newsLink.target = '_blank'; newsLink.textContent = displayedTitle; newsTitle.appendChild(newsLink); const newsDescriptionElem = document.createElement('p'); if (selectedTranslator === 'original') { newsDescriptionElem.style.fontFamily = 'Arial, sans-serif'; newsTitle.style.fontFamily = 'Arial, sans-serif'; } newsDescriptionElem.textContent = displayedDescription; const newsPubDate = document.createElement('p'); newsPubDate.textContent = new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); newsPubDate.classList.add('pub-date'); contentDiv.appendChild(newsTitle); contentDiv.appendChild(newsDescriptionElem); contentDiv.appendChild(newsPubDate); newsItem.appendChild(contentDiv); container.appendChild(newsItem); }
 
     async function fetchNews(category) { const loadingMessage = selectedTranslator !== 'original' ? 'خەۋەرلەر يۈكلىنىۋاتىدۇ، تاللىغان ماتوردا تەرجىمە قىلىنىۋاتىدۇ...' : 'Loading news...'; newsContainer.innerHTML = `<p style="font-size: 1.5em;">${loadingMessage}</p>`; allNewsTextToRead = ''; ttsControlsContainer.style.display = 'none'; if (selectedTranslator === 'original') { newsContainer.classList.add('news-container-ltr'); mainApp.style.direction = 'ltr'; infoMessage.style.display = 'none'; } else { newsContainer.classList.remove('news-container-ltr'); mainApp.style.direction = 'rtl'; infoMessage.style.display = 'block'; } try { const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_FEEDS[category])}`); const data = await response.json(); if (data.items && data.items.length > 0) { newsContainer.innerHTML = ''; allNewsTextToRead = `--- خەۋەر ${category.toUpperCase()} ---\n\n`; const limitedItems = data.items.slice(0, 6); for (const item of limitedItems) { const title = item.title || ''; const description = item.description ? item.description.replace(/<[^>]*>/g, '').substring(0, 250) + '...' : ''; if (selectedTranslator === 'original') { displayNewsItem(newsContainer, item, title, description); } else { try { const [translatedTitle, translatedDescription] = await Promise.all([ translateText(title), translateText(description) ]); displayNewsItem(newsContainer, item, translatedTitle, translatedDescription); } catch (e) { console.error("Error translating a single news item:", e); displayNewsItem(newsContainer, item, `[تەرجىمە مەغلۇپ بولدى] ${title}`, description); } if (selectedTranslator === 'gemini') { await delay(4100); } else { await delay(500); } } } ttsControlsContainer.style.display = 'block'; } else { newsContainer.innerHTML = '<p>بۇ كاتېگورىيەدە خەۋەر يوق.</p>'; } } catch (error) { console.error('Error fetching or processing news:', error); newsContainer.innerHTML = '<p>خەۋەرلەرنى يۈكلەشتە ياكى تەرجىمە قىلىشتا خاتالىق كۆرۈلدى. تورىڭىزنى تەكشۈرۈپ قايتا سىناڭ.</p>'; } }
-    
+
     function speakAllNews() {
         if (!allNewsTextToRead.length) { alert('ئاۋازلىق ئوقۇيدىغان مەزمۇن يوق!'); return; }
         if ('speechSynthesis' in window) {
@@ -470,21 +472,21 @@
             let textToSpeak = allNewsTextToRead;
 
             if (selectedTranslator !== 'original') {
-                if (lang.startsWith('ug-UG') || lang === 'multi-lingual') { 
+                if (lang.startsWith('ug-UG') || lang === 'multi-lingual') {
                     textToSpeak = lang === 'ug-UG' ? convertUyghurToULY(allNewsTextToRead) : convertUyghurToULYTurk(allNewsTextToRead);
                 }
             }
-            
+
             currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
             currentUtterance.rate = parseFloat(rateSelect.value);
             const voices = speechSynthesis.getVoices();
 
             // *** ئوڭشالغان ئاۋاز تاللاش لوگىكىسى ***
-            if (lang === 'ug-UG') { currentUtterance.voice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')); } 
-            else if (lang === 'ug-UG0') { currentUtterance.voice = voices.find(v => v.lang === 'tr-TR'); } 
-            else if (lang === 'ug-UG1') { currentUtterance.voice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Sardor')); } 
-            else if (lang === 'multi-lingual') { currentUtterance.voice = voices.find(v => v.name === 'English (United States) (en-US)' || v.name.includes('Multilingual')); } 
-            else if (lang === 'multi-lingual') { currentUtterance.voice = voices.find(v => v.lang === 'English (United States) (en-US)' && !v.name.includes('Female') && !v.name.includes('Multilingual ')); } 
+            if (lang === 'ug-UG') { currentUtterance.voice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')); }
+            else if (lang === 'ug-UG0') { currentUtterance.voice = voices.find(v => v.lang === 'tr-TR'); }
+            else if (lang === 'ug-UG1') { currentUtterance.voice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Sardor')); }
+            else if (lang === 'multi-lingual') { currentUtterance.voice = voices.find(v => v.name === 'English (United States) (en-US)' || v.name.includes('Multilingual')); }
+            else if (lang === 'multi-lingual') { currentUtterance.voice = voices.find(v => v.lang === 'English (United States) (en-US)' && !v.name.includes('Female') && !v.name.includes('Multilingual ')); }
             else { currentUtterance.voice = voices.find(v => v.lang === lang); } // Fallback
 
             speechSynthesis.speak(currentUtterance);
