@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بىلىك تەتقىقات مەركىزى - سۇئال چەمبىرى</title>
+  <title>بىلىك تەتقىقات مەركىزى - سۇئال-جاۋاب چەمبىرى</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
@@ -18,7 +18,7 @@
     .wheel-container {
       position: relative;
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 auto;
     }
     .wheel-center {
@@ -54,415 +54,522 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* SweetAlert Custom Styles */
+    .swal2-html-container {
+      text-align: right !important;
+    }
+    .answer-box {
+      background-color: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-sky-50 to-white min-h-screen flex flex-col">
-  <header class="bg-sky-600 text-white py-6 shadow-lg">
-    <div class="container mx-auto px-4">
-      <h1 class="text-3xl font-bold text-center">بىلىك تەتقىقات مەركىزى - سۇئال چەمبىرى</h1>
-    </div>
-  </header>
+<header class="bg-sky-600 text-white py-6 shadow-lg">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-center">بىلىك تەتقىقات مەركىزى - سۇئال-جاۋاب چەمبىرى</h1>
+  </div>
+</header>
 
-  <main class="flex-grow container mx-auto px-4 py-8">
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
-      <div id="questionForm" class="mb-8">
-        <div class="flex flex-col md:flex-row gap-4">
-          <input 
-            type="text" 
-            id="questionInput" 
-            placeholder="سۇئالىڭىزنى كىرگۈزۈڭ" 
-            class="flex-grow px-4 py-3 rounded-lg border border-sky-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-lg"
-          >
-          <button 
-            onclick="addQuestion()" 
-            class="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg transition-colors duration-300 flex items-center justify-center gap-2"
-          >
-            <i data-feather="plus"></i>
-            سۇئال قوشۇش
-          </button>
-        </div>
-        
-        <div class="mt-4 flex flex-wrap gap-3 justify-center">
-          <button 
-            onclick="loadQuestionsFromJSON()" 
-            class="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors duration-300 flex items-center gap-2"
-          >
-            <i data-feather="upload"></i>
-             سۇئال قوشۇش
-          </button>
-          <button 
-            onclick="saveQuestionsToJSON()" 
-            class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors duration-300 flex items-center gap-2"
-          >
-            <i data-feather="download"></i>
-            سۇئاللارنى ساقلاش
-          </button>
-          <button 
-            onclick="spinWheel()" 
-            id="spinButton"
-            class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors duration-300 flex items-center gap-2"
-          >
-            <i data-feather="rotate-cw"></i>
-            ئايلاندۇر
-          </button>
-        </div>
+<main class="flex-grow container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 mb-8">
+
+    <!-- Input Section -->
+    <div id="questionForm" class="mb-8 bg-sky-50 p-6 rounded-xl border border-sky-100">
+      <h3 class="text-lg font-bold text-sky-800 mb-4">يېڭى سۇئال قوشۇش</h3>
+      <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <input
+                type="text"
+                id="questionInput"
+                placeholder="سۇئالنى كىرگۈزۈڭ..."
+                class="flex-grow-[2] px-4 py-3 rounded-lg border border-sky-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-lg"
+        >
+        <input
+                type="text"
+                id="answerInput"
+                placeholder="جاۋابىنى كىرگۈزۈڭ (تاللاش)"
+                class="flex-grow-[1] px-4 py-3 rounded-lg border border-sky-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none text-lg"
+        >
       </div>
+      <button
+              onclick="addQuestion()"
+              class="w-full px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 shadow-sm"
+      >
+        <i data-feather="plus-circle"></i>
+        تىزىملىككە قوشۇش
+      </button>
 
-      <div class="wheel-container my-8">
+      <!-- Action Buttons -->
+      <div class="mt-6 flex flex-wrap gap-3 justify-center border-t pt-6 border-sky-200">
+        <button
+                onclick="loadQuestionsFromJSON()"
+                class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors flex items-center gap-2 text-sm"
+        >
+          <i data-feather="upload"></i>
+          JSON يۈكلەش
+        </button>
+        <button
+                onclick="saveQuestionsToJSON()"
+                class="px-5 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors flex items-center gap-2 text-sm"
+        >
+          <i data-feather="download"></i>
+          JSON ساقلاش
+        </button>
+        <button
+                onclick="clearAllQuestions()"
+                class="px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center gap-2 text-sm"
+        >
+          <i data-feather="trash"></i>
+          ھەممىنى ئۆچۈرۈش
+        </button>
+      </div>
+    </div>
+
+    <!-- Wheel Section -->
+    <div class="flex flex-col items-center">
+      <button
+              onclick="spinWheel()"
+              id="spinButton"
+              class="mb-6 px-10 py-4 bg-emerald-500 hover:bg-emerald-600 text-white text-xl font-bold rounded-full transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+      >
+        <i data-feather="rotate-cw"></i>
+        چەمبەرنى ئايلاندۇرۇش
+      </button>
+
+      <div class="wheel-container mb-8">
         <canvas id="wheelCanvas" width="500" height="500" class="mx-auto"></canvas>
         <div class="wheel-center"></div>
       </div>
+    </div>
 
-      <div id="questionsList" class="mt-8 space-y-3">
-        <h3 class="text-xl font-semibold text-sky-700 mb-4 border-b pb-2">سۇئاللار تىزىمى (<span id="questionCount">0</span>/30)</h3>
-        <div id="questionItems" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    <!-- List Section -->
+    <div id="questionsList" class="mt-8 space-y-3">
+      <div class="flex justify-between items-center border-b pb-2 mb-4">
+        <h3 class="text-xl font-semibold text-sky-700">سۇئاللار تىزىمى (<span id="questionCount">0</span>)</h3>
       </div>
+      <div id="questionItems" class="grid grid-cols-1 gap-2 max-h-96 overflow-y-auto pr-2"></div>
     </div>
-  </main>
+  </div>
+</main>
 
-  <footer class="bg-sky-800 text-white py-6 mt-12">
-    <div class="container mx-auto px-4 text-center">
-      <p class="text-lg">بىلىك تەتقىقات مەركىزى ياسىدى</p>
-      <p class="text-sm opacity-80 mt-2">© 2025 بىلىك تەتقىقات مەركىزى - ھەممە ھوقۇقلار ساقلانغان</p>
-    </div>
-  </footer>
+<footer class="bg-sky-800 text-white py-6 mt-12">
+  <div class="container mx-auto px-4 text-center">
+    <p class="text-lg">بىلىك تەتقىقات مەركىزى</p>
+    <p class="text-sm opacity-80 mt-2">© 2025 - بارلىق ھوقۇق قوغدىلىدۇ</p>
+  </div>
+</footer>
 
-  <script>
-    feather.replace();
-    const canvas = document.getElementById("wheelCanvas");
-    const ctx = canvas.getContext("2d");
-    let questions = [];
-    let angle = 0;
-    let spinning = false;
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    // ئەسلى سۇئاللارنى يۈكلەش
-    function loadInitialQuestions() {
-      const savedQuestions = localStorage.getItem('savedQuestions');
-      if (savedQuestions) {
+<script>
+  feather.replace();
+  const canvas = document.getElementById("wheelCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // سۇئاللار سانلىق مەلۇماتى: { q: "سۇئال", a: "جاۋاب" }
+  let questions = [];
+
+  let angle = 0;
+  let spinning = false;
+
+  // ئەسلى سۇئاللارنى يۈكلەش
+  function loadInitialQuestions() {
+    const savedData = localStorage.getItem('savedQuestions_v2');
+    if (savedData) {
+      try {
+        questions = JSON.parse(savedData);
+      } catch (e) {
+        console.error("ساقلانغان سۇئاللارنى يۈكلەشتە خاتالىق:", e);
+      }
+    } else {
+      // كونا نەشىردىكى سانلىق مەلۇماتنى تەكشۈرۈش
+      const oldData = localStorage.getItem('savedQuestions');
+      if (oldData) {
         try {
-          questions = JSON.parse(savedQuestions);
-          updateQuestionList();
-          drawWheel();
-        } catch (e) {
-          console.error("ساقلانغان سۇئاللارنى يۈكلەشتە خاتالىق:", e);
-        }
+          const oldArr = JSON.parse(oldData);
+          // كونا سىزىم (String) نى يېڭى ئوبيېكت (Object) قا ئايلاندۇرۇش
+          questions = oldArr.map(q => ({ q: q, a: "" }));
+          saveQuestionsToLocalStorage();
+        } catch(e) {}
       }
     }
+    updateQuestionList();
+    drawWheel();
+  }
 
-    function updateQuestionList() {
-      const container = document.getElementById('questionItems');
-      const countElement = document.getElementById('questionCount');
-      container.innerHTML = '';
-      
-      questions.forEach((q, i) => {
-        const item = document.createElement('div');
-        item.className = 'question-item bg-sky-100 p-3 rounded-lg flex justify-between items-center';
-        item.innerHTML = `
-          <span class="text-sky-800">${i+1}. ${q}</span>
-          <button onclick="removeQuestion(${i})" class="text-red-500 hover:text-red-700">
-            <i data-feather="trash-2" class="w-4 h-4"></i>
+  function updateQuestionList() {
+    const container = document.getElementById('questionItems');
+    const countElement = document.getElementById('questionCount');
+    container.innerHTML = '';
+
+    questions.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'question-item bg-gray-50 hover:bg-sky-50 p-3 rounded-lg flex justify-between items-center border border-gray-200';
+      div.innerHTML = `
+          <div class="flex flex-col">
+            <span class="font-bold text-gray-800">${i+1}. ${item.q}</span>
+            ${item.a ? `<span class="text-xs text-gray-500 mt-1">جاۋاب: ${item.a}</span>` : ''}
+          </div>
+          <button onclick="removeQuestion(${i})" class="text-red-400 hover:text-red-600 p-2" title="ئۆچۈرۈش">
+            <i data-feather="x-circle" class="w-5 h-5"></i>
           </button>
         `;
-        container.appendChild(item);
-      });
-      
-      countElement.textContent = questions.length;
-      feather.replace();
-      
-      // Adjust canvas size for mobile
-      if (window.innerWidth < 500) {
-        canvas.width = 300;
-        canvas.height = 300;
-      } else {
-        canvas.width = 500;
-        canvas.height = 500;
-      }
-    }
+      container.appendChild(div);
+    });
 
-    function addQuestion() {
-      const input = document.getElementById("questionInput");
-      const q = input.value.trim();
-      if (q && questions.length < 30) {
-        questions.push(q);
-        input.value = "";
-        updateQuestionList();
-        drawWheel();
-        saveQuestionsToLocalStorage();
-      } else if (questions.length >= 30) {
-        alert("ئەڭ كۆپ 30 سۇئال قوشالايسىز!");
-      }
-    }
+    countElement.textContent = questions.length;
+    feather.replace();
 
-    function removeQuestion(index) {
-      questions.splice(index, 1);
+    // Canvas چوڭلۇقىنى تەڭشەش
+    if (window.innerWidth < 500) {
+      canvas.width = 300;
+      canvas.height = 300;
+    } else {
+      canvas.width = 500;
+      canvas.height = 500;
+    }
+  }
+
+  function addQuestion() {
+    const qInput = document.getElementById("questionInput");
+    const aInput = document.getElementById("answerInput");
+    const q = qInput.value.trim();
+    const a = aInput.value.trim();
+
+    if (q) {
+      // سان چەكلىمىسى ئېلىۋېتىلدى
+      questions.push({ q: q, a: a });
+      qInput.value = "";
+      aInput.value = "";
       updateQuestionList();
       drawWheel();
       saveQuestionsToLocalStorage();
+    } else {
+      Swal.fire({
+        title: 'ئەسكەرتىش',
+        text: 'سۇئال مەزمۇنى قۇرۇق بولمىسۇن',
+        icon: 'warning',
+        confirmButtonText: 'ماقۇل'
+      });
+    }
+  }
+
+  function removeQuestion(index) {
+    questions.splice(index, 1);
+    updateQuestionList();
+    drawWheel();
+    saveQuestionsToLocalStorage();
+  }
+
+  function clearAllQuestions() {
+    if(questions.length === 0) return;
+    Swal.fire({
+      title: 'راستلا ھەممىنى ئۆچۈرەمسىز؟',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'ھەئە، ئۆچۈر',
+      cancelButtonText: 'ياق'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        questions = [];
+        updateQuestionList();
+        drawWheel();
+        saveQuestionsToLocalStorage();
+        Swal.fire('ئۆچۈرۈلدى!', 'ھەممە سۇئاللار تازىلاندى.', 'success');
+      }
+    });
+  }
+
+  function drawWheel() {
+    if (questions.length === 0) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
     }
 
-    function drawWheel() {
-      if (questions.length === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        return;
-      }
-      
-      const radius = canvas.width / 2;
-      const slice = (2 * Math.PI) / questions.length;
-      const textRadius = radius - 40;
+    const radius = canvas.width / 2;
+    const slice = (2 * Math.PI) / questions.length;
+    const textRadius = radius - 40;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = `bold ${Math.max(12, Math.min(18, 80/questions.length))}px 'UKIJ Tuz Tom', 'Noto Sans Arabic', sans-serif`;
-      ctx.textAlign = "center";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      questions.forEach((q, i) => {
-        const start = i * slice;
-        const end = start + slice;
-        
-        // Draw segment
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.closePath();
-        ctx.fillStyle = `hsl(${i * (360 / questions.length)}, 70%, 60%)`;
-        ctx.fill();
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        ctx.stroke();
+    // خەت چوڭلۇقىنى سۇئال سانىغا قاراپ تەڭشەش
+    let fontSize = Math.max(10, Math.min(18, 80/questions.length));
+    // ئەگەر 60 تىن جىق سۇئال بولسا خەتنى يازماي رەڭگىنىلا چىقىرىش ياكى بەك كىچىكلىتىش
+    if (questions.length > 60) fontSize = 0;
 
-        // Draw text
+    ctx.font = `bold ${fontSize}px 'UKIJ Tuz Tom', 'Noto Sans Arabic', sans-serif`;
+    ctx.textAlign = "center";
+
+    questions.forEach((item, i) => {
+      const start = i * slice;
+      const end = start + slice;
+
+      // بۆلەكلەرنى سىزىش
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, start, end);
+      ctx.closePath();
+      // رەڭنى ئاپتوماتىك ھاسىل قىلىش
+      ctx.fillStyle = `hsl(${i * (360 / questions.length)}, 70%, 60%)`;
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = questions.length > 50 ? 0.5 : 2;
+      ctx.stroke();
+
+      // خەت يېزىش (ئەگەر خەت چوڭلۇقى 0 بولمىسا)
+      if (fontSize > 0) {
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate(start + slice / 2);
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#fff";
-        
-        // Split question into multiple lines if needed
-        const maxChars = Math.floor(15 * (questions.length / 8));
-        const words = q.split(' ');
-        let lines = [];
-        let currentLine = words[0];
-        
-        for (let j = 1; j < words.length; j++) {
-          if ((currentLine + ' ' + words[j]).length <= maxChars) {
-            currentLine += ' ' + words[j];
-          } else {
-            lines.push(currentLine);
-            currentLine = words[j];
-          }
-        }
-        lines.push(currentLine);
-        
-        // Draw each line
-        const lineHeight = 20;
-        const startY = -(lines.length - 1) * lineHeight / 2;
-        
-        lines.forEach((line, j) => {
-          ctx.fillText(line, textRadius, startY + j * lineHeight);
-        });
-        
+
+        const text = item.q;
+        // ئۇزۇن سۇئاللارنى قىسقارتىپ كۆرسىتىش
+        const displayText = text.length > 15 ? text.substring(0, 15) + '..' : text;
+        ctx.fillText(displayText, textRadius, 0);
+
         ctx.restore();
-      });
-
-      // Draw center circle
-      ctx.beginPath();
-      ctx.arc(radius, radius, 15, 0, Math.PI * 2);
-      ctx.fillStyle = 'white';
-      ctx.fill();
-      ctx.strokeStyle = '#ddd';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    function spinWheel() {
-      if (spinning || questions.length === 0) return;
-      spinning = true;
-      document.getElementById('spinButton').disabled = true;
-
-      let spinTime = 3000 + Math.random() * 2000; // 3-5 seconds
-      let spinAngle = Math.random() * 1080 + 1440; // 4-7 full rotations
-      let targetAngle = angle + spinAngle;
-      let start = null;
-
-      function animate(timestamp) {
-        if (!start) start = timestamp;
-        let progress = timestamp - start;
-        let current = easeOut(progress, angle, spinAngle, spinTime);
-        drawRotation(current);
-
-        if (progress < spinTime) {
-          requestAnimationFrame(animate);
-        } else {
-          angle = targetAngle % 360;
-          spinning = false;
-          document.getElementById('spinButton').disabled = false;
-          pickQuestion();
-        }
       }
-      requestAnimationFrame(animate);
-    }
-
-    function drawRotation(rotation) {
-      const radius = canvas.width / 2;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.translate(-radius, -radius);
-      drawWheel();
-      ctx.restore();
-    }
-
-    function pickQuestion() {
-      if (questions.length === 0) return;
-      
-      const slice = 360 / questions.length;
-      const index = Math.floor(((360 - angle % 360) % 360) / slice);
-      
-      // Highlight selected question
-      setTimeout(() => {
-        Swal.fire({
-          title: 'تاللانغان سۇئال:',
-          text: questions[index],
-          icon: 'success',
-          confirmButtonText: 'جەزملەش',
-          confirmButtonColor: '#0ea5e9',
-          customClass: {
-            popup: 'font-arabic'
-          }
-        });
-        
-        // Remove selected question
-        questions.splice(index, 1);
-        updateQuestionList();
-        drawWheel();
-        saveQuestionsToLocalStorage();
-      }, 500);
-    }
-
-    function easeOut(t, b, c, d) {
-      t /= d;
-      t--;
-      return c * (t * t * t + 1) + b;
-    }
-
-    // JSON دىن سۇئاللارنى يۈكلەش
-    function loadQuestionsFromJSON() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      
-      input.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = event => {
-          try {
-            const jsonData = JSON.parse(event.target.result);
-            if (Array.isArray(jsonData.questions)) {
-              // مەۋجۇت سۇئاللارغا قوشۇش
-              jsonData.questions.forEach(q => {
-                if (questions.length < 30 && q.trim()) {
-                  questions.push(q.trim());
-                }
-              });
-              
-              updateQuestionList();
-              drawWheel();
-              saveQuestionsToLocalStorage();
-              
-              Swal.fire({
-                title: 'مۇۋەپپىقىيەتلىك!',
-                text: `${jsonData.questions.length} سۇئال قوشۇلدى`,
-                icon: 'success',
-                confirmButtonText: 'جەزملەش',
-                confirmButtonColor: '#0ea5e9'
-              });
-            } else {
-              throw new Error('JSON قۇرۇلمىسى توغرا ئەمەس');
-            }
-          } catch (error) {
-            Swal.fire({
-              title: 'خاتالىق!',
-              text: 'JSON ھۆججىتىنى ئوقۇشتا خاتالىق: ' + error.message,
-              icon: 'error',
-              confirmButtonText: 'جەزملەش',
-              confirmButtonColor: '#0ea5e9'
-            });
-          }
-        };
-        reader.readAsText(file);
-      };
-      
-      input.click();
-    }
-
-    // سۇئاللارنى JSON ھۆججىتىگە ساقلاش
-    function saveQuestionsToJSON() {
-      if (questions.length === 0) {
-        Swal.fire({
-          title: 'ئەسكەرتىش!',
-          text: 'ساقلاش ئۈچۈن سۇئال بولۇشى كېرەك',
-          icon: 'warning',
-          confirmButtonText: 'جەزملەش',
-          confirmButtonColor: '#0ea5e9'
-        });
-        return;
-      }
-      
-      const data = {
-        questions: questions,
-        savedAt: new Date().toISOString()
-      };
-      
-      const jsonString = JSON.stringify(data, null, 2);
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `سۇئاللار_${new Date().toISOString().slice(0, 10)}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      Swal.fire({
-        title: 'مۇۋەپپىقىيەتلىك!',
-        text: 'سۇئاللار JSON ھۆججىتىگە ساقلاندى',
-        icon: 'success',
-        confirmButtonText: 'جەزملەش',
-        confirmButtonColor: '#0ea5e9'
-      });
-    }
-
-    // سۇئاللارنى يەرلىك ساقلاش
-    function saveQuestionsToLocalStorage() {
-      localStorage.setItem('savedQuestions', JSON.stringify(questions));
-    }
-
-    // Initialize
-    loadInitialQuestions();
-    drawWheel();
-
-    // Make responsive
-    window.addEventListener('resize', () => {
-      if (window.innerWidth < 500) {
-        canvas.width = 300;
-        canvas.height = 300;
-      } else {
-        canvas.width = 500;
-        canvas.height = 500;
-      }
-      drawWheel();
     });
-  </script>
-  <!-- SweetAlert for beautiful alerts -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    .font-arabic {
-      font-family: 'UKIJ Tuz Tom', 'Noto Sans Arabic', sans-serif !important;
+
+    // ئوتتۇرىدىكى چەمبەر
+    ctx.beginPath();
+    ctx.arc(radius, radius, 15, 0, Math.PI * 2);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  function spinWheel() {
+    if (spinning || questions.length === 0) {
+      if(questions.length === 0) alert("ئاۋۋال سۇئال قوشۇڭ!");
+      return;
     }
-  </style>
+    spinning = true;
+    document.getElementById('spinButton').disabled = true;
+    document.getElementById('spinButton').classList.add('opacity-50', 'cursor-not-allowed');
+
+    let spinTime = 3000 + Math.random() * 2000;
+    let spinAngle = Math.random() * 1080 + 1440;
+    let targetAngle = angle + spinAngle;
+    let start = null;
+
+    function animate(timestamp) {
+      if (!start) start = timestamp;
+      let progress = timestamp - start;
+      let current = easeOut(progress, angle, spinAngle, spinTime);
+      drawRotation(current);
+
+      if (progress < spinTime) {
+        requestAnimationFrame(animate);
+      } else {
+        angle = targetAngle % 360;
+        spinning = false;
+        const btn = document.getElementById('spinButton');
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        pickQuestion();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function drawRotation(rotation) {
+    const radius = canvas.width / 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate((rotation * Math.PI) / 180);
+    ctx.translate(-radius, -radius);
+    drawWheel();
+    ctx.restore();
+  }
+
+  function pickQuestion() {
+    if (questions.length === 0) return;
+
+    const slice = 360 / questions.length;
+    const index = Math.floor(((360 - angle % 360) % 360) / slice);
+    const selected = questions[index];
+
+    setTimeout(() => {
+      // SweetAlert بىلەن مۇرەككەپ كۆزنەك چىقىرىش
+      Swal.fire({
+        title: '🎉 تاللانغان سۇئال',
+        html: `
+            <div class="text-right p-2">
+                <h3 class="text-xl font-bold text-sky-800 mb-4 leading-relaxed">${selected.q}</h3>
+
+                <button id="showAnswerBtn" class="w-full mb-3 px-4 py-2 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition font-bold border border-emerald-200 flex justify-center items-center gap-2">
+                    <i data-feather="eye"></i> جاۋابىنى كۆرسەت
+                </button>
+
+                <div id="answerContent" class="answer-box text-lg">
+                    <strong>جاۋاب:</strong><br/>
+                    ${selected.a || 'بۇ سۇئالنىڭ جاۋابى كىرگۈزۈلمىگەن'}
+                </div>
+            </div>
+          `,
+        showCancelButton: true,
+        showDenyButton: true,
+        confirmButtonText: 'سۇئالنى چىقىرىۋەت',
+        denyButtonText: 'سۇئال قېپ قالسۇن',
+        cancelButtonText: 'تاقاش',
+        confirmButtonColor: '#ef4444', // Red
+        denyButtonColor: '#3b82f6',    // Blue
+        cancelButtonColor: '#9ca3af',  // Gray
+        customClass: {
+          popup: 'font-arabic',
+          title: 'text-2xl text-sky-600'
+        },
+        didOpen: () => {
+          // كۆزنەك ئېچىلغاندا جاۋاب كۇنۇپكىسىغا ھەرىكەت قوشۇش
+          const btn = document.getElementById('showAnswerBtn');
+          const content = document.getElementById('answerContent');
+          feather.replace(); // Ikonlarni yangilash
+
+          btn.addEventListener('click', () => {
+            content.style.display = 'block';
+            btn.style.display = 'none';
+          });
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // سۇئالنى ئۆچۈرۈش
+          questions.splice(index, 1);
+          updateQuestionList();
+          drawWheel();
+          saveQuestionsToLocalStorage();
+          Swal.fire('ئۆچۈرۈلدى', 'سۇئال تىزىملىكتىن چىقىرىۋېتىلدى', 'success');
+        } else if (result.isDenied) {
+          // سۇئال ساقلاپ قېلىندى
+          Swal.fire('ساقلاندى', 'سۇئال تىزىملىكتە ساقلاپ قېلىندى', 'info');
+        }
+      });
+    }, 500);
+  }
+
+  function easeOut(t, b, c, d) {
+    t /= d;
+    t--;
+    return c * (t * t * t + 1) + b;
+  }
+
+  // JSON دىن سۇئاللارنى يۈكلەش
+  function loadQuestionsFromJSON() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = event => {
+        try {
+          const jsonData = JSON.parse(event.target.result);
+          if (Array.isArray(jsonData.questions)) {
+            let addedCount = 0;
+            jsonData.questions.forEach(item => {
+              // ماسلىشىشچانلىق تەكشۈرۈش (Object ياكى String)
+              let newItem = {};
+              if (typeof item === 'string') {
+                newItem = { q: item, a: '' };
+              } else {
+                newItem = { q: item.q || '', a: item.a || '' };
+              }
+
+              if (newItem.q) {
+                questions.push(newItem);
+                addedCount++;
+              }
+            });
+
+            updateQuestionList();
+            drawWheel();
+            saveQuestionsToLocalStorage();
+
+            Swal.fire({
+              title: 'مۇۋەپپىقىيەتلىك!',
+              text: `${addedCount} سۇئال قوشۇلدى`,
+              icon: 'success',
+              confirmButtonText: 'جەزملەش'
+            });
+          } else {
+            throw new Error('JSON قۇرۇلمىسى توغرا ئەمەس');
+          }
+        } catch (error) {
+          Swal.fire({
+            title: 'خاتالىق!',
+            text: 'JSON ھۆججىتىنى ئوقۇشتا خاتالىق',
+            icon: 'error'
+          });
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    input.click();
+  }
+
+  // سۇئاللارنى JSON ھۆججىتىگە ساقلاش
+  function saveQuestionsToJSON() {
+    if (questions.length === 0) {
+      Swal.fire('ئەسكەرتىش', 'ساقلاش ئۈچۈن سۇئال يوق', 'warning');
+      return;
+    }
+
+    const data = {
+      version: "2.0",
+      createdAt: new Date().toISOString(),
+      questions: questions
+    };
+
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `سۇئاللار_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // سۇئاللارنى يەرلىك ساقلاش (LocalStorage)
+  function saveQuestionsToLocalStorage() {
+    localStorage.setItem('savedQuestions_v2', JSON.stringify(questions));
+  }
+
+  // Initialize
+  loadInitialQuestions();
+
+  // Make responsive
+  window.addEventListener('resize', () => {
+    if (window.innerWidth < 500) {
+      canvas.width = 300;
+      canvas.height = 300;
+    } else {
+      canvas.width = 500;
+      canvas.height = 500;
+    }
+    drawWheel();
+  });
+</script>
 </body>
 </html>
