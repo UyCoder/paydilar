@@ -841,8 +841,207 @@ body::after {
 @keyframes toastIn { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
 @keyframes toastOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(40px)} }
 
+/* ===== EARNED TIME PANEL ===== */
+.earned-time-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.earned-time-left { display: flex; align-items: center; gap: 10px; }
+.earned-time-icon { font-size: 1.8rem; }
+.earned-time-label { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+.earned-time-hint  { font-size: 0.68rem; color: var(--text-muted); }
+.earned-time-val {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: 'Tajawal', monospace;
+  color: var(--text-muted);
+  margin-right: auto;
+  letter-spacing: 2px;
+  transition: color 0.4s;
+}
+.badge-purple { color: #c084fc; border-color: rgba(192,132,252,0.4); background: rgba(192,132,252,0.08); }
+
 /* ===== HIDDEN UTILITY ===== */
 .hidden { display: none !important; }
+
+/* ===== FINGER INDICATOR ===== */
+.finger-guide {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  transition: var(--transition);
+}
+.finger-guide-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  min-width: 80px;
+}
+.finger-hands {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hand-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.hand-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.fingers-row {
+  display: flex;
+  gap: 3px;
+  direction: ltr;
+}
+.finger-btn {
+  width: 32px;
+  height: 44px;
+  border-radius: 6px 6px 10px 10px;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 4px;
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+}
+.finger-btn.active {
+  border-color: var(--accent-2);
+  background: rgba(168,85,247,0.25);
+  box-shadow: 0 0 12px rgba(168,85,247,0.5);
+  transform: translateY(-4px);
+}
+.finger-btn.active-home {
+  border-color: var(--accent-green);
+  background: rgba(16,185,129,0.15);
+}
+.finger-name {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-family: 'Tajawal', sans-serif;
+}
+.finger-emoji { font-size: 1rem; }
+.active-char-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto;
+  background: rgba(168,85,247,0.12);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+}
+.active-char-display {
+  font-size: 1.4rem;
+  color: var(--accent-3);
+  min-width: 24px;
+  text-align: center;
+}
+.active-char-label { font-size: 0.7rem; color: var(--text-muted); }
+
+/* ===== GAMES HUB ===== */
+.games-hub {
+  margin-top: 24px;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  padding: 24px;
+  backdrop-filter: blur(20px);
+}
+.games-hub-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.games-hub-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  line-height: 1.8;
+}
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+@media (max-width: 600px) {
+  .games-grid { grid-template-columns: 1fr; }
+}
+.game-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+  background: rgba(0,0,0,0.25);
+}
+.game-card:hover { transform: translateY(-4px); border-color: var(--accent-2); box-shadow: var(--glow-purple); }
+.game-card-bg {
+  position: absolute; inset: 0;
+  opacity: 0.12;
+  transition: opacity 0.3s;
+}
+.game-card:hover .game-card-bg { opacity: 0.2; }
+.game-card-inner {
+  position: relative;
+  z-index: 1;
+  padding: 20px 16px;
+  text-align: center;
+}
+.game-icon { font-size: 3rem; display: block; margin-bottom: 8px; animation: bounce 2.5s ease infinite; }
+.game-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  display: block;
+}
+.game-desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.game-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+.badge-blue { color: #60a5fa; border-color: rgba(96,165,250,0.4); background: rgba(96,165,250,0.08); }
+.badge-green { color: var(--accent-green); border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+.badge-gold  { color: var(--accent-gold); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 680px) {
@@ -1008,6 +1207,42 @@ body::after {
       <button class="keyboard-toggle" id="kbToggle">يوشۇرۇش</button>
     </div>
 
+    <!-- FINGER GUIDE -->
+    <div class="finger-guide" id="fingerGuide">
+      <div class="finger-guide-label">بارماق يېتەكچى</div>
+      <div class="finger-hands">
+        <!-- Right hand (RTL: right hand types left side of keyboard) -->
+        <div class="hand-group">
+          <div class="fingers-row" id="rightFingers">
+            <div class="finger-btn" data-finger="R5" title="ئوڭ چىمقى بارماق"><span class="finger-emoji">✋</span><span class="finger-name">چىمقى</span></div>
+            <div class="finger-btn" data-finger="R4" title="ئوڭ ئۈزۈك بارماق"><span class="finger-emoji">🫰</span><span class="finger-name">ئۈزۈك</span></div>
+            <div class="finger-btn" data-finger="R3" title="ئوڭ ئوتتۇرا بارماق"><span class="finger-emoji">🖕</span><span class="finger-name">ئوتتۇرا</span></div>
+            <div class="finger-btn" data-finger="R2" title="ئوڭ كۆرسەتكۈچ"><span class="finger-emoji">☝️</span><span class="finger-name">كۆرسەت</span></div>
+            <div class="finger-btn active-home" data-finger="R1" title="ئوڭ باش بارماق"><span class="finger-emoji">👍</span><span class="finger-name">بوشلۇق</span></div>
+          </div>
+          <div class="hand-label">ئوڭ قول</div>
+        </div>
+        <!-- Active char display -->
+        <div class="active-char-box">
+          <div>
+            <div class="active-char-display" id="activeCharDisplay">—</div>
+            <div class="active-char-label">كېيىنكى ھەرپ</div>
+          </div>
+        </div>
+        <!-- Left hand -->
+        <div class="hand-group">
+          <div class="fingers-row" id="leftFingers">
+            <div class="finger-btn active-home" data-finger="L1" title="سول باش بارماق"><span class="finger-emoji">👍</span><span class="finger-name">بوشلۇق</span></div>
+            <div class="finger-btn" data-finger="L2" title="سول كۆرسەتكۈچ"><span class="finger-emoji">☝️</span><span class="finger-name">كۆرسەت</span></div>
+            <div class="finger-btn" data-finger="L3" title="سول ئوتتۇرا بارماق"><span class="finger-emoji">🖕</span><span class="finger-name">ئوتتۇرا</span></div>
+            <div class="finger-btn" data-finger="L4" title="سول ئۈزۈك بارماق"><span class="finger-emoji">🫰</span><span class="finger-name">ئۈزۈك</span></div>
+            <div class="finger-btn" data-finger="L5" title="سول چىمقى بارماق"><span class="finger-emoji">✋</span><span class="finger-name">چىمقى</span></div>
+          </div>
+          <div class="hand-label">سول قول</div>
+        </div>
+      </div>
+    </div>
+
     <!-- SENTENCE DISPLAY -->
     <div class="sentence-section">
       <div class="sentence-label">مەشىق جۈملىسى</div>
@@ -1065,6 +1300,70 @@ body::after {
       <div class="achievements-grid" id="achievementsGrid"></div>
     </div>
 
+  </div>
+
+  <!-- GAMES HUB -->
+  <div class="games-hub">
+    <div class="games-hub-title">🎮 ئويۇن مەركىزى</div>
+
+    <!-- Earned Time Display -->
+    <div class="earned-time-panel" id="earnedTimePanel">
+      <div class="earned-time-left">
+        <div class="earned-time-icon">🕹️</div>
+        <div>
+          <div class="earned-time-label">ئويۇن ۋاقتىڭىز</div>
+          <div class="earned-time-hint">مەشىق قىلسىڭىز ئۆسىدۇ</div>
+        </div>
+      </div>
+      <div class="earned-time-val" id="earnedTimeVal">0:00</div>
+      <button class="btn btn-ghost" style="font-size:0.7rem;padding:6px 12px;" onclick="clearEarnedTime()">تازىلاش</button>
+    </div>
+
+    <div class="games-hub-sub">خەت بېسىش مەشقى قىلغاندا ئويۇن ۋاقتى قازىنىسىز. ئويۇن ئاخىرلاشقاندا ئۆتكەن ۋاقىتلىرىڭىزنى ئاساس قىلىپ يەنە مەشىق مەيدانىغا قايتىسىز.
+    <strong style="color:var(--accent-gold)">⬆ ئارىلىق تۇغرا يازغىنىڭىزدا ئويۇن ۋاقتى قازىنىلىدۇ!</strong></div>
+
+    <div class="games-grid">
+      <!-- Airplane game -->
+      <div class="game-card" onclick="launchGame('game-airplane.html')" style="cursor:pointer;">
+        <div class="game-card-bg" style="background: linear-gradient(135deg,#0066cc,#00d4ff);"></div>
+        <div class="game-card-inner">
+          <span class="game-icon">✈️</span>
+          <span class="game-name">ئايروپىلان ئويۇنى</span>
+          <div class="game-desc">شەرقىي تۈركىستان ئايروپىلان ئارميىسى — تىر ئاتقۇچ ئويۇن!</div>
+          <div class="game-badge badge-blue">تىر ئاتقۇچ</div>
+        </div>
+      </div>
+      <!-- Tank game -->
+      <div class="game-card" onclick="launchGame('game-tank.html')" style="cursor:pointer;">
+        <div class="game-card-bg" style="background: linear-gradient(135deg,#4a3820,#c9a96e);"></div>
+        <div class="game-card-inner">
+          <span class="game-icon">🪖</span>
+          <span class="game-name">تانكا ئويۇنى</span>
+          <div class="game-desc">قەشقەر، خوتەن، ئاقسۇ، غۇلجا، ئۈرۈمچى، تۇرپان مەيدانلىرى!</div>
+          <div class="game-badge badge-gold">6 شەھەر</div>
+        </div>
+      </div>
+      <!-- Soldier game -->
+      <div class="game-card" onclick="launchGame('game-soldier.html')" style="cursor:pointer;">
+        <div class="game-card-bg" style="background: linear-gradient(135deg,#1b5299,#00c8ff);"></div>
+        <div class="game-card-inner">
+          <span class="game-icon">⚔️</span>
+          <span class="game-name">مىللىي ئالاھىدە قىسىم</span>
+          <div class="game-desc">كۆك رەڭ ☾★ — قىزىل تاجاۋۇزچىغا قارشى كۈرەش!</div>
+          <div class="game-badge badge-green">دالقىن ئويۇنى</div>
+        </div>
+      </div>
+      <!-- History game -->
+      <div class="game-card" onclick="launchGame('game-history.html')" style="cursor:pointer;">
+        <div class="game-card-bg" style="background: linear-gradient(135deg,#4a1942,#c084fc);"></div>
+        <div class="game-card-inner">
+          <span class="game-icon">🏰</span>
+          <span class="game-name">ئۇيغۇر تارىخ ساياھىتى</span>
+          <div class="game-desc">ھۇن، كۆكتۈرك، ئۇيغۇر خانلىقى، قاراخانى، سەئدىيە، ئىككى جۇمھۇرىيە!</div>
+          <div class="game-badge badge-purple">6 دەۋر</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ABOUT -->
@@ -1408,6 +1707,9 @@ function renderSentenceSpans(sentence, typed) {
     html += `<span class="char ${cls}">${ch}</span>`;
   }
   display.innerHTML = html;
+  // Update finger guide for next char
+  const nextChar = sentence[typed.length] !== undefined ? sentence[typed.length] : '';
+  if (typeof highlightFinger === 'function') highlightFinger(nextChar);
 }
 
 /* ========================
@@ -1483,6 +1785,9 @@ function startSession() {
   state.startTime = Date.now();
   state.running = true;
   state.isFinished = false;
+
+  // Start earning game time
+  startEarnedTimer();
 
   document.getElementById('result-display').innerHTML = '';
   document.getElementById('start-btn').classList.add('hidden');
@@ -1637,6 +1942,9 @@ function finishSession() {
   state.isFinished = true;
   stopTimer();
   playSessionEnd();
+
+  // Save earned game time
+  stopEarnedTimer();
 
   const wpm = calcWpm();
   const acc = calcAccuracy();
@@ -1813,6 +2121,122 @@ document.addEventListener('keydown', e => {
     if (!state.running) startSession();
   }
 });
+
+/* ========================
+   EARNED GAME TIME SYSTEM
+======================== */
+let earnedSeconds = parseInt(localStorage.getItem('ugEarnedSeconds') || '0');
+let practiceStart = null;
+let earnedLiveInterval = null;
+
+function startEarnedTimer() {
+  if (practiceStart) return; // already running
+  practiceStart = Date.now();
+  clearInterval(earnedLiveInterval);
+  earnedLiveInterval = setInterval(() => {
+    const live = Math.floor((Date.now() - practiceStart) / 1000);
+    renderEarnedTime(earnedSeconds + live);
+  }, 1000);
+}
+
+function stopEarnedTimer() {
+  clearInterval(earnedLiveInterval);
+  if (practiceStart) {
+    earnedSeconds += Math.floor((Date.now() - practiceStart) / 1000);
+    practiceStart = null;
+    localStorage.setItem('ugEarnedSeconds', earnedSeconds);
+    renderEarnedTime(earnedSeconds);
+  }
+}
+
+function renderEarnedTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = (secs % 60).toString().padStart(2, '0');
+  const el = document.getElementById('earnedTimeVal');
+  if (el) {
+    el.textContent = `${m}:${s}`;
+    el.style.color = secs >= 10 ? 'var(--accent-green)' : 'var(--text-muted)';
+  }
+}
+
+function clearEarnedTime() {
+  earnedSeconds = 0;
+  practiceStart = null;
+  localStorage.removeItem('ugEarnedSeconds');
+  renderEarnedTime(0);
+  showToast('ئويۇن ۋاقتى تازىلاندى', 'info');
+}
+
+function launchGame(url) {
+  stopEarnedTimer();
+  if (earnedSeconds < 5) {
+    showToast('مەشىق قىلىپ ئويۇن ۋاقتى قازانغىن! (ئەڭ ئاز 5 سېكۇنت)', 'error');
+    if (state.running) startEarnedTimer();
+    return;
+  }
+  localStorage.setItem('ugGameTime', earnedSeconds);
+  earnedSeconds = 0;
+  localStorage.removeItem('ugEarnedSeconds');
+  window.location.href = url;
+}
+
+// Init earned time display
+renderEarnedTime(earnedSeconds);
+
+/* ========================
+   FINGER MAP
+======================== */
+// Maps characters (Uyghur + common) to hand/finger
+// Fingers: L5=pinky, L4=ring, L3=middle, L2=index, L1=thumb(space)
+//          R1=thumb(space), R2=index, R3=middle, R4=ring, R5=pinky
+// Approximate QWERTY row mapping adapted for Uyghur keyboard layout
+const CHAR_FINGER_MAP = {
+  // Row 1 (number row)
+  '`': 'L5', '1': 'L5', '2': 'L4', '3': 'L3', '4': 'L2', '5': 'L2',
+  '6': 'R2', '7': 'R2', '8': 'R3', '9': 'R4', '0': 'R5', '-': 'R5', '=': 'R5',
+  // Row 2 (QWERTY top)
+  'q': 'L5', 'w': 'L4', 'e': 'L3', 'r': 'L2', 't': 'L2',
+  'y': 'R2', 'u': 'R2', 'i': 'R3', 'o': 'R4', 'p': 'R5', '[': 'R5', ']': 'R5',
+  // Row 3 (home row)
+  'a': 'L5', 's': 'L4', 'd': 'L3', 'f': 'L2', 'g': 'L2',
+  'h': 'R2', 'j': 'R2', 'k': 'R3', 'l': 'R4', ';': 'R5', "'": 'R5',
+  // Row 4 (bottom)
+  'z': 'L5', 'x': 'L4', 'c': 'L3', 'v': 'L2', 'b': 'L2',
+  'n': 'R2', 'm': 'R2', ',': 'R3', '.': 'R4', '/': 'R5',
+  // Space
+  ' ': 'L1',
+  // Uyghur chars by rough position (mapped heuristically)
+  // Right side chars (Arabic-script keyboard usually right-to-left)
+  'ئ': 'L5', 'ا': 'L5', 'ب': 'L4', 'پ': 'L4', 'ت': 'L3',
+  'ج': 'L3', 'چ': 'L2', 'خ': 'L2', 'د': 'L2',
+  'ر': 'R2', 'ز': 'R2', 'ژ': 'R2', 'س': 'R3', 'ش': 'R3',
+  'غ': 'R4', 'ف': 'R4', 'ق': 'R5', 'ك': 'R5', 'گ': 'R5',
+  'ل': 'L4', 'م': 'L3', 'ن': 'R2', 'ڭ': 'R2',
+  'ھ': 'R3', 'و': 'R4', 'ۆ': 'R4', 'ۇ': 'R5', 'ۈ': 'R5',
+  'ۋ': 'L5', 'ې': 'L4', 'ى': 'L3', 'ي': 'L2',
+  'ە': 'L2', '،': 'R4', '.':'R4', '؟':'R5',
+};
+
+function getFingerForChar(ch) {
+  const c = ch.toLowerCase();
+  return CHAR_FINGER_MAP[c] || CHAR_FINGER_MAP[ch] || null;
+}
+
+function highlightFinger(ch) {
+  // Reset all
+  document.querySelectorAll('.finger-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  // Set active char display
+  const disp = document.getElementById('activeCharDisplay');
+  if (!ch || ch === '') { disp.textContent = '—'; return; }
+  disp.textContent = ch === ' ' ? '⎵' : ch;
+  const finger = getFingerForChar(ch);
+  if (finger) {
+    const btn = document.querySelector(`.finger-btn[data-finger="${finger}"]`);
+    if (btn) btn.classList.add('active');
+  }
+}
 
 /* ========================
    INIT
