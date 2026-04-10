@@ -2180,6 +2180,10 @@ function launchGame(url) {
   window.location.href = url;
 }
 
+// Expose to global scope for HTML onclick
+window.clearEarnedTime = clearEarnedTime;
+window.launchGame = launchGame;
+
 // Init earned time display
 renderEarnedTime(earnedSeconds);
 
