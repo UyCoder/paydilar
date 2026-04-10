@@ -1,67 +1,1831 @@
 <!DOCTYPE html>
-<html lang="ug">
+<html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>ئۇيغۇرچە كۇنۇپكا تاختا مەشىقى</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ئۇيغۇرچە خەت بېسىش مەشىق مەركىزى</title>
+<meta name="description" content="ئۇيغۇرچە كۇنۇپكا تاختا مەشىق قۇرالى - ئۇيغۇرچە خەت بېسىشنى مەشىق قىلىڭ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== FONT FACE ===== */
+@font-face {
+  font-family: 'alkatip';
+  src: url('../fonts/ALKATIP-TOR.woff2') format('woff2'),
+       url('../fonts/ALKATIP-TOR.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #111128;
+  --bg-card: rgba(255,255,255,0.05);
+  --bg-card-hover: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.1);
+  --accent-1: #7c3aed;
+  --accent-2: #a855f7;
+  --accent-3: #c084fc;
+  --accent-gold: #f59e0b;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-blue: #3b82f6;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --correct-char: #10b981;
+  --wrong-char: #ef4444;
+  --pending-char: #94a3b8;
+  --cursor-char: #a855f7;
+  --glow-purple: 0 0 20px rgba(124,58,237,0.4);
+  --glow-green: 0 0 20px rgba(16,185,129,0.4);
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  --radius: 16px;
+  --radius-sm: 8px;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'alkatip', 'Tajawal', Tahoma, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== ANIMATED BACKGROUND ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(124,58,237,0.15) 0%, transparent 70%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -50%;
+  left: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(59,130,246,0.1) 0%, transparent 70%);
+  animation: bgPulse 10s ease-in-out infinite alternate-reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes bgPulse { from { opacity: 0.5; transform: scale(1); } to { opacity: 1; transform: scale(1.2); } }
+
+/* ===== FLOATING PARTICLES ===== */
+.particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: float linear infinite;
+}
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* ===== LAYOUT ===== */
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+}
+
+/* ===== HEADER ===== */
+.app-header {
+  text-align: center;
+  padding: 32px 20px 20px;
+  position: relative;
+}
+.app-header .logo-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: bounce 2s ease infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.app-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.app-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* ===== GLASS CARD ===== */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 24px;
+  transition: var(--transition);
+}
+.glass-card:hover { background: var(--bg-card-hover); }
+
+/* ===== TOP STATS BAR ===== */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-item {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  text-align: center;
+  transition: var(--transition);
+  cursor: default;
+}
+.stat-item:hover { transform: translateY(-2px); box-shadow: var(--glow-purple); border-color: var(--accent-2); }
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent-3);
+  line-height: 1;
+  font-family: 'Tajawal', sans-serif;
+  display: block;
+}
+.stat-value.green { color: var(--accent-green); }
+.stat-value.gold { color: var(--accent-gold); }
+.stat-value.blue { color: var(--accent-blue); }
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  display: block;
+}
+
+/* ===== MODE & DIFFICULTY TABS ===== */
+.tabs-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tab-group {
+  display: flex;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+  padding: 4px;
+  gap: 2px;
+}
+.tab-btn {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 50px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'alkatip', 'Tajawal', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  box-shadow: 0 2px 10px rgba(124,58,237,0.4);
+}
+.tab-btn:hover:not(.active) { color: var(--text-primary); background: rgba(255,255,255,0.07); }
+
+/* ===== KEYBOARD IMAGE ===== */
+.keyboard-preview {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  margin-bottom: 20px;
+  display: block;
+  transition: var(--transition);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+.keyboard-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+.keyboard-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'alkatip', sans-serif;
+}
+.keyboard-toggle:hover { color: white; border-color: var(--accent-2); }
+
+/* ===== PROGRESS BAR ===== */
+.progress-section {
+  margin-bottom: 16px;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.progress-label span:first-child { font-family: 'alkatip', sans-serif; }
+.progress-label span:last-child { font-family: 'Tajawal', sans-serif; color: var(--accent-3); font-weight: 600; }
+.progress-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+  border-radius: 10px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(168,85,247,0.6);
+  width: 0%;
+}
+
+/* ===== SENTENCE DISPLAY ===== */
+.sentence-section { margin-bottom: 20px; }
+.sentence-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sentence-label::before {
+  content: '';
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 6px var(--accent-green);
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+#sentence-display {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  line-height: 2.2;
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  min-height: 80px;
+  direction: rtl;
+  text-align: right;
+  letter-spacing: 1px;
+  word-spacing: 4px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+#sentence-display::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  font-size: 5rem;
+  color: rgba(168,85,247,0.1);
+  font-family: serif;
+  line-height: 1;
+}
+.char { display: inline; transition: color 0.15s, text-shadow 0.15s; }
+.char.correct { color: var(--correct-char); }
+.char.wrong { color: var(--wrong-char); text-decoration: underline; text-decoration-color: var(--wrong-char);  }
+.char.current {
+  color: var(--cursor-char);
+  border-bottom: 2px solid var(--accent-2);
+  animation: cursorBlink 1s step-end infinite;
+}
+@keyframes cursorBlink { 0%,100%{border-color:var(--accent-2)} 50%{border-color:transparent} }
+.char.pending { color: var(--pending-char); }
+
+/* ===== LIVE FEEDBACK BANNER ===== */
+.feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  min-height: 42px;
+  transition: var(--transition);
+  opacity: 0;
+}
+.feedback-banner.show { opacity: 1; }
+.feedback-banner.error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: var(--accent-red);
+}
+.feedback-banner.success {
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: var(--accent-green);
+}
+
+/* ===== TYPING AREA ===== */
+.typing-wrapper { position: relative; margin-bottom: 16px; }
+#typing-area {
+  font-family: 'alkatip', Tahoma, sans-serif;
+  width: 100%;
+  padding: 16px 20px;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  direction: rtl;
+  text-align: right;
+  outline: none;
+  transition: var(--transition);
+  letter-spacing: 1px;
+}
+#typing-area:focus {
+  border-color: var(--accent-2);
+  background: rgba(168,85,247,0.06);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
+}
+#typing-area.error-state {
+  border-color: var(--accent-red);
+  background: rgba(239,68,68,0.06);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+  animation: shake 0.3s ease;
+}
+#typing-area.correct-state {
+  border-color: var(--accent-green);
+  background: rgba(16,185,129,0.06);
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+
+/* Live WPM inside input */
+.typing-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-family: 'Tajawal', sans-serif;
+}
+.typing-meta span { display: flex; align-items: center; gap: 4px; }
+.typing-meta .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-green { background: var(--accent-green); }
+.dot-blue { background: var(--accent-blue); }
+.dot-gold { background: var(--accent-gold); }
+
+/* ===== TIMER ===== */
+.timer-display {
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 800;
+  font-family: 'Tajawal', monospace;
+  color: var(--accent-gold);
+  letter-spacing: 2px;
+  margin: 8px 0;
+  transition: color 0.3s;
+  text-shadow: 0 0 20px rgba(245,158,11,0.4);
+}
+.timer-display.urgent { color: var(--accent-red); text-shadow: 0 0 20px rgba(239,68,68,0.5); animation: urgentPulse 0.5s ease infinite alternate; }
+@keyframes urgentPulse { from{transform:scale(1)} to{transform:scale(1.02)} }
+
+/* ===== BUTTONS ===== */
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.btn {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 50px;
+  font-family: 'alkatip', 'Tajawal', sans-serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.5); }
+.btn-success {
+  background: linear-gradient(135deg, #059669, var(--accent-green));
+  color: white;
+  box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+}
+.btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16,185,129,0.4); }
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, var(--accent-red));
+  color: white;
+  box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+}
+.btn-danger:hover { transform: translateY(-2px); }
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
+.btn-gold {
+  background: linear-gradient(135deg, #d97706, var(--accent-gold));
+  color: #1a1a00;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245,158,11,0.4); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+/* ===== RESULTS ===== */
+#result-display { margin-top: 10px; }
+.result-header {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(168,85,247,0.1));
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.result-header h2 {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.result-header p { color: var(--text-secondary); font-size: 0.9rem; }
+.result-grade {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn { from{opacity:0;transform:scale(0)} to{opacity:1;transform:scale(1)} }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stats-grid .stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+}
+.stats-grid .stat-card .val {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent-3);
+  font-family: 'Tajawal', sans-serif;
+  display: block;
+}
+.stats-grid .stat-card .lbl {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 4px;
+}
+
+/* Typed sentences list */
+.typed-sentences-list {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: right;
+}
+.typed-sentence-item {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.9rem;
+  color: var(--accent-green);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.typed-sentence-item:last-child { border-bottom: none; }
+.typed-sentence-item::before {
+  content: '✓';
+  color: var(--accent-green);
+  font-weight: bold;
+  flex-shrink: 0;
+  direction: ltr;
+}
+.typed-sentences-list::-webkit-scrollbar { width: 4px; }
+.typed-sentences-list::-webkit-scrollbar-track { background: transparent; }
+.typed-sentences-list::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 2px; }
+
+/* ===== SECTIONS PANEL ===== */
+.section-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* ===== LEADERBOARD ===== */
+.leaderboard-list { list-style: none; }
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  transition: var(--transition);
+  font-size: 0.85rem;
+}
+.leaderboard-item:hover { border-color: var(--glass-border); background: rgba(255,255,255,0.06); }
+.leaderboard-item.rank-1 { border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.06); }
+.leaderboard-item.rank-2 { border-color: rgba(148,163,184,0.3); }
+.leaderboard-item.rank-3 { border-color: rgba(180,120,60,0.3); }
+.rank-badge {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: 'Tajawal', sans-serif;
+  flex-shrink: 0;
+}
+.rank-badge.r1 { background: var(--accent-gold); color: #1a1a00; }
+.rank-badge.r2 { background: #94a3b8; color: #0a0a1a; }
+.rank-badge.r3 { background: #b47840; color: white; }
+.rank-badge.rn { background: rgba(255,255,255,0.1); color: var(--text-secondary); }
+.lb-name { flex: 1; color: var(--text-primary); font-family: 'Tajawal', sans-serif; direction: ltr; text-align: left; }
+.lb-wpm { color: var(--accent-3); font-weight: 700; font-family: 'Tajawal', sans-serif; }
+.lb-acc { color: var(--accent-green); font-size: 0.75rem; font-family: 'Tajawal', sans-serif; }
+
+/* ===== ACHIEVEMENTS ===== */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.achievement-badge {
+  text-align: center;
+  padding: 12px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.03);
+  transition: var(--transition);
+  cursor: default;
+}
+.achievement-badge.unlocked {
+  border-color: rgba(245,158,11,0.4);
+  background: rgba(245,158,11,0.06);
+  box-shadow: 0 0 10px rgba(245,158,11,0.15);
+}
+.achievement-badge.locked { opacity: 0.4; filter: grayscale(1); }
+.achievement-badge:hover { transform: translateY(-2px); }
+.ach-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+.ach-name { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.3; }
+.ach-name-ug { font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px; display: block; }
+
+/* ===== SETTINGS PANEL ===== */
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.settings-overlay.open { display: flex; }
+.settings-modal {
+  background: #151530;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: min(90vw, 440px);
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+.settings-modal h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--accent-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 0.9rem; color: var(--text-secondary); }
+.toggle-switch {
+  position: relative;
+  width: 46px; height: 24px;
+  cursor: pointer;
+}
+.toggle-switch input { display: none; }
+.toggle-track {
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: background 0.3s;
+}
+.toggle-switch input:checked + .toggle-track { background: var(--accent-1); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 18px; height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(-22px); }
+.select-input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: 'Tajawal', sans-serif;
+}
+.select-input option { background: #151530; }
+
+/* ===== SECTION HEADING ===== */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.section-heading .icon { font-size: 1.1rem; }
+.section-heading.gold { color: var(--accent-gold); }
+.section-heading.purple { color: var(--accent-3); }
+
+/* ===== CATEGORY CHIPS ===== */
+.category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'alkatip', sans-serif;
+}
+.chip.active {
+  background: rgba(124,58,237,0.2);
+  border-color: var(--accent-2);
+  color: var(--accent-3);
+}
+.chip:hover:not(.active) { border-color: var(--accent-1); color: var(--text-primary); }
+
+/* ===== STREAK DISPLAY ===== */
+.streak-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.streak-fire { font-size: 1.4rem; animation: flicker 1.5s ease infinite alternate; }
+@keyframes flicker { from{transform:scale(1) rotate(-5deg)} to{transform:scale(1.1) rotate(5deg)} }
+.streak-text { font-size: 0.85rem; color: var(--text-secondary); }
+.streak-count {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  font-family: 'Tajawal', sans-serif;
+  margin-right: 6px;
+}
+
+/* ===== ABOUT SECTION ===== */
+.about-card {
+  background: rgba(124,58,237,0.06);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  line-height: 2;
+  color: var(--text-secondary);
+  text-align: right;
+}
+.about-card p { margin-bottom: 12px; }
+.social-links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  direction: ltr;
+}
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  text-decoration: none;
+  transition: var(--transition);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+.social-links a:hover { background: rgba(124,58,237,0.2); border-color: var(--accent-2); color: white; transform: translateY(-2px); }
+.social-links img { height: 18px; }
+
+/* ===== TOAST ===== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: 'alkatip', sans-serif;
+  animation: toastIn 0.4s ease, toastOut 0.4s ease 2.6s forwards;
+  backdrop-filter: blur(10px);
+  border: 1px solid;
+  direction: rtl;
+  text-align: right;
+}
+.toast.success { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); color: var(--accent-green); }
+.toast.error { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: var(--accent-red); }
+.toast.info { background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.4); color: var(--accent-3); }
+.toast.gold { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); color: var(--accent-gold); }
+@keyframes toastIn { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(40px)} }
+
+/* ===== HIDDEN UTILITY ===== */
+.hidden { display: none !important; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 680px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .section-panels { grid-template-columns: 1fr; }
+  .achievements-grid { grid-template-columns: repeat(4, 1fr); }
+  .btn { padding: 10px 16px; font-size: 0.8rem; }
+  .timer-display { font-size: 2rem; }
+}
+@media (max-width: 440px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .achievements-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
 </head>
-<body style="direction: rtl;">
-<br>
+<body>
 
-<h1>ئۇيغۇرچە كۇنۇپكا تاختا مەشىقى</h1>
-<br>
-<div id="app-container">
-  <img src="KeyBoard1.jpg" alt="Keyboard1" style="display: block; margin: 0 auto; max-width: 100%;" />
+<!-- Floating particles -->
+<div id="particles"></div>
+
+<!-- Settings Modal -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-modal">
+    <h3>⚙️ تەڭشەكلەر</h3>
+    <div class="setting-row">
+      <span class="setting-label">🔊 ئاۋاز تەسىرى</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="soundToggle" checked>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">⚡ خاتا بولسا توختاتسۇن</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="stopOnErrorToggle">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">👁️ تىزىملىكنى يوشۇرسۇن</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="hideKeyboardToggle">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">🎯 ۋاقىتلىق ئۇسۇل مىنۇتى</span>
+      <select class="select-input" id="timerSeconds">
+        <option value="30">30 سېكۇنت</option>
+        <option value="60" selected>1 مىنىت</option>
+        <option value="120">2 مىنىت</option>
+        <option value="300">5 مىنىت</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <span class="setting-label">🧑‍💻 تەكرارلانمىسۇن</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="noDuplicateToggle" checked>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button class="btn btn-primary" onclick="document.getElementById('settingsOverlay').classList.remove('open')">ساقلاش</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('settingsOverlay').classList.remove('open')">ياپىش</button>
+    </div>
+  </div>
 </div>
 
-<div id="app-container">
-  <div id="sentence-display"></div>
-  <input type="text" id="typing-area" placeholder="خالىغان بىر كۇنۇپكىنى بېسىپ باشلىسڭىز بولىدۇ..." autofocus />
-  <div id="error-message"></div>
-  <button id="finish-btn">ئاخىرلاشتۇرۇش</button>
-  <button id="retry-btn" style="display:none;">قايتا سىناش</button>
-  <div id="result-display"></div>
-</div>
-<script src="script.js"></script>
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
 
+<div class="wrapper">
 
-</b>
-<br>
+  <!-- HEADER -->
+  <div class="app-header">
+    <span class="logo-icon">⌨️</span>
+    <h1 class="app-title">ئۇيغۇرچە خەت بېسىش مەشىق مەركىزى</h1>
+    <p class="app-subtitle">ئۇيغۇرچە كۇنۇپكا تاختا مەشقى &mdash; ئىقتىدار ۋە تېزلىكىڭنى ئۈستۈرۈڭ</p>
+  </div>
 
-<ab>
+  <!-- STREAK -->
+  <div class="streak-row" id="streakRow">
+    <span class="streak-fire">🔥</span>
+    <div>
+      <span class="streak-count" id="streakCount">0</span>
+      <span class="streak-text">كۈنلۈك داۋاملىq مەشق</span>
+    </div>
+    <div style="margin-right:auto; text-align:left; direction:ltr;">
+      <span style="font-size:0.75rem; color:var(--text-muted); font-family:'Tajawal';" id="lastPracticeDate">—</span>
+    </div>
+  </div>
 
-<a>بۇ ئۇيغۇرچە خەت بېسىش مەشىق قۇرالىنى ھايات-ماماتلىق گىرۋەكلىرىدە جان تالىشىۋاتقان ئۇيغۇر تىلىمىزغا بىر كىشىلىك ياردەم بېرىش مەقسىتىدە، خالىسانا ئاددىي خىزمەت ھېسابىدا تەييارلاپ چىقتىم. مېھرىبان رەببىمىز مېنىڭ بۇ خىزمىىتمنى ئۆز دەرگاھىدا قۇبۇل قىلسا، ئاندىن ئۇيغۇر قېرىنداشلىرىمىز بۇ قۇرالدىن پايدىلىنىپ ئۇيغۇرچە خەت بېسىشنى مەشىق قىلالىسا مەقسىتىمگە يەتكەن بولىمەن.</a>
+  <!-- TOP STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-value" id="liveWpm">0</span>
+      <span class="stat-label">WPM سۈرئەت</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value green" id="liveAccuracy">100%</span>
+      <span class="stat-label">توغرىلىق</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value gold" id="liveMistakes">0</span>
+      <span class="stat-label">خاتالىق</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value blue" id="liveSentences">0</span>
+      <span class="stat-label">تامام جۈملە</span>
+    </div>
+  </div>
 
-<br>
-<br>
+  <!-- MAIN CARD -->
+  <div class="glass-card">
 
-<ba id="contact" style="direction: rtl; text-align: right;">مېنى بۇ يەردىن ئىزدەڭ</ba>
-<a href="https://uycoder.github.io/paydilar/">
-    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png"
-         height="25">
-</a>
-<a href="https://www.linkedin.com/in/ahmed-bughra/">
-    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/LinkedIn.svg"
-         alt="linkedin" height="25">
-</a>
-<a href="https://github.com/Uycoder">
-    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/github.svg"
-         alt="github" height="25">
-</a>
-<a href="https://www.hackerrank.com/ahmedbughra">
-    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/hackerrank.svg"
-         alt="hackerrank" height="25">
-</a>
-<a href="https://stackoverflow.com/users/16111723/ahmad-ali">
-    <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/Stack_Overflow.svg"
-         alt="stackoverflow" height="25">
-</a>
+    <!-- MODE TABS + DIFFICULTY -->
+    <div class="tabs-row">
+      <div class="tab-group" id="modeGroup">
+        <button class="tab-btn active" data-mode="free" id="modeFree">🆓 ئەركىن</button>
+        <button class="tab-btn" data-mode="timed" id="modeTimed">⏱ ۋاقىتلىق</button>
+        <button class="tab-btn" data-mode="zen" id="modeZen">🧘 تىنىملىق</button>
+      </div>
+      <div class="tab-group" id="diffGroup">
+        <button class="tab-btn active" data-diff="all" id="diffAll">ھەممىسى</button>
+        <button class="tab-btn" data-diff="short" id="diffShort">قىسقا</button>
+        <button class="tab-btn" data-diff="long" id="diffLong">ئۇزۇن</button>
+      </div>
+      <button class="btn btn-ghost" id="settingsBtn" style="margin-right:auto;">⚙️</button>
+    </div>
 
-<br>
+    <!-- CATEGORY CHIPS -->
+    <div class="category-chips" id="categoryChips">
+      <span class="chip active" data-cat="all">ھەممىسى</span>
+      <span class="chip" data-cat="proverbs">ماقال-تەمسىل</span>
+      <span class="chip" data-cat="wisdom">ھىكمەت سۆزلەر</span>
+      <span class="chip" data-cat="basics">ئاساسىي جۈملىلەر</span>
+    </div>
 
-</ab>
+    <!-- TIMER (hidden in free mode) -->
+    <div id="timerSection" class="hidden">
+      <div class="timer-display" id="timerDisplay">01:00</div>
+    </div>
 
+    <!-- PROGRESS -->
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>مەشىق ئىلگىرىلىشى</span>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- KEYBOARD PREVIEW -->
+    <div class="keyboard-wrapper" id="keyboardWrapper">
+      <img src="KeyBoard1.jpg" alt="ئۇيغۇرچە كۇنۇپكا تاختىسى" class="keyboard-preview" id="keyboardImg">
+      <button class="keyboard-toggle" id="kbToggle">يوشۇرۇش</button>
+    </div>
+
+    <!-- SENTENCE DISPLAY -->
+    <div class="sentence-section">
+      <div class="sentence-label">مەشىق جۈملىسى</div>
+      <div id="sentence-display">مەشىقنى باشلاش ئۈچۈن تۆۋەندىكى رامكىغا يېزىشنى باشلاڭ...</div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="feedback-banner" id="feedbackBanner">
+      <span id="feedbackIcon">✓</span>
+      <span id="feedbackText"></span>
+    </div>
+
+    <!-- TYPING AREA -->
+    <div class="typing-wrapper">
+      <input type="text" id="typing-area"
+             placeholder="بۇ يەرگە يېزىڭ..."
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             autofocus dir="rtl">
+    </div>
+
+    <!-- LIVE META -->
+    <div class="typing-meta">
+      <span><span class="dot dot-blue"></span> ھەرپ: <strong id="metaChars">0</strong></span>
+      <span><span class="dot dot-green"></span> سۆز: <strong id="metaWords">0</strong></span>
+      <span><span class="dot dot-gold"></span> WPM: <strong id="metaWpm">0</strong></span>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-row">
+      <button class="btn btn-primary" id="start-btn">▶ باشلاش</button>
+      <button class="btn btn-ghost hidden" id="next-btn">⏭ كېيىنكى</button>
+      <button class="btn btn-ghost hidden" id="skip-btn">⏩ ئاتلاش</button>
+      <button class="btn btn-danger hidden" id="finish-btn">⏹ تاماملاش</button>
+      <button class="btn btn-success hidden" id="retry-btn">↺ قايتا</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="result-display"></div>
+
+  </div><!-- end glass-card -->
+
+  <!-- BOTTOM PANELS -->
+  <div class="section-panels">
+
+    <!-- LEADERBOARD -->
+    <div class="glass-card">
+      <div class="section-heading gold"><span class="icon">🏆</span> ئەڭ ئەلا نەتىجىلەر</div>
+      <ul class="leaderboard-list" id="leaderboard"></ul>
+      <button class="btn btn-ghost" style="width:100%; margin-top:8px; font-size:0.78rem;" id="clearLbBtn">تازىلاش</button>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div class="glass-card">
+      <div class="section-heading purple"><span class="icon">🏅</span> ئۇتۇق نىشانلىرى</div>
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-card">
+    <p>بۇ ئۇيغۇرچە خەت بېسىش مەشىق قۇرالىنى ھايات-ماماتلىق گىرۋەكلىرىدە جان تالىشىۋاتقان ئۇيغۇر تىلىمىزغا بىر كىشىلىك ياردەم بېرىش مەقسىتىدە، خالىسانە ئاددىي خىزمەت ھېسابىدا تەييارلاپ چىقتىم. مېھرىبان رەببىمىز مېنىڭ بۇ خىزمىتىمنى ئۆز دەرگاھىدا قۇبۇل قىلسا، ئاندىن ئۇيغۇر قېرىنداشلىرىمىز بۇ قۇرالدىن پايدىلىنىپ ئۇيغۇرچە خەت بېسىشنى مەشىق قىلالىسا مەقسىتىمگە يەتكەن بولىمەن.</p>
+    <div style="margin-top:12px; direction:ltr;">
+      <div class="social-links">
+        <a href="https://uycoder.github.io/paydilar/" title="تور بەت">
+          <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png" alt="logo">
+          <span>تور بەت</span>
+        </a>
+        <a href="https://www.linkedin.com/in/ahmed-bughra/" title="LinkedIn">
+          <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/LinkedIn.svg" alt="linkedin">
+          <span>LinkedIn</span>
+        </a>
+        <a href="https://github.com/Uycoder" title="GitHub">
+          <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/github.svg" alt="github">
+          <span>GitHub</span>
+        </a>
+        <a href="https://stackoverflow.com/users/16111723/ahmad-ali" title="Stack Overflow">
+          <img src="https://raw.githubusercontent.com/UyCoder/gpt-uyghur/a0f5cf2daf86aa371a15086a6214a2444be1ff92/pics/Stack_Overflow.svg" alt="stackoverflow">
+          <span>Stack Overflow</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end wrapper -->
+
+<script>
+(function() {
+'use strict';
+
+/* ========================
+   DATA
+======================== */
+const SENTENCES = {
+  proverbs: [
+    "يالغۇز ئاتنىڭ چېڭى چىقماس، چېڭى چىقسىمۇ دېڭى چىقماس.",
+    "يامان ھارۋا يول بۇزار، يامان ئادەم يۇرت بۇزار.",
+    "يەتتە ئۆلچەپ بىر كەس.",
+    "ئوتنى سەل چاغلىما، كۆيدۈرىدۇ؛ دۈشمەننى كىچىك دىمە، ئۆلتۈرىدۇ.",
+    "ماڭغاننىڭ يولى تۈگەر، ئولتۇرغاننىڭ كۈنى تۈگەر.",
+    "مىڭ ئاڭلىغاندىن بىر كۆرگەن ئەلا.",
+    "قازاندا نىمە بولسا چۆمۈچكە شۇ چىقار.",
+    "قاننى قان بىلەن يۇغىلى بولماس.",
+    "ساغلام تەندە ساپ ئەقىل.",
+    "سەۋرنىڭ تېگى ئالتۇن.",
+    "دوست كەينىدە ماختار، دۈشمەن ئالدىڭدا ماختار.",
+    "چىراي كۆيدۈرەر، خۇلق سۆيدۈرەر.",
+    "تام تۈۋىدىن قېرىيدۇ، ئادەم ئىچىدىن قېرىيدۇ.",
+    "جاپا چەكمىگەن ۋاپانىڭ قەدرىنى بىلمەس.",
+    "ئاتا مىھرى چىراغ، ئانا مىھرى بۇلاق.",
+    "بۆرىنىڭ بالىسى بۆرە.",
+    "كېڭەشلىك ئىش بۇزۇلماس.",
+    "ئىش ئىشتەينى ئاچىدۇ.",
+    "نەسىھەت ئاچچىق، مېۋىسى تاتلىق.",
+    "ھەر گۈلنىڭ پۇرىقى باشقىچە.",
+  ],
+  wisdom: [
+    "ئويغاق تۇرۇش نۇر، غەپلەتتە قېلىش بولسا ئالدىنىشتۇر.",
+    "كىشىلەردىن بىر نەرسە كۈتمەسلىك نەق بايلىقتۇر.",
+    "تەقۋادارلىق پاكلىق ۋە نومۇسنىڭ خۇلاسىسىدۇر.",
+    "كەمتەرلىك ئەقىلنىڭ بېشىدۇر، تەكەببۇرلۇق بولسا نادانلىقنىڭ بىشىدۇر.",
+    "ئۈچ نەرسە دوستلىشىشقا سەۋەب بولالايدۇ: دىن، كەمتەرلىك ۋە سېخىيلىق.",
+    "ئينسانلار دەرەخكە ئوخشايدۇ، تەمىنلىنىۋاتقان سۇ بىر، لېكىن بېرىدىغان مېۋە باشقا.",
+    "نەپسنىڭ تۈزىلىشى تاماخورلۇقنى تاشلاش بىلەن بولىدۇ.",
+    "مال-دۇنياغا بېرىلىش ئېتىقادنى ئاجىزلاشتۇرۇپ، ئىشەنچنى ۋەيران قىلىدۇ.",
+    "ئادەم ئىككى نەرسىسى بىلەنلا ئادەم: يۈرىكى ۋە تىلى.",
+    "مۇلايىم بول، ئاجىز بولما؛ كەسكىن بول، زوراۋان بولما.",
+    "ئۆزىنى ماختىش ئەڭ ناچار خىسلەتتۇر.",
+    "ئويۇن-چاقچاققا بېرىلگەن كىشى غەلىبىدىن يىراق.",
+    "بىھۇدە ۋاقىتتىن ئاپەت تۇغۇلىدۇ.",
+    "دۇنيادىكى ئەڭ ئېسىل كىشىلەر سېخىلەر، ئاخىرەتتىكى ئەڭ ئېسىل كىشىلەر تەقۋادار كىشىلەردۇر.",
+    "كىرىشتىن ئاۋۋال چىقىشنى ئويلا.",
+    "غەم قىلغۇچە پەم قىل.",
+    "راستلىقى ئاز كىشىنىڭ دوستلۇقى ئاز.",
+    "جان بولسا جاھان، ئاش بولسا قازان.",
+  ],
+  basics: [
+    "ئۇيغۇرچە خەت بېسىش مەشقى.",
+    "بۈگۈن كۈن يېخشى.",
+    "مەن ئۇيغۇرچە ئۆگىنىۋاتىمەن.",
+    "تىل ئۆگىنىش ئاسان ئەمەس.",
+    "ھەر كۈنى مەشىق قىلساڭ ئۈستۈرىلىسەن.",
+    "ئۇيغۇر تىلى گۈزەل تىلدۇر.",
+    "خەت بېسىش سۈرئىتىنى ئۈستۈرگىن.",
+    "تۈرك، ئۇيغۇر، قازاق بىر خىل تىل خەلقى.",
+    "چىن تىرىشسا، يەر يارىلار.",
+    "بۈگۈننى يوققا چىقارما، كەلگۈسىڭ ئۈچۈن تىرىش.",
+    "قۇرۇق گەپكە مۈشۈك ئاپتاپقا چىقمايدۇ.",
+    "قانائەتلىك كىشىنىڭ قارنى توق.",
+    "يىتكەن پىچاقنىڭ سېپى ئالتۇن.",
+    "يىقىلغان چېلىشىشقا تويماپتۇ.",
+    "يولدىن چىقما، خاندىن قورقما.",
+    "پىلانسىز ئىش، قېلىپسىز خىش.",
+  ]
+};
+
+const ALL_SENTENCES = [...SENTENCES.proverbs, ...SENTENCES.wisdom, ...SENTENCES.basics];
+
+const ACHIEVEMENTS = [
+  { id:'first_type',   icon:'🖊️', name:'First Keystroke', nameUg:'تۇنجى قەدەم',    cond: s => s.sentences >= 1 },
+  { id:'speed_50',     icon:'⚡', name:'Speed Demon',    nameUg:'تېز بارمىق',       cond: s => s.wpm >= 50 },
+  { id:'speed_80',     icon:'🚀', name:'Rocket Fingers', nameUg:'راكىتا بارمىق',   cond: s => s.wpm >= 80 },
+  { id:'accuracy_100', icon:'🎯', name:'Perfect',        nameUg:'كامال توغرىلىق',   cond: s => s.accuracy >= 100 && s.sentences >= 1 },
+  { id:'sentences_10', icon:'📖', name:'10 Sentences',   nameUg:'10 جۈملە',         cond: s => s.sentences >= 10 },
+  { id:'sentences_50', icon:'📚', name:'50 Sentences',   nameUg:'50 جۈملە',         cond: s => s.sentences >= 50 },
+  { id:'streak_3',     icon:'🔥', name:'3-Day Streak',   nameUg:'3 كۈنلۈك',         cond: s => s.streak >= 3 },
+  { id:'streak_7',     icon:'🌟', name:'Week Warrior',   nameUg:'يەتتە كۈن',        cond: s => s.streak >= 7 },
+  { id:'no_mistakes',  icon:'💎', name:'Zero Mistakes',  nameUg:'خاتالىقسىز',       cond: s => s.mistakes === 0 && s.sentences >= 3 },
+];
+
+/* ========================
+   STATE
+======================== */
+let state = {
+  mode: 'free',       // free | timed | zen
+  difficulty: 'all',  // all | short | long
+  category: 'all',    // all | proverbs | wisdom | basics
+  running: false,
+  sentences: [],
+  currentSentence: '',
+  typedChars: '',
+  totalMistakes: 0,
+  totalSentences: 0,
+  completedSentences: 0,
+  totalChars: 0,
+  totalWords: 0,
+  sessionMistakes: 0,
+  sessionSentences: [],
+  startTime: null,
+  sentenceStartTime: null,
+  timerInterval: null,
+  timerRemaining: 60,
+  soundEnabled: true,
+  stopOnError: false,
+  isFinished: false,
+  sessionWpm: 0,
+  sessionAccuracy: 100,
+  charIndex: 0,
+};
+
+/* ========================
+   PERSISTENT DATA
+======================== */
+function loadStorage() {
+  try {
+    return JSON.parse(localStorage.getItem('ugTypingData') || '{}');
+  } catch { return {}; }
+}
+function saveStorage(data) {
+  localStorage.setItem('ugTypingData', JSON.stringify(data));
+}
+
+let persistent = loadStorage();
+if (!persistent.leaderboard) persistent.leaderboard = [];
+if (!persistent.achievements) persistent.achievements = [];
+if (!persistent.streak) persistent.streak = 0;
+if (!persistent.lastDate) persistent.lastDate = '';
+if (!persistent.totalSentencesAll) persistent.totalSentencesAll = 0;
+
+/* ========================
+   PARTICLES
+======================== */
+function createParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#7c3aed','#a855f7','#3b82f6','#10b981','#f59e0b'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw;
+      animation-duration:${Math.random()*20+10}s;
+      animation-delay:${Math.random()*15}s;
+      opacity:0.4;
+    `;
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+/* ========================
+   SOUND ENGINE
+======================== */
+let AudioCtx = null;
+function getAudio() {
+  if (!AudioCtx) AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return AudioCtx;
+}
+function playBeep(freq, dur, type='sine', vol=0.1) {
+  if (!state.soundEnabled) return;
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    osc.type = type;
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+function playCorrectKey()   { playBeep(880, 0.08, 'sine', 0.08); }
+function playWrongKey()     { playBeep(220, 0.15, 'sawtooth', 0.12); }
+function playSentenceDone() { playBeep(660, 0.1); setTimeout(() => playBeep(880, 0.15), 100); }
+function playSessionEnd()   {
+  [523, 659, 784, 1047].forEach((f,i) => setTimeout(() => playBeep(f, 0.2, 'sine', 0.12), i*120));
+}
+
+/* ========================
+   TOAST
+======================== */
+function showToast(msg, type='info') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+/* ========================
+   STREAK
+======================== */
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (persistent.lastDate === today) {
+    // already counted
+  } else if (persistent.lastDate === yesterday) {
+    persistent.streak = (persistent.streak || 0) + 1;
+    persistent.lastDate = today;
+    showToast(`🔥 ${persistent.streak} كۈنلۈك داۋاملىق مەشىق!`, 'gold');
+  } else if (persistent.lastDate !== today) {
+    persistent.streak = 1;
+    persistent.lastDate = today;
+  }
+  saveStorage(persistent);
+  document.getElementById('streakCount').textContent = persistent.streak;
+  document.getElementById('lastPracticeDate').textContent = persistent.lastDate || '—';
+}
+
+/* ========================
+   ACHIEVEMENTS
+======================== */
+function checkAchievements(statsSnap) {
+  ACHIEVEMENTS.forEach(ach => {
+    if (!persistent.achievements.includes(ach.id) && ach.cond(statsSnap)) {
+      persistent.achievements.push(ach.id);
+      saveStorage(persistent);
+      showToast(`🏅 يېڭى ئۇتۇق: ${ach.nameUg}`, 'gold');
+    }
+  });
+  renderAchievements();
+}
+
+function renderAchievements() {
+  const grid = document.getElementById('achievementsGrid');
+  grid.innerHTML = '';
+  ACHIEVEMENTS.forEach(ach => {
+    const unlocked = persistent.achievements.includes(ach.id);
+    const div = document.createElement('div');
+    div.className = `achievement-badge ${unlocked ? 'unlocked' : 'locked'}`;
+    div.title = ach.name;
+    div.innerHTML = `
+      <span class="ach-icon">${ach.icon}</span>
+      <span class="ach-name-ug">${ach.nameUg}</span>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+/* ========================
+   LEADERBOARD
+======================== */
+function renderLeaderboard() {
+  const list = document.getElementById('leaderboard');
+  const sorted = [...persistent.leaderboard].sort((a,b) => b.wpm - a.wpm).slice(0,8);
+  if (sorted.length === 0) {
+    list.innerHTML = '<li style="color:var(--text-muted);font-size:0.82rem;padding:10px 0;text-align:center;">تېخى نەتىجە يوق</li>';
+    return;
+  }
+  list.innerHTML = '';
+  sorted.forEach((entry, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const badgeClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : 'rn';
+    const li = document.createElement('li');
+    li.className = `leaderboard-item ${rankClass}`;
+    li.innerHTML = `
+      <div class="rank-badge ${badgeClass}">${i+1}</div>
+      <span class="lb-name">${entry.date || '—'}</span>
+      <span class="lb-wpm">${entry.wpm} WPM</span>
+      <span class="lb-acc">${entry.accuracy}%</span>
+    `;
+    list.appendChild(li);
+  });
+}
+
+/* ========================
+   SENTENCE POOL
+======================== */
+function buildSentencePool() {
+  let pool = state.category === 'all' ? [...ALL_SENTENCES]
+           : state.category === 'proverbs' ? [...SENTENCES.proverbs]
+           : state.category === 'wisdom'   ? [...SENTENCES.wisdom]
+           : [...SENTENCES.basics];
+
+  if (state.difficulty === 'short') pool = pool.filter(s => s.length <= 30);
+  if (state.difficulty === 'long')  pool = pool.filter(s => s.length > 30);
+  if (pool.length === 0) pool = [...ALL_SENTENCES];
+
+  // Shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
+}
+
+/* ========================
+   DISPLAY SENTENCE (char spans)
+======================== */
+function renderSentenceSpans(sentence, typed) {
+  const display = document.getElementById('sentence-display');
+  let html = '';
+  for (let i = 0; i < sentence.length; i++) {
+    const ch = sentence[i] === ' ' ? '\u00A0' : sentence[i];
+    let cls = 'pending';
+    if (i < typed.length) {
+      cls = sentence[i] === typed[i] ? 'correct' : 'wrong';
+    } else if (i === typed.length) {
+      cls = 'current';
+    }
+    html += `<span class="char ${cls}">${ch}</span>`;
+  }
+  display.innerHTML = html;
+}
+
+/* ========================
+   PROGRESS
+======================== */
+function updateProgress() {
+  const total = state.totalSentences;
+  const done = state.completedSentences;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${done} / ${total}`;
+}
+
+/* ========================
+   LIVE STATS
+======================== */
+function calcWpm() {
+  if (!state.startTime) return 0;
+  const elapsed = (Date.now() - state.startTime) / 60000;
+  if (elapsed < 0.01) return 0;
+  return Math.round((state.totalWords + state.totalChars / 5) / elapsed);
+}
+function calcAccuracy() {
+  const total = state.totalChars + state.sessionMistakes;
+  if (total === 0) return 100;
+  return Math.round((state.totalChars / total) * 100);
+}
+function updateLiveStats() {
+  const wpm = calcWpm();
+  const acc = calcAccuracy();
+  document.getElementById('liveWpm').textContent = wpm;
+  document.getElementById('liveAccuracy').textContent = acc + '%';
+  document.getElementById('liveMistakes').textContent = state.sessionMistakes;
+  document.getElementById('liveSentences').textContent = state.completedSentences;
+  document.getElementById('metaWpm').textContent = wpm;
+  state.sessionWpm = wpm;
+  state.sessionAccuracy = acc;
+}
+
+/* ========================
+   TIMER
+======================== */
+function startTimer() {
+  const sec = parseInt(document.getElementById('timerSeconds').value) || 60;
+  state.timerRemaining = sec;
+  const timerEl = document.getElementById('timerDisplay');
+  document.getElementById('timerSection').classList.remove('hidden');
+
+  state.timerInterval = setInterval(() => {
+    state.timerRemaining--;
+    const m = Math.floor(state.timerRemaining / 60).toString().padStart(2,'0');
+    const s = (state.timerRemaining % 60).toString().padStart(2,'0');
+    timerEl.textContent = `${m}:${s}`;
+    if (state.timerRemaining <= 10) timerEl.classList.add('urgent');
+    if (state.timerRemaining <= 0) finishSession();
+  }, 1000);
+}
+function stopTimer() {
+  if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
+}
+
+/* ========================
+   START / NEXT SENTENCE
+======================== */
+function startSession() {
+  state.sentences = buildSentencePool();
+  state.totalSentences = state.sentences.length;
+  state.completedSentences = 0;
+  state.totalChars = 0;
+  state.totalWords = 0;
+  state.sessionMistakes = 0;
+  state.sessionSentences = [];
+  state.startTime = Date.now();
+  state.running = true;
+  state.isFinished = false;
+
+  document.getElementById('result-display').innerHTML = '';
+  document.getElementById('start-btn').classList.add('hidden');
+  document.getElementById('finish-btn').classList.remove('hidden');
+  document.getElementById('retry-btn').classList.add('hidden');
+
+  if (state.mode === 'timed') startTimer();
+
+  loadNextSentence();
+  updateProgress();
+  updateStreak();
+}
+
+function loadNextSentence() {
+  if (state.sentences.length === 0) { finishSession(); return; }
+  state.currentSentence = state.sentences.shift();
+  state.typedChars = '';
+  state.charIndex = 0;
+  state.sentenceStartTime = Date.now();
+
+  const ta = document.getElementById('typing-area');
+  ta.value = '';
+  ta.classList.remove('error-state','correct-state');
+  ta.focus();
+
+  renderSentenceSpans(state.currentSentence, '');
+  hideFeedback();
+
+  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('skip-btn').classList.remove('hidden');
+
+  // char/word meta
+  document.getElementById('metaChars').textContent = state.totalChars;
+  document.getElementById('metaWords').textContent = state.totalWords;
+}
+
+/* ========================
+   TYPING HANDLER
+======================== */
+document.getElementById('typing-area').addEventListener('input', function(e) {
+  if (!state.running || state.isFinished) return;
+
+  const val = e.target.value;
+  const sentence = state.currentSentence;
+
+  // Rebuild typedChars from input value
+  // Accept up to sentence.length chars
+  const typed = val.slice(0, sentence.length);
+
+  // Check each char
+  let allCorrect = true;
+  for (let i = 0; i < typed.length; i++) {
+    if (typed[i] !== sentence[i]) { allCorrect = false; break; }
+  }
+
+  // Count new mistakes
+  if (typed.length > state.typedChars.length) {
+    // user typed a new char
+    const newIdx = typed.length - 1;
+    if (typed[newIdx] !== sentence[newIdx]) {
+      state.sessionMistakes++;
+      playWrongKey();
+      showFeedback('error', '✗  خاتا! قايتا سىناڭ');
+      this.classList.add('error-state');
+      this.classList.remove('correct-state');
+      if (state.stopOnError) {
+        // undo the wrong char
+        e.target.value = state.typedChars;
+        state.typedChars = state.typedChars;
+        renderSentenceSpans(sentence, state.typedChars);
+        updateLiveStats();
+        return;
+      }
+    } else {
+      playCorrectKey();
+      this.classList.remove('error-state');
+      hideFeedback();
+    }
+  } else if (typed.length < state.typedChars.length) {
+    // backspace
+    this.classList.remove('error-state');
+    hideFeedback();
+  }
+
+  state.typedChars = typed;
+  renderSentenceSpans(sentence, typed);
+
+  // Update char/word meta
+  document.getElementById('metaChars').textContent = state.totalChars + typed.length;
+  document.getElementById('metaWords').textContent = state.totalWords + typed.trim().split(/\s+/).filter(Boolean).length;
+
+  updateLiveStats();
+
+  // Sentence complete?
+  if (typed.length === sentence.length && allCorrect) {
+    sentenceCompleted();
+  } else if (typed.length === sentence.length && !allCorrect) {
+    // full but errors - just let them fix
+    this.classList.add('error-state');
+    showFeedback('error', '✗  بۇ جۈملىدە خاتالىق bar — دۈزىتىڭ');
+  }
+});
+
+function sentenceCompleted() {
+  state.completedSentences++;
+  state.totalChars += state.currentSentence.length;
+  state.totalWords += state.currentSentence.trim().split(/\s+/).filter(Boolean).length;
+  state.sessionSentences.push(state.currentSentence);
+  persistent.totalSentencesAll = (persistent.totalSentencesAll || 0) + 1;
+  saveStorage(persistent);
+
+  playSentenceDone();
+  showFeedback('success', '✓  ئاپىرىن! جۈملە تاماملاندى');
+  document.getElementById('typing-area').classList.add('correct-state');
+  document.getElementById('typing-area').classList.remove('error-state');
+
+  updateProgress();
+  updateLiveStats();
+
+  // Check achievements
+  checkAchievements({
+    sentences: state.completedSentences,
+    wpm: state.sessionWpm,
+    accuracy: state.sessionAccuracy,
+    mistakes: state.sessionMistakes,
+    streak: persistent.streak,
+  });
+
+  // Auto advance after short delay (zen mode: immediately, others: 600ms)
+  setTimeout(() => {
+    if (state.running && !state.isFinished) loadNextSentence();
+  }, state.mode === 'zen' ? 300 : 700);
+}
+
+/* ========================
+   FEEDBACK BANNER
+======================== */
+function showFeedback(type, text) {
+  const b = document.getElementById('feedbackBanner');
+  b.className = `feedback-banner show ${type}`;
+  document.getElementById('feedbackText').textContent = text;
+}
+function hideFeedback() {
+  document.getElementById('feedbackBanner').className = 'feedback-banner';
+}
+
+/* ========================
+   FINISH SESSION
+======================== */
+function finishSession() {
+  state.running = false;
+  state.isFinished = true;
+  stopTimer();
+  playSessionEnd();
+
+  const wpm = calcWpm();
+  const acc = calcAccuracy();
+
+  // Save to leaderboard
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')}`;
+  persistent.leaderboard.push({ wpm, accuracy: acc, date: dateStr, sentences: state.completedSentences });
+  if (persistent.leaderboard.length > 20) persistent.leaderboard.splice(0, persistent.leaderboard.length - 20);
+  saveStorage(persistent);
+  renderLeaderboard();
+
+  // Grade
+  const grade = acc >= 98 && wpm >= 60 ? '🏆 تولۇق مۇكەممەل!'
+              : acc >= 95 && wpm >= 40 ? '🌟 نۇرغۇن ياخشى!'
+              : acc >= 90              ? '👍 ياخشى'
+              :                         '💪 داۋملاپ مەشىق قىلىڭ';
+
+  // Final achievement check
+  checkAchievements({
+    sentences: state.completedSentences,
+    wpm,
+    accuracy: acc,
+    mistakes: state.sessionMistakes,
+    streak: persistent.streak,
+  });
+
+  // Render results
+  const typedListHtml = state.sessionSentences.map(s =>
+    `<div class="typed-sentence-item"><div>${s}</div></div>`
+  ).join('');
+
+  document.getElementById('result-display').innerHTML = `
+    <div class="result-header">
+      <span class="result-grade">${grade}</span>
+      <h2>مەشىق تاماملاندى!</h2>
+      <p>تۆۋەندە نەتىجىلىرىڭىز كۆرسىتىلدى</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><span class="val">${wpm}</span><span class="lbl">WPM سۈرئەت</span></div>
+      <div class="stat-card"><span class="val">${acc}%</span><span class="lbl">توغرىلىق</span></div>
+      <div class="stat-card"><span class="val">${state.sessionMistakes}</span><span class="lbl">خاتالىق</span></div>
+      <div class="stat-card"><span class="val">${state.completedSentences}</span><span class="lbl">جۈملە</span></div>
+      <div class="stat-card"><span class="val">${state.totalChars}</span><span class="lbl">ھەرپ</span></div>
+      <div class="stat-card"><span class="val">${state.totalWords}</span><span class="lbl">سۆز</span></div>
+    </div>
+    ${state.sessionSentences.length > 0 ? `
+    <div style="margin-bottom:8px;font-size:0.8rem;color:var(--text-muted);">تاماملانغان جۈملىلەر:</div>
+    <div class="typed-sentences-list">${typedListHtml}</div>` : ''}
+  `;
+
+  document.getElementById('result-display').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  document.getElementById('finish-btn').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('skip-btn').classList.add('hidden');
+  document.getElementById('retry-btn').classList.remove('hidden');
+  document.getElementById('start-btn').classList.remove('hidden');
+  document.getElementById('sentence-display').textContent = 'قايتا باشلاش ئۈچۈن « باشلاش » نى بېسىڭ.';
+}
+
+/* ========================
+   BUTTON HANDLERS
+======================== */
+document.getElementById('start-btn').addEventListener('click', () => startSession());
+document.getElementById('retry-btn').addEventListener('click', () => {
+  document.getElementById('result-display').innerHTML = '';
+  document.getElementById('retry-btn').classList.add('hidden');
+  startSession();
+});
+document.getElementById('finish-btn').addEventListener('click', () => finishSession());
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (!state.running) return;
+  // Count current chars toward total
+  if (state.typedChars.length > 0) {
+    state.totalChars += state.typedChars.length;
+    state.totalWords += state.typedChars.trim().split(/\s+/).filter(Boolean).length;
+  }
+  state.completedSentences++;
+  state.sessionSentences.push(state.currentSentence + ' *(ئاتلاندى)*');
+  updateProgress();
+  loadNextSentence();
+});
+document.getElementById('skip-btn').addEventListener('click', () => {
+  if (!state.running) return;
+  state.sentences.push(state.currentSentence); // put it at back
+  loadNextSentence();
+  showToast('جۈملە ئاتلاندى', 'info');
+});
+
+/* ========================
+   MODE TABS
+======================== */
+document.getElementById('modeGroup').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  document.querySelectorAll('#modeGroup .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.mode = btn.dataset.mode;
+  document.getElementById('timerSection').classList.add('hidden');
+  stopTimer();
+});
+
+/* ========================
+   DIFFICULTY TABS
+======================== */
+document.getElementById('diffGroup').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  document.querySelectorAll('#diffGroup .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.difficulty = btn.dataset.diff;
+});
+
+/* ========================
+   CATEGORY CHIPS
+======================== */
+document.getElementById('categoryChips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  state.category = chip.dataset.cat;
+});
+
+/* ========================
+   SETTINGS
+======================== */
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsOverlay').classList.add('open');
+});
+document.getElementById('settingsOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('settingsOverlay'))
+    document.getElementById('settingsOverlay').classList.remove('open');
+});
+document.getElementById('soundToggle').addEventListener('change', e => {
+  state.soundEnabled = e.target.checked;
+});
+document.getElementById('stopOnErrorToggle').addEventListener('change', e => {
+  state.stopOnError = e.target.checked;
+});
+document.getElementById('hideKeyboardToggle').addEventListener('change', e => {
+  document.getElementById('keyboardWrapper').style.display = e.target.checked ? 'none' : '';
+});
+
+/* ========================
+   KEYBOARD TOGGLE
+======================== */
+document.getElementById('kbToggle').addEventListener('click', function() {
+  const img = document.getElementById('keyboardImg');
+  const isHidden = img.style.display === 'none';
+  img.style.display = isHidden ? 'block' : 'none';
+  this.textContent = isHidden ? 'يوشۇرۇش' : 'كۆرسىتىش';
+});
+
+/* ========================
+   CLEAR LEADERBOARD
+======================== */
+document.getElementById('clearLbBtn').addEventListener('click', () => {
+  if (confirm('نەتىجىلەرنى تازىلامسىز؟')) {
+    persistent.leaderboard = [];
+    saveStorage(persistent);
+    renderLeaderboard();
+    showToast('نەتىجىلەر تازىلاندى', 'info');
+  }
+});
+
+/* ========================
+   KEYBOARD SHORTCUT
+======================== */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('settingsOverlay').classList.remove('open');
+  if (e.ctrlKey && e.key === 'Enter') {
+    if (!state.running) startSession();
+  }
+});
+
+/* ========================
+   INIT
+======================== */
+document.getElementById('streakCount').textContent = persistent.streak || 0;
+document.getElementById('lastPracticeDate').textContent = persistent.lastDate || '—';
+renderLeaderboard();
+renderAchievements();
+
+// Welcome message
+setTimeout(() => showToast('خۇش كەلدىڭىز! مەشىقنى باشلاش ئۈچۈن « باشلاش » نى بېسىڭ.', 'info'), 500);
+
+})();
+</script>
 </body>
-
-
 </html>
