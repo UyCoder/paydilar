@@ -50,13 +50,10 @@ html,body { width:100%; height:100%; overflow:hidden; background:#020d1f; font-f
     <span class="key-tag">Z ئۆزگىچە ھۇجۇم</span>
   </div>
   <div style="margin-bottom:16px;">
-    <span style="color:#00c8ff; font-size:0.9rem;">مۇزىكا تاللاڭ: </span>
-    <select id="bgmSelector" class="diff-btn" style="padding:4px 8px;">
-      <option value="Kerindashbiz.mp3">قېرىنداشبىز</option>
-      <option value="ziyaretqilghiliKeldim.mp3">زىيارەت قىلغىلى كەلدىم</option>
-    </select>
+    <span style="color:#00c8ff; font-size:0.9rem;">مۇزىكا: </span>
+    <span id="currentSongName" style="color:white; font-size:0.8rem; background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:12px;">تەييارلانماقتا...</span>
   </div>
-  <audio id="bgMusic" loop></audio>
+  <audio id="bgMusic"></audio>
   <div id="timeInfo" style="color:#00c8ff;font-size:1.1rem;margin-bottom:16px;"></div>
   <button class="btn btn-blue" onclick="startGame()">▶ جەڭنى باشلا</button>
   <button class="btn btn-gold" onclick="goBack()">← مەشىق مەيدانى</button>
@@ -126,6 +123,32 @@ function sndWin()  { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,0.2
 function sndLose() { [350,280,180,120].forEach((f,i)=>setTimeout(()=>beep(f,0.22,'square',0.12),i*160)); }
 
 let gs={};
+
+let PLAYLIST = ['Kerindashbiz.mp3', 'ziyaretqilghiliKeldim.mp3']; // Fallback playlist
+let currentSongIdx = 0;
+fetch('mp3/').then(r=>r.text()).then(html=>{
+  const matches = html.match(/href="([^"]+\.mp3)"/ig);
+  if(matches) {
+     const files = matches.map(m=>m.match(/href="([^"]+)"/)[1]).map(f=>decodeURIComponent(f));
+     if(files.length > 0) PLAYLIST = files.map(f => f.startsWith('mp3/') ? f : 'mp3/' + f.split('/').pop());
+  }
+}).catch(e=>{});
+
+function playNextSong() {
+  if (PLAYLIST.length===0) return;
+  const music = document.getElementById('bgMusic');
+  music.src = PLAYLIST[currentSongIdx];
+  music.volume = 0.2; 
+  music.play().catch(e=>{});
+  const n = document.getElementById('currentSongName');
+  if(n) n.textContent = decodeURIComponent(PLAYLIST[currentSongIdx].split('/').pop());
+}
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('bgMusic').addEventListener('ended', () => {
+       currentSongIdx = (currentSongIdx + 1) % PLAYLIST.length;
+       playNextSong();
+    });
+});
 
 function initGame(){
   const W=canvas.width,H=canvas.height;
@@ -373,9 +396,7 @@ function startGame(){
   showWaveMsg();
   clearInterval(gs.timerInt);
 
-  const music = document.getElementById('bgMusic');
-  music.src = document.getElementById('bgmSelector').value;
-  music.play().catch(e=>{});
+  playNextSong();
 
   gs.timerInt=setInterval(()=>{ if(!gs.running) return; gs.timeLeft--; if(gs.timeLeft<=0) endGame(true); },1000);
   lastTs=performance.now(); rafId=requestAnimationFrame(loop);
