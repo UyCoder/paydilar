@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ھىكمەتلەر خەزىنىسى</title>
+    <!-- Google Fonts for non-Uyghur Latin text -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #ec4899;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-dim: #cbd5e1;
+            --arabic-color: #fbbf24;
+            --uyghur-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'UKIJ Tuz Tom', 'Microsoft Uighur', 'Alkatip', Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            height: 85vh;
+            min-height: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.25);
+            border-left: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .app-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cat-scroll-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .cat-scroll-area::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .cat-scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
+        .cat-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px 20px;
+            border-radius: 16px;
+            color: var(--text-dim);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .cat-btn i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .cat-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+            color: #fff;
+        }
+
+        .cat-btn:hover i {
+            color: #fff;
+        }
+
+        .cat-btn.active {
+            background: linear-gradient(135deg, var(--primary), #6366f1);
+            border-color: #818cf8;
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+            transform: translateX(-8px);
+        }
+
+        .cat-btn.active i {
+            color: #fff;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-decor {
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            filter: blur(100px);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .bottom-decor {
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            filter: blur(100px);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .display-card {
+            width: 100%;
+            max-width: 650px;
+            min-height: 350px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            position: relative;
+        }
+
+        .display-card.animating {
+            transform: scale(0.95) translateY(10px);
+            opacity: 0;
+        }
+
+        .display-card.show {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Typography inside cards */
+        .card-category-title {
+            position: absolute;
+            top: 20px;
+            font-size: 16px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Inter', sans-serif;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 38px;
+            line-height: 1.8;
+            color: var(--arabic-color);
+            margin-bottom: 25px;
+            direction: rtl;
+        }
+
+        .uyghur-text {
+            font-size: 28px;
+            line-height: 1.8;
+            color: var(--uyghur-color);
+        }
+
+        .latin-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            direction: ltr;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .book-title {
+            font-size: 34px;
+            font-weight: bold;
+            color: #f472b6;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .main-btn {
+            margin-top: 50px;
+            background: linear-gradient(135deg, #f43f5e, #8b5cf6);
+            border: 2px solid transparent;
+            padding: 18px 50px;
+            border-radius: 40px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .main-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(244, 63, 94, 0.6);
+            background: linear-gradient(135deg, #e11d48, #7c3aed);
+        }
+
+        .main-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(244, 63, 94, 0.4);
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Responsive Mobile Styles */
+        @media (max-width: 900px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            .app-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 95vh;
+                border-radius: 20px;
+            }
+            .sidebar {
+                width: 100%;
+                border-left: none;
+                border-bottom: 1px solid var(--glass-border);
+                padding: 15px 10px;
+                background: rgba(0, 0, 0, 0.3);
+            }
+            .app-title {
+                font-size: 26px;
+                margin-bottom: 15px;
+            }
+            .cat-scroll-area {
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .cat-btn {
+                padding: 12px 18px;
+                font-size: 18px;
+                margin-left: 10px; /* LTR margin since flex row is naturally LTR/RTL depending on dir */
+            }
+            /* Clean up layout for active element in horizontal scroll */
+            .cat-btn.active {
+                transform: translateY(-3px) translateX(0);
+                box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4);
+            }
+            .cat-btn:hover {
+                transform: translateY(-3px) translateX(0);
+            }
+            
+            .main-content {
+                padding: 25px 15px;
+            }
+            .display-card {
+                padding: 35px 20px 25px 20px;
+                min-height: 300px;
+                margin-top: 5px;
+            }
+            .card-category-title {
+                font-size: 13px;
+                top: 12px;
+            }
+            
+            /* Responsive Fonts */
+            .arabic-text { font-size: 28px; line-height: 1.5; margin-bottom: 15px; }
+            .uyghur-text { font-size: 22px; line-height: 1.6; }
+            .book-title { font-size: 24px; margin-bottom: 12px; }
+            .latin-text { font-size: 18px; margin-bottom: 12px; }
+            
+            .main-btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 22px;
+                padding: 16px 20px;
+                margin-top: 35px;
+                border-radius: 30px;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 400px) {
+            .app-title { font-size: 22px; }
+            .cat-btn { font-size: 16px; padding: 10px 14px; }
+            .cat-btn i { font-size: 16px; }
+            .arabic-text { font-size: 24px; }
+            .uyghur-text { font-size: 20px; }
+            .book-title { font-size: 20px; }
+            .main-btn { font-size: 20px; }
+            .display-card { padding: 30px 15px 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="app-title">ھىكمەتلەر خەزىنىسى</div>
+            <!-- Horizontal scroll container on mobile, vertical on desktop -->
+            <div class="cat-scroll-area">
+                <button class="cat-btn active" data-id="ayat">
+                    <i class="fa-solid fa-book-quran"></i>
+                    <span>قۇرئان ئايەتلىرى</span>
+                </button>
+                <button class="cat-btn" data-id="hadith">
+                    <i class="fa-solid fa-mosque"></i>
+                    <span>سەھىھ ھەدىسلەر</span>
+                </button>
+                <button class="cat-btn" data-id="uyghur">
+                    <i class="fa-solid fa-quote-right"></i>
+                    <span>ئۇيغۇرچە ماقاللار</span>
+                </button>
+                <button class="cat-btn" data-id="syrian">
+                    <i class="fa-solid fa-language"></i>
+                    <span>سۈرىيە شىۋىسى ئۆگىنىش</span>
+                </button>
+                <button class="cat-btn" data-id="english">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span>ئىنگلىزچە</span>
+                </button>
+                <button class="cat-btn" data-id="turkish">
+                    <i class="fa-solid fa-star-and-crescent"></i>
+                    <span>تۈركچە</span>
+                </button>
+                <button class="cat-btn" data-id="world_history">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>دۇنيا تارىخى</span>
+                </button>
+                <button class="cat-btn" data-id="our_history">
+                    <i class="fa-solid fa-landmark-dome"></i>
+                    <span>تارىخىمىز</span>
+                </button>
+                <button class="cat-btn" data-id="books">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>كىتابلار</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="top-decor"></div>
+            <div class="bottom-decor"></div>
+
+            <div class="display-card show" id="displayCard">
+                <div class="card-category-title" id="cardCategoryTitle">ئۇيغۇرچە ماقاللار</div>
+                <div id="cardContent">
+                    <!-- Dynamic content will go here -->
+                    <div class="uyghur-text">مارھابا! «خەزىنىدىن بىر چاڭگال» كۇنۇپكىسىنى بېسىپ باشلاڭ.</div>
+                </div>
+            </div>
+
+            <button class="main-btn" id="generateBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                خەزىنىدىن بىر چاڭگال
+            </button>
+        </div>
+    </div>
+
+    <!-- Load Local JS Files -->
+    <script src="Hezine/uyghur.js"></script>
+    <script src="Hezine/ayat.js"></script>
+    <script src="Hezine/hadith.js"></script>
+    <script src="Hezine/syrian.js"></script>
+    <script src="Hezine/english.js"></script>
+    <script src="Hezine/turkish.js"></script>
+    <script src="Hezine/world_history.js"></script>
+    <script src="Hezine/our_history.js"></script>
+    <script src="Hezine/books.js"></script>
+
+    <script>
+        const categories = {
+            'uyghur': {
+                name: 'ئۇيغۇرچە ماقاللار',
+                dataKey: 'hezine_uyghur',
+                type: 'single'
+            },
+            'ayat': {
+                name: 'قۇرئان ئايەتلىرى',
+                dataKey: 'hezine_ayat',
+                type: 'arabic'
+            },
+            'hadith': {
+                name: 'سەھىھ ھەدىسلەر',
+                dataKey: 'hezine_hadith',
+                type: 'arabic'
+            },
+            'syrian': {
+                name: 'سۈرىيە شىۋىسى އۆگىنىش',
+                dataKey: 'hezine_syrian',
+                type: 'arabic'
+            },
+            'english': {
+                name: 'ئىنگلىزچە ھېكمەتلەر',
+                dataKey: 'hezine_english',
+                type: 'latin'
+            },
+            'turkish': {
+                name: 'تۈركچە سۆزلەر',
+                dataKey: 'hezine_turkish',
+                type: 'latin'
+            },
+            'world_history': {
+                name: 'دۇنيا تارىخىدىكى بۈگۈن',
+                dataKey: 'hezine_world_history',
+                type: 'single'
+            },
+            'our_history': {
+                name: 'تارىخىمىزغا نەزەر',
+                dataKey: 'hezine_our_history',
+                type: 'single'
+            },
+            'books': {
+                name: 'كىتاب جەۋھەرلىرى',
+                dataKey: 'hezine_books',
+                type: 'book'
+            }
+        };
+
+        let currentCategory = 'ayat';
+
+        const catBtns = document.querySelectorAll('.cat-btn');
+        const displayCard = document.getElementById('displayCard');
+        const cardContent = document.getElementById('cardContent');
+        const cardCategoryTitle = document.getElementById('cardCategoryTitle');
+        const generateBtn = document.getElementById('generateBtn');
+
+        // Center active button in horizontal scroll area
+        function scrollActiveButtonIntoView(btn) {
+            const scrollArea = document.querySelector('.cat-scroll-area');
+            if (window.innerWidth <= 900) {
+                // Determine layout direction based on 'dir' attribute
+                const isRTL = document.documentElement.dir === 'rtl';
+                
+                // Native scrollIntoView often works best for smooth scrolling
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        // Initialize event listeners
+        catBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active class
+                catBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                scrollActiveButtonIntoView(btn);
+
+                // Update state
+                currentCategory = btn.dataset.id;
+                cardCategoryTitle.textContent = categories[currentCategory].name;
+                
+                // Immediately pick a random one
+                loadAndShowData();
+            });
+        });
+
+        generateBtn.addEventListener('click', loadAndShowData);
+
+        // For initial load
+        loadAndShowData();
+
+        function loadAndShowData() {
+            // Start Animation
+            animateCardOut();
+            
+            setTimeout(() => {
+                try {
+                    const dataKey = categories[currentCategory].dataKey;
+                    const items = window[dataKey]; // Loading from globally included JS files
+                    
+                    if (!items || !Array.isArray(items) || items.length === 0) {
+                        throw new Error(`«${dataKey}» سانلىق مەلۇماتى تېپىلمىدى.`);
+                    }
+
+                    const randomIndex = Math.floor(Math.random() * items.length);
+                    const selectedItem = items[randomIndex];
+
+                    renderContent(selectedItem, categories[currentCategory].type);
+                } catch (error) {
+                    console.error("Error loading data:", error);
+                    cardContent.innerHTML = `
+                        <div class="error-msg">
+                            <i class="fa-solid fa-triangle-exclamation"></i> 
+                            ${error.message}
+                        </div>`;
+                }
+                
+                animateCardIn();
+            }, 300); // 300ms matches the CSS transition
+        }
+
+        function renderContent(item, type) {
+            let html = '';
+            
+            if (type === 'single') {
+                html = `<div class="uyghur-text">${item.content}</div>`;
+            } 
+            else if (type === 'arabic') {
+                html = `
+                    <div class="arabic-text">${item.arabic}</div>
+                    <div class="uyghur-text">${item.translation}</div>
+                `;
+            }
+            else if (type === 'latin') {
+                html = `
+                    <div class="latin-text">“${item.text}”</div>
+                    <div class="uyghur-text">${item.translation}</div>
+                `;
+            }
+            else if (type === 'book') {
+                html = `
+                    <div class="book-title"><i class="fa-solid fa-book"></i> ${item.title}</div>
+                    <div class="uyghur-text">${item.summary}</div>
+                `;
+            }
+
+            cardContent.innerHTML = html;
+        }
+
+        function animateCardOut() {
+            displayCard.classList.remove('show');
+            displayCard.classList.add('animating');
+            cardContent.style.opacity = '0';
+        }
+
+        function animateCardIn() {
+            cardContent.style.opacity = '1';
+            displayCard.classList.remove('animating');
+            displayCard.classList.add('show');
+        }
+    </script>
+</body>
+</html>
