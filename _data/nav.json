@@ -1,23 +1,24 @@
 {
-    "items": [{
-            "name": "مەن كىم",
-            "link": "/portfolio/"
-        },
-      {
-        "name": "تەھرىرلىك قۇراللىرى",
-        "link": "https://uycoder.github.io/gpt-uyghur/"
-      },
-      {
-        "name": "كۇنۇپكا مەشىقى",
-        "link": "https://uycoder.github.io/paydilar/UyghurKeyboardTraining/Ug-TrainingApp.html"
-      },
-      {
-        "name": "خەۋەرلەر",
-        "link": "https://uycoder.github.io/paydilar/news/UyghurNews.html"
-      },
-      {
-        "name": "بلوگ ھەققىدە",
-        "link": "/about/"
-      }
-    ]
+  "items": [
+    {
+      "name": "مەن كىم",
+      "link": "/portfolio/"
+    },
+    {
+      "name": "ھىكمەتلەر",
+      "link": "https://uycoder.github.io/paydilar/HikmetlerHulasisi/index.html"
+    },
+    {
+      "name": "كۇنۇپكا مەشىقى",
+      "link": "https://uycoder.github.io/paydilar/UyghurKeyboardTraining/Ug-TrainingApp.html"
+    },
+    {
+      "name": "خەۋەرلەر",
+      "link": "https://uycoder.github.io/paydilar/news/UyghurNews.html"
+    },
+    {
+      "name": "بلوگ ھەققىدە",
+      "link": "/about/"
+    }
+  ]
 }
