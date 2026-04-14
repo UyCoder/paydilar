@@ -12,243 +12,503 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
         
         :root {
-            /* شەرقىي تۈركىستان بايرىقى كۆك رەڭگىگە يېقىن رەڭلەر */
-            --primary-color: #65B7E1; /* بايراق كۆك رەڭگى (تېما ئۈچۈن) */
-            --primary-dark: #007bb5; /* تېكىست ۋە كۇنۇپكىلار ئۈچۈن تېخىمۇ قېنىق كۆك */
-            --accent-color: #e0f2f9; /* سۇس كۆك تەگلىك */
-            --bg-color: #f4f8fb;
-            --text-color: #333;
-            --sidebar-width: 280px;
+            --primary-color: #0ea5e9; /* Sky Blue */
+            --primary-dark: #2563eb; /* Royal Blue */
+            --primary-light: #e0f2fe;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --text-color: #1e293b; /* Deep Gray Text */
+            --text-muted: #475569;
+            --sidebar-width: 320px;
         }
 
         body {
             font-family: 'ALKATIP', 'UKIJ Tuz', 'Microsoft Uighur', 'Noto Naskh Arabic', serif;
-            background-color: var(--bg-color);
+            /* Yoruq mesh gradient arka ko'rinishi */
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 40% 20%, #e2e8f0 0px, transparent 50%),
+                radial-gradient(at 80% 0%, #bfdbfe 0px, transparent 50%),
+                radial-gradient(at 0% 50%, #dbeafe 0px, transparent 50%),
+                radial-gradient(at 80% 50%, #e0e7ff 0px, transparent 50%),
+                radial-gradient(at 0% 100%, #eff6ff 0px, transparent 50%),
+                radial-gradient(at 80% 100%, #ccfbf1 0px, transparent 50%),
+                radial-gradient(at 0% 0%, #f1f5f9 0px, transparent 50%);
+            background-attachment: fixed;
             color: var(--text-color);
             margin: 0;
             padding: 0;
             line-height: 1.8;
-            padding-bottom: 80px; /* كونترول تاختىسى ئۈچۈن ئورۇن */
+            padding-bottom: 90px;
+            min-height: 100vh;
         }
 
-        /* Navbar & Time */
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+        /* Header - Floating Glass */
         .header {
-            background-color: var(--primary-dark);
-            color: white;
-            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
         }
+
         .header-title h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
+            background: linear-gradient(to right, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .header-title span {
-            font-size: 13px;
-            opacity: 0.9;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: bold;
         }
         .clock-display {
             font-family: monospace;
             font-size: 16px;
-            background: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 5px;
-            direction: ltr; /* ۋاقىت سولدىن ئوڭغا */
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            display: flex;
-            gap: 20px;
-            padding: 0 15px;
-        }
-
-        /* Prompt Section (Setup) */
-        .setup-section {
-            background: white;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            border-top: 5px solid var(--primary-color);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--primary-dark);
+            direction: ltr;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
+
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            display: flex;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        /* Glass Panels */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .setup-section {
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        .setup-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+        }
+
+        .setup-section h3 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            font-size: 22px;
+        }
+
         .prompt-box {
-            background: var(--accent-color);
-            padding: 15px;
-            border: 1px dashed var(--primary-dark);
-            font-size: 14px;
-            height: 100px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            height: 120px;
             overflow-y: scroll;
-            margin: 10px 0;
+            margin: 15px 0;
             direction: rtl;
-            font-family: sans-serif;
-            color: #444;
+            font-family: 'Noto Naskh Arabic', sans-serif;
+            color: var(--text-muted);
+            line-height: 1.6;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
         }
+
         textarea#mdInput {
             width: 100%;
-            height: 150px;
+            height: 180px;
             padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'UKIJ Tuz', sans-serif;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            color: var(--text-color);
+            font-family: 'UKIJ Tuz', 'Noto Naskh Arabic', sans-serif;
+            font-size: 16px;
             margin-top: 10px;
             resize: vertical;
             box-sizing: border-box;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
         }
+        textarea#mdInput:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+        }
+
         .btn {
-            background-color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 8px;
             font-family: inherit;
-            transition: 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
             margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
-        .btn:hover { background-color: #005f8d; }
-        .btn-outline { background: transparent; border: 1px solid var(--primary-dark); color: var(--primary-dark); }
-        .btn-outline:hover { background: var(--accent-color); }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+            color: #fff;
+        }
+        .btn-outline { 
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--primary-color); 
+            color: var(--primary-dark); 
+            box-shadow: none;
+        }
+        .btn-outline:hover { 
+            background: var(--primary-light); 
+            color: var(--primary-dark);
+        }
 
-        /* Main Layout */
+        /* Sidebar & Typography */
         .sidebar {
             width: var(--sidebar-width);
             flex-shrink: 0;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
             height: fit-content;
             position: sticky;
-            top: 90px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: none;
-            border-top: 5px solid var(--primary-color);
+            top: 100px;
         }
-        .sidebar h3 { margin-top: 0; color: var(--primary-dark); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .toggle-toc-btn {
+            margin-top: 0; 
+            color: var(--primary-dark); 
+            border-bottom: 2px solid var(--primary-light); 
+            padding-bottom: 15px; 
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #tocIcon {
+            display: none;
+            font-size: 14px;
+        }
+
         .toc-list a {
             display: block;
             text-decoration: none;
-            color: #555;
-            padding: 5px 0;
-            font-size: 15px;
-            transition: 0.2s;
-            border-bottom: 1px dashed #eee;
+            color: var(--text-color);
+            padding: 8px 10px;
+            font-size: 16px;
+            transition: 0.3s;
+            border-bottom: 1px dashed #e2e8f0;
+            border-radius: 6px;
         }
-        .toc-list a:hover { color: var(--primary-dark); padding-right: 5px; background: var(--accent-color); }
+        .toc-list a:hover { 
+            color: var(--primary-dark); 
+            padding-right: 15px; 
+            background: var(--primary-light); 
+            font-weight: bold;
+        }
 
+        /* Typography Settings */
+        .typography-controls {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #cbd5e1;
+            direction: rtl;
+        }
+        .typography-controls h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            font-size: 17px;
+        }
+        .typo-row {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .typo-row label {
+            font-size: 14px;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        .typo-row select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-family: inherit;
+            background: #ffffff;
+            outline: none;
+        }
+        .typo-row input[type=range] {
+            width: 100%;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+        .typo-row span {
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        /* Save Tools */
+        .save-tools {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .save-tools button {
+            width: 100%;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        /* Article View */
         .article-view {
             flex-grow: 1;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             min-height: 500px;
-            display: none;
         }
 
         /* Article Typography */
-        #articleContent { font-size: 19px; text-align: justify; color: #222; }
-        #articleContent h1, #articleContent h2, #articleContent h3 { color: var(--primary-dark); margin-top: 1.5em; }
-        #articleContent h1 { text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        #articleContent { 
+            font-size: 20px; 
+            text-align: justify; 
+            color: #1e293b; 
+            line-height: 2.1;
+            transition: all 0.3s ease;
+        }
+        #articleContent h1, #articleContent h2, #articleContent h3 { 
+            color: var(--primary-dark); 
+            margin-top: 1.8em; 
+            line-height: 1.5;
+        }
+        #articleContent h1 { 
+            text-align: center; 
+            font-size: 2.2em;
+            padding-bottom: 15px; 
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary-light); 
+            color: #0f172a;
+        }
         #articleContent p { 
             text-indent: 2em; 
-            margin-bottom: 1em; 
-            line-height: 1.9;
+            margin-bottom: 1.2em; 
         }
         #articleContent blockquote {
             border-right: 5px solid var(--primary-color);
-            background: var(--accent-color);
-            margin: 20px 0;
-            padding: 15px;
+            background: rgba(255,255,255,0.7);
+            margin: 25px 0;
+            padding: 20px;
             font-style: italic;
-            color: #444;
-            border-radius: 0 5px 5px 0;
+            color: #334155;
+            border-radius: 8px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            text-indent: 0;
         }
         #articleContent img {
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 20px auto;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        #articleContent ul, #articleContent ol { margin-right: 20px; }
-        #articleContent li { margin-bottom: 10px; }
+        #articleContent strong {
+            color: #0f172a;
+            background-color: var(--primary-light);
+            padding: 0 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        #articleContent ul, #articleContent ol { margin-right: 20px; margin-bottom: 1.5em; }
+        #articleContent li { margin-bottom: 12px; }
+        #articleContent a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); }
+        #articleContent a:hover { color: var(--primary-dark); border-bottom-style: solid; }
 
-        /* Bottom Control Bar */
+        #articleContent hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #cbd5e1, transparent);
+            margin: 40px 0;
+        }
+
+        /* Control Bar - Compact/Collapsible */
         .control-bar {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            background: #222;
-            color: white;
-            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             border-radius: 50px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            padding: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             z-index: 2000;
             width: auto;
             max-width: 95%;
-            flex-wrap: wrap;
-            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .control-bar select, .control-bar button {
-            background: #444;
+        
+        .control-bar-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 1000px;
+            opacity: 1;
+            padding: 0 15px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-overflow-scrolling: touch;
+        }
+        .control-bar-inner::-webkit-scrollbar { display: none; }
+
+        .control-bar.collapsed .control-bar-inner {
+            max-width: 0;
+            opacity: 0;
+            padding: 0;
+            gap: 0;
+            pointer-events: none;
+        }
+
+        #togglePlayerBtn {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
             cursor: pointer;
-            font-family: 'ALKATIP', inherit;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+            margin: 0;
+        }
+        #togglePlayerBtn:hover { transform: scale(1.1); box-shadow: 0 6px 15px rgba(14, 165, 233, 0.5); }
+
+        .control-bar-inner select, .control-bar-inner button {
+            background: #f8fafc;
+            color: var(--text-color);
+            border: 1px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
             outline: none;
             font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            white-space: nowrap;
         }
-        .control-bar button:hover { background: var(--primary-color); color: #000; }
+        .control-bar-inner select option { background: #ffffff; color: #1e293b; }
+        .control-bar-inner select:hover { border-color: var(--primary-color); }
         
-        /* Save Buttons Area in Sidebar */
-        .save-tools {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
-        }
-        .save-tools button {
-            width: 100%;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+        #speakBtn { background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); color: white; border: none; }
+        #speakBtn:hover { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4); transform: translateY(-1px); }
+        #stopBtn { background: linear-gradient(135deg, #ef4444, #f87171); color: white; border: none; }
+        #stopBtn:hover { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); transform: translateY(-1px); }
+        #recordBtn { background: linear-gradient(135deg, #10b981, #34d399); color: white; border: none; }
+        #recordBtn:hover { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); transform: translateY(-1px); }
 
-        /* Highlight current spoken sentence */
-        .highlight { background-color: #ffeeba; color: black; padding: 2px 0; }
+        /* Highlight */
+        .highlight { background-color: #fef08a; color: #000; padding: 2px 4px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        /* Mobile Responsive & Print Styles */
-        @media (max-width: 768px) {
-            .container { flex-direction: column; padding: 10px; }
-            .sidebar { width: 100%; position: static; order: -1; margin-bottom: 20px; box-sizing: border-box; }
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .container { 
+                flex-direction: column; 
+                padding: 15px; 
+                margin: 10px auto;
+                gap: 20px;
+            }
+            .sidebar { 
+                width: 100%; 
+                position: static; 
+                order: -1; 
+                box-sizing: border-box; 
+            }
+            .glass-panel { padding: 20px; }
             .article-view { padding: 20px; }
-            #articleContent { font-size: 17px; }
-            .control-bar { width: 90%; bottom: 10px; border-radius: 15px; gap: 5px; }
-            .header { flex-direction: column; text-align: center; }
-            .clock-display { margin-top: 5px; font-size: 14px; }
+            
+            /* Responsive TOC */
+            #tocIcon { display: block; }
+            .toggle-toc-btn { cursor: pointer; }
+            .toc-list, .typography-controls, .save-tools {
+                display: none;
+            }
+            .sidebar.expanded .toc-list,
+            .sidebar.expanded .typography-controls,
+            .sidebar.expanded .save-tools {
+                display: block;
+            }
+            
+            .header { 
+                flex-direction: column; 
+                text-align: center; 
+                padding: 15px;
+                gap: 10px;
+            }
+            #articleContent p { text-indent: 1.5em; }
+        }
+        @media (max-width: 480px) {
+            .article-view {
+                padding: 15px 10px;
+                border-radius: 12px;
+            }
         }
 
+        /* Print Overrides */
         @media print {
-            .control-bar, .setup-section, .btn, .header { display: none !important; }
-            .sidebar { display: none !important; }
-            .article-view { box-shadow: none; padding: 0; width: 100%; }
-            body { background: white; padding: 0; }
-            .container { margin: 0; max-width: 100%; }
+            body { background: white !important; color: black !important; }
+            .control-bar, .setup-section, .btn, .header, .sidebar { display: none !important; }
+            .article-view, .glass-panel { box-shadow: none !important; padding: 0 !important; border: none !important; margin: 0 !important; background: transparent !important;}
+            .container { margin: 0; max-width: 100%; padding: 0;}
+            #articleContent { color: black !important; font-size: 16pt !important;}
+            #articleContent h1, #articleContent h2, #articleContent h3 { color: black !important; border-bottom: 2px solid #000; }
+            #articleContent blockquote { border-right-color: #333 !important; background: #f9f9f9 !important; color: #333 !important; }
+            #articleContent strong { background: transparent !important; color: black !important; }
         }
     </style>
 </head>
@@ -264,7 +524,7 @@
 
 <div class="container" id="inputSection">
     <div style="width: 100%;">
-        <div class="setup-section">
+        <div class="setup-section glass-panel">
             <h3>1. قەدەم: ماقالە تەييارلاش</h3>
             <p>تۆۋەندىكى رامكىدىكى مەخسۇس بۇيرۇق (Prompt) نى كۆچۈرۈۋېلىپ، سۈنئىي ئەقىلگە (ChatGPT, Gemini) يوللاڭ.</p>
             <div class="prompt-box" id="systemPrompt">
@@ -286,60 +546,82 @@
             <button class="btn btn-outline" onclick="copyPrompt()">بۇيرۇقنى كۆچۈرۈش</button>
         </div>
 
-        <div class="setup-section">
+        <div class="setup-section glass-panel">
             <h3>2. قەدەم: ماقالىنى ئوقۇش</h3>
             <p>سۈنئىي ئەقىل چىقىرىپ بەرگەن Markdown فورماتىدىكى تېكىستنى بۇ يەرگە چاپلاڭ:</p>
             <textarea id="mdInput" placeholder="# ماقالە تېمىسى..."></textarea>
             <br>
-            <button class="btn" onclick="renderArticle()">ماقالىنى كۆرۈش ۋە ئاڭلاش</button>
+            <button class="btn" style="width: 100%; margin-top: 15px; font-size: 18px;" onclick="renderArticle()">ماقالىنى كۆرۈش ۋە ئاڭلاش</button>
         </div>
     </div>
 </div>
 
 <!-- Main Content Area (Hidden initially) -->
 <div class="container" id="mainDisplay" style="display: none;">
-    <!-- Sidebar for TOC -->
-    <div class="sidebar" id="sidebar">
-        <h3>مۇندەرىجە</h3>
+    <!-- Sidebar -->
+    <div class="sidebar glass-panel" id="sidebar">
+        <h3 class="toggle-toc-btn" onclick="toggleMobileSidebar()">مۇندەرىجە & تەڭشەك <span id="tocIcon">▼</span></h3>
         <div class="toc-list" id="toc"></div>
         
-        <div class="save-tools">
-            <button class="btn btn-outline" style="background-color: var(--primary-color); color: white;" onclick="saveAsHTML()">بەتنى HTML ساقلاش</button>
-            <button class="btn btn-outline" onclick="window.print()">بەتنى PDF ساقلاش</button>
-            <button class="btn btn-outline" style="border-color: #ccc; color: #666;" onclick="showInput()">يېڭى ماقالە</button>
+        <div class="typography-controls" id="typoControls">
+            <h4>ئۆلچەم تەڭشەكلەر 🎨</h4>
+            <div class="typo-row">
+                <label>خەت نۇسخىسى:</label>
+                <select id="fontFamilySelect" onchange="updateTypography()">
+                    <option value="'ALKATIP', 'UKIJ Tuz', sans-serif">ئەلكاتىپ (ALKATIP)</option>
+                    <option value="'UKIJ Tuz', sans-serif">ئۇيغۇر تۇز (UKIJ Tuz)</option>
+                    <option value="'Microsoft Uighur', sans-serif">مايكروسوفت ئۇيغۇرچە</option>
+                    <option value="'Noto Naskh Arabic', serif">نوتو ئەرەبچە</option>
+                </select>
+            </div>
+            <div class="typo-row">
+                <label>خەت چوڭلۇقى: <span id="fontVal">20px</span></label>
+                <input type="range" id="fontSizeRange" min="14" max="32" value="20" oninput="updateTypography()">
+            </div>
+            <div class="typo-row">
+                <label>قۇر ئارىلىقى: <span id="lineVal">2.1</span></label>
+                <input type="range" id="lineSpacingRange" min="1.4" max="3.5" step="0.1" value="2.1" oninput="updateTypography()">
+            </div>
+        </div>
+        
+        <div class="save-tools" id="saveTools">
+            <button class="btn" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000;" id="saveHTMLBtn" onclick="saveAsHTML()">بەتنى HTML ساقلاش</button>
+            <button class="btn" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="window.print()">بەتنى PDF ئېلىش</button>
+            <button class="btn btn-outline" style="border-color: #94a3b8; color: #475569;" onclick="showInput()">يېڭى ماقالە كىرگۈزۈش</button>
         </div>
     </div>
 
     <!-- Article Content -->
-    <div class="article-view">
+    <div class="article-view glass-panel">
         <div id="articleContent"></div>
     </div>
 </div>
 
 <!-- Footer Control Bar -->
-<div class="control-bar" id="controlBar" style="display: none;">
-    <div>
+<div class="control-bar collapsed" id="controlBar" style="display: none;">
+    <button id="togglePlayerBtn" title="ئوقۇش بالدىقىنى ئېچىش/يېپىش" onclick="togglePlayer()">🎧</button>
+    <div class="control-bar-inner">
         <select id="languageSelect">
             <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
             <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+            <option value="ar-SA">ئەرەبچە</option>
+            <option value="en-US">ئىنگلىزچە</option>
             <option value="tr-TR">تۈركچە</option>
-            <option value="en-US">English</option>
+            <option value="zh-CN">خىتايچە</option>
         </select>
-    </div>
 
-    <div>
         <select id="rateSelect">
-            <option value="0.75">0.75x</option>
-            <option value="1.0" selected>1.0x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2.0">2.0x</option>
+            <option value="0.75">0.75x ئاستا</option>
+            <option value="1.0" selected>1.0x مەجبۇرىي</option>
+            <option value="1.25">1.25x تېز</option>
+            <option value="1.5">1.5x تېزرەك</option>
+            <option value="2.0">2.0x ئۇچقۇر</option>
         </select>
-    </div>
 
-    <button id="speakBtn">▶ ئوقۇ</button>
-    <button id="stopBtn" style="background-color: #d9534f;">■</button>
-    <button id="recordBtn" style="background-color: #5bc0de;">● ئاۋاز ئېلىش</button>
+        <button id="speakBtn">▶ ئوقۇ / توختا</button>
+        <button id="stopBtn">■ ئاخىرلاشتۇر</button>
+        <button id="recordBtn">● ئاۋاز ئېلىش</button>
+    </div>
 </div>
 
 <script>
@@ -368,17 +650,46 @@
         return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
     }
 
+    // --- Typography & UI Toggles ---
+    function updateTypography() {
+        const family = document.getElementById('fontFamilySelect').value;
+        const size = document.getElementById('fontSizeRange').value;
+        const spacing = document.getElementById('lineSpacingRange').value;
+        
+        document.getElementById('fontVal').innerText = size + 'px';
+        document.getElementById('lineVal').innerText = spacing;
+        
+        const content = document.getElementById('articleContent');
+        content.style.fontFamily = family;
+        content.style.fontSize = size + 'px';
+        content.style.lineHeight = spacing;
+    }
+
+    function toggleMobileSidebar() {
+        if (window.innerWidth <= 900) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('expanded');
+            const icon = document.getElementById('tocIcon');
+            icon.innerText = sidebar.classList.contains('expanded') ? '▲' : '▼';
+        }
+    }
+
+    function togglePlayer() {
+        const bar = document.getElementById('controlBar');
+        bar.classList.toggle('collapsed');
+    }
+
     // --- 1. Rendering & UI Logic ---
     function copyPrompt() {
         const promptText = document.getElementById('systemPrompt').innerText;
         navigator.clipboard.writeText(promptText).then(() => {
-            alert('بۇيرۇق كۆچۈرۈلدى!');
+            alert('بۇيرۇق مۇۋەپپەقىيەتلىك كۆچۈرۈلدى!');
         });
     }
 
     function renderArticle() {
         const rawMd = document.getElementById('mdInput').value;
-        if (!rawMd.trim()) { alert('تېكىست كىرگۈزۈڭ!'); return; }
+        if (!rawMd.trim()) { alert('دىققەت! ئالدى بىلەن تېكىست كىرگۈزۈڭ!'); return; }
 
         document.getElementById('articleContent').innerHTML = marked.parse(rawMd);
         generateTOC();
@@ -387,9 +698,14 @@
         document.getElementById('mainDisplay').style.display = 'flex';
         document.getElementById('sidebar').style.display = 'block';
         document.querySelector('.article-view').style.display = 'block';
+        
+        // Show player bar (collapsed state by default)
         document.getElementById('controlBar').style.display = 'flex';
         
-        window.scrollTo(0, 0);
+        // Apply typography defaults to freshly parsed content
+        updateTypography();
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function showInput() {
@@ -414,44 +730,105 @@
             if(header.tagName === 'H3') link.style.paddingRight = '20px';
             link.onclick = (e) => {
                 e.preventDefault();
-                header.scrollIntoView({behavior: 'smooth'});
+                header.scrollIntoView({behavior: 'smooth', block: 'start'});
+                // Auto close on mobile
+                if(window.innerWidth <= 900) {
+                    document.getElementById('sidebar').classList.remove('expanded');
+                    document.getElementById('tocIcon').innerText = '▼';
+                }
             };
             toc.appendChild(link);
         });
     }
 
-    // --- SAVE HTML Logic ---
-    function saveAsHTML() {
-        // Clone the document to modify it for saving
-        const clone = document.documentElement.cloneNode(true);
-        
-        // Remove input section and prompt scripts if desired (keep marked.js for safety)
-        const inputSec = clone.querySelector('#inputSection');
-        if(inputSec) inputSec.remove();
+    // --- SAVE HTML Logic with Image Downloading & UI Cleanup ---
+    async function saveAsHTML() {
+        const btn = document.getElementById('saveHTMLBtn');
+        const oldText = btn.innerText;
+        btn.innerText = "ساقلاۋاتىدۇ (رەسىم قوشۇپ)...";
+        btn.disabled = true;
 
-        // Ensure main display is visible in the saved file
-        const mainDisplay = clone.querySelector('#mainDisplay');
-        if(mainDisplay) mainDisplay.style.display = 'flex';
-        
-        const controlBar = clone.querySelector('#controlBar');
-        if(controlBar) controlBar.style.display = 'flex';
+        try {
+            const clone = document.documentElement.cloneNode(true);
+            
+            // Remove unneeded items for saved mode
+            const inputSec = clone.querySelector('#inputSection');
+            if(inputSec) inputSec.remove();
 
-        const sidebar = clone.querySelector('#sidebar');
-        if(sidebar) sidebar.style.display = 'block';
+            const saveTools = clone.querySelector('#saveTools');
+            if(saveTools) saveTools.remove(); // Removed per user request
 
-        const articleView = clone.querySelector('.article-view');
-        if(articleView) articleView.style.display = 'block';
-        
-        // Get the final HTML string
-        const htmlContent = "<!DOCTYPE html>\n<html lang='ug' dir='rtl'>" + clone.innerHTML + "</html>";
-        
-        const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
-        const fileName = getTimestampName() + ".html";
-        
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
+            const mainDisplay = clone.querySelector('#mainDisplay');
+            if(mainDisplay) mainDisplay.style.display = 'flex';
+            
+            const controlBar = clone.querySelector('#controlBar');
+            if(controlBar) controlBar.style.display = 'flex';
+
+            const sidebar = clone.querySelector('#sidebar');
+            if(sidebar) sidebar.style.display = 'block';
+
+            const articleView = clone.querySelector('.article-view');
+            if(articleView) articleView.style.display = 'block';
+
+            // Download images to base64
+            const images = clone.querySelectorAll('.article-view img');
+            for (let img of images) {
+                if (img.src && !img.src.startsWith('data:')) {
+                    try {
+                        const response = await fetch(img.src);
+                        const blob = await response.blob();
+                        const base64Url = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        });
+                        img.setAttribute('src', base64Url);
+                    } catch (e) {
+                         console.warn("Fetch failed, trying canvas fallback:", img.src);
+                         try {
+                             const base64Url = await new Promise((resolve, reject) => {
+                                 let image = new Image();
+                                 image.crossOrigin = 'Anonymous';
+                                 image.onload = function() {
+                                     let canvas = document.createElement('canvas');
+                                     canvas.width = image.width;
+                                     canvas.height = image.height;
+                                     let ctx = canvas.getContext('2d');
+                                     ctx.drawImage(image, 0, 0);
+                                     try {
+                                         resolve(canvas.toDataURL('image/png'));
+                                     } catch(err) {
+                                         reject(err);
+                                     }
+                                 };
+                                 image.onerror = reject;
+                                 image.src = img.src;
+                             });
+                             img.setAttribute('src', base64Url);
+                         } catch (e2) {
+                             console.warn("Canvas fallback also failed.", img.src);
+                         }
+                    }
+                }
+            }
+            
+            const htmlContent = "<!DOCTYPE html>\n<html lang='ug' dir='rtl'>\n" + clone.innerHTML + "\n</html>";
+            
+            const blobFile = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
+            const fileName = getTimestampName() + ".html";
+            
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blobFile);
+            link.download = fileName;
+            link.click();
+        } catch(err) {
+            console.error(err);
+            alert("ساقلاشتا مۇئامىلە خاتالىقى كۆرۈلدى.");
+        } finally {
+            btn.innerText = oldText;
+            btn.disabled = false;
+        }
     }
 
     // --- 2. TTS Logic ---
@@ -464,6 +841,7 @@
     let textChunks = [];
     let currentChunkIndex = 0;
     let isSpeaking = false;
+    let isPaused = false;
     let mediaRecorder = null;
     let audioChunks = [];
 
@@ -478,9 +856,10 @@
     }
 
     function speakNextChunk() {
-        if (currentChunkIndex >= textChunks.length || !isSpeaking) {
+        if (currentChunkIndex >= textChunks.length || (!isSpeaking && !isPaused)) {
             isSpeaking = false;
-            document.getElementById('speakBtn').innerText = '▶ ئوقۇ';
+            isPaused = false;
+            document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
             return;
         }
 
@@ -493,14 +872,23 @@
         utterance.rate = parseFloat(rateVal);
 
         const voices = speechSynthesis.getVoices();
+        
         const voiceMap = {
             'ug-UG': v => v.lang === 'uz-UZ' && v.name.includes('Madina'),
             'ug-UG0': v => v.lang === 'tr-TR', 
-            'tr-TR': v => v.lang === 'tr-TR',
-            'en-US': v => v.lang === 'en-US'
+            'tr-TR': v => v.lang.startsWith('tr'),
+            'en-US': v => v.lang.startsWith('en'),
+            'ar-SA': v => v.lang.startsWith('ar'),
+            'zh-CN': v => v.lang.startsWith('zh')
         };
         
         let selectedVoice = voices.find(voiceMap[langVal]);
+        
+        if (!selectedVoice) {
+            const basicLang = langVal.split('-')[0];
+            selectedVoice = voices.find(v => v.lang.startsWith(basicLang));
+        }
+        
         if (!selectedVoice && langVal.includes('ug')) {
              selectedVoice = voices.find(v => v.lang === 'tr-TR') || voices.find(v => v.lang === 'uz-UZ');
         }
@@ -514,14 +902,30 @@
             currentChunkIndex++;
             speakNextChunk();
         };
+        
+        utterance.onerror = (e) => {
+            console.warn("Speech Synthesis Error: ", e);
+            currentChunkIndex++;
+            speakNextChunk();
+        }
 
         speechSynthesis.speak(utterance);
     }
 
-    function startSpeaking() {
-        if (isSpeaking) return;
+    function toggleSpeaking() {
+        if (isSpeaking && !isPaused) {
+            speechSynthesis.pause();
+            isPaused = true;
+            document.getElementById('speakBtn').innerText = '▶ داۋاملاشتۇر';
+            return;
+        } else if (isSpeaking && isPaused) {
+            speechSynthesis.resume();
+            isPaused = false;
+            document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
+            return;
+        }
         
-        if (textChunks.length === 0) {
+        if (textChunks.length === 0 || currentChunkIndex >= textChunks.length) {
             const fullText = getReadableText();
             if (!fullText.trim()) return;
 
@@ -538,25 +942,28 @@
         }
 
         isSpeaking = true;
-        document.getElementById('speakBtn').innerText = '...';
+        isPaused = false;
+        document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
         speechSynthesis.cancel();
         speakNextChunk();
     }
 
     function stopText() {
         isSpeaking = false;
+        isPaused = false;
         speechSynthesis.cancel();
         textChunks = [];
         currentChunkIndex = 0;
-        document.getElementById('speakBtn').innerText = '▶ ئوقۇ';
+        document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
     }
 
     // --- 3. Recording Logic ---
     async function toggleRecording() {
         if (mediaRecorder && mediaRecorder.state === "recording") {
             mediaRecorder.stop();
-            document.getElementById('recordBtn').innerText = '● ئاۋاز ئېلىش';
-            document.getElementById('recordBtn').style.backgroundColor = '#5bc0de';
+            const btn = document.getElementById('recordBtn');
+            btn.innerText = '● ئاۋاز ئېلىش';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
         } else {
             alert('ئاۋاز خاتىرىلەش ئۈچۈن، كېيىنكى كۆزنەكتە «بۇ بەتنىڭ ئاۋازى» (System Audio / Tab Audio) نى تاللاڭ.');
             try {
@@ -578,10 +985,11 @@
                 };
 
                 mediaRecorder.start();
-                document.getElementById('recordBtn').innerText = '■';
-                document.getElementById('recordBtn').style.backgroundColor = '#d9534f';
+                const btn = document.getElementById('recordBtn');
+                btn.innerText = '■ ئاۋاز ئېلىشنى توختىتىش';
+                btn.style.background = 'linear-gradient(135deg, #f59e0b, #fbbf24)';
                 
-                if (!isSpeaking) startSpeaking();
+                if (!isSpeaking) toggleSpeaking();
 
             } catch (err) {
                 console.error(err);
@@ -590,10 +998,15 @@
         }
     }
 
-    document.getElementById('speakBtn').addEventListener('click', startSpeaking);
+    document.getElementById('speakBtn').addEventListener('click', toggleSpeaking);
     document.getElementById('stopBtn').addEventListener('click', stopText);
     document.getElementById('recordBtn').addEventListener('click', toggleRecording);
     document.getElementById('languageSelect').addEventListener('change', () => stopText());
+    
+    // Ensure voices are loaded
+    speechSynthesis.onvoiceschanged = () => {
+        speechSynthesis.getVoices();
+    };
 
 </script>
 
