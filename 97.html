@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ug" dir="rtl">
 <head>
@@ -19,144 +18,203 @@
                         serif: ['"ALKATIP Tor"', '"UKIJ Tuz"', '"Noto Naskh Arabic"', 'serif'],
                     },
                     colors: {
-                        bilik: { primary: '#005a8d', accent: '#f59e0b', dark: '#0f172a' }
+                        bilik: { primary: '#0ea5e9', accent: '#2563eb', dark: '#1e293b', light: '#e0f2fe' }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'ALKATIP Basma', 'UKIJ Nasq', 'Noto Sans Arabic', sans-serif; }
-        .timeline-line::before { content: ''; position: absolute; top: 0; bottom: 0; right: 23px; width: 3px; background: #e2e8f0; z-index: 0; }
-        @media print { .no-print { display: none !important; } .page-break { page-break-inside: avoid; } }
+        body { 
+            font-family: 'ALKATIP Basma', 'UKIJ Nasq', 'Noto Sans Arabic', sans-serif; 
+            /* Yoruq mesh gradient arka ko'rinishi (98.html style) */
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 40% 20%, #e2e8f0 0px, transparent 50%),
+                radial-gradient(at 80% 0%, #bfdbfe 0px, transparent 50%),
+                radial-gradient(at 0% 50%, #dbeafe 0px, transparent 50%),
+                radial-gradient(at 80% 50%, #e0e7ff 0px, transparent 50%),
+                radial-gradient(at 0% 100%, #eff6ff 0px, transparent 50%),
+                radial-gradient(at 80% 100%, #ccfbf1 0px, transparent 50%),
+                radial-gradient(at 0% 0%, #f1f5f9 0px, transparent 50%) !important;
+            background-attachment: fixed !important;
+            color: #1e293b;
+        }
+        
+        /* Glass Panels */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.7) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .header-glass {
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+
+        .timeline-line::before { content: ''; position: absolute; top: 0; bottom: 0; right: 23px; width: 3px; background: rgba(14, 165, 233, 0.3); z-index: 0; }
+        @media print { 
+            .no-print { display: none !important; } 
+            .page-break { page-break-inside: avoid; } 
+            body { background: white !important; } 
+            .glass-panel { background: white !important; border: none !important; box-shadow: none !important; } 
+        }
         .editor-only { display: block; }
-        /* Mobile TOC Styles */
-        .mobile-toc-overlay { background: rgba(0,0,0,0.5); transition: opacity 0.3s; }
+        
+        .control-scroll {
+            -webkit-overflow-scrolling: touch;
+        }
+        .control-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen pb-24">
 
-    <header class="bg-bilik-primary text-white shadow-xl sticky top-0 z-40">
+    <header class="header-glass sticky top-0 z-40">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20"><span class="text-2xl">🏛️</span></div>
-                <div><h1 class="text-xl font-bold tracking-wide font-serif">بىلىك تەتقىقات مەركىزى</h1></div>
+                <div class="bg-white/50 p-2 rounded-lg backdrop-blur-sm border border-white/80 shadow-sm"><span class="text-2xl">🏛️</span></div>
+                <div><h1 class="text-xl font-bold tracking-wide font-serif bg-gradient-to-r from-sky-600 to-blue-700 bg-clip-text text-transparent">بىلىك تەتقىقات مەركىزى</h1></div>
             </div>
-            <div class="text-left text-xs opacity-80" id="headerDateTime"></div>
+            <div class="text-left text-xs md:text-sm font-bold text-slate-500 bg-white/60 px-3 py-1.5 rounded-lg border border-white/60" id="headerDateTime"></div>
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto px-2 md:px-4 py-6 flex gap-6 relative">
+    <main class="flex-grow container mx-auto px-2 md:px-4 py-8 flex gap-8 relative">
         
         <!-- Desktop TOC -->
-        <aside class="hidden lg:block w-1/4 sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto bg-white p-4 rounded-xl shadow-sm border border-slate-200 no-print">
-            <h3 class="text-lg font-bold text-bilik-primary mb-4 border-b pb-2">📑 مۇندەرىجە</h3>
-            <ul class="space-y-1 text-sm" id="tocList"></ul>
+        <aside class="hidden lg:block w-1/4 sticky top-28 h-[calc(100vh-9rem)] overflow-y-auto glass-panel p-5 rounded-2xl no-print">
+            <h3 class="text-lg font-bold text-bilik-accent mb-4 border-b-2 border-white/60 pb-3">📑 مۇندەرىجە</h3>
+            <ul class="space-y-2 text-sm font-bold" id="tocList"></ul>
         </aside>
 
-        <!-- MOBILE TOC BUTTON & DRAWER (New Feature) -->
+        <!-- MOBILE TOC BUTTON & DRAWER (Matched Premium Style) -->
         <div class="lg:hidden no-print">
-            <!-- Button loads here -->
-            <button onclick="toggleMobileTOC()" class="fixed right-4 bottom-24 z-40 bg-white text-bilik-primary border border-bilik-primary p-3 rounded-full shadow-lg hover:bg-slate-50">
+            <button onclick="toggleMobileTOC()" class="fixed right-4 bottom-24 z-40 bg-gradient-to-r from-blue-600 to-sky-500 text-white p-4 rounded-full shadow-[0_4px_20px_rgba(14,165,233,0.5)] hover:scale-105 transition flex items-center justify-center text-xl">
                 📑
             </button>
             
-            <!-- Drawer -->
             <div id="mobileTOC" class="fixed inset-0 z-[60] hidden">
-                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleMobileTOC()"></div>
-                <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white shadow-2xl p-4 overflow-y-auto transition-transform duration-300 transform translate-x-full" id="mobileTOCContent">
-                    <div class="flex justify-between items-center mb-6 border-b pb-2">
+                <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="toggleMobileTOC()"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-4/5 max-w-sm glass-panel !rounded-none !rounded-l-2xl shadow-2xl p-5 overflow-y-auto transition-transform duration-300 transform translate-x-full" id="mobileTOCContent">
+                    <div class="flex justify-between items-center mb-6 border-b-2 border-white/60 pb-3">
                         <h3 class="font-bold text-lg text-bilik-primary">ۋەقەلەر مۇندەرىجىسى</h3>
-                        <button onclick="toggleMobileTOC()" class="text-gray-500 text-xl">✕</button>
+                        <button onclick="toggleMobileTOC()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full flex justify-center items-center font-bold">✕</button>
                     </div>
-                    <ul class="space-y-3" id="mobileTocList"></ul>
+                    <ul class="space-y-3 font-bold" id="mobileTocList"></ul>
                 </div>
             </div>
         </div>
 
-        <div class="w-full lg:w-3/4 flex flex-col gap-6">
+        <div class="w-full lg:w-3/4 flex flex-col gap-8">
             
             <!-- EDITOR SECTION -->
-            <section id="editorSection" class="editor-only bg-white p-6 rounded-xl shadow-md border border-sky-100 no-print" data-html2canvas-ignore="true">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-3">
-                    <h2 class="text-lg font-bold text-gray-700">✍️ مەزمۇن تەھرىرلەش</h2>
+            <section id="editorSection" class="editor-only glass-panel p-6 rounded-2xl no-print relative" data-html2canvas-ignore="true">
+                <div class="absolute -top-1 left-0 w-full h-1.5 bg-gradient-to-r from-bilik-primary to-bilik-accent rounded-t-2xl"></div>
+                <div class="flex flex-col md:flex-row justify-between items-center mt-2 mb-6 border-b-2 border-white/60 pb-4 gap-4">
+                    <h2 class="text-xl font-bold text-slate-800">✍️ مەزمۇن تەھرىرلەش</h2>
                     
-                    <!-- 1. JSON BUTTONS ARE HERE -->
-                    <div class="flex gap-2 flex-wrap justify-center">
-                        <button onclick="importJSON()" class="text-xs bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded flex items-center gap-1">
+                    <!-- 1. JSON BUTTONS -->
+                    <div class="flex gap-3 flex-wrap justify-center">
+                        <button onclick="importJSON()" class="text-sm bg-white/70 hover:bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-full flex items-center gap-1 shadow-sm transition font-bold">
                             📥 JSON ئەكىرىش
                         </button>
-                        <button onclick="exportJSON()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded flex items-center gap-1 shadow-sm">
+                        <button onclick="exportJSON()" class="text-sm bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-2 rounded-full flex items-center gap-1 shadow-md transition font-bold">
                             💾 JSON ساقلاش
                         </button>
-                        <button onclick="saveFinalHTML()" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded font-bold shadow-lg flex items-center gap-1">
+                        <button onclick="saveFinalHTML()" class="text-sm bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-5 py-2 rounded-full font-bold shadow-md transition flex items-center gap-1">
                             🌐 بەتنى ساقلاش (Publish)
                         </button>
                     </div>
                 </div>
 
                 <!-- Input Fields -->
-                <div class="bg-sky-50 p-4 rounded-lg border border-sky-200 mb-6">
-                    <label class="block text-xs font-bold text-sky-700 mb-1">دوكلات تېمىسى (ئەڭ ئۈستىدىكى چوڭ تېما)</label>
-                    <input type="text" id="reportMainTitleInput" class="w-full border p-2 rounded focus:ring-2 focus:ring-sky-500 text-lg font-bold text-bilik-primary" oninput="updateReportHeader()">
+                <div class="bg-white/50 backdrop-blur-sm p-5 rounded-xl border border-white/80 mb-6 shadow-sm">
+                    <label class="block text-sm font-bold text-bilik-accent mb-2">دوكلات تېمىسى (ئەڭ ئۈستىدىكى چوڭ تېما)</label>
+                    <input type="text" id="reportMainTitleInput" class="w-full bg-white/80 border border-slate-200 p-3 rounded-lg focus:ring-2 focus:ring-bilik-primary focus:border-transparent text-xl font-bold text-slate-800 shadow-inner transition" oninput="updateReportHeader()">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div><label class="block text-xs font-bold text-gray-500 mb-1">ۋەقە ۋاقتى</label><input type="date" id="inputDate" class="w-full border rounded p-2"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 mb-1">ۋەقە تېمىسى</label><input type="text" id="inputTitle" class="w-full border rounded p-2"></div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-600 mb-1">ۋەقە ۋاقتى</label>
+                        <input type="date" id="inputDate" class="w-full bg-white/80 border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-bilik-primary shadow-inner">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-600 mb-1">ۋەقە تېمىسى</label>
+                        <input type="text" id="inputTitle" class="w-full bg-white/80 border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-bilik-primary shadow-inner">
+                    </div>
                 </div>
-                <div class="mb-4"><label class="block text-xs font-bold text-gray-500 mb-1">مەنبە (Source)</label><input type="url" id="inputSource" class="w-full border rounded p-2 text-left dir-ltr"></div>
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-slate-600 mb-1">مەنبە (Source)</label>
+                    <input type="url" id="inputSource" class="w-full bg-white/80 border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-bilik-primary shadow-inner dir-ltr">
+                </div>
 
-                <div id="contentBlocksArea" class="space-y-3 mb-4 p-4 bg-slate-50 rounded border-2 border-dashed border-slate-200"></div>
+                <div id="contentBlocksArea" class="space-y-4 mb-6 p-5 bg-white/40 rounded-xl border-2 border-dashed border-slate-300"></div>
                 
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button onclick="addTextBlock('normal')" class="bg-white border hover:bg-slate-50 px-3 py-2 rounded text-xs">📝 تېكىست</button>
-                    <button onclick="addTextBlock('ltr')" class="bg-orange-50 border hover:bg-orange-100 px-3 py-2 rounded text-xs">E English</button>
-                    <button onclick="addImageBlock()" class="bg-green-50 border hover:bg-green-100 px-3 py-2 rounded text-xs">🖼️ رەسىم</button>
-                    <button onclick="addVideoBlock()" class="bg-red-50 border hover:bg-red-100 px-3 py-2 rounded text-xs">▶️ YouTube</button>
+                <div class="flex flex-wrap gap-3 mb-8">
+                    <button onclick="addTextBlock('normal')" class="bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition">📝 تېكىست</button>
+                    <button onclick="addTextBlock('ltr')" class="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-800 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition">E English</button>
+                    <button onclick="addImageBlock()" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition">🖼️ رەسىم</button>
+                    <button onclick="addVideoBlock()" class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-800 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition">▶️ YouTube</button>
                 </div>
-                <button onclick="submitEvent()" class="w-full bg-bilik-primary text-white font-bold py-3 rounded hover:bg-sky-700">تىزىمغا قوشۇش</button>
+                <button onclick="submitEvent()" class="w-full bg-gradient-to-r from-bilik-dark to-bilik-primary text-white font-bold py-3.5 rounded-xl hover:shadow-lg transition transform hover:-translate-y-0.5 text-lg">تىزىمغا قوشۇش</button>
                 <input type="file" id="jsonFileInput" class="hidden" accept=".json" onchange="loadJSONFile(this)">
             </section>
 
             <!-- REPORT VIEW -->
             <section id="report-content" class="relative pl-0 md:pl-2">
-                <div class="mb-8 text-center border-b-2 border-bilik-primary pb-6 page-break">
-                    <h1 id="reportMainTitleDisplay" class="text-3xl md:text-4xl font-bold text-bilik-primary font-serif mb-2">ۋەقەلەر خاتىرىسى</h1>
-                    <p class="text-sm text-gray-500 flex justify-center items-center gap-2"><span>🕒 يېڭىلانغان ۋاقىت:</span><span id="lastUpdatedTime" class="font-bold text-gray-700 dir-ltr"></span></p>
+                <div class="mb-10 text-center border-b-2 border-slate-200 pb-8 page-break">
+                    <h1 id="reportMainTitleDisplay" class="text-3xl md:text-4xl font-bold text-slate-800 font-serif mb-3">ۋەقەلەر خاتىرىسى</h1>
+                    <p class="text-sm text-slate-500 flex justify-center items-center gap-2"><span>🕒 يېڭىلانغان ۋاقىت:</span><span id="lastUpdatedTime" class="font-bold text-slate-600 dir-ltr text-sm md:text-base"></span></p>
                 </div>
-                <div class="timeline-line relative space-y-12" id="timelineContainer"></div>
-                <div class="mt-16 pt-8 border-t border-slate-200 text-center">
-                    <p class="text-bilik-primary font-bold">بىلىك تەتقىقات مەركىزى</p>
-                    <p class="text-gray-500 text-sm">Bilik Research Center © <span id="footerYear"></span></p>
+                <div class="timeline-line relative space-y-14" id="timelineContainer"></div>
+                <div class="mt-20 pt-8 border-t border-slate-300 text-center pb-10">
+                    <p class="text-bilik-primary font-bold text-lg mb-1">بىلىك تەتقىقات مەركىزى</p>
+                    <p class="text-slate-500 text-sm">Bilik Research Center © <span id="footerYear"></span></p>
                 </div>
             </section>
         </div>
     </main>
 
-    <!-- Controls -->
-    <div id="controlsContainer" class="fixed bottom-6 left-6 z-50 flex items-end gap-2" data-html2canvas-ignore="true">
-        <button onclick="toggleControls()" id="toggleBtn" class="bg-slate-800 text-white w-10 h-10 rounded-full shadow-xl flex items-center justify-center text-lg hover:bg-slate-700 transition">⚙️</button>
-        <div id="controlPanelMain" class="hidden bg-slate-900/95 backdrop-blur-sm p-2 rounded-lg shadow-2xl border border-slate-700 flex flex-col gap-2 w-64">
-            <div class="flex gap-1">
-                <select id="voiceSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-full dir-ltr focus:outline-none focus:ring-1 focus:ring-sky-500">
+    <!-- Controls (Pill matched to 98.html) -->
+    <div id="controlsContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center bg-white/85 backdrop-blur-xl border border-white/80 p-1.5 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-300" data-html2canvas-ignore="true">
+        
+        <button onclick="toggleControls()" id="toggleBtn" title="ئوقۇش بالدىقىنى ئېچىش/يېپىش" class="bg-gradient-to-br from-blue-600 to-sky-500 text-white w-[50px] h-[50px] rounded-full shadow-lg flex items-center justify-center text-2xl hover:scale-105 transition flex-shrink-0 z-10 m-0">🎧</button>
+
+        <div id="controlPanelMain" class="control-scroll flex items-center gap-2 overflow-x-auto overflow-y-hidden transition-all duration-500 max-w-0 opacity-0 px-0 pointer-events-none">
+            
+            <div class="flex items-center gap-2 whitespace-nowrap pl-2">
+                <select id="voiceSelect" class="bg-slate-50 text-slate-800 border border-slate-300 rounded-full pl-8 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 font-bold hover:border-sky-400 cursor-pointer transition">
                     <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
                     <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
                     <option value="ar-SA">العربية</option>
                     <option value="en-US">English</option>
+                    <option value="tr-TR">تۈركچە</option>
+                    <option value="zh-CN">خىتايچە</option>
                 </select>
-                <select id="rateSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-14 text-center focus:outline-none focus:ring-1 focus:ring-sky-500">
-                    <option value="1.0">1.0x</option>
-                    <option value="1.5" selected>1.5x</option>
-                    <option value="2.0">2.0x</option>
+
+                <select id="rateSelect" class="bg-slate-50 text-slate-800 border border-slate-300 rounded-full px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 font-bold hover:border-sky-400 cursor-pointer transition text-center">
+                    <option value="1.0">1.0x نورمال</option>
+                    <option value="1.5" selected>1.5x تېز</option>
+                    <option value="2.0">2.0x ئۇچقۇر</option>
                 </select>
-            </div>
-            <div class="grid grid-cols-5 gap-1">
-                <button onclick="prevChunk()" class="bg-slate-600 hover:bg-slate-500 text-white p-1.5 rounded text-[10px] font-bold">⏮</button>
-                <button onclick="startReading()" class="bg-sky-600 hover:bg-sky-500 text-white p-1.5 rounded text-[10px] font-bold">▶</button>
-                <button onclick="nextChunk()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-1.5 rounded text-[10px] font-bold">⏭</button>
-                <button onclick="stopReading()" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded text-[10px] font-bold">■</button>
-                <button onclick="savePDF()" class="bg-pink-600 hover:bg-pink-500 text-white p-1.5 rounded text-[10px] font-bold">📄</button>
+
+                <button onclick="prevChunk()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-bold transition shadow-sm">⏮</button>
+                <button onclick="startReading()" class="bg-gradient-to-r from-blue-600 to-sky-500 hover:from-blue-700 hover:to-sky-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-md transition whitespace-nowrap">▶ ئوقۇتىش</button>
+                <button onclick="nextChunk()" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 px-4 py-2 rounded-full text-sm font-bold transition shadow-sm">⏭</button>
+                <button onclick="stopReading()" class="bg-gradient-to-r from-red-500 to-rose-400 hover:from-red-600 hover:to-rose-500 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition whitespace-nowrap">■ توختا</button>
+                <button onclick="savePDF()" class="bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition flex items-center gap-1 whitespace-nowrap">📄 PDF</button>
             </div>
         </div>
     </div>
@@ -174,6 +232,8 @@
             document.getElementById('lastUpdatedTime').textContent = now.toLocaleString('ug-CN');
             if(!document.getElementById('editorSection') && window.initialEvents) {
                 eventsData = window.initialEvents;
+                // Automatically display control bar player if it's the saved layout
+                setTimeout(() => { toggleControls(); }, 500);
                 renderTimeline();
             }
         });
@@ -198,18 +258,21 @@
         }
 
         function addTextBlock(type) {
-            const w = document.createElement('div'); w.className = "bg-white p-2 border rounded relative mb-2"; w.dataset.type = type;
-            w.innerHTML = `<textarea class="w-full p-1 border-b outline-none text-sm" rows="3" placeholder="مەزمۇن..." dir="${type==='ltr'?'ltr':'rtl'}"></textarea><button onclick="this.parentElement.remove()" class="absolute top-0 left-0 text-red-500 px-2">✕</button>`;
+            const w = document.createElement('div'); 
+            w.className = "glass-panel !p-4 relative mb-4"; w.dataset.type = type;
+            w.innerHTML = `<textarea class="w-full p-3 bg-white/70 border border-slate-200 rounded-lg outline-none text-base focus:bg-white focus:ring-2 focus:ring-bilik-primary transition" rows="3" placeholder="مەزمۇن كىرگۈزۈڭ..." dir="${type==='ltr'?'ltr':'rtl'}"></textarea><button onclick="this.parentElement.remove()" class="absolute top-2 left-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold transition">✕</button>`;
             document.getElementById('contentBlocksArea').appendChild(w);
         }
         function addImageBlock() { 
-            const w = document.createElement('div'); w.className="bg-white p-2 border rounded relative mb-2"; w.dataset.type="image";
-            w.innerHTML = `<input type="file" class="text-xs mb-1"><input type="text" placeholder="ئىزاھات" class="w-full text-xs border-b"><button onclick="this.parentElement.remove()" class="absolute top-0 left-0 text-red-500 px-2">✕</button>`;
+            const w = document.createElement('div'); 
+            w.className="glass-panel !p-4 relative mb-4"; w.dataset.type="image";
+            w.innerHTML = `<input type="file" class="text-sm mb-3 w-full"><input type="text" placeholder="رەسىم ئىزاھاتى" class="w-full text-base border-b-2 border-slate-200 bg-transparent p-2 focus:outline-none focus:border-bilik-primary transition"><button onclick="this.parentElement.remove()" class="absolute top-2 left-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold transition">✕</button>`;
             document.getElementById('contentBlocksArea').appendChild(w);
         }
         function addVideoBlock() { 
-            const w = document.createElement('div'); w.className="bg-white p-2 border rounded relative mb-2"; w.dataset.type="video";
-            w.innerHTML = `<input type="url" placeholder="YouTube URL" class="w-full text-xs border-b dir-ltr"><button onclick="this.parentElement.remove()" class="absolute top-0 left-0 text-red-500 px-2">✕</button>`;
+            const w = document.createElement('div'); 
+            w.className="glass-panel !p-4 relative mb-4"; w.dataset.type="video";
+            w.innerHTML = `<input type="url" placeholder="YouTube URL يېزىپ يۆتكەڭ" class="w-full text-base border-b-2 border-slate-200 bg-transparent p-2 focus:outline-none focus:border-bilik-primary transition dir-ltr"><button onclick="this.parentElement.remove()" class="absolute top-2 left-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold transition">✕</button>`;
             document.getElementById('contentBlocksArea').appendChild(w);
         }
 
@@ -241,7 +304,7 @@
         function renderTimeline() {
             const c = document.getElementById('timelineContainer');
             const toc = document.getElementById('tocList');
-            const mobToc = document.getElementById('mobileTocList'); // Mobile TOC Target
+            const mobToc = document.getElementById('mobileTocList'); 
             c.innerHTML = ''; toc.innerHTML = ''; mobToc.innerHTML = '';
             
             eventsData.sort((a,b) => new Date(b.date) - new Date(a.date));
@@ -255,28 +318,28 @@
                 
                 let bHtml = '';
                 e.blocks.forEach(b => {
-                    if(b.type==='normal') bHtml += `<p class="text-justify mb-2 text-sm leading-relaxed">${b.content}</p>`;
-                    else if(b.type==='ltr') bHtml += `<div class="bg-gray-100 p-2 text-sm dir-ltr text-left mb-2 border-l-4 border-orange-300">${b.content}</div>`;
-                    else if(b.type==='image') bHtml += `<div class="text-center mb-2"><img src="${b.content}" class="max-h-64 mx-auto rounded shadow"><p class="text-xs text-gray-500 mt-1">${b.extra||''}</p></div>`;
+                    if(b.type==='normal') bHtml += `<p class="mb-4 text-justify">${b.content}</p>`;
+                    else if(b.type==='ltr') bHtml += `<div class="bg-white/70 p-4 rounded-xl text-base dir-ltr text-left mb-4 border-l-4 border-bilik-accent shadow-sm">${b.content}</div>`;
+                    else if(b.type==='image') bHtml += `<div class="text-center mb-6"><img src="${b.content}" class="max-w-full mx-auto rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.1)] border border-white/80"><p class="text-sm text-slate-500 mt-3 font-bold">${b.extra||''}</p></div>`;
                     else if(b.type==='video') {
                          let vid = b.content.split('v=')[1] || b.content.split('/').pop();
-                         bHtml += `<div class="aspect-video mb-2"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/${vid}" frameborder="0"></iframe></div>`;
+                         bHtml += `<div class="aspect-video mb-6 rounded-xl overflow-hidden shadow-lg border border-white/50"><iframe width="100%" height="100%" src="https://www.youtube.com/embed/${vid}" frameborder="0"></iframe></div>`;
                     }
                 });
 
                 div.innerHTML = `
-                    <div class="absolute top-2 right-0 w-4 h-4 bg-bilik-accent rounded-full border-2 border-white translate-x-[9px] z-10"></div>
-                    <div class="flex gap-2 mb-1">
-                        <span class="bg-sky-100 text-bilik-primary text-xs font-bold px-2 py-0.5 rounded">${e.date}</span>
-                        ${e.source ? `<a href="${e.source}" class="text-xs text-blue-400 hover:underline no-print">[مەنبە]</a>` : ''}
+                    <div class="absolute top-2 right-0 w-5 h-5 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full border-2 border-white translate-x-[11px] z-10 shadow-sm"></div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="bg-white/80 backdrop-blur text-bilik-primary text-sm font-bold px-3 py-1 rounded-full shadow-sm border border-white/60">${e.date}</span>
+                        ${e.source ? `<a href="${e.source}" class="text-xs text-blue-500 hover:text-blue-700 hover:underline bg-white/50 px-3 py-1 rounded-full border border-white/50 no-print flex items-center transition shadow-sm">[مەنبە]</a>` : ''}
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3 font-serif">${e.title}</h3>
-                    <div class="bg-white p-4 rounded shadow-sm border border-slate-100 read-content">${bHtml}</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 font-serif leading-relaxed">${e.title}</h3>
+                    <div class="glass-panel p-6 read-content text-lg text-slate-700 leading-[2.1]">${bHtml}</div>
                 `;
                 c.appendChild(div);
 
                 // Populate TOCs
-                const linkHtml = `<a href="#evt-${e.id}" class="block hover:bg-sky-50 p-2 rounded border-b border-gray-50"><span class="text-xs font-bold text-gray-500 block">${e.date}</span><span class="truncate block">${e.title}</span></a>`;
+                const linkHtml = `<a href="#evt-${e.id}" class="block hover:bg-white/60 p-3 rounded-lg border-b border-white/40 transition"><span class="text-xs font-bold text-bilik-primary block mb-0.5">${e.date}</span><span class="block text-slate-700 hover:text-bilik-accent">${e.title}</span></a>`;
                 
                 // Desktop
                 const li = document.createElement('li'); li.innerHTML = linkHtml;
@@ -284,7 +347,7 @@
 
                 // Mobile
                 const liMob = document.createElement('li'); 
-                liMob.innerHTML = linkHtml.replace('href="#"', `href="#evt-${e.id}" onclick="toggleMobileTOC()"`); // Close drawer on click
+                liMob.innerHTML = linkHtml.replace('href="#"', `href="#evt-${e.id}" onclick="toggleMobileTOC()"`);
                 mobToc.appendChild(liMob);
             });
         }
@@ -315,6 +378,14 @@
             const clone = document.documentElement.cloneNode(true);
             const editor = clone.querySelector('#editorSection');
             if(editor) editor.remove();
+            
+            // Re-collapse the control bar for neatest download
+            const cPanel = clone.querySelector('#controlPanelMain');
+            if (cPanel && !cPanel.classList.contains('max-w-0')) {
+                cPanel.classList.add('max-w-0', 'opacity-0', 'px-0', 'pointer-events-none');
+                cPanel.classList.remove('max-w-[1000px]', 'px-3');
+            }
+
             const script = document.createElement('script');
             script.textContent = `window.initialEvents = ${JSON.stringify(eventsData)}; window.initialMainTitle = "${titleVal}"; window.initialUpdateTime = "${updatedTime}"; document.addEventListener('DOMContentLoaded', () => { document.getElementById('reportMainTitleDisplay').innerText = window.initialMainTitle; document.getElementById('lastUpdatedTime').innerText = window.initialUpdateTime; });`;
             clone.querySelector('body').appendChild(script);
@@ -334,8 +405,17 @@
         let chunks = []; let chunkIndex = 0; let isReading = false;
         function toggleControls() {
             const panel = document.getElementById('controlPanelMain');
-            panel.classList.toggle('hidden');
-            document.getElementById('toggleBtn').innerText = panel.classList.contains('hidden') ? '⚙️' : '▼';
+            panel.classList.toggle('max-w-0');
+            panel.classList.toggle('opacity-0');
+            panel.classList.toggle('px-0');
+            panel.classList.toggle('pointer-events-none');
+            panel.classList.toggle('max-w-[1000px]');
+            // Add px-3 when opened based on if it has max-w-0
+            if (panel.classList.contains('max-w-0')) {
+                panel.classList.remove('px-3');
+            } else {
+                panel.classList.add('px-3');
+            }
         }
 
         function startReading() {
@@ -374,7 +454,7 @@
             let v = null;
             if(voiceVal === 'ug-UG0') v = vs.find(x => x.lang === 'tr-TR');
             else if (voiceVal === 'ug-UG') v = vs.find(x => x.lang === 'uz-UZ') || vs.find(x => x.lang.includes('tr'));
-            else v = vs.find(x => x.lang === voiceVal);
+            else v = vs.find(x => x.lang.startsWith(voiceVal.split('-')[0]));
             
             if(v) u.voice = v;
             u.rate = rateVal;
@@ -390,10 +470,13 @@
         function savePDF() {
             const d = new Date();
             const f = (n) => n.toString().padStart(2, '0');
-            const fname = `Bilik_${d.getFullYear()}-${f(d.getMonth()+1)}-${f(d.getDate())}_${f(d.getHours())}.pdf`;
-            const opt = { margin: [10,10,10,10], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
+            const fname = `Bilik_Timeline_${d.getFullYear()}-${f(d.getMonth()+1)}-${f(d.getDate())}.pdf`;
+            const opt = { margin: [15,15,15,15], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
             html2pdf().set(opt).from(document.getElementById('report-content')).save();
         }
+        
+        // Ensure voices load
+        speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
     </script>
 </body>
 </html>
