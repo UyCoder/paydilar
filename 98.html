@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="ug" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بىلىك تەتقىقات مەركىزى - ماقالە ئانالىز سۇپىسى</title>
     <!-- Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+
     <style>
         /* ئاساسىي فونت ۋە ئۇسلۇب */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
-        
+
         :root {
-            --primary-color: #0ea5e9; /* Sky Blue */
-            --primary-dark: #2563eb; /* Royal Blue */
+            --primary-color: #0ea5e9;
+            /* Sky Blue */
+            --primary-dark: #2563eb;
+            /* Royal Blue */
             --primary-light: #e0f2fe;
             --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.7);
-            --text-color: #1e293b; /* Deep Gray Text */
+            --text-color: #1e293b;
+            /* Deep Gray Text */
             --text-muted: #475569;
             --sidebar-width: 320px;
         }
@@ -26,7 +30,7 @@
             font-family: 'ALKATIP', 'UKIJ Tuz', 'Microsoft Uighur', 'Noto Naskh Arabic', serif;
             /* Yoruq mesh gradient arka ko'rinishi */
             background-color: #f8fafc;
-            background-image: 
+            background-image:
                 radial-gradient(at 40% 20%, #e2e8f0 0px, transparent 50%),
                 radial-gradient(at 80% 0%, #bfdbfe 0px, transparent 50%),
                 radial-gradient(at 0% 50%, #dbeafe 0px, transparent 50%),
@@ -44,10 +48,22 @@
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
 
         /* Header - Floating Glass */
         .header {
@@ -73,11 +89,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .header-title span {
             font-size: 14px;
             color: var(--text-muted);
             font-weight: bold;
         }
+
         .clock-display {
             font-family: monospace;
             font-size: 16px;
@@ -88,7 +106,7 @@
             color: var(--primary-dark);
             direction: ltr;
             font-weight: bold;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
         .container {
@@ -116,10 +134,14 @@
             position: relative;
             overflow: hidden;
         }
+
         .setup-section::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 5px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
             background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
         }
 
@@ -142,7 +164,7 @@
             font-family: 'Noto Naskh Arabic', sans-serif;
             color: var(--text-muted);
             line-height: 1.6;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
         textarea#mdInput {
@@ -159,8 +181,9 @@
             resize: vertical;
             box-sizing: border-box;
             transition: all 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02);
         }
+
         textarea#mdInput:focus {
             outline: none;
             border-color: var(--primary-color);
@@ -182,19 +205,22 @@
             margin-top: 10px;
             box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
-        .btn:hover { 
+
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
             color: #fff;
         }
-        .btn-outline { 
+
+        .btn-outline {
             background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--primary-color); 
-            color: var(--primary-dark); 
+            border: 1px solid var(--primary-color);
+            color: var(--primary-dark);
             box-shadow: none;
         }
-        .btn-outline:hover { 
-            background: var(--primary-light); 
+
+        .btn-outline:hover {
+            background: var(--primary-light);
             color: var(--primary-dark);
         }
 
@@ -206,17 +232,18 @@
             position: sticky;
             top: 100px;
         }
-        
+
         .toggle-toc-btn {
-            margin-top: 0; 
-            color: var(--primary-dark); 
-            border-bottom: 2px solid var(--primary-light); 
-            padding-bottom: 15px; 
+            margin-top: 0;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 15px;
             font-size: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         #tocIcon {
             display: none;
             font-size: 14px;
@@ -232,10 +259,11 @@
             border-bottom: 1px dashed #e2e8f0;
             border-radius: 6px;
         }
-        .toc-list a:hover { 
-            color: var(--primary-dark); 
-            padding-right: 15px; 
-            background: var(--primary-light); 
+
+        .toc-list a:hover {
+            color: var(--primary-dark);
+            padding-right: 15px;
+            background: var(--primary-light);
             font-weight: bold;
         }
 
@@ -246,23 +274,27 @@
             border-top: 2px dashed #cbd5e1;
             direction: rtl;
         }
+
         .typography-controls h4 {
             margin-top: 0;
             margin-bottom: 15px;
             color: var(--primary-dark);
             font-size: 17px;
         }
+
         .typo-row {
             margin-bottom: 15px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
+
         .typo-row label {
             font-size: 14px;
             color: var(--text-color);
             font-weight: bold;
         }
+
         .typo-row select {
             padding: 8px;
             border-radius: 6px;
@@ -271,11 +303,13 @@
             background: #ffffff;
             outline: none;
         }
+
         .typo-row input[type=range] {
             width: 100%;
             accent-color: var(--primary-color);
             cursor: pointer;
         }
+
         .typo-row span {
             color: var(--primary-color);
             margin-right: 5px;
@@ -287,6 +321,7 @@
             padding-top: 25px;
             border-top: 1px solid #e2e8f0;
         }
+
         .save-tools button {
             width: 100%;
             margin-bottom: 12px;
@@ -300,33 +335,39 @@
         }
 
         /* Article Typography */
-        #articleContent { 
-            font-size: 20px; 
-            text-align: justify; 
-            color: #1e293b; 
+        #articleContent {
+            font-size: 20px;
+            text-align: justify;
+            color: #1e293b;
             line-height: 2.1;
             transition: all 0.3s ease;
         }
-        #articleContent h1, #articleContent h2, #articleContent h3 { 
-            color: var(--primary-dark); 
-            margin-top: 1.8em; 
+
+        #articleContent h1,
+        #articleContent h2,
+        #articleContent h3 {
+            color: var(--primary-dark);
+            margin-top: 1.8em;
             line-height: 1.5;
         }
-        #articleContent h1 { 
-            text-align: center; 
+
+        #articleContent h1 {
+            text-align: center;
             font-size: 2.2em;
-            padding-bottom: 15px; 
+            padding-bottom: 15px;
             margin-bottom: 30px;
-            border-bottom: 3px solid var(--primary-light); 
+            border-bottom: 3px solid var(--primary-light);
             color: #0f172a;
         }
-        #articleContent p { 
-            text-indent: 2em; 
-            margin-bottom: 1.2em; 
+
+        #articleContent p {
+            text-indent: 2em;
+            margin-bottom: 1.2em;
         }
+
         #articleContent blockquote {
             border-right: 5px solid var(--primary-color);
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.7);
             margin: 25px 0;
             padding: 20px;
             font-style: italic;
@@ -334,18 +375,20 @@
             border-radius: 8px;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
             text-indent: 0;
         }
+
         #articleContent img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 30px auto;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
+
         #articleContent strong {
             color: #0f172a;
             background-color: var(--primary-light);
@@ -353,10 +396,27 @@
             border-radius: 4px;
             font-weight: bold;
         }
-        #articleContent ul, #articleContent ol { margin-right: 20px; margin-bottom: 1.5em; }
-        #articleContent li { margin-bottom: 12px; }
-        #articleContent a { color: var(--primary-color); text-decoration: none; border-bottom: 1px dashed var(--primary-color); }
-        #articleContent a:hover { color: var(--primary-dark); border-bottom-style: solid; }
+
+        #articleContent ul,
+        #articleContent ol {
+            margin-right: 20px;
+            margin-bottom: 1.5em;
+        }
+
+        #articleContent li {
+            margin-bottom: 12px;
+        }
+
+        #articleContent a {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--primary-color);
+        }
+
+        #articleContent a:hover {
+            color: var(--primary-dark);
+            border-bottom-style: solid;
+        }
 
         #articleContent hr {
             border: 0;
@@ -379,13 +439,13 @@
             display: flex;
             align-items: center;
             padding: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             z-index: 2000;
             width: auto;
             max-width: 95%;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .control-bar-inner {
             display: flex;
             align-items: center;
@@ -398,7 +458,10 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-overflow-scrolling: touch;
         }
-        .control-bar-inner::-webkit-scrollbar { display: none; }
+
+        .control-bar-inner::-webkit-scrollbar {
+            display: none;
+        }
 
         .control-bar.collapsed .control-bar-inner {
             max-width: 0;
@@ -425,9 +488,14 @@
             flex-shrink: 0;
             margin: 0;
         }
-        #togglePlayerBtn:hover { transform: scale(1.1); box-shadow: 0 6px 15px rgba(14, 165, 233, 0.5); }
 
-        .control-bar-inner select, .control-bar-inner button {
+        #togglePlayerBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(14, 165, 233, 0.5);
+        }
+
+        .control-bar-inner select,
+        .control-bar-inner button {
             background: #f8fafc;
             color: var(--text-color);
             border: 1px solid #cbd5e1;
@@ -439,59 +507,118 @@
             font-size: 14px;
             font-weight: bold;
             transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             white-space: nowrap;
         }
-        .control-bar-inner select option { background: #ffffff; color: #1e293b; }
-        .control-bar-inner select:hover { border-color: var(--primary-color); }
-        
-        #speakBtn { background: linear-gradient(135deg, var(--primary-dark), var(--primary-color)); color: white; border: none; }
-        #speakBtn:hover { box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4); transform: translateY(-1px); }
-        #stopBtn { background: linear-gradient(135deg, #ef4444, #f87171); color: white; border: none; }
-        #stopBtn:hover { box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); transform: translateY(-1px); }
-        #recordBtn { background: linear-gradient(135deg, #10b981, #34d399); color: white; border: none; }
-        #recordBtn:hover { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); transform: translateY(-1px); }
+
+        .control-bar-inner select option {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        .control-bar-inner select:hover {
+            border-color: var(--primary-color);
+        }
+
+        #speakBtn {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            border: none;
+        }
+
+        #speakBtn:hover {
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+            transform: translateY(-1px);
+        }
+
+        #stopBtn {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+            border: none;
+        }
+
+        #stopBtn:hover {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            transform: translateY(-1px);
+        }
+
+        #recordBtn {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: none;
+        }
+
+        #recordBtn:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
 
         /* Highlight */
-        .highlight { background-color: #fef08a; color: #000; padding: 2px 4px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .highlight {
+            background-color: #fef08a;
+            color: #000;
+            padding: 2px 4px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
         /* Mobile Responsive */
         @media (max-width: 900px) {
-            .container { 
-                flex-direction: column; 
-                padding: 15px; 
+            .container {
+                flex-direction: column;
+                padding: 15px;
                 margin: 10px auto;
                 gap: 20px;
             }
-            .sidebar { 
-                width: 100%; 
-                position: static; 
-                order: -1; 
-                box-sizing: border-box; 
+
+            .sidebar {
+                width: 100%;
+                position: static;
+                order: -1;
+                box-sizing: border-box;
             }
-            .glass-panel { padding: 20px; }
-            .article-view { padding: 20px; }
-            
+
+            .glass-panel {
+                padding: 20px;
+            }
+
+            .article-view {
+                padding: 20px;
+            }
+
             /* Responsive TOC */
-            #tocIcon { display: block; }
-            .toggle-toc-btn { cursor: pointer; }
-            .toc-list, .typography-controls, .save-tools {
+            #tocIcon {
+                display: block;
+            }
+
+            .toggle-toc-btn {
+                cursor: pointer;
+            }
+
+            .toc-list,
+            .typography-controls,
+            .save-tools {
                 display: none;
             }
+
             .sidebar.expanded .toc-list,
             .sidebar.expanded .typography-controls,
             .sidebar.expanded .save-tools {
                 display: block;
             }
-            
-            .header { 
-                flex-direction: column; 
-                text-align: center; 
+
+            .header {
+                flex-direction: column;
+                text-align: center;
                 padding: 15px;
                 gap: 10px;
             }
-            #articleContent p { text-indent: 1.5em; }
+
+            #articleContent p {
+                text-indent: 1.5em;
+            }
         }
+
         @media (max-width: 480px) {
             .article-view {
                 padding: 15px 10px;
@@ -501,514 +628,574 @@
 
         /* Print Overrides */
         @media print {
-            body { background: white !important; color: black !important; }
-            .control-bar, .setup-section, .btn, .header, .sidebar { display: none !important; }
-            .article-view, .glass-panel { box-shadow: none !important; padding: 0 !important; border: none !important; margin: 0 !important; background: transparent !important;}
-            .container { margin: 0; max-width: 100%; padding: 0;}
-            #articleContent { color: black !important; font-size: 16pt !important;}
-            #articleContent h1, #articleContent h2, #articleContent h3 { color: black !important; border-bottom: 2px solid #000; }
-            #articleContent blockquote { border-right-color: #333 !important; background: #f9f9f9 !important; color: #333 !important; }
-            #articleContent strong { background: transparent !important; color: black !important; }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .control-bar,
+            .setup-section,
+            .btn,
+            .header,
+            .sidebar {
+                display: none !important;
+            }
+
+            .article-view,
+            .glass-panel {
+                box-shadow: none !important;
+                padding: 0 !important;
+                border: none !important;
+                margin: 0 !important;
+                background: transparent !important;
+            }
+
+            .container {
+                margin: 0;
+                max-width: 100%;
+                padding: 0;
+            }
+
+            #articleContent {
+                color: black !important;
+                font-size: 16pt !important;
+            }
+
+            #articleContent h1,
+            #articleContent h2,
+            #articleContent h3 {
+                color: black !important;
+                border-bottom: 2px solid #000;
+            }
+
+            #articleContent blockquote {
+                border-right-color: #333 !important;
+                background: #f9f9f9 !important;
+                color: #333 !important;
+            }
+
+            #articleContent strong {
+                background: transparent !important;
+                color: black !important;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="header">
-    <div class="header-title">
-        <h1>بىلىك تەتقىقات مەركىزى</h1>
-        <span>ئىلىم - مەرىپەت - كەلگۈسى (شەرقىي تۈركىستان)</span>
-    </div>
-    <div class="clock-display" id="clock">0000-00-00 00:00:00</div>
-</div>
-
-<div class="container" id="inputSection">
-    <div style="width: 100%;">
-        <div class="setup-section glass-panel">
-            <h3>1. قەدەم: ماقالە تەييارلاش</h3>
-            <p>تۆۋەندىكى رامكىدىكى مەخسۇس بۇيرۇق (Prompt) نى كۆچۈرۈۋېلىپ، سۈنئىي ئەقىلگە (ChatGPT, Gemini) يوللاڭ.</p>
-            <div class="prompt-box" id="systemPrompt">
-بلوگ يازمىسى يېڭى
-====================
-1. ئەڭ ئاۋۋال بۇ ماقالىنىڭ تېمىسىنى تولۇق تەرجىمە قىل، ئاندىن قاچان ۋە نەدە ئىلان قىلىنغانلىقى، ئاپتورنىڭ كىملىكى، قىسقىچە تەرجىمھالى، ماقالنىڭ قىسقىچە مەزمۇنىنى 3 ئابزاستا ياز. ھەمدە بۇ 3 ئابزاس خۇلاسىنىڭ ئېنگىلىزچىسىنمۇ بەر. بۇ 3 ئابزاس خۇلاسىنىڭ ئەرەبچىسىنىمۇ بەر. 
-2. كېيىن ئاندىن تولۇق تېكىستنىڭ تەرجىمسىنى بەرگىن. راۋان ۋە ئىلمىي بولسۇن. جۇڭگونى خىتاي دۆلىتى، خەنزۇنى خىتاي، شىنجاڭنى شەرقىي تۈركىستان دەپ تەرجىمە قىل. دائىش، SNA نى تۈركىيە قوللايدىغان جەيش ۋاتانىي، GSS نى سۈرىيە ئومۇمىي بىخەتەرلىك ئورگىنى، SDF نى سۈرىيە كورد دىموكراتىك كۈچلىرى دەپ ئال. مۇھىم شەخس ۋە ئاتالغۇلارنىڭ ئەسلى تىلىنى تىرناق ئىچىدە بەر. تەرجىمە ئۇيغۇر كونا يېزىقىدا بولسۇن.
-3. ئەسلىي مەزمۇندىكى بارلىق سان-سېفىرلارنى ۋە مۇھىم ۋەقەلەرنى تىزىپ بەر.
-4. بارلىق باياناتلارنى، سۆزلىگۈچىنى ئەسكەرتىپ تىزىپ بەر.
-5. مۇشۇ تېمىغا مۇناسىۋەتلىك 3 كىتاپ تەۋسىيە قىل (مەزمۇنى بىلەن).
-6. مۇشۇ تېمىغا مۇناسىۋەتلىك 3 ئىلمىي ماقالە تەۋسىيە قىل (مەزمۇنى ۋە ئۇلانمىسى بىلەن).
-7. قارشى پىكىرلەر قايسىلار؟ نېمە ئۈچۈن؟
-8. خەلقئارا مۇناسىۋەت ۋە جۇغراپىيىلىك سىياسەت (Geopolitics) نەزەرىيەلىرىدىن قايسىلار بار؟ قارشى ئىستىخبارات ئانالىزى قىل.
-9. شەرقىي تۈركىستان ھەققىدە قانداق مەزمۇنلار بار؟ تەھلىل قىل.
-10. ۋەتەن سىرتىدىكى ۋە ئىچىدىكى ئۇيغۇرلارغا قانداق پايدىلار بار؟ خۇلاسە ياز. (ئۇيغۇرلار تېنچلىقپەرۋەر، مۇستەقىللىق ئىزدىگۈچىلەر دېگەن مەۋقەدە).
-11. يادلىۋېلىشقا تېگىشلىك 3 مۇھىم جۈملە (ئېنگىلىزچە، ئەرەبچە، سۈرىيە شىۋىسى، تۈركچە، خىتايچە تەرجىمىسى بىلەن).
-رىئال ۋەقەلەرنىڭ ۋاقتى ۋە ئورنىنى تىرناق ئىچىگە ئال. خىتاي ئورگانلىرىنىڭ خىتايچە نامىنى ئەسكەرت. Markdown format دا چىقار. رەسىم لىنكىلىرى بولسا قوشۇپ قوي.
-            </div>
-            <button class="btn btn-outline" onclick="copyPrompt()">بۇيرۇقنى كۆچۈرۈش</button>
+    <div class="header">
+        <div class="header-title">
+            <h1>بىلىك تەتقىقات مەركىزى</h1>
+            <span>ئىلىم - مەرىپەت - كەلگۈسى (شەرقىي تۈركىستان)</span>
         </div>
-
-        <div class="setup-section glass-panel">
-            <h3>2. قەدەم: ماقالىنى ئوقۇش</h3>
-            <p>سۈنئىي ئەقىل چىقىرىپ بەرگەن Markdown فورماتىدىكى تېكىستنى بۇ يەرگە چاپلاڭ:</p>
-            <textarea id="mdInput" placeholder="# ماقالە تېمىسى..."></textarea>
-            <br>
-            <button class="btn" style="width: 100%; margin-top: 15px; font-size: 18px;" onclick="renderArticle()">ماقالىنى كۆرۈش ۋە ئاڭلاش</button>
-        </div>
+        <div class="clock-display" id="clock">0000-00-00 00:00:00</div>
     </div>
-</div>
 
-<!-- Main Content Area (Hidden initially) -->
-<div class="container" id="mainDisplay" style="display: none;">
-    <!-- Sidebar -->
-    <div class="sidebar glass-panel" id="sidebar">
-        <h3 class="toggle-toc-btn" onclick="toggleMobileSidebar()">مۇندەرىجە & تەڭشەك <span id="tocIcon">▼</span></h3>
-        <div class="toc-list" id="toc"></div>
-        
-        <div class="typography-controls" id="typoControls">
-            <h4>ئۆلچەم تەڭشەكلەر 🎨</h4>
-            <div class="typo-row">
-                <label>خەت نۇسخىسى:</label>
-                <select id="fontFamilySelect" onchange="updateTypography()">
-                    <option value="'ALKATIP', 'UKIJ Tuz', sans-serif">ئەلكاتىپ (ALKATIP)</option>
-                    <option value="'UKIJ Tuz', sans-serif">ئۇيغۇر تۇز (UKIJ Tuz)</option>
-                    <option value="'Microsoft Uighur', sans-serif">مايكروسوفت ئۇيغۇرچە</option>
-                    <option value="'Noto Naskh Arabic', serif">نوتو ئەرەبچە</option>
-                </select>
+    <div class="container" id="inputSection">
+        <div style="width: 100%;">
+            <div class="setup-section glass-panel">
+                <h3>1. قەدەم: ماقالە تەييارلاش</h3>
+                <p>تۆۋەندىكى رامكىدىكى مەخسۇس بۇيرۇق (Prompt) نى كۆچۈرۈۋېلىپ، سۈنئىي ئەقىلگە (ChatGPT, Gemini) يوللاڭ.
+                </p>
+                <div class="prompt-box" id="systemPrompt">
+                    بلوگ يازمىسى يېڭى
+                    ====================
+                    1. ئەڭ ئاۋۋال بۇ ماقالىنىڭ تېمىسىنى تولۇق تەرجىمە قىل، ئاندىن قاچان ۋە نەدە ئىلان قىلىنغانلىقى،
+                    ئاپتورنىڭ كىملىكى، قىسقىچە تەرجىمھالى، ماقالنىڭ قىسقىچە مەزمۇنىنى 3 ئابزاستا ياز. ھەمدە بۇ 3 ئابزاس
+                    خۇلاسىنىڭ ئېنگىلىزچىسىنمۇ بەر. بۇ 3 ئابزاس خۇلاسىنىڭ ئەرەبچىسىنىمۇ بەر.
+                    2. كېيىن ئاندىن تولۇق تېكىستنىڭ تەرجىمسىنى بەرگىن. راۋان ۋە ئىلمىي بولسۇن. جۇڭگونى خىتاي دۆلىتى،
+                    خەنزۇنى خىتاي، شىنجاڭنى شەرقىي تۈركىستان دەپ تەرجىمە قىل. دائىش، SNA نى تۈركىيە قوللايدىغان جەيش
+                    ۋاتانىي، GSS نى سۈرىيە ئومۇمىي بىخەتەرلىك ئورگىنى، SDF نى سۈرىيە كورد دىموكراتىك كۈچلىرى دەپ ئال.
+                    مۇھىم شەخس ۋە ئاتالغۇلارنىڭ ئەسلى تىلىنى تىرناق ئىچىدە بەر. تەرجىمە ئۇيغۇر كونا يېزىقىدا بولسۇن.
+                    3. ئەسلىي مەزمۇندىكى بارلىق سان-سېفىرلارنى ۋە مۇھىم ۋەقەلەرنى تىزىپ بەر.
+                    4. بارلىق باياناتلارنى، سۆزلىگۈچىنى ئەسكەرتىپ تىزىپ بەر.
+                    5. مۇشۇ تېمىغا مۇناسىۋەتلىك 3 كىتاپ تەۋسىيە قىل (مەزمۇنى بىلەن).
+                    6. مۇشۇ تېمىغا مۇناسىۋەتلىك 3 ئىلمىي ماقالە تەۋسىيە قىل (مەزمۇنى ۋە ئۇلانمىسى بىلەن).
+                    7. قارشى پىكىرلەر قايسىلار؟ نېمە ئۈچۈن؟
+                    8. خەلقئارا مۇناسىۋەت ۋە جۇغراپىيىلىك سىياسەت (Geopolitics) نەزەرىيەلىرىدىن قايسىلار بار؟ قارشى
+                    ئىستىخبارات ئانالىزى قىل.
+                    9. شەرقىي تۈركىستان ھەققىدە قانداق مەزمۇنلار بار؟ تەھلىل قىل.
+                    10. ۋەتەن سىرتىدىكى ۋە ئىچىدىكى ئۇيغۇرلارغا قانداق پايدىلار بار؟ خۇلاسە ياز. (ئۇيغۇرلار
+                    تېنچلىقپەرۋەر، مۇستەقىللىق ئىزدىگۈچىلەر دېگەن مەۋقەدە).
+                    11. يادلىۋېلىشقا تېگىشلىك 3 مۇھىم جۈملە (ئېنگىلىزچە، ئەرەبچە، سۈرىيە شىۋىسى، تۈركچە، خىتايچە
+                    تەرجىمىسى بىلەن).
+                    رىئال ۋەقەلەرنىڭ ۋاقتى ۋە ئورنىنى تىرناق ئىچىگە ئال. خىتاي ئورگانلىرىنىڭ خىتايچە نامىنى ئەسكەرت.
+                    Markdown format دا چىقار. رەسىم لىنكىلىرى بولسا قوشۇپ قوي.
+                </div>
+                <button class="btn btn-outline" onclick="copyPrompt()">بۇيرۇقنى كۆچۈرۈش</button>
             </div>
-            <div class="typo-row">
-                <label>خەت چوڭلۇقى: <span id="fontVal">20px</span></label>
-                <input type="range" id="fontSizeRange" min="14" max="32" value="20" oninput="updateTypography()">
-            </div>
-            <div class="typo-row">
-                <label>قۇر ئارىلىقى: <span id="lineVal">2.1</span></label>
-                <input type="range" id="lineSpacingRange" min="1.4" max="3.5" step="0.1" value="2.1" oninput="updateTypography()">
+
+            <div class="setup-section glass-panel">
+                <h3>2. قەدەم: ماقالىنى ئوقۇش</h3>
+                <p>سۈنئىي ئەقىل چىقىرىپ بەرگەن Markdown فورماتىدىكى تېكىستنى بۇ يەرگە چاپلاڭ:</p>
+                <textarea id="mdInput" placeholder="# ماقالە تېمىسى..."></textarea>
+                <br>
+                <button class="btn" style="width: 100%; margin-top: 15px; font-size: 18px;"
+                    onclick="renderArticle()">ماقالىنى كۆرۈش ۋە ئاڭلاش</button>
             </div>
         </div>
-        
-        <div class="save-tools" id="saveTools">
-            <button class="btn" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000;" id="saveHTMLBtn" onclick="saveAsHTML()">بەتنى HTML ساقلاش</button>
-            <button class="btn" style="background: linear-gradient(135deg, #f43f5e, #fb7185);" onclick="window.print()">بەتنى PDF ئېلىش</button>
-            <button class="btn btn-outline" style="border-color: #94a3b8; color: #475569;" onclick="showInput()">يېڭى ماقالە كىرگۈزۈش</button>
+    </div>
+
+    <!-- Main Content Area (Hidden initially) -->
+    <div class="container" id="mainDisplay" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar glass-panel" id="sidebar">
+            <h3 class="toggle-toc-btn" onclick="toggleMobileSidebar()">مۇندەرىجە & تەڭشەك <span id="tocIcon">▼</span>
+            </h3>
+            <div class="toc-list" id="toc"></div>
+
+            <div class="typography-controls" id="typoControls">
+                <h4>ئۆلچەم تەڭشەكلەر 🎨</h4>
+                <div class="typo-row">
+                    <label>خەت نۇسخىسى:</label>
+                    <select id="fontFamilySelect" onchange="updateTypography()">
+                        <option value="'ALKATIP', 'UKIJ Tuz', sans-serif">ئەلكاتىپ (ALKATIP)</option>
+                        <option value="'UKIJ Tuz', sans-serif">ئۇيغۇر تۇز (UKIJ Tuz)</option>
+                        <option value="'Microsoft Uighur', sans-serif">مايكروسوفت ئۇيغۇرچە</option>
+                        <option value="'Noto Naskh Arabic', serif">نوتو ئەرەبچە</option>
+                    </select>
+                </div>
+                <div class="typo-row">
+                    <label>خەت چوڭلۇقى: <span id="fontVal">20px</span></label>
+                    <input type="range" id="fontSizeRange" min="14" max="32" value="20" oninput="updateTypography()">
+                </div>
+                <div class="typo-row">
+                    <label>قۇر ئارىلىقى: <span id="lineVal">2.1</span></label>
+                    <input type="range" id="lineSpacingRange" min="1.4" max="3.5" step="0.1" value="2.1"
+                        oninput="updateTypography()">
+                </div>
+            </div>
+
+            <div class="save-tools" id="saveTools">
+                <button class="btn" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000;"
+                    id="saveHTMLBtn" onclick="saveAsHTML()">بەتنى HTML ساقلاش</button>
+                <button class="btn" style="background: linear-gradient(135deg, #f43f5e, #fb7185);"
+                    onclick="window.print()">بەتنى PDF ئېلىش</button>
+                <button class="btn btn-outline" style="border-color: #94a3b8; color: #475569;"
+                    onclick="showInput()">يېڭى ماقالە كىرگۈزۈش</button>
+            </div>
+        </div>
+
+        <!-- Article Content -->
+        <div class="article-view glass-panel">
+            <div id="articleContent"></div>
         </div>
     </div>
 
-    <!-- Article Content -->
-    <div class="article-view glass-panel">
-        <div id="articleContent"></div>
+    <!-- Footer Control Bar -->
+    <div class="control-bar collapsed" id="controlBar" style="display: none;">
+        <button id="togglePlayerBtn" title="ئوقۇش بالدىقىنى ئېچىش/يېپىش" onclick="togglePlayer()">🎧</button>
+        <div class="control-bar-inner">
+            <select id="languageSelect">
+                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                <option value="ar-SA">ئەرەبچە</option>
+                <option value="en-US">ئىنگلىزچە</option>
+                <option value="tr-TR">تۈركچە</option>
+                <option value="zh-CN">خىتايچە</option>
+            </select>
+
+            <select id="rateSelect">
+                <option value="0.75">0.75x ئاستا</option>
+                <option value="1.0" selected>1.0x مەجبۇرىي</option>
+                <option value="1.25">1.25x تېز</option>
+                <option value="1.5">1.5x تېزرەك</option>
+                <option value="2.0">2.0x ئۇچقۇر</option>
+            </select>
+
+            <button id="speakBtn">▶ ئوقۇ / توختا</button>
+            <button id="stopBtn">■ ئاخىرلاشتۇر</button>
+            <button id="recordBtn">● ئاۋاز ئېلىش</button>
+        </div>
     </div>
-</div>
 
-<!-- Footer Control Bar -->
-<div class="control-bar collapsed" id="controlBar" style="display: none;">
-    <button id="togglePlayerBtn" title="ئوقۇش بالدىقىنى ئېچىش/يېپىش" onclick="togglePlayer()">🎧</button>
-    <div class="control-bar-inner">
-        <select id="languageSelect">
-            <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
-            <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
-            <option value="ar-SA">ئەرەبچە</option>
-            <option value="en-US">ئىنگلىزچە</option>
-            <option value="tr-TR">تۈركچە</option>
-            <option value="zh-CN">خىتايچە</option>
-        </select>
-
-        <select id="rateSelect">
-            <option value="0.75">0.75x ئاستا</option>
-            <option value="1.0" selected>1.0x مەجبۇرىي</option>
-            <option value="1.25">1.25x تېز</option>
-            <option value="1.5">1.5x تېزرەك</option>
-            <option value="2.0">2.0x ئۇچقۇر</option>
-        </select>
-
-        <button id="speakBtn">▶ ئوقۇ / توختا</button>
-        <button id="stopBtn">■ ئاخىرلاشتۇر</button>
-        <button id="recordBtn">● ئاۋاز ئېلىش</button>
-    </div>
-</div>
-
-<script>
-    // --- 0. Time & Helpers ---
-    function updateClock() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('clock').innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    function getTimestampName() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
-    }
-
-    // --- Typography & UI Toggles ---
-    function updateTypography() {
-        const family = document.getElementById('fontFamilySelect').value;
-        const size = document.getElementById('fontSizeRange').value;
-        const spacing = document.getElementById('lineSpacingRange').value;
-        
-        document.getElementById('fontVal').innerText = size + 'px';
-        document.getElementById('lineVal').innerText = spacing;
-        
-        const content = document.getElementById('articleContent');
-        content.style.fontFamily = family;
-        content.style.fontSize = size + 'px';
-        content.style.lineHeight = spacing;
-    }
-
-    function toggleMobileSidebar() {
-        if (window.innerWidth <= 900) {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('expanded');
-            const icon = document.getElementById('tocIcon');
-            icon.innerText = sidebar.classList.contains('expanded') ? '▲' : '▼';
+    <script>
+        // --- 0. Time & Helpers ---
+        function updateClock() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').innerText = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
-    }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-    function togglePlayer() {
-        const bar = document.getElementById('controlBar');
-        bar.classList.toggle('collapsed');
-    }
+        function getTimestampName() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
+        }
 
-    // --- 1. Rendering & UI Logic ---
-    function copyPrompt() {
-        const promptText = document.getElementById('systemPrompt').innerText;
-        navigator.clipboard.writeText(promptText).then(() => {
-            alert('بۇيرۇق مۇۋەپپەقىيەتلىك كۆچۈرۈلدى!');
-        });
-    }
+        // --- Typography & UI Toggles ---
+        function updateTypography() {
+            const family = document.getElementById('fontFamilySelect').value;
+            const size = document.getElementById('fontSizeRange').value;
+            const spacing = document.getElementById('lineSpacingRange').value;
 
-    function renderArticle() {
-        const rawMd = document.getElementById('mdInput').value;
-        if (!rawMd.trim()) { alert('دىققەت! ئالدى بىلەن تېكىست كىرگۈزۈڭ!'); return; }
+            document.getElementById('fontVal').innerText = size + 'px';
+            document.getElementById('lineVal').innerText = spacing;
 
-        document.getElementById('articleContent').innerHTML = marked.parse(rawMd);
-        generateTOC();
+            const content = document.getElementById('articleContent');
+            content.style.fontFamily = family;
+            content.style.fontSize = size + 'px';
+            content.style.lineHeight = spacing;
+        }
 
-        document.getElementById('inputSection').style.display = 'none';
-        document.getElementById('mainDisplay').style.display = 'flex';
-        document.getElementById('sidebar').style.display = 'block';
-        document.querySelector('.article-view').style.display = 'block';
-        
-        // Show player bar (collapsed state by default)
-        document.getElementById('controlBar').style.display = 'flex';
-        
-        // Apply typography defaults to freshly parsed content
-        updateTypography();
-        
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
+        function toggleMobileSidebar() {
+            if (window.innerWidth <= 900) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('expanded');
+                const icon = document.getElementById('tocIcon');
+                icon.innerText = sidebar.classList.contains('expanded') ? '▲' : '▼';
+            }
+        }
 
-    function showInput() {
-        stopText();
-        document.getElementById('inputSection').style.display = 'flex';
-        document.getElementById('mainDisplay').style.display = 'none';
-        document.getElementById('controlBar').style.display = 'none';
-    }
+        function togglePlayer() {
+            const bar = document.getElementById('controlBar');
+            bar.classList.toggle('collapsed');
+        }
 
-    function generateTOC() {
-        const content = document.getElementById('articleContent');
-        const toc = document.getElementById('toc');
-        toc.innerHTML = '';
-        const headers = content.querySelectorAll('h1, h2, h3');
-        
-        headers.forEach((header, index) => {
-            header.id = 'section-' + index;
-            const link = document.createElement('a');
-            link.href = '#section-' + index;
-            link.innerText = header.innerText;
-            if(header.tagName === 'H2') link.style.paddingRight = '10px';
-            if(header.tagName === 'H3') link.style.paddingRight = '20px';
-            link.onclick = (e) => {
-                e.preventDefault();
-                header.scrollIntoView({behavior: 'smooth', block: 'start'});
-                // Auto close on mobile
-                if(window.innerWidth <= 900) {
-                    document.getElementById('sidebar').classList.remove('expanded');
-                    document.getElementById('tocIcon').innerText = '▼';
-                }
-            };
-            toc.appendChild(link);
-        });
-    }
+        // --- 1. Rendering & UI Logic ---
+        function copyPrompt() {
+            const promptText = document.getElementById('systemPrompt').innerText;
+            navigator.clipboard.writeText(promptText).then(() => {
+                alert('بۇيرۇق مۇۋەپپەقىيەتلىك كۆچۈرۈلدى!');
+            });
+        }
 
-    // --- SAVE HTML Logic with Image Downloading & UI Cleanup ---
-    async function saveAsHTML() {
-        const btn = document.getElementById('saveHTMLBtn');
-        const oldText = btn.innerText;
-        btn.innerText = "ساقلاۋاتىدۇ (رەسىم قوشۇپ)...";
-        btn.disabled = true;
+        function renderArticle() {
+            const rawMd = document.getElementById('mdInput').value;
+            if (!rawMd.trim()) { alert('دىققەت! ئالدى بىلەن تېكىست كىرگۈزۈڭ!'); return; }
 
-        try {
-            const clone = document.documentElement.cloneNode(true);
-            
-            // Remove unneeded items for saved mode
-            const inputSec = clone.querySelector('#inputSection');
-            if(inputSec) inputSec.remove();
+            document.getElementById('articleContent').innerHTML = marked.parse(rawMd);
+            generateTOC();
 
-            const saveTools = clone.querySelector('#saveTools');
-            if(saveTools) saveTools.remove(); // Removed per user request
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('mainDisplay').style.display = 'flex';
+            document.getElementById('sidebar').style.display = 'block';
+            document.querySelector('.article-view').style.display = 'block';
 
-            const mainDisplay = clone.querySelector('#mainDisplay');
-            if(mainDisplay) mainDisplay.style.display = 'flex';
-            
-            const controlBar = clone.querySelector('#controlBar');
-            if(controlBar) controlBar.style.display = 'flex';
+            // Show player bar (collapsed state by default)
+            document.getElementById('controlBar').style.display = 'flex';
 
-            const sidebar = clone.querySelector('#sidebar');
-            if(sidebar) sidebar.style.display = 'block';
+            // Apply typography defaults to freshly parsed content
+            updateTypography();
 
-            const articleView = clone.querySelector('.article-view');
-            if(articleView) articleView.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            // Download images to base64
-            const images = clone.querySelectorAll('.article-view img');
-            for (let img of images) {
-                if (img.src && !img.src.startsWith('data:')) {
-                    try {
-                        const response = await fetch(img.src);
-                        const blob = await response.blob();
-                        const base64Url = await new Promise((resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onloadend = () => resolve(reader.result);
-                            reader.onerror = reject;
-                            reader.readAsDataURL(blob);
-                        });
-                        img.setAttribute('src', base64Url);
-                    } catch (e) {
-                         console.warn("Fetch failed, trying canvas fallback:", img.src);
-                         try {
-                             const base64Url = await new Promise((resolve, reject) => {
-                                 let image = new Image();
-                                 image.crossOrigin = 'Anonymous';
-                                 image.onload = function() {
-                                     let canvas = document.createElement('canvas');
-                                     canvas.width = image.width;
-                                     canvas.height = image.height;
-                                     let ctx = canvas.getContext('2d');
-                                     ctx.drawImage(image, 0, 0);
-                                     try {
-                                         resolve(canvas.toDataURL('image/png'));
-                                     } catch(err) {
-                                         reject(err);
-                                     }
-                                 };
-                                 image.onerror = reject;
-                                 image.src = img.src;
-                             });
-                             img.setAttribute('src', base64Url);
-                         } catch (e2) {
-                             console.warn("Canvas fallback also failed.", img.src);
-                         }
+        function showInput() {
+            stopText();
+            document.getElementById('inputSection').style.display = 'flex';
+            document.getElementById('mainDisplay').style.display = 'none';
+            document.getElementById('controlBar').style.display = 'none';
+        }
+
+        function generateTOC() {
+            const content = document.getElementById('articleContent');
+            const toc = document.getElementById('toc');
+            toc.innerHTML = '';
+            const headers = content.querySelectorAll('h1, h2, h3');
+
+            headers.forEach((header, index) => {
+                header.id = 'section-' + index;
+                const link = document.createElement('a');
+                link.href = '#section-' + index;
+                link.innerText = header.innerText;
+                if (header.tagName === 'H2') link.style.paddingRight = '10px';
+                if (header.tagName === 'H3') link.style.paddingRight = '20px';
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Auto close on mobile
+                    if (window.innerWidth <= 900) {
+                        document.getElementById('sidebar').classList.remove('expanded');
+                        document.getElementById('tocIcon').innerText = '▼';
+                    }
+                };
+                toc.appendChild(link);
+            });
+        }
+
+        // --- SAVE HTML Logic with Image Downloading & UI Cleanup ---
+        async function saveAsHTML() {
+            const btn = document.getElementById('saveHTMLBtn');
+            const oldText = btn.innerText;
+            btn.innerText = "ساقلاۋاتىدۇ (رەسىم قوشۇپ)...";
+            btn.disabled = true;
+
+            try {
+                const clone = document.documentElement.cloneNode(true);
+
+                // Remove unneeded items for saved mode
+                const inputSec = clone.querySelector('#inputSection');
+                if (inputSec) inputSec.remove();
+
+                const saveTools = clone.querySelector('#saveTools');
+                if (saveTools) saveTools.remove(); // Removed per user request
+
+                const mainDisplay = clone.querySelector('#mainDisplay');
+                if (mainDisplay) mainDisplay.style.display = 'flex';
+
+                const controlBar = clone.querySelector('#controlBar');
+                if (controlBar) controlBar.style.display = 'flex';
+
+                const sidebar = clone.querySelector('#sidebar');
+                if (sidebar) sidebar.style.display = 'block';
+
+                const articleView = clone.querySelector('.article-view');
+                if (articleView) articleView.style.display = 'block';
+
+                // Download images to base64
+                const images = clone.querySelectorAll('.article-view img');
+                for (let img of images) {
+                    if (img.src && !img.src.startsWith('data:')) {
+                        try {
+                            const response = await fetch(img.src);
+                            const blob = await response.blob();
+                            const base64Url = await new Promise((resolve, reject) => {
+                                const reader = new FileReader();
+                                reader.onloadend = () => resolve(reader.result);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(blob);
+                            });
+                            img.setAttribute('src', base64Url);
+                        } catch (e) {
+                            console.warn("Fetch failed, trying canvas fallback:", img.src);
+                            try {
+                                const base64Url = await new Promise((resolve, reject) => {
+                                    let image = new Image();
+                                    image.crossOrigin = 'Anonymous';
+                                    image.onload = function () {
+                                        let canvas = document.createElement('canvas');
+                                        canvas.width = image.width;
+                                        canvas.height = image.height;
+                                        let ctx = canvas.getContext('2d');
+                                        ctx.drawImage(image, 0, 0);
+                                        try {
+                                            resolve(canvas.toDataURL('image/png'));
+                                        } catch (err) {
+                                            reject(err);
+                                        }
+                                    };
+                                    image.onerror = reject;
+                                    image.src = img.src;
+                                });
+                                img.setAttribute('src', base64Url);
+                            } catch (e2) {
+                                console.warn("Canvas fallback also failed.", img.src);
+                            }
+                        }
                     }
                 }
-            }
-            
-            const htmlContent = "<!DOCTYPE html>\n<html lang='ug' dir='rtl'>\n" + clone.innerHTML + "\n</html>";
-            
-            const blobFile = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
-            const fileName = getTimestampName() + ".html";
-            
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blobFile);
-            link.download = fileName;
-            link.click();
-        } catch(err) {
-            console.error(err);
-            alert("ساقلاشتا مۇئامىلە خاتالىقى كۆرۈلدى.");
-        } finally {
-            btn.innerText = oldText;
-            btn.disabled = false;
-        }
-    }
 
-    // --- 2. TTS Logic ---
-    const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
-    const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+                const htmlContent = "<!DOCTYPE html>\n<html lang='ug' dir='rtl'>\n" + clone.innerHTML + "\n</html>";
 
-    function convertUyghurToULY(text) { return text.split('').map(char => UY_TO_ULY_MAP[char] || char).join(''); }
-    function convertUyghurToULYTurk(text) { return text.split('').map(char => UY_TO_ULY_MAPT[char] || char).join(''); }
+                const blobFile = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+                const fileName = getTimestampName() + ".html";
 
-    let textChunks = [];
-    let currentChunkIndex = 0;
-    let isSpeaking = false;
-    let isPaused = false;
-    let mediaRecorder = null;
-    let audioChunks = [];
-
-    function getReadableText() {
-        const root = document.getElementById('articleContent');
-        return root.innerText;
-    }
-
-    function createTextChunks(text) {
-        const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]+/g) || [text];
-        return sentences.filter(s => s.trim().length > 0);
-    }
-
-    function speakNextChunk() {
-        if (currentChunkIndex >= textChunks.length || (!isSpeaking && !isPaused)) {
-            isSpeaking = false;
-            isPaused = false;
-            document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
-            return;
-        }
-
-        const chunk = textChunks[currentChunkIndex];
-        const utterance = new SpeechSynthesisUtterance(chunk);
-        
-        const langVal = document.getElementById('languageSelect').value;
-        const rateVal = document.getElementById('rateSelect').value;
-        
-        utterance.rate = parseFloat(rateVal);
-
-        const voices = speechSynthesis.getVoices();
-        
-        const voiceMap = {
-            'ug-UG': v => v.lang === 'uz-UZ' && v.name.includes('Madina'),
-            'ug-UG0': v => v.lang === 'tr-TR', 
-            'tr-TR': v => v.lang.startsWith('tr'),
-            'en-US': v => v.lang.startsWith('en'),
-            'ar-SA': v => v.lang.startsWith('ar'),
-            'zh-CN': v => v.lang.startsWith('zh')
-        };
-        
-        let selectedVoice = voices.find(voiceMap[langVal]);
-        
-        if (!selectedVoice) {
-            const basicLang = langVal.split('-')[0];
-            selectedVoice = voices.find(v => v.lang.startsWith(basicLang));
-        }
-        
-        if (!selectedVoice && langVal.includes('ug')) {
-             selectedVoice = voices.find(v => v.lang === 'tr-TR') || voices.find(v => v.lang === 'uz-UZ');
-        }
-        
-        if (selectedVoice) {
-            utterance.voice = selectedVoice;
-            utterance.lang = selectedVoice.lang;
-        }
-
-        utterance.onend = () => {
-            currentChunkIndex++;
-            speakNextChunk();
-        };
-        
-        utterance.onerror = (e) => {
-            console.warn("Speech Synthesis Error: ", e);
-            currentChunkIndex++;
-            speakNextChunk();
-        }
-
-        speechSynthesis.speak(utterance);
-    }
-
-    function toggleSpeaking() {
-        if (isSpeaking && !isPaused) {
-            speechSynthesis.pause();
-            isPaused = true;
-            document.getElementById('speakBtn').innerText = '▶ داۋاملاشتۇر';
-            return;
-        } else if (isSpeaking && isPaused) {
-            speechSynthesis.resume();
-            isPaused = false;
-            document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
-            return;
-        }
-        
-        if (textChunks.length === 0 || currentChunkIndex >= textChunks.length) {
-            const fullText = getReadableText();
-            if (!fullText.trim()) return;
-
-            let textToProcess = fullText;
-            const lang = document.getElementById('languageSelect').value;
-            
-            if (lang.startsWith('ug')) {
-                const converter = (lang === 'ug-UG') ? convertUyghurToULY : convertUyghurToULYTurk;
-                textToProcess = converter(fullText);
-            }
-            
-            textChunks = createTextChunks(textToProcess);
-            currentChunkIndex = 0;
-        }
-
-        isSpeaking = true;
-        isPaused = false;
-        document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
-        speechSynthesis.cancel();
-        speakNextChunk();
-    }
-
-    function stopText() {
-        isSpeaking = false;
-        isPaused = false;
-        speechSynthesis.cancel();
-        textChunks = [];
-        currentChunkIndex = 0;
-        document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
-    }
-
-    // --- 3. Recording Logic ---
-    async function toggleRecording() {
-        if (mediaRecorder && mediaRecorder.state === "recording") {
-            mediaRecorder.stop();
-            const btn = document.getElementById('recordBtn');
-            btn.innerText = '● ئاۋاز ئېلىش';
-            btn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
-        } else {
-            alert('ئاۋاز خاتىرىلەش ئۈچۈن، كېيىنكى كۆزنەكتە «بۇ بەتنىڭ ئاۋازى» (System Audio / Tab Audio) نى تاللاڭ.');
-            try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-                const audioStream = new MediaStream(stream.getAudioTracks());
-                
-                mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
-                audioChunks = [];
-
-                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-                mediaRecorder.onstop = () => {
-                    stream.getTracks().forEach(track => track.stop());
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = getTimestampName() + '_audio.webm';
-                    a.click();
-                };
-
-                mediaRecorder.start();
-                const btn = document.getElementById('recordBtn');
-                btn.innerText = '■ ئاۋاز ئېلىشنى توختىتىش';
-                btn.style.background = 'linear-gradient(135deg, #f59e0b, #fbbf24)';
-                
-                if (!isSpeaking) toggleSpeaking();
-
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blobFile);
+                link.download = fileName;
+                link.click();
             } catch (err) {
                 console.error(err);
-                alert("ئاۋاز ئېلىش مەغلۇپ بولدى.");
+                alert("ساقلاشتا مۇئامىلە خاتالىقى كۆرۈلدى.");
+            } finally {
+                btn.innerText = oldText;
+                btn.disabled = false;
             }
         }
-    }
 
-    document.getElementById('speakBtn').addEventListener('click', toggleSpeaking);
-    document.getElementById('stopBtn').addEventListener('click', stopText);
-    document.getElementById('recordBtn').addEventListener('click', toggleRecording);
-    document.getElementById('languageSelect').addEventListener('change', () => stopText());
-    
-    // Ensure voices are loaded
-    speechSynthesis.onvoiceschanged = () => {
-        speechSynthesis.getVoices();
-    };
+        // --- 2. TTS Logic ---
+        const UY_TO_ULY_MAP = { 'ا': 'a', 'ە': 'e', 'ب': 'b', 'پ': 'p', 'ت': 't', 'ج': 'j', 'چ': 'ch', 'خ': 'x', 'د': 'd', 'ر': 'r', 'ز': 'z', 'ژ': 'zh', 'س': 's', 'ش': 'sh', 'غ': 'gh', 'ف': 'f', 'ق': 'q', 'ك': 'k', 'گ': 'g', 'ڭ': 'ng', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ھ': 'h', 'و': 'o', 'ۇ': 'u', 'ۆ': 'o', 'ۈ': 'u', 'ي': 'y', 'ۋ': 'v', 'ې': 'e', 'ى': 'i', 'ئ': '', '؟': '?' };
+        const UY_TO_ULY_MAPT = { 'ا': 'a', 'ە': 'e', 'ب': 'b', 'پ': 'p', 'ت': 't', 'ج': 'c', 'چ': 'ç', 'خ': 'hh', 'د': 'd', 'ر': 'r', 'ز': 'z', 'ژ': 'j', 'س': 's', 'ش': 'ş', 'غ': 'gh', 'f': 'f', 'ق': 'k', 'ك': 'k', 'گ': 'g', 'ڭ': 'n', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ھ': 'h', 'و': 'o', 'ۇ': 'u', 'ۆ': 'ö', 'ۈ': 'ü', 'ي': 'y', 'ۋ': 'v', 'ې': 'e', 'ى': 'i', 'ئ': '', '؟': '?' };
 
-</script>
+        function convertUyghurToULY(text) { return text.split('').map(char => UY_TO_ULY_MAP[char] || char).join(''); }
+        function convertUyghurToULYTurk(text) { return text.split('').map(char => UY_TO_ULY_MAPT[char] || char).join(''); }
+
+        let textChunks = [];
+        let currentChunkIndex = 0;
+        let isSpeaking = false;
+        let isPaused = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        function getReadableText() {
+            const root = document.getElementById('articleContent');
+            return root.innerText;
+        }
+
+        function createTextChunks(text) {
+            const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]+/g) || [text];
+            return sentences.filter(s => s.trim().length > 0);
+        }
+
+        function speakNextChunk() {
+            if (currentChunkIndex >= textChunks.length || (!isSpeaking && !isPaused)) {
+                isSpeaking = false;
+                isPaused = false;
+                document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
+                return;
+            }
+
+            const chunk = textChunks[currentChunkIndex];
+            const utterance = new SpeechSynthesisUtterance(chunk);
+
+            const langVal = document.getElementById('languageSelect').value;
+            const rateVal = document.getElementById('rateSelect').value;
+
+            utterance.rate = parseFloat(rateVal);
+
+            const voices = speechSynthesis.getVoices();
+
+            const voiceMap = {
+                'ug-UG': v => v.lang === 'uz-UZ' && v.name.includes('Madina'),
+                'ug-UG0': v => v.lang === 'tr-TR',
+                'tr-TR': v => v.lang.startsWith('tr'),
+                'en-US': v => v.lang.startsWith('en'),
+                'ar-SA': v => v.lang.startsWith('ar'),
+                'zh-CN': v => v.lang.startsWith('zh')
+            };
+
+            let selectedVoice = voices.find(voiceMap[langVal]);
+
+            if (!selectedVoice) {
+                const basicLang = langVal.split('-')[0];
+                selectedVoice = voices.find(v => v.lang.startsWith(basicLang));
+            }
+
+            if (!selectedVoice && langVal.includes('ug')) {
+                selectedVoice = voices.find(v => v.lang === 'tr-TR') || voices.find(v => v.lang === 'uz-UZ');
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice.lang;
+            }
+
+            utterance.onend = () => {
+                currentChunkIndex++;
+                speakNextChunk();
+            };
+
+            utterance.onerror = (e) => {
+                console.warn("Speech Synthesis Error: ", e);
+                currentChunkIndex++;
+                speakNextChunk();
+            }
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function toggleSpeaking() {
+            if (isSpeaking && !isPaused) {
+                speechSynthesis.pause();
+                isPaused = true;
+                document.getElementById('speakBtn').innerText = '▶ داۋاملاشتۇر';
+                return;
+            } else if (isSpeaking && isPaused) {
+                speechSynthesis.resume();
+                isPaused = false;
+                document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
+                return;
+            }
+
+            if (textChunks.length === 0 || currentChunkIndex >= textChunks.length) {
+                const fullText = getReadableText();
+                if (!fullText.trim()) return;
+
+                let textToProcess = fullText;
+                const lang = document.getElementById('languageSelect').value;
+
+                if (lang.startsWith('ug')) {
+                    const converter = (lang === 'ug-UG') ? convertUyghurToULY : convertUyghurToULYTurk;
+                    textToProcess = converter(fullText);
+                }
+
+                textChunks = createTextChunks(textToProcess);
+                currentChunkIndex = 0;
+            }
+
+            isSpeaking = true;
+            isPaused = false;
+            document.getElementById('speakBtn').innerText = '⏸ توختاپ تۇر';
+            speechSynthesis.cancel();
+            speakNextChunk();
+        }
+
+        function stopText() {
+            isSpeaking = false;
+            isPaused = false;
+            speechSynthesis.cancel();
+            textChunks = [];
+            currentChunkIndex = 0;
+            document.getElementById('speakBtn').innerText = '▶ ئوقۇ / توختا';
+        }
+
+        // --- 3. Recording Logic ---
+        async function toggleRecording() {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                const btn = document.getElementById('recordBtn');
+                btn.innerText = '● ئاۋاز ئېلىش';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            } else {
+                alert('ئاۋاز خاتىرىلەش ئۈچۈن، كېيىنكى كۆزنەكتە «بۇ بەتنىڭ ئاۋازى» (System Audio / Tab Audio) نى تاللاڭ.');
+                try {
+                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                    const audioStream = new MediaStream(stream.getAudioTracks());
+
+                    mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = getTimestampName() + '_audio.webm';
+                        a.click();
+                    };
+
+                    mediaRecorder.start();
+                    const btn = document.getElementById('recordBtn');
+                    btn.innerText = '■ ئاۋاز ئېلىشنى توختىتىش';
+                    btn.style.background = 'linear-gradient(135deg, #f59e0b, #fbbf24)';
+
+                    if (!isSpeaking) toggleSpeaking();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("ئاۋاز ئېلىش مەغلۇپ بولدى.");
+                }
+            }
+        }
+
+        document.getElementById('speakBtn').addEventListener('click', toggleSpeaking);
+        document.getElementById('stopBtn').addEventListener('click', stopText);
+        document.getElementById('recordBtn').addEventListener('click', toggleRecording);
+        document.getElementById('languageSelect').addEventListener('change', () => stopText());
+
+        // Ensure voices are loaded
+        speechSynthesis.onvoiceschanged = () => {
+            speechSynthesis.getVoices();
+        };
+
+    </script>
 
 </body>
+
 </html>
