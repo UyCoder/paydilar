@@ -249,6 +249,21 @@
             font-size: 14px;
         }
 
+        .toc-list {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .toc-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .toc-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
         .toc-list a {
             display: block;
             text-decoration: none;
@@ -687,7 +702,6 @@
     <div class="header">
         <div class="header-title">
             <h1>بىلىك تەتقىقات مەركىزى</h1>
-            <span>ئىلىم - مەرىپەت - كەلگۈسى (شەرقىي تۈركىستان)</span>
         </div>
         <div class="clock-display" id="clock">0000-00-00 00:00:00</div>
     </div>
@@ -754,6 +768,16 @@
                         <option value="'UKIJ Tuz', sans-serif">ئۇيغۇر تۇز (UKIJ Tuz)</option>
                         <option value="'Microsoft Uighur', sans-serif">مايكروسوفت ئۇيغۇرچە</option>
                         <option value="'Noto Naskh Arabic', serif">نوتو ئەرەبچە</option>
+                        <option value="'Arial', sans-serif">Arial (ئېنگلىزچە/خىتايچە)</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="'Microsoft YaHei', sans-serif">مايكروسوفت يېخېي (Microsoft YaHei)</option>
+                    </select>
+                </div>
+                <div class="typo-row">
+                    <label>يېزىق يۆنىلىشى:</label>
+                    <select id="textDirectionSelect" onchange="updateTypography()">
+                        <option value="rtl">ئوڭدىن سولغا (ئۇيغۇرچە/ئەرەبچە)</option>
+                        <option value="ltr">سولدىن ئوڭغا (ئېنگلىزچە/خىتايچە)</option>
                     </select>
                 </div>
                 <div class="typo-row">
@@ -841,6 +865,7 @@
             const family = document.getElementById('fontFamilySelect').value;
             const size = document.getElementById('fontSizeRange').value;
             const spacing = document.getElementById('lineSpacingRange').value;
+            const direction = document.getElementById('textDirectionSelect').value;
 
             document.getElementById('fontVal').innerText = size + 'px';
             document.getElementById('lineVal').innerText = spacing;
@@ -849,6 +874,8 @@
             content.style.fontFamily = family;
             content.style.fontSize = size + 'px';
             content.style.lineHeight = spacing;
+            content.style.direction = direction;
+            content.style.textAlign = direction === 'rtl' ? 'justify' : 'left';
         }
 
         function toggleMobileSidebar() {
