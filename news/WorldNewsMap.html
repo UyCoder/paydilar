@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دۇنيا خەۋەر خەرىتىسى - بىلىك تەتقىقات مەركىزى</title>
+    <meta name="description" content="دۇنيا خەرىتىسىدىن ئەڭ يېڭى خەۋەرلەرنى ئۇيغۇرچە كۆرۈڭ. بىلىك تەتقىقات مەركىزى.">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png">
+
+    <!-- Cesium 3D Globe -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    <!-- Leaflet 2D Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== FONT FACE ===== */
+        @font-face {
+            font-family: 'UKIJ Ekran';
+            src: url('https://raw.githubusercontent.com/UyCoder/paydilar/master/fonts/ALKATIP-TOR.woff') format('woff');
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ALKATIP Tor';
+            src: url('https://raw.githubusercontent.com/UyCoder/paydilar/master/fonts/ALKATIP-TOR.ttf') format('truetype');
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+        }
+
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --bg-primary: #080e1a;
+            --bg-secondary: #0f1825;
+            --bg-card: rgba(20, 30, 50, 0.85);
+            --bg-card-hover: rgba(28, 45, 72, 0.95);
+            --accent-gold: #c8a84b;
+            --accent-gold-light: #f0cc72;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-primary: #e8edf5;
+            --text-secondary: #9aafc8;
+            --text-muted: #5a7090;
+            --border: rgba(90, 130, 180, 0.2);
+            --border-gold: rgba(200, 168, 75, 0.3);
+            --glass: rgba(255,255,255,0.04);
+            --glass-strong: rgba(255,255,255,0.08);
+            --shadow-sm: 0 2px 15px rgba(0,0,0,0.5);
+            --shadow-md: 0 8px 35px rgba(0,0,0,0.6);
+            --shadow-lg: 0 20px 70px rgba(0,0,0,0.7);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --panel-width: 380px;
+        }
+
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: 'UKIJ Ekran', 'Inter', 'Arial', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            direction: rtl;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes gradientSlide { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
+        @keyframes ripple { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #0d1b2e 0%, #060c14 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            animation: fadeIn 0.5s ease;
+        }
+        #loading-screen.hidden { opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
+        .loading-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: contain; filter: drop-shadow(0 0 20px rgba(200,168,75,0.5)); }
+        .loading-title {
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            font-size: 1.8em;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+        .loading-spinner {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(200,168,75,0.15);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        .loading-text { color: var(--text-secondary); font-size: 0.95em; }
+
+        /* ===== TRANSLATOR MODAL ===== */
+        #translator-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 8000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+            animation: fadeIn 0.4s ease;
+        }
+        #translator-modal.hidden { display: none; }
+
+        #translator-content {
+            background: linear-gradient(145deg, #121e35, #0d1624);
+            border: 1px solid var(--border-gold);
+            padding: 44px 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(200,168,75,0.1);
+            width: 94%;
+            max-width: 540px;
+            text-align: center;
+            animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+        #translator-content::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            background-size: 200% 100%;
+            animation: gradientSlide 3s ease infinite;
+        }
+        #translator-content h2 {
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            font-size: 1.7em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #translator-content > p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+        .translator-option {
+            margin: 10px 0;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 13px 18px;
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: right;
+        }
+        .translator-option:hover {
+            background: rgba(200,168,75,0.08);
+            border-color: var(--border-gold);
+        }
+        .translator-option label {
+            cursor: pointer;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+        }
+        .translator-option input[type="radio"] {
+            accent-color: var(--accent-gold);
+            width: 16px; height: 16px;
+            flex-shrink: 0;
+        }
+        #gemini-key-box {
+            margin-top: 14px;
+            display: none;
+            background: rgba(200,168,75,0.05);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: right;
+        }
+        #gemini-key-box label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9em; }
+        #gemini-api-key {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95em;
+            color: var(--text-primary);
+            direction: ltr; text-align: left;
+            transition: var(--transition);
+            outline: none;
+        }
+        #gemini-api-key:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(200,168,75,0.15); }
+        #start-btn {
+            background: linear-gradient(135deg, var(--accent-gold), #a87d28);
+            color: #fff;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.15em;
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 26px;
+            box-shadow: 0 4px 22px rgba(200,168,75,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        #start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(200,168,75,0.55); }
+        #start-btn:active { transform: translateY(0); }
+
+        /* ===== MAIN LAYOUT ===== */
+        #main-app { display: none; width: 100%; height: 100%; position: relative; }
+
+        /* ===== TOP BAR ===== */
+        #topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 58px;
+            z-index: 1000;
+            background: linear-gradient(135deg, rgba(6,10,20,0.97) 0%, rgba(12,22,42,0.97) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-gold);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            box-shadow: var(--shadow-md);
+        }
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .topbar-logo img { height: 36px; border-radius: 50%; filter: drop-shadow(0 0 8px rgba(200,168,75,0.4)); }
+        .topbar-title {
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            font-size: 1.15em;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            white-space: nowrap;
+        }
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ctrl-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'UKIJ Ekran', 'Inter', sans-serif;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .ctrl-btn:hover {
+            background: var(--glass-strong);
+            border-color: var(--border-gold);
+            color: var(--accent-gold-light);
+        }
+        .ctrl-btn.active {
+            background: rgba(200,168,75,0.15);
+            border-color: var(--border-gold);
+            color: var(--accent-gold-light);
+        }
+        .ctrl-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        /* ===== MAP CONTAINER ===== */
+        #map-wrapper {
+            position: fixed;
+            inset: 58px 0 0 0;
+            width: 100%;
+            height: calc(100% - 58px);
+        }
+        #cesium-container, #leaflet-map {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #leaflet-map { display: none; }
+
+        /* ===== NEWS PANEL ===== */
+        #news-panel {
+            position: fixed;
+            top: 58px;
+            left: 0;
+            width: var(--panel-width);
+            height: calc(100% - 58px);
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, rgba(8,14,26,0.97) 0%, rgba(10,18,32,0.97) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-left: 1px solid var(--border-gold);
+            box-shadow: -4px 0 40px rgba(0,0,0,0.6);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            direction: rtl;
+        }
+        #news-panel.collapsed {
+            transform: translateX(calc(-1 * var(--panel-width)));
+        }
+
+        /* Panel Toggle Tab */
+        #panel-toggle {
+            position: absolute;
+            left: -42px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 90px;
+            background: linear-gradient(180deg, rgba(8,14,26,0.97), rgba(10,18,32,0.97));
+            border: 1px solid var(--border-gold);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            font-family: 'UKIJ Ekran', sans-serif;
+            font-size: 0.8em;
+            color: var(--accent-gold-light);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            gap: 6px;
+        }
+        #panel-toggle:hover { background: rgba(200,168,75,0.12); }
+        #panel-toggle-icon { font-size: 1.1em; transition: transform 0.4s ease; }
+        #news-panel.collapsed #panel-toggle-icon { transform: rotate(180deg); }
+
+        /* Panel Header */
+        #panel-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        #panel-header h2 {
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            font-size: 1.1em;
+            color: var(--accent-gold-light);
+            margin-bottom: 10px;
+        }
+
+        /* Channel filter */
+        #channel-select {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'UKIJ Ekran', sans-serif;
+            font-size: 0.9em;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+            direction: rtl;
+            margin-bottom: 8px;
+        }
+        #channel-select:focus { border-color: var(--border-gold); }
+
+        /* Loading bar */
+        #news-loading-bar {
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan), var(--accent-gold));
+            background-size: 200% 100%;
+            animation: gradientSlide 1.5s linear infinite;
+            border-radius: 2px;
+            display: none;
+            margin-top: 6px;
+        }
+        #news-loading-bar.active { display: block; }
+        #panel-status { font-size: 0.78em; color: var(--text-muted); margin-top: 6px; min-height: 18px; }
+
+        /* News list */
+        #news-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 12px;
+            scroll-behavior: smooth;
+        }
+        #news-list::-webkit-scrollbar { width: 4px; }
+        #news-list::-webkit-scrollbar-track { background: transparent; }
+        #news-list::-webkit-scrollbar-thumb { background: rgba(200,168,75,0.3); border-radius: 2px; }
+        #news-list::-webkit-scrollbar-thumb:hover { background: rgba(200,168,75,0.5); }
+
+        /* News card */
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.4s ease both;
+        }
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 3px; height: 100%;
+            background: linear-gradient(180deg, var(--accent-gold), var(--accent-cyan));
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .news-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-gold);
+            transform: translateX(-3px);
+        }
+        .news-card:hover::before { opacity: 1; }
+
+        .news-card-source {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .source-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .source-name {
+            font-size: 0.72em;
+            color: var(--accent-gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .news-card-title {
+            font-size: 0.9em;
+            font-family: 'UKIJ Ekran', sans-serif;
+            color: var(--text-primary);
+            line-height: 1.55;
+            margin-bottom: 8px;
+        }
+        .news-card-desc {
+            font-size: 0.78em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .news-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .news-card-date {
+            font-size: 0.72em;
+            color: var(--text-muted);
+        }
+        .news-card-country {
+            font-size: 0.72em;
+            padding: 2px 8px;
+            background: rgba(200,168,75,0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: 10px;
+            color: var(--accent-gold);
+        }
+        .news-card-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 7px;
+            margin-bottom: 10px;
+        }
+
+        /* Panel Footer */
+        #panel-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.72em;
+            color: var(--text-muted);
+            line-height: 1.6;
+            flex-shrink: 0;
+        }
+        #panel-footer .footer-brand {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        /* ===== LOADING SKELETON ===== */
+        .skeleton-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        .skeleton-line {
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            margin-bottom: 8px;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 70%; }
+        .skeleton-line.long { width: 100%; }
+        .skeleton-img { height: 100px; border-radius: 7px; margin-bottom: 10px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+
+        /* ===== MAP MARKERS ===== */
+        .map-marker-popup {
+            font-family: 'UKIJ Ekran', 'Inter', sans-serif;
+            direction: rtl;
+            text-align: right;
+            min-width: 220px;
+            max-width: 280px;
+        }
+        .popup-country { font-size: 1.1em; font-weight: bold; color: #c8a84b; margin-bottom: 8px; }
+        .popup-news-item { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .popup-news-item:last-child { border-bottom: none; }
+        .popup-news-title { font-size: 0.88em; color: #e8edf5; line-height: 1.5; }
+        .popup-news-title:hover { color: #c8a84b; }
+
+        /* Custom leaflet marker */
+        .custom-marker {
+            background: linear-gradient(135deg, rgba(200,168,75,0.9), rgba(161,130,50,0.9));
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(200,168,75,0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            font-size: 10px;
+            animation: pulse 2s ease-in-out infinite;
+            transition: transform 0.2s;
+        }
+        .custom-marker:hover { transform: scale(1.3); }
+        .custom-marker-large { width: 32px !important; height: 32px !important; box-shadow: 0 0 18px rgba(200,168,75,0.9); }
+
+        /* Country hover tooltip */
+        #country-hover-card {
+            position: fixed;
+            z-index: 600;
+            background: rgba(8,14,26,0.97);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            max-width: 300px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            pointer-events: none;
+            direction: rtl;
+            animation: fadeIn 0.2s ease;
+        }
+        #country-hover-card h4 {
+            font-family: 'ALKATIP Tor', 'UKIJ Ekran';
+            color: var(--accent-gold);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        .hover-news-item { font-size: 0.82em; color: var(--text-secondary); padding: 4px 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
+        .hover-news-item:last-child { border-bottom: none; }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+            :root { --panel-width: 300px; }
+            #topbar { padding: 0 10px; }
+            .topbar-title { font-size: 0.95em; }
+            .ctrl-btn span { display: none; }
+            .ctrl-btn { padding: 7px 9px; }
+            #panel-toggle { width: 36px; height: 70px; left: -36px; font-size: 0.7em; }
+        }
+        @media (max-width: 480px) {
+            :root { --panel-width: calc(100vw - 36px); }
+            .topbar-title { display: none; }
+        }
+
+        /* ===== TOOLTIP ===== */
+        .cesium-infoBox { display: none !important; }
+        .cesium-credit-logoContainer { display: none !important; }
+        .cesium-credit-textContainer { display: none !important; }
+
+        /* Layer selector popup */
+        #layer-popup {
+            position: fixed;
+            top: 70px;
+            right: 16px;
+            z-index: 900;
+            background: rgba(8,14,26,0.97);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            direction: rtl;
+            min-width: 220px;
+            animation: slideInLeft 0.3s ease;
+        }
+        #layer-popup.visible { display: block; }
+        #layer-popup h4 { color: var(--accent-gold); font-size: 0.9em; margin-bottom: 12px; }
+        .layer-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            font-size: 0.88em;
+            margin-bottom: 4px;
+        }
+        .layer-option:hover { background: var(--glass-strong); color: var(--text-primary); }
+        .layer-option.selected { background: rgba(200,168,75,0.1); color: var(--accent-gold-light); }
+        .layer-option input { accent-color: var(--accent-gold); }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loading-screen">
+    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Biliklogo.png" class="loading-logo" alt="Bilik">
+    <div class="loading-title">دۇنيا خەۋەر خەرىتىسى</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-text">خەرىتە يۈكلىنىۋاتىدۇ...</div>
+</div>
+
+<!-- ===== TRANSLATOR MODAL ===== -->
+<div id="translator-modal">
+    <div id="translator-content">
+        <h2>تەرجىمە ئۇسۇلىنى تاللاڭ</h2>
+        <p>خەۋەرلەر ئەسلى ئىنگىلىزچە بولۇپ، سىز تاللىغان ئۇسۇل بويىچە ئۇيغۇرچىغا تەرجىمە قىلىنپ كۆرسىتىلىدۇ.</p>
+
+        <div class="translator-option">
+            <label><input type="radio" name="translator" value="original"> ئەسلى تىلدا (ئىنگىلىزچە) كۆرسىتىش </label>
+        </div>
+        <div class="translator-option">
+            <label><input type="radio" name="translator" value="google" checked> Google تەرجىمانى (تېز ۋە ھەقسىز) </label>
+        </div>
+        <div class="translator-option">
+            <label><input type="radio" name="translator" value="gemini"> Google Gemini (ئەڭ ياخشى سۈپەت، API ئاچقۇچى كېرەك) </label>
+            <div style="font-size:0.8em; color:var(--text-muted); margin-top:6px; padding-right:26px; text-align:right;">
+                سىناپ باقسىڭىز: AIzaSyCkpkBDY_HmxOQIwEmILG6M-9t2ek6kObU
+            </div>
+        </div>
+
+        <div id="gemini-key-box">
+            <label for="gemini-api-key">Gemini API ئاچقۇچىڭىزنى كىرگۈزۈڭ:</label>
+            <input type="password" id="gemini-api-key" placeholder="Enter your Gemini API Key">
+            <p style="font-size:0.78em;color:var(--text-muted);margin-top:8px;">ئاچقۇچنى <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent-cyan);">بۇ يەردىن</a> ئالالايسىز.</p>
+        </div>
+
+        <button id="start-btn">خەرىتىنى ئاچىش</button>
+    </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="main-app">
+
+    <!-- TOP BAR -->
+    <div id="topbar">
+        <a class="topbar-logo" href="#" title="بىلىك تەتقىقات مەركىزى">
+            <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Biliklogo.png" alt="Bilik Logo">
+            <span class="topbar-title">دۇنيا خەۋەر خەرىتىسى</span>
+        </a>
+        <div class="topbar-controls">
+            <button class="ctrl-btn" id="btn-3d" title="3D خەرىتە">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+                <span>3D</span>
+            </button>
+            <button class="ctrl-btn active" id="btn-2d" title="2D خەرىتە">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,10 22,10"/><polyline points="8,4 8,20"/></svg>
+                <span>2D</span>
+            </button>
+            <button class="ctrl-btn active" id="btn-day" title="كۈندۈز رەڭ">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                <span>كۈندۈز</span>
+            </button>
+            <button class="ctrl-btn" id="btn-night" title="كېچە رەڭ">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <span>كېچە</span>
+            </button>
+            <button class="ctrl-btn" id="btn-layers" title="خەرىتە قاتلىمى">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>قاتلام</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- LAYER POPUP -->
+    <div id="layer-popup">
+        <h4>خەرىتە قاتلىمىنى تاللاڭ</h4>
+        <div class="layer-option selected" data-layer="street" onclick="setMapLayer('street', this)">
+            <input type="radio" name="layer" checked> <span>ئۆلچەملىك خەرىتە</span>
+        </div>
+        <div class="layer-option" data-layer="satellite" onclick="setMapLayer('satellite', this)">
+            <input type="radio" name="layer"> <span>ئالاھىدە كۆرۈنۈش</span>
+        </div>
+        <div class="layer-option" data-layer="topo" onclick="setMapLayer('topo', this)">
+            <input type="radio" name="layer"> <span>تور خەرىتىسى</span>
+        </div>
+        <div class="layer-option" data-layer="dark" onclick="setMapLayer('dark', this)">
+            <input type="radio" name="layer"> <span>قاراڭغۇ جۇغراپىيە</span>
+        </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map-wrapper">
+        <div id="cesium-container"></div>
+        <div id="leaflet-map"></div>
+    </div>
+
+    <!-- NEWS PANEL -->
+    <div id="news-panel">
+        <div id="panel-toggle" onclick="togglePanel()">
+            <span id="panel-toggle-icon">◀</span>
+            <span style="font-size:0.75em; writing-mode:vertical-rl; color:var(--accent-gold-light);">خەۋەرلەر</span>
+        </div>
+
+        <div id="panel-header">
+            <h2>📰 ئەڭ يېڭى خەۋەرلەر</h2>
+            <select id="channel-select">
+                <option value="all">— بارلىق خەۋەر قاناللىرى —</option>
+                <option value="bbcWorld">BBC دۇنيا</option>
+                <option value="cnn">CNN</option>
+                <option value="alJazeera">Al Jazeera</option>
+                <option value="reuters">Reuters</option>
+                <option value="foreignAffairs">Foreign Affairs</option>
+                <option value="foreignPolicy">Foreign Policy</option>
+                <option value="wsj">WSJ دۇنيا خەۋىرى</option>
+                <option value="politico">Politico</option>
+                <option value="uyghurTimes">ئۇيغۇر Times</option>
+                <option value="uyghurNet">UyghurNet</option>
+                <option value="sana">SANA (سوريە)</option>
+                <option value="scmp">SCMP خىتاي</option>
+                <option value="googleNews">Google News</option>
+            </select>
+            <div id="news-loading-bar"></div>
+            <div id="panel-status"></div>
+        </div>
+
+        <div id="news-list"></div>
+
+        <div id="panel-footer">
+            بۇ قۇرال <span class="footer-brand">بىلىك تەتقىقات مەركىزى</span> تەرىپىدىن ياسالدى.<br>
+            بىلىك تەتقىقات مەركىزى شەرقىي تۈركىستانلىقلارنىڭ كىملىكى ۋە ھوقۇقى ئۈچۈن تەتقىقات ئەلىپ بارىدۇ.
+        </div>
+    </div>
+
+    <!-- COUNTRY HOVER CARD -->
+    <div id="country-hover-card">
+        <h4 id="hover-country-name"></h4>
+        <div id="hover-news-list"></div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let selectedTranslator = 'google';
+let geminiApiKey = '';
+let mapMode = '2d'; // '2d' | '3d'
+let mapTheme = 'day'; // 'day' | 'night'
+let currentLayer = 'street';
+let leafletMap = null;
+let cesiumViewer = null;
+let allNewsItems = []; // { title, desc, link, pubDate, country, countryCode, source, sourceColor, imageUrl }
+let newsMarkers = {}; // countryCode -> leaflet marker
+let panelOpen = true;
+
+// RSS Feeds config (same sources as UyghurNews.html)
+const RSS_FEEDS = {
+    bbcWorld:       'https://feeds.bbci.co.uk/news/world/rss.xml',
+    cnn:            'http://rss.cnn.com/rss/cnn_topstories.rss',
+    alJazeera:      'https://www.aljazeera.com/xml/rss/all.xml',
+    reuters:        'https://feeds.reuters.com/Reuters/worldNews',
+    foreignAffairs: 'https://www.foreignaffairs.com/rss.xml',
+    foreignPolicy:  'https://foreignpolicy.com/feed/',
+    wsj:            'https://feeds.content.dowjones.io/public/rss/RSSWorldNews',
+    politico:       'https://rss.politico.com/politics-news.xml',
+    uyghurTimes:    'https://uyghur.uyghurtimes.com/feed/',
+    uyghurNet:      'https://www.uyghurnet.org/ug/feed/',
+    sana:           'https://sana.sy/en/?feed=rss2',
+    scmp:           'https://www.scmp.com/rss/4/feed',
+    googleNews:     'https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en'
+};
+
+const SOURCE_COLORS = {
+    bbcWorld: '#bb1919', cnn: '#cc0000', alJazeera: '#c8a84b',
+    reuters: '#ff8000', foreignAffairs: '#2d5fa0', foreignPolicy: '#4a7ab5',
+    wsj: '#0274b6', politico: '#e52209', uyghurTimes: '#10b981',
+    uyghurNet: '#059669', sana: '#8b5cf6', scmp: '#d97706',
+    googleNews: '#4285f4'
+};
+
+const SOURCE_NAMES_UG = {
+    bbcWorld: 'BBC دۇنيا', cnn: 'CNN', alJazeera: 'جەزىرە',
+    reuters: 'روتىرس', foreignAffairs: 'خەلقئارا ئىشلار',
+    foreignPolicy: 'خەلقئارا سىياسەت', wsj: 'WSJ دۇنيا',
+    politico: 'پولىتىكو', uyghurTimes: 'ئۇيغۇر Times',
+    uyghurNet: 'UyghurNet', sana: 'SANA سورىيە',
+    scmp: 'SCMP خىتاي', googleNews: 'Google News'
+};
+
+// Country name -> {lat, lng, code} mapping
+const COUNTRY_COORDS = {
+    'united states': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'usa': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'us ': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'american': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'washington': { lat: 38.9072, lng: -77.0369, code: 'US', nameUg: 'ئامېرىكا' },
+    'trump': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'congress': { lat: 37.0902, lng: -95.7129, code: 'US', nameUg: 'ئامېرىكا' },
+    'china': { lat: 35.8617, lng: 104.1954, code: 'CN', nameUg: 'خىتاي' },
+    'chinese': { lat: 35.8617, lng: 104.1954, code: 'CN', nameUg: 'خىتاي' },
+    'beijing': { lat: 39.9042, lng: 116.4074, code: 'CN', nameUg: 'خىتاي' },
+    'shanghai': { lat: 31.2304, lng: 121.4737, code: 'CN', nameUg: 'خىتاي' },
+    'russia': { lat: 61.5240, lng: 105.3188, code: 'RU', nameUg: 'رۇسىيە' },
+    'russian': { lat: 61.5240, lng: 105.3188, code: 'RU', nameUg: 'رۇسىيە' },
+    'moscow': { lat: 55.7558, lng: 37.6173, code: 'RU', nameUg: 'رۇسىيە' },
+    'putin': { lat: 55.7558, lng: 37.6173, code: 'RU', nameUg: 'رۇسىيە' },
+    'ukraine': { lat: 48.3794, lng: 31.1656, code: 'UA', nameUg: 'ئۇكرائىنا' },
+    'ukrainian': { lat: 48.3794, lng: 31.1656, code: 'UA', nameUg: 'ئۇكرائىنا' },
+    'kyiv': { lat: 50.4501, lng: 30.5234, code: 'UA', nameUg: 'ئۇكرائىنا' },
+    'germany': { lat: 51.1657, lng: 10.4515, code: 'DE', nameUg: 'گېرمانىيە' },
+    'german': { lat: 51.1657, lng: 10.4515, code: 'DE', nameUg: 'گېرمانىيە' },
+    'berlin': { lat: 52.5200, lng: 13.4050, code: 'DE', nameUg: 'گېرمانىيە' },
+    'france': { lat: 46.2276, lng: 2.2137, code: 'FR', nameUg: 'فرانسىيە' },
+    'french': { lat: 46.2276, lng: 2.2137, code: 'FR', nameUg: 'فرانسىيە' },
+    'paris': { lat: 48.8566, lng: 2.3522, code: 'FR', nameUg: 'فرانسىيە' },
+    'uk': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
+    'britain': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
+    'british': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
+    'london': { lat: 51.5074, lng: -0.1278, code: 'GB', nameUg: 'ئىنگىلتىرە' },
+    'england': { lat: 52.3555, lng: -1.1743, code: 'GB', nameUg: 'ئىنگىلتىرە' },
+    'israel': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىل' },
+    'israeli': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىل' },
+    'gaza': { lat: 31.5, lng: 34.47, code: 'PS', nameUg: 'غەززە' },
+    'palestine': { lat: 31.9522, lng: 35.2332, code: 'PS', nameUg: 'پەلەستىن' },
+    'iran': { lat: 32.4279, lng: 53.6880, code: 'IR', nameUg: 'ئىران' },
+    'iranian': { lat: 32.4279, lng: 53.6880, code: 'IR', nameUg: 'ئىران' },
+    'tehran': { lat: 35.6892, lng: 51.3890, code: 'IR', nameUg: 'ئىران' },
+    'turkey': { lat: 38.9637, lng: 35.2433, code: 'TR', nameUg: 'تۈركىيە' },
+    'turkish': { lat: 38.9637, lng: 35.2433, code: 'TR', nameUg: 'تۈركىيە' },
+    'ankara': { lat: 39.9334, lng: 32.8597, code: 'TR', nameUg: 'تۈركىيە' },
+    'erdogan': { lat: 38.9637, lng: 35.2433, code: 'TR', nameUg: 'تۈركىيە' },
+    'syria': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سوريە' },
+    'syrian': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سوريە' },
+    'damascus': { lat: 33.5138, lng: 36.2765, code: 'SY', nameUg: 'سوريە' },
+    'saudi': { lat: 23.8859, lng: 45.0792, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
+    'saudi arabia': { lat: 23.8859, lng: 45.0792, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
+    'riyadh': { lat: 24.7136, lng: 46.6753, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
+    'india': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
+    'indian': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
+    'modi': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
+    'pakistan': { lat: 30.3753, lng: 69.3451, code: 'PK', nameUg: 'پاكستان' },
+    'pakistan': { lat: 30.3753, lng: 69.3451, code: 'PK', nameUg: 'پاكستان' },
+    'japan': { lat: 36.2048, lng: 138.2529, code: 'JP', nameUg: 'ياپونىيە' },
+    'japanese': { lat: 36.2048, lng: 138.2529, code: 'JP', nameUg: 'ياپونىيە' },
+    'tokyo': { lat: 35.6762, lng: 139.6503, code: 'JP', nameUg: 'ياپونىيە' },
+    'korea': { lat: 37.5665, lng: 126.9780, code: 'KR', nameUg: 'كورىيە' },
+    'korean': { lat: 37.5665, lng: 126.9780, code: 'KR', nameUg: 'كورىيە' },
+    'north korea': { lat: 40.3399, lng: 127.5101, code: 'KP', nameUg: 'شىمالى كورىيە' },
+    'pyongyang': { lat: 39.0392, lng: 125.7625, code: 'KP', nameUg: 'شىمالى كورىيە' },
+    'australia': { lat: -25.2744, lng: 133.7751, code: 'AU', nameUg: 'ئاۋسترالىيە' },
+    'canadian': { lat: 56.1304, lng: -106.3468, code: 'CA', nameUg: 'كانادا' },
+    'canada': { lat: 56.1304, lng: -106.3468, code: 'CA', nameUg: 'كانادا' },
+    'brazil': { lat: -14.2350, lng: -51.9253, code: 'BR', nameUg: 'بىرازىلىيە' },
+    'mexico': { lat: 23.6345, lng: -102.5528, code: 'MX', nameUg: 'مېكسىكا' },
+    'africa': { lat: -8.7832, lng: 34.5085, code: 'AF_CONT', nameUg: 'ئافرىقا' },
+    'nigeria': { lat: 9.0765, lng: 7.3986, code: 'NG', nameUg: 'نىگېرىيە' },
+    'egypt': { lat: 26.0975, lng: 30.0144, code: 'EG', nameUg: 'مىسىر' },
+    'ethiop': { lat: 9.1450, lng: 40.4897, code: 'ET', nameUg: 'ئېفىيۇپىيە' },
+    'xinjiang': { lat: 42.0, lng: 85.0, code: 'CN', nameUg: 'شەرقىي تۈركىستان' },
+    'east turkestan': { lat: 42.0, lng: 85.0, code: 'CN', nameUg: 'شەرقىي تۈركىستان' },
+    'uyghur': { lat: 42.0, lng: 85.0, code: 'CN', nameUg: 'شەرقىي تۈركىستان' },
+    'tibet': { lat: 31.1667, lng: 88.0, code: 'CN_TIB', nameUg: 'تىبەت' },
+    'taiwan': { lat: 23.6978, lng: 120.9605, code: 'TW', nameUg: 'تايۋان' },
+    'hong kong': { lat: 22.3193, lng: 114.1694, code: 'HK', nameUg: 'خوڭكوڭ' },
+    'afghanistan': { lat: 33.9391, lng: 67.7100, code: 'AF', nameUg: 'ئافغانستان' },
+    'iraq': { lat: 33.2232, lng: 43.6793, code: 'IQ', nameUg: 'ئىراق' },
+    'libya': { lat: 26.3351, lng: 17.2283, code: 'LY', nameUg: 'لىبيە' },
+    'sudan': { lat: 12.8628, lng: 30.2176, code: 'SD', nameUg: 'سۇدان' },
+    'venezuela': { lat: 6.4238, lng: -66.5897, code: 'VE', nameUg: 'ۋېنىزۋېلا' },
+    'cuba': { lat: 21.5218, lng: -77.7812, code: 'CU', nameUg: 'كۇبا' },
+    'spain': { lat: 40.4637, lng: -3.7492, code: 'ES', nameUg: 'ئىسپانىيە' },
+    'italy': { lat: 41.8719, lng: 12.5674, code: 'IT', nameUg: 'ئىتالىيە' },
+    'poland': { lat: 51.9194, lng: 19.1451, code: 'PL', nameUg: 'پولشا' },
+    'sweden': { lat: 60.1282, lng: 18.6435, code: 'SE', nameUg: 'شۋىتسىيە' },
+    'nato': { lat: 50.8503, lng: 4.3517, code: 'NATO', nameUg: 'NATO' },
+    'un ': { lat: 40.7489, lng: -73.9680, code: 'UN', nameUg: 'ب.م.ت' },
+    'united nations': { lat: 40.7489, lng: -73.9680, code: 'UN', nameUg: 'ب.م.ت' },
+    'eu ': { lat: 50.8503, lng: 4.3517, code: 'EU', nameUg: 'يۇرپا ئىتتىپاقى' },
+    'european union': { lat: 50.8503, lng: 4.3517, code: 'EU', nameUg: 'يۇرپا ئىتتىپاقى' },
+};
+
+// ============================================================
+// TRANSLATION FUNCTIONS (Same approach as UyghurNews.html)
+// ============================================================
+function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+async function translateWithMyMemory(text) {
+    if (!text || text.trim() === '') return text;
+    try {
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.substring(0, 500))}&langpair=en|ug`;
+        const res = await fetch(url);
+        if (!res.ok) return text;
+        const data = await res.json();
+        const translated = data.responseData?.translatedText;
+        if (translated && translated !== text && !translated.toLowerCase().includes('mymemory')) return translated;
+        return text;
+    } catch { return text; }
+}
+
+async function translateWithGemini(text) {
+    if (!text || text.trim() === '') return text;
+    if (!geminiApiKey) return text;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
+    const prompt = `Translate the following English text to Uyghur (using Arabic script). Be accurate and natural. Only provide the translation, nothing else.\n\nEnglish: "${text}"\n\nUyghur:`;
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+        if (!res.ok) return text;
+        const data = await res.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || text;
+    } catch { return text; }
+}
+
+async function translateText(text) {
+    if (selectedTranslator === 'original') return text;
+    if (selectedTranslator === 'gemini') return await translateWithGemini(text);
+    return await translateWithMyMemory(text); // google = MyMemory
+}
+
+// ============================================================
+// COUNTRY DETECTION
+// ============================================================
+function detectCountry(title, desc) {
+    const text = ((title || '') + ' ' + (desc || '')).toLowerCase();
+    for (const [keyword, data] of Object.entries(COUNTRY_COORDS)) {
+        if (text.includes(keyword)) return data;
+    }
+    return null;
+}
+
+// ============================================================
+// RSS FETCHING
+// ============================================================
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+async function fetchFeed(key) {
+    const url = RSS_FEEDS[key];
+    if (!url) return [];
+    try {
+        const res = await fetch(`${RSS2JSON}${encodeURIComponent(url)}&count=10`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.items || []).slice(0, 8);
+    } catch { return []; }
+}
+
+function updateStatus(msg) {
+    document.getElementById('panel-status').textContent = msg;
+}
+
+function showLoadingSkeletons() {
+    const list = document.getElementById('news-list');
+    let html = '';
+    for (let i = 0; i < 6; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line medium"></div>
+        </div>`;
+    }
+    list.innerHTML = html;
+}
+
+async function loadAllNews(channelKey) {
+    const loadingBar = document.getElementById('news-loading-bar');
+    loadingBar.classList.add('active');
+    showLoadingSkeletons();
+    allNewsItems = [];
+
+    const keysToLoad = channelKey === 'all' ? Object.keys(RSS_FEEDS) : [channelKey];
+    let done = 0;
+
+    for (const key of keysToLoad) {
+        updateStatus(`${SOURCE_NAMES_UG[key] || key} يۈكلىنىۋاتىدۇ...`);
+        const items = await fetchFeed(key);
+
+        for (const item of items) {
+            const rawTitle = item.title || '';
+            const rawDesc  = (item.description || '').replace(/<[^>]*>/g, '').substring(0, 300);
+            const country  = detectCountry(rawTitle, rawDesc);
+
+            let title = rawTitle;
+            let desc  = rawDesc;
+
+            if (selectedTranslator !== 'original') {
+                try {
+                    title = await translateText(rawTitle);
+                    if (rawDesc.length > 10) desc = await translateText(rawDesc.substring(0, 200));
+                } catch { /* fallback to original */ }
+                if (selectedTranslator === 'gemini') await delay(4200);
+                else await delay(300);
+            }
+
+            const imageUrl = (item.enclosure?.link && item.enclosure.type?.startsWith('image'))
+                ? item.enclosure.link
+                : (item.thumbnail || null);
+
+            allNewsItems.push({ title, desc, link: item.link, pubDate: item.pubDate,
+                country, source: key, sourceColor: SOURCE_COLORS[key] || '#c8a84b', imageUrl });
+        }
+
+        done++;
+        updateStatus(`${done}/${keysToLoad.length} مەنبە يۈكلەندى`);
+    }
+
+    loadingBar.classList.remove('active');
+    updateStatus(`${allNewsItems.length} خەۋەر يۈكلەندى ✓`);
+    renderNewsList();
+    renderMapMarkers();
+}
+
+// ============================================================
+// NEWS PANEL RENDERING
+// ============================================================
+function renderNewsList(filterCountryCode) {
+    const list = document.getElementById('news-list');
+    let items = allNewsItems;
+    if (filterCountryCode) items = items.filter(i => i.country?.code === filterCountryCode);
+
+    if (items.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">خەۋەر تېپىلمىدى</div>`;
+        return;
+    }
+
+    list.innerHTML = '';
+    items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.style.animationDelay = `${idx * 0.05}s`;
+
+        const dateStr = item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+        const countryHtml = item.country ? `<span class="news-card-country">${item.country.nameUg}</span>` : '';
+        const imgHtml = item.imageUrl ? `<img src="${item.imageUrl}" class="news-card-img" alt="" onerror="this.style.display='none'">` : '';
+
+        card.innerHTML = `
+            ${imgHtml}
+            <div class="news-card-source">
+                <span class="source-dot" style="background:${item.sourceColor}"></span>
+                <span class="source-name">${SOURCE_NAMES_UG[item.source] || item.source}</span>
+            </div>
+            <div class="news-card-title">${item.title}</div>
+            <div class="news-card-desc">${item.desc}</div>
+            <div class="news-card-meta">
+                <span class="news-card-date">${dateStr}</span>
+                ${countryHtml}
+            </div>
+        `;
+        card.addEventListener('click', () => { if (item.link) window.open(item.link, '_blank'); });
+
+        // Fly to country on click
+        if (item.country) {
+            card.addEventListener('click', () => flyToCountry(item.country.lat, item.country.lng));
+        }
+        list.appendChild(card);
+    });
+}
+
+// ============================================================
+// MAP FUNCTIONS
+// ============================================================
+function initLeaflet() {
+    if (leafletMap) return;
+    leafletMap = L.map('leaflet-map', {
+        center: [20, 20],
+        zoom: 2,
+        minZoom: 2,
+        maxZoom: 12,
+        zoomControl: false,
+        attributionControl: false
+    });
+
+    setMapLayer('street', null);
+
+    L.control.zoom({ position: 'topright' }).addTo(leafletMap);
+
+    // Mouse move for country hover
+    leafletMap.on('mousemove', onMapMouseMove);
+    leafletMap.on('click', onMapClick);
+}
+
+const TILE_LAYERS = {
+    street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    topo: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+};
+
+let currentTileLayer = null;
+function setMapLayer(layerKey, el) {
+    if (!leafletMap) return;
+    currentLayer = layerKey;
+    if (currentTileLayer) leafletMap.removeLayer(currentTileLayer);
+    currentTileLayer = L.tileLayer(TILE_LAYERS[layerKey] || TILE_LAYERS.dark, { maxZoom: 19 });
+    currentTileLayer.addTo(leafletMap);
+
+    // Update UI
+    document.querySelectorAll('.layer-option').forEach(o => o.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+}
+
+function flyToCountry(lat, lng) {
+    if (mapMode === '2d' && leafletMap) {
+        leafletMap.flyTo([lat, lng], 5, { duration: 1.2 });
+    } else if (mapMode === '3d' && cesiumViewer) {
+        cesiumViewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(lng, lat, 3000000),
+            duration: 1.5
+        });
+    }
+}
+
+function renderMapMarkers() {
+    if (!leafletMap) return;
+
+    // Clear old markers
+    Object.values(newsMarkers).forEach(m => leafletMap.removeLayer(m));
+    newsMarkers = {};
+
+    // Group news by countryCode
+    const byCountry = {};
+    allNewsItems.forEach(item => {
+        if (!item.country) return;
+        const code = item.country.code;
+        if (!byCountry[code]) byCountry[code] = { country: item.country, items: [] };
+        byCountry[code].items.push(item);
+    });
+
+    Object.entries(byCountry).forEach(([code, data]) => {
+        const count = data.items.length;
+        const size = Math.min(40, 20 + count * 3);
+
+        const icon = L.divIcon({
+            className: '',
+            html: `<div class="custom-marker ${size > 28 ? 'custom-marker-large' : ''}"
+                        style="width:${size}px;height:${size}px;background:linear-gradient(135deg,${data.items[0].sourceColor},rgba(200,168,75,0.8));"
+                        title="${data.country.nameUg}">${count}</div>`,
+            iconSize: [size, size],
+            iconAnchor: [size/2, size/2]
+        });
+
+        const marker = L.marker([data.country.lat, data.country.lng], { icon });
+
+        // Popup content
+        let popupHtml = `<div class="map-marker-popup">
+            <div class="popup-country">🌍 ${data.country.nameUg}</div>`;
+        data.items.slice(0, 4).forEach(item => {
+            popupHtml += `<div class="popup-news-item">
+                <a class="popup-news-title" href="${item.link}" target="_blank">${item.title}</a>
+            </div>`;
+        });
+        popupHtml += '</div>';
+
+        marker.bindPopup(popupHtml, { maxWidth: 300, className: 'map-news-popup' });
+        marker.addTo(leafletMap);
+        newsMarkers[code] = marker;
+
+        // Hover
+        marker.on('mouseover', (e) => {
+            showCountryHoverCard(data.country.nameUg, data.items, e.originalEvent);
+        });
+        marker.on('mouseout', hideCountryHoverCard);
+        marker.on('click', () => {
+            renderNewsList(code);
+            if (!panelOpen) togglePanel();
+        });
+    });
+}
+
+// Map hover card
+function onMapMouseMove(e) { }
+function onMapClick(e) { }
+
+function showCountryHoverCard(countryName, items, mouseEvent) {
+    const card = document.getElementById('country-hover-card');
+    document.getElementById('hover-country-name').textContent = countryName;
+    const list = document.getElementById('hover-news-list');
+    list.innerHTML = items.slice(0, 4).map(i =>
+        `<div class="hover-news-item">${i.title}</div>`
+    ).join('');
+    card.style.display = 'block';
+    card.style.left = (mouseEvent.clientX + 14) + 'px';
+    card.style.top  = (mouseEvent.clientY - 10) + 'px';
+}
+function hideCountryHoverCard() {
+    document.getElementById('country-hover-card').style.display = 'none';
+}
+
+// ============================================================
+// MAP MODE (2D / 3D)
+// ============================================================
+function switchTo2D() {
+    mapMode = '2d';
+    document.getElementById('leaflet-map').style.display = 'block';
+    document.getElementById('cesium-container').style.display = 'none';
+    document.getElementById('btn-2d').classList.add('active');
+    document.getElementById('btn-3d').classList.remove('active');
+    if (!leafletMap) initLeaflet();
+    renderMapMarkers();
+}
+
+function switchTo3D() {
+    mapMode = '3d';
+    document.getElementById('cesium-container').style.display = 'block';
+    document.getElementById('leaflet-map').style.display = 'none';
+    document.getElementById('btn-3d').classList.add('active');
+    document.getElementById('btn-2d').classList.remove('active');
+    if (!cesiumViewer) initCesium();
+}
+
+function initCesium() {
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYWE1OWUxNy1mMWZiLTQzYjYtYTQ0OS1kMWFjYmFkNTc5YzMiLCJpZCI6NTk5MzMsImlhdCI6MTYyNTIyMzA3OX0.eVRGfJFLKfHFr3jSz2B0S5T6y2JWLxJIcxJKTWdGfGk';
+    try {
+        cesiumViewer = new Cesium.Viewer('cesium-container', {
+            terrainProvider: Cesium.createWorldTerrain ? Cesium.createWorldTerrain() : undefined,
+            timeline: false,
+            animation: false,
+            homeButton: false,
+            sceneModePicker: false,
+            navigationHelpButton: false,
+            baseLayerPicker: false,
+            fullscreenButton: false,
+            geocoder: false,
+            infoBox: false,
+        });
+        applyThemeToCesium();
+    } catch (e) {
+        console.warn('Cesium init failed:', e);
+        switchTo2D();
+        alert('3D خەرىتىسى يۈكلەنمىدى، 2D غا قايتىلدى.');
+    }
+}
+
+function applyThemeToCesium() {
+    if (!cesiumViewer) return;
+    if (mapTheme === 'night') {
+        cesiumViewer.scene.backgroundColor = Cesium.Color.fromCssColorString('#000814');
+    }
+}
+
+// Day/Night map themes
+function applyTheme(theme) {
+    mapTheme = theme;
+    if (theme === 'night') {
+        document.getElementById('btn-night').classList.add('active');
+        document.getElementById('btn-day').classList.remove('active');
+        if (mapMode === '2d' && leafletMap) {
+            setMapLayer('dark', document.querySelector('[data-layer="dark"]'));
+        }
+    } else {
+        document.getElementById('btn-day').classList.add('active');
+        document.getElementById('btn-night').classList.remove('active');
+        if (mapMode === '2d' && leafletMap) {
+            setMapLayer('street', document.querySelector('[data-layer="street"]'));
+        }
+    }
+    applyThemeToCesium();
+}
+
+// ============================================================
+// PANEL TOGGLE
+// ============================================================
+function togglePanel() {
+    panelOpen = !panelOpen;
+    const panel = document.getElementById('news-panel');
+    if (panelOpen) panel.classList.remove('collapsed');
+    else panel.classList.add('collapsed');
+}
+
+// ============================================================
+// EVENT LISTENERS SETUP
+// ============================================================
+function setupEventListeners() {
+    // Translator modal
+    document.querySelectorAll('input[name="translator"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            document.getElementById('gemini-key-box').style.display =
+                e.target.value === 'gemini' ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('start-btn').addEventListener('click', () => {
+        selectedTranslator = document.querySelector('input[name="translator"]:checked').value;
+        if (selectedTranslator === 'gemini') {
+            geminiApiKey = document.getElementById('gemini-api-key').value.trim();
+            if (!geminiApiKey) { alert('Gemini تاللانغان بولسا چوقۇم API ئاچقۇچى كىرگۈزۈڭ!'); return; }
+        }
+        document.getElementById('translator-modal').classList.add('hidden');
+        startApp();
+    });
+
+    // Map controls
+    document.getElementById('btn-2d').addEventListener('click', switchTo2D);
+    document.getElementById('btn-3d').addEventListener('click', switchTo3D);
+    document.getElementById('btn-day').addEventListener('click', () => applyTheme('day'));
+    document.getElementById('btn-night').addEventListener('click', () => applyTheme('night'));
+
+    // Layer button
+    const layerBtn = document.getElementById('btn-layers');
+    const layerPopup = document.getElementById('layer-popup');
+    layerBtn.addEventListener('click', (e) => {
+        layerPopup.classList.toggle('visible');
+        e.stopPropagation();
+    });
+    document.addEventListener('click', () => layerPopup.classList.remove('visible'));
+
+    // Channel selector
+    document.getElementById('channel-select').addEventListener('change', (e) => {
+        loadAllNews(e.target.value);
+    });
+}
+
+// ============================================================
+// APP START
+// ============================================================
+function startApp() {
+    document.getElementById('main-app').style.display = 'block';
+    // Start with 2D map (always works)
+    document.getElementById('leaflet-map').style.display = 'block';
+    initLeaflet();
+    loadAllNews('all');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+    // Hide loading after short delay (fonts etc.)
+    setTimeout(() => {
+        document.getElementById('loading-screen').classList.add('hidden');
+        setTimeout(() => document.getElementById('loading-screen').remove(), 700);
+    }, 1500);
+
+    setupEventListeners();
+});
+</script>
+
+<!-- Cesium popup custom styles -->
+<style>
+.leaflet-popup-content-wrapper {
+    background: rgba(8,14,26,0.97) !important;
+    border: 1px solid rgba(200,168,75,0.3) !important;
+    border-radius: 12px !important;
+    color: #e8edf5 !important;
+    box-shadow: 0 8px 35px rgba(0,0,0,0.7) !important;
+    font-family: 'UKIJ Ekran', sans-serif !important;
+    backdrop-filter: blur(16px);
+}
+.leaflet-popup-tip { background: rgba(8,14,26,0.97) !important; }
+.leaflet-popup-close-button { color: #c8a84b !important; font-size: 18px !important; }
+.leaflet-control-zoom a {
+    background: rgba(8,14,26,0.95) !important;
+    color: #c8a84b !important;
+    border-color: rgba(200,168,75,0.3) !important;
+    border-radius: 8px !important;
+}
+.leaflet-control-zoom a:hover { background: rgba(200,168,75,0.15) !important; }
+.leaflet-bar { border: 1px solid rgba(200,168,75,0.3) !important; border-radius: 10px !important; }
+</style>
+
+</body>
+</html>
