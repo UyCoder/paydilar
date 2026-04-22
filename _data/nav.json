@@ -5,20 +5,34 @@
       "link": "/portfolio/"
     },
     {
-      "name": "ھىكمەتلەر",
-      "link": "https://uycoder.github.io/paydilar/HikmetlerHulasisi/index.html"
-    },
-    {
-      "name": "كۇنۇپكا مەشىقى",
-      "link": "https://uycoder.github.io/paydilar/UyghurKeyboardTraining/Ug-TrainingApp.html"
-    },
-    {
-      "name": "خەۋەرلەر",
-      "link": "https://uycoder.github.io/paydilar/news/UyghurNews.html"
-    },
-    {
       "name": "بلوگ ھەققىدە",
       "link": "/about/"
+    },
+    {
+      "name": "قۇراللار",
+      "link": "#",
+      "subItems": [
+        {
+          "name": "خەۋەرلەر",
+          "link": "https://uycoder.github.io/paydilar/news/UyghurNews.html"
+        },
+        {
+          "name": "خەۋەرلەر خەرىتىسى",
+          "link": "https://uycoder.github.io/paydilar/news/WorldNewsMap.html"
+        },
+        {
+          "name": "كۇنۇپكا مەشىقى",
+          "link": "https://uycoder.github.io/paydilar/UyghurKeyboardTraining/Ug-TrainingApp.html"
+        },
+        {
+          "name": "ھىكمەتلەر خەزىنىسى",
+          "link": "https://uycoder.github.io/paydilar/HikmetlerHulasisi/index.html"
+        },
+        {
+          "name": "جۇغراپىيە قۇرالى",
+          "link": "https://uycoder.github.io/paydilar/news/BilikGeoTool.html"
+        }
+      ]
     }
   ]
 }
