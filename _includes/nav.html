@@ -32,12 +32,35 @@
         <span></span>
         </span>
 
-        <div class="nav-right nav-menu">
+        <div class="nav-right nav-menu" id="nav-menu">
             {% for item in site.data.nav.items %}
-            <a class="nav-item" href="{{ item.link | relative_url }}">
-                <span>{{item.name}}</span>
-            </a>
+                {% if item.subItems %}
+                    <div class="nav-item custom-dropdown">
+                        <a href="{{ item.link | relative_url }}" class="nav-link">
+                            <span>{{item.name}} <i class="fa fa-caret-down" style="font-size:0.8em;margin-right:3px;"></i></span>
+                        </a>
+                        <div class="custom-dropdown-menu">
+                            {% for sub in item.subItems %}
+                            <a class="dropdown-item" href="{{ sub.link }}">
+                                <span>{{sub.name}}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="nav-item" href="{{ item.link | relative_url }}">
+                        <span>{{item.name}}</span>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
 
 </nav>
+
+<script>
+  // Simple script for mobile menu toggle
+  document.querySelector('.nav-toggle').addEventListener('click', function() {
+    this.classList.toggle('is-active');
+    document.getElementById('nav-menu').classList.toggle('is-active');
+  });
+</script>
