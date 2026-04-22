@@ -345,10 +345,10 @@
             transform: translateX(calc(-1 * var(--panel-width)));
         }
 
-        /* Panel Toggle Tab */
+        /* Panel Toggle Tab — always visible on the right edge of panel */
         #panel-toggle {
             position: absolute;
-            left: -42px;
+            right: -42px;           /* sticks out to the RIGHT of the panel */
             top: 50%;
             transform: translateY(-50%);
             width: 42px;
@@ -359,18 +359,21 @@
             border-radius: 0 10px 10px 0;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            writing-mode: vertical-rl;
             font-family: 'UKIJ Ekran', sans-serif;
             font-size: 0.8em;
             color: var(--accent-gold-light);
             transition: var(--transition);
             backdrop-filter: blur(10px);
             gap: 6px;
+            z-index: 10;
         }
         #panel-toggle:hover { background: rgba(200,168,75,0.12); }
         #panel-toggle-icon { font-size: 1.1em; transition: transform 0.4s ease; }
+        /* Arrow: ◀ when open (points left to close), ▶ when closed (points right to open) */
+        #news-panel:not(.collapsed) #panel-toggle-icon { transform: rotate(0deg); content: '◀'; }
         #news-panel.collapsed #panel-toggle-icon { transform: rotate(180deg); }
 
         /* Panel Header */
@@ -682,14 +685,22 @@
         <p>خەۋەرلەر ئەسلى ئىنگىلىزچە بولۇپ، سىز تاللىغان ئۇسۇل بويىچە ئۇيغۇرچىغا تەرجىمە قىلىنپ كۆرسىتىلىدۇ.</p>
 
         <div class="translator-option">
-            <label><input type="radio" name="translator" value="original"> ئەسلى تىلدا (ئىنگىلىزچە) كۆرسىتىش </label>
+            <label><input type="radio" name="translator" value="original"> ئەسلى تىلدا (ئىنگىلىزچە) كۆرسىتىش</label>
         </div>
         <div class="translator-option">
-            <label><input type="radio" name="translator" value="google" checked> Google تەرجىمانى (تېز ۋە ھەقسىز) </label>
+            <label><input type="radio" name="translator" value="google" checked> Google تەرجىمانى (تېز ۋە ھەقسىز)</label>
         </div>
         <div class="translator-option">
-            <label><input type="radio" name="translator" value="gemini"> Google Gemini (ئەڭ ياخشى سۈپەت، API ئاچقۇچى كېرەك) </label>
-            <div style="font-size:0.8em; color:var(--text-muted); margin-top:6px; padding-right:26px; text-align:right;">
+            <label><input type="radio" name="translator" value="niutrans"> NiuTrans تەرجىمانى (سۈپىتى ياخشى)</label>
+        </div>
+        <div id="niutrans-key-box" style="display:none; margin-top:10px; background:rgba(200,168,75,0.05); border:1px solid var(--border-gold); border-radius:var(--radius-sm); padding:14px; text-align:right;">
+            <label style="display:block; margin-bottom:6px; color:var(--text-secondary); font-size:0.88em;">NiuTrans API ئاچقۇچى (ئىختىيارىي):</label>
+            <input type="password" id="niutrans-api-key" placeholder="NiuTrans API Key (خالى قالدۇرسىڭىزمۇ بولىدۇ)" style="width:100%;padding:9px 13px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);direction:ltr;font-size:0.9em;outline:none;">
+            <p style="font-size:0.78em;color:var(--text-muted);margin-top:7px;">ئاچقۇچسىز ئورتاق ئاچقۇچ ئىشلىتىلىدۇ. ئاچقۇچ ئالماقچى بولسىڭىز: <a href="https://niutrans.com" target="_blank" style="color:var(--accent-cyan);">niutrans.com</a></p>
+        </div>
+        <div class="translator-option">
+            <label><input type="radio" name="translator" value="gemini"> Google Gemini (ئەڭ ياخشى سۈپەت، API ئاچقۇچى كېرەك)</label>
+            <div style="font-size:0.8em; color:var(--text-muted); margin-top:6px; padding-right:26px;">
                 سىناپ باقسىڭىز: AIzaSyCkpkBDY_HmxOQIwEmILG6M-9t2ek6kObU
             </div>
         </div>
@@ -762,9 +773,9 @@
 
     <!-- NEWS PANEL -->
     <div id="news-panel">
-        <div id="panel-toggle" onclick="togglePanel()">
+        <div id="panel-toggle" onclick="togglePanel()" title="خەۋەر تاختىسى">
             <span id="panel-toggle-icon">◀</span>
-            <span style="font-size:0.75em; writing-mode:vertical-rl; color:var(--accent-gold-light);">خەۋەرلەر</span>
+            <span style="font-size:0.72em; writing-mode:vertical-rl; color:var(--accent-gold); margin-top:2px;">خەۋەر</span>
         </div>
 
         <div id="panel-header">
@@ -880,13 +891,13 @@ const COUNTRY_COORDS = {
     'france': { lat: 46.2276, lng: 2.2137, code: 'FR', nameUg: 'فرانسىيە' },
     'french': { lat: 46.2276, lng: 2.2137, code: 'FR', nameUg: 'فرانسىيە' },
     'paris': { lat: 48.8566, lng: 2.3522, code: 'FR', nameUg: 'فرانسىيە' },
-    'uk': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
-    'britain': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
-    'british': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئىنگىلتىرە' },
-    'london': { lat: 51.5074, lng: -0.1278, code: 'GB', nameUg: 'ئىنگىلتىرە' },
-    'england': { lat: 52.3555, lng: -1.1743, code: 'GB', nameUg: 'ئىنگىلتىرە' },
-    'israel': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىل' },
-    'israeli': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىل' },
+    'uk': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئەنگېلىيە' },
+    'britain': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئەنگېلىيە' },
+    'british': { lat: 55.3781, lng: -3.4360, code: 'GB', nameUg: 'ئەنگېلىيە' },
+    'london': { lat: 51.5074, lng: -0.1278, code: 'GB', nameUg: 'ئەنگېلىيە' },
+    'england': { lat: 52.3555, lng: -1.1743, code: 'GB', nameUg: 'ئەنگېلىيە' },
+    'israel': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىلىيە' },
+    'israeli': { lat: 31.0461, lng: 34.8516, code: 'IL', nameUg: 'ئىسرائىلىيە' },
     'gaza': { lat: 31.5, lng: 34.47, code: 'PS', nameUg: 'غەززە' },
     'palestine': { lat: 31.9522, lng: 35.2332, code: 'PS', nameUg: 'پەلەستىن' },
     'iran': { lat: 32.4279, lng: 53.6880, code: 'IR', nameUg: 'ئىران' },
@@ -896,15 +907,15 @@ const COUNTRY_COORDS = {
     'turkish': { lat: 38.9637, lng: 35.2433, code: 'TR', nameUg: 'تۈركىيە' },
     'ankara': { lat: 39.9334, lng: 32.8597, code: 'TR', nameUg: 'تۈركىيە' },
     'erdogan': { lat: 38.9637, lng: 35.2433, code: 'TR', nameUg: 'تۈركىيە' },
-    'syria': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سوريە' },
-    'syrian': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سوريە' },
-    'damascus': { lat: 33.5138, lng: 36.2765, code: 'SY', nameUg: 'سوريە' },
+    'syria': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سۈرىيە' },
+    'syrian': { lat: 34.8021, lng: 38.9968, code: 'SY', nameUg: 'سۈرىيە' },
+    'damascus': { lat: 33.5138, lng: 36.2765, code: 'SY', nameUg: 'سۈرىيە' },
     'saudi': { lat: 23.8859, lng: 45.0792, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
     'saudi arabia': { lat: 23.8859, lng: 45.0792, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
     'riyadh': { lat: 24.7136, lng: 46.6753, code: 'SA', nameUg: 'سەئۇدى ئەرەبستان' },
-    'india': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
-    'indian': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
-    'modi': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندى' },
+    'india': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندىستان' },
+    'indian': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندىستان' },
+    'modi': { lat: 20.5937, lng: 78.9629, code: 'IN', nameUg: 'ھىندىستان' },
     'pakistan': { lat: 30.3753, lng: 69.3451, code: 'PK', nameUg: 'پاكستان' },
     'pakistan': { lat: 30.3753, lng: 69.3451, code: 'PK', nameUg: 'پاكستان' },
     'japan': { lat: 36.2048, lng: 138.2529, code: 'JP', nameUg: 'ياپونىيە' },
@@ -927,7 +938,7 @@ const COUNTRY_COORDS = {
     'east turkestan': { lat: 42.0, lng: 85.0, code: 'CN', nameUg: 'شەرقىي تۈركىستان' },
     'uyghur': { lat: 42.0, lng: 85.0, code: 'CN', nameUg: 'شەرقىي تۈركىستان' },
     'tibet': { lat: 31.1667, lng: 88.0, code: 'CN_TIB', nameUg: 'تىبەت' },
-    'taiwan': { lat: 23.6978, lng: 120.9605, code: 'TW', nameUg: 'تايۋان' },
+    'taiwan': { lat: 23.6978, lng: 120.9605, code: 'TW', nameUg: 'تەيۋەن' },
     'hong kong': { lat: 22.3193, lng: 114.1694, code: 'HK', nameUg: 'خوڭكوڭ' },
     'afghanistan': { lat: 33.9391, lng: 67.7100, code: 'AF', nameUg: 'ئافغانستان' },
     'iraq': { lat: 33.2232, lng: 43.6793, code: 'IQ', nameUg: 'ئىراق' },

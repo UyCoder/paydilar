@@ -660,13 +660,13 @@ function parseXml(xmlText, max){
 
 // ============================================================
 // RSS FETCH
-// Primary:   allorigins.win/get  (returns JSON wrapper, works from file:// + Edge)
-// Fallback:  allorigins.win/raw  (direct XML, second try)
-// Last:      rss2json             (may fail on free tier but worth trying)
+// Primary:   allorigins.win/get  (JSON wrapper — works from file:// + Edge)
+// Fallback:  rss2json             (plain fetch, exact same as UyghurNews.html)
 // ============================================================
 const ALLORIGINS_GET = 'https://api.allorigins.win/get?url=';
 const ALLORIGINS_RAW = 'https://api.allorigins.win/raw?url=';
 const R2J = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const CORSPROXY = 'https://corsproxy.io/?';  // kept for translateNiu
 
 async function fetchFeed(url, max){
     // --- Attempt 1: allorigins /get → JSON wrapper → parse XML ---

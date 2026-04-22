@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى قۇرالى</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+@font-face{font-family:'UKIJ';src:url('https://rawcdn.githack.com/UyCoder/paydilar/master/fonts/ALKATIP-TOR.woff')format('woff');font-display:swap;}
+:root{
+  --bg:#06101e;--gold:#c8a84b;--gold2:#f0cc72;--red:#ef4444;--cyan:#06b6d4;
+  --txt:#e8edf5;--txt2:#9aafc8;--muted:#4a6080;
+  --bdr:rgba(80,120,170,.2);--bg:rgba(200,168,75,.28);
+  --glass:rgba(255,255,255,.04);--glass2:rgba(255,255,255,.08);
+  --sh:0 8px 32px rgba(0,0,0,.65);--r:10px;
+  --th:54px;--lw:285px;--tr:all .3s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'UKIJ','Segoe UI',sans-serif;background:#06101e;color:var(--txt);direction:rtl;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rpulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+@keyframes laserPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.4);opacity:1}}
+
+/* ===== TOP BAR ===== */
+#tb{position:fixed;top:0;left:0;right:0;height:var(--th);z-index:2000;
+  display:flex;align-items:center;justify-content:space-between;padding:0 10px;gap:6px;
+  background:rgba(4,8,18,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(200,168,75,.28);box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.tl{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo{height:32px;border-radius:50%;filter:drop-shadow(0 0 8px rgba(200,168,75,.4));}
+.ttl{font-size:.93em;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+.badge{font-size:.58em;background:rgba(200,168,75,.12);border:1px solid rgba(200,168,75,.28);
+  color:var(--gold);padding:2px 7px;border-radius:10px;}
+.tr{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+.tbtn{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:14px;
+  border:1px solid var(--bdr);background:var(--glass);color:var(--txt2);
+  cursor:pointer;font-size:.75em;font-family:'UKIJ','Segoe UI';transition:var(--tr);
+  white-space:nowrap;outline:none;}
+.tbtn svg{width:13px;height:13px;flex-shrink:0;}
+.tbtn:hover{background:var(--glass2);border-color:rgba(200,168,75,.28);color:var(--gold2);}
+.tbtn.on{background:rgba(200,168,75,.14);border-color:rgba(200,168,75,.28);color:var(--gold2);}
+.tbtn.rbtn{border-color:rgba(239,68,68,.35);color:#f87171;}
+.tbtn.rbtn.on{background:rgba(239,68,68,.15);animation:rpulse 1.5s infinite;}
+.tsep{width:1px;height:20px;background:var(--bdr);margin:0 2px;}
+.ddw{position:relative;}
+.ddm{position:absolute;top:calc(100% + 6px);right:0;z-index:9000;
+  background:rgba(5,10,22,.98);border:1px solid rgba(200,168,75,.28);
+  border-radius:var(--r);padding:5px;min-width:175px;
+  box-shadow:var(--sh);display:none;animation:fadeIn .2s;}
+.ddm.open{display:block;}
+.ddi{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-radius:7px;cursor:pointer;color:var(--txt2);font-size:.82em;transition:var(--tr);}
+.ddi:hover{background:var(--glass2);color:var(--txt);}
+.ddi.on{background:rgba(200,168,75,.1);color:var(--gold2);}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* ===== LEFT PANEL ===== */
+#lp{position:fixed;top:var(--th);left:0;width:var(--lw);
+  height:calc(100% - var(--th));z-index:1000;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg,rgba(5,10,22,.98),rgba(8,15,30,.98));
+  backdrop-filter:blur(22px);border-right:1px solid rgba(200,168,75,.28);
+  box-shadow:4px 0 38px rgba(0,0,0,.55);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);}
+#lp.closed{transform:translateX(calc(-1 * var(--lw)));}
+/* ===== RIGHT PANEL ===== */
+#rp{position:fixed;top:var(--th);right:0;width:320px;
+  height:calc(100% - var(--th));z-index:1600;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg,rgba(5,10,22,.98),rgba(8,15,30,.98));
+  backdrop-filter:blur(22px);border-left:1px solid rgba(200,168,75,.28);
+  box-shadow:-4px 0 38px rgba(0,0,0,.55);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);}
+#rp.closed{transform:translateX(100%);}
+#rtab{position:absolute;left:-40px;top:50%;transform:translateY(-50%);
+  width:40px;height:95px;z-index:5;cursor:pointer;
+  background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);
+  border-right:none;border-radius:10px 0 0 10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:var(--tr);}
+#rtab:hover{background:rgba(200,168,75,.1);}
+#rtab .arr{color:var(--gold2);font-size:1em;transition:transform .4s;}
+#rp.closed #rtab .arr{transform:rotate(180deg);}
+#rtab .plbl{writing-mode:vertical-rl;font-size:.65em;color:var(--gold);transform:rotate(180deg);}
+#ptab{position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  width:40px;height:80px;z-index:5;cursor:pointer;
+  background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);
+  border-left:none;border-radius:0 10px 10px 0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:var(--tr);}
+#ptab:hover{background:rgba(200,168,75,.1);}
+#ptab .arr{color:var(--gold2);font-size:1em;transition:transform .4s;}
+#lp.closed #ptab .arr{transform:rotate(180deg);}
+#ptab .plbl{writing-mode:vertical-rl;font-size:.65em;color:var(--gold);}
+#ph{padding:12px 12px 9px;border-bottom:1px solid var(--bdr);flex-shrink:0;}
+#ph h3{font-size:.88em;color:var(--gold2);margin-bottom:9px;}
+.sbox-w{display:flex;gap:5px;align-items:center;background:var(--glass);
+  border:1px solid var(--bdr);border-radius:var(--r);padding:7px 10px;transition:var(--tr);}
+.sbox-w:focus-within{border-color:rgba(200,168,75,.28);}
+.sinp{flex:1;background:none;border:none;outline:none;color:var(--txt);
+  font-family:'UKIJ','Segoe UI';font-size:.83em;direction:rtl;}
+.sinp::placeholder{color:var(--muted);}
+.s-go{background:none;border:none;cursor:pointer;color:var(--gold);padding:0;}
+.s-go svg{width:15px;height:15px;}
+#sr{margin-top:6px;max-height:150px;overflow-y:auto;}
+.sres{padding:6px 9px;border-radius:7px;cursor:pointer;font-size:.78em;
+  color:var(--txt2);transition:var(--tr);display:flex;align-items:flex-start;gap:6px;}
+.sres:hover{background:var(--glass2);color:var(--txt);}
+#pb{flex:1;overflow-y:auto;padding:9px 11px;}
+#pb::-webkit-scrollbar{width:3px;}
+#pb::-webkit-scrollbar-thumb{background:rgba(200,168,75,.2);border-radius:2px;}
+.psec h4{font-size:.7em;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.06em;margin:11px 0 5px;}
+.qb{display:inline-flex;align-items:center;gap:3px;
+  padding:4px 9px;border-radius:12px;margin:2px;
+  border:1px solid var(--bdr);background:var(--glass);
+  color:var(--txt2);font-size:.74em;cursor:pointer;
+  font-family:'UKIJ','Segoe UI';transition:var(--tr);}
+.qb:hover{border-color:rgba(200,168,75,.28);color:var(--gold2);background:var(--glass2);}
+.qb.danger{border-color:rgba(239,68,68,.25);color:#f87171;}
+.qb.danger:hover{background:rgba(239,68,68,.07);}
+.qadd-row{display:flex;gap:4px;margin-bottom:6px;}
+.qadd-inp{flex:1;background:var(--glass);border:1px solid var(--bdr);
+  border-radius:8px;padding:5px 9px;color:var(--txt);font-size:.76em;
+  font-family:'UKIJ','Segoe UI';outline:none;direction:rtl;}
+.qadd-inp::placeholder{color:var(--muted);}
+.qadd-inp:focus{border-color:rgba(200,168,75,.28);}
+.qadd-btn{padding:5px 10px;border-radius:8px;border:1px solid rgba(200,168,75,.28);
+  background:rgba(200,168,75,.1);color:var(--gold2);cursor:pointer;font-size:.78em;
+  font-family:'UKIJ','Segoe UI';transition:var(--tr);}
+.qadd-btn:hover{background:rgba(200,168,75,.2);}
+#brand{padding:10px 12px;border-top:1px solid var(--bdr);flex-shrink:0;
+  text-align:center;font-size:.68em;color:var(--muted);}
+#brand span{color:var(--gold);font-size:.95em;}
+
+/* ===== MAP ===== */
+#mwrap{position:fixed;inset:var(--th) 0 0 0;}
+#lmap{position:absolute;inset:0;}
+#cmap{position:absolute;inset:0;display:none;}
+
+/* ===== DRAW CANVAS ===== */
+#dc{position:absolute;inset:0;z-index:600;pointer-events:none;}
+#dc.draw{pointer-events:all;cursor:crosshair;}
+#dc.erase{pointer-events:all;cursor:cell;}
+
+/* ===== DRAW TOOLBAR ===== */
+#dtb{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1500;
+  background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);border-radius:15px;
+  padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  box-shadow:var(--sh);backdrop-filter:blur(15px);}
+.db{width:37px;height:37px;border-radius:8px;border:1px solid var(--bdr);
+  background:var(--glass);color:var(--txt2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:var(--tr);}
+.db svg{width:16px;height:16px;pointer-events:none;}
+.db:hover{background:var(--glass2);border-color:rgba(200,168,75,.28);color:var(--gold2);}
+.db.on{background:rgba(200,168,75,.15);border-color:var(--gold);color:var(--gold2);}
+.db.del:hover{background:rgba(239,68,68,.09);border-color:rgba(239,68,68,.4);color:var(--red);}
+.dsep{width:26px;height:1px;background:var(--bdr);margin:2px 0;}
+#cbtn{width:37px;height:37px;border-radius:8px;border:2px solid rgba(200,168,75,.28);
+  cursor:pointer;overflow:hidden;position:relative;}
+#cbtn input{position:absolute;inset:-5px;opacity:0;cursor:pointer;width:120%;height:120%;}
+#cprev{width:100%;height:100%;border-radius:6px;}
+.wpop{position:absolute;right:46px;top:0;z-index:5;
+  background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);
+  border-radius:10px;padding:10px 14px;display:none;min-width:145px;}
+.wpop.open{display:block;}
+.wpop label{font-size:.72em;color:var(--muted);display:block;margin-bottom:5px;}
+#wsld{width:115px;accent-color:var(--gold);}
+
+/* ===== TEXT FORMAT BAR ===== */
+#tfb{position:fixed;top:calc(var(--th) + 6px);left:50%;transform:translateX(-50%);z-index:1800;
+  background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);border-radius:12px;
+  padding:6px 11px;display:none;align-items:center;gap:6px;flex-wrap:wrap;
+  box-shadow:var(--sh);backdrop-filter:blur(15px);max-width:97vw;}
+#tfb.show{display:flex;}
+.fb{padding:3px 8px;height:26px;border-radius:6px;border:1px solid var(--bdr);
+  background:var(--glass);color:var(--txt2);cursor:pointer;font-size:.74em;
+  font-family:'UKIJ','Segoe UI';transition:var(--tr);
+  display:flex;align-items:center;gap:3px;white-space:nowrap;outline:none;}
+.fb:hover{border-color:rgba(200,168,75,.28);color:var(--gold2);}
+.fb.on{background:rgba(200,168,75,.12);border-color:var(--gold);color:var(--gold2);}
+.fb svg{width:12px;height:12px;}
+select.fsel{padding:3px 6px;height:26px;border-radius:6px;
+  border:1px solid var(--bdr);background:rgba(6,16,30,.95);
+  color:var(--txt2);cursor:pointer;font-size:.74em;
+  font-family:'UKIJ','Segoe UI';outline:none;transition:var(--tr);}
+select.fsel:focus{border-color:rgba(200,168,75,.28);}
+
+/* ===== UG MAP LABELS ===== */
+.ugl{font-family:'UKIJ','Arial Unicode MS',sans-serif;direction:rtl;
+  text-align:center;pointer-events:all;cursor:pointer;user-select:none;
+  white-space:nowrap;transition:transform .2s;display:block;}
+/* Dark map labels */
+.ugl.country  {font-size:13px;font-weight:700;color:#f0e8a0;text-shadow:0 0 5px rgba(0,0,0,1),0 1px 4px rgba(0,0,0,.9);}
+.ugl.region   {font-size:11px;font-weight:600;color:#c0d4f0;text-shadow:0 0 5px rgba(0,0,0,1),0 1px 3px rgba(0,0,0,.9);}
+.ugl.city     {font-size:10px;color:#ccdae8;text-shadow:0 0 4px rgba(0,0,0,1),0 1px 3px rgba(0,0,0,.9);}
+.ugl.ocean    {font-size:12px;font-style:italic;color:#8ab4cc;opacity:.85;text-shadow:0 0 5px rgba(0,0,0,1);}
+.ugl.sea      {font-size:10px;font-style:italic;color:#7aa8c0;opacity:.8;text-shadow:0 0 4px rgba(0,0,0,1);}
+.ugl.continent{font-size:15px;font-weight:800;color:#e8d080;letter-spacing:.04em;text-shadow:0 0 8px rgba(0,0,0,1),0 2px 5px rgba(0,0,0,.9);}
+.ugl:hover{transform:scale(1.12);z-index:100!important;}
+/* Light map labels */
+body.is-light .ugl.country  {color:#1a3500!important;text-shadow:0 0 4px #fff,0 0 10px #fff,1px 1px 2px rgba(255,255,255,.9)!important;}
+body.is-light .ugl.region   {color:#0a2a40!important;text-shadow:0 0 4px #fff,0 0 8px #fff!important;}
+body.is-light .ugl.city     {color:#101040!important;text-shadow:0 0 3px #fff,0 0 7px #fff!important;}
+body.is-light .ugl.ocean    {color:#0a3060!important;text-shadow:0 0 4px rgba(255,255,255,.9)!important;opacity:.95!important;}
+body.is-light .ugl.sea      {color:#0a3060!important;text-shadow:0 0 3px rgba(255,255,255,.8)!important;opacity:.9!important;}
+body.is-light .ugl.continent{color:#1a3500!important;text-shadow:0 0 6px #fff,0 0 14px #fff!important;}
+
+/* ===== TEXT BOXES ===== */
+.ugtb{position:absolute;z-index:700;border:1px dashed rgba(200,168,75,.65);
+  border-radius:5px;padding:8px 10px;min-width:100px;min-height:34px;
+  font-family:'UKIJ','Arial',sans-serif;direction:rtl;color:#fff;
+  resize:both;overflow:auto;cursor:move;outline:none;background:transparent;}
+.ugtb:focus{border-color:var(--gold);border-style:solid;cursor:text;}
+
+/* ===== CALLOUT BOXES ===== */
+.callout{position:absolute;z-index:710;min-width:155px;max-width:290px;
+  background:rgba(6,16,30,.88);border:2px solid var(--gold);border-radius:13px;
+  cursor:move;direction:rtl;backdrop-filter:blur(10px);
+  box-shadow:0 4px 24px rgba(0,0,0,.7);animation:fadeIn .3s ease;}
+.callout-head{background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#1a0a00;padding:7px 12px;border-radius:11px 11px 0 0;
+  font-size:.87em;font-weight:700;min-height:28px;outline:none;cursor:text;}
+.callout-body{padding:9px 12px;color:var(--txt);font-size:.82em;
+  line-height:1.65;min-height:38px;outline:none;cursor:text;white-space:pre-wrap;}
+.callout-del{position:absolute;top:-9px;left:-9px;width:18px;height:18px;
+  border-radius:50%;background:var(--red);color:#fff;font-size:11px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:5;opacity:0;transition:opacity .2s;}
+.callout:hover .callout-del{opacity:1;}
+/* Callout variants */
+.callout.info   {border-color:#3b82f6;}
+.callout.info .callout-head{background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;}
+.callout.warn   {border-color:#f59e0b;}
+.callout.warn .callout-head{background:linear-gradient(135deg,#f59e0b,#fcd34d);color:#1a0a00;}
+.callout.red    {border-color:#ef4444;}
+.callout.red .callout-head{background:linear-gradient(135deg,#ef4444,#f87171);color:#fff;}
+
+/* ===== CALLOUT STYLE PICKER ===== */
+#cstyle-bar{position:fixed;top:calc(var(--th)+6px);left:50%;transform:translateX(-50%);
+  z-index:1800;background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);
+  border-radius:12px;padding:6px 12px;display:none;align-items:center;gap:8px;
+  box-shadow:var(--sh);backdrop-filter:blur(15px);}
+#cstyle-bar.show{display:flex;}
+.csb{padding:4px 12px;border-radius:8px;border:1px solid var(--bdr);background:var(--glass);
+  color:var(--txt2);font-size:.76em;cursor:pointer;font-family:'UKIJ','Segoe UI';
+  transition:var(--tr);outline:none;}
+.csb.on{border-color:var(--gold);background:rgba(200,168,75,.15);color:var(--gold2);}
+.csb:hover{border-color:rgba(200,168,75,.28);color:var(--gold2);}
+
+/* ===== MODAL ===== */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4000;backdrop-filter:blur(3px);display:none;}
+.modal-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4001;
+  background:rgba(6,16,30,.95);border:1px solid rgba(200,168,75,.4);border-radius:12px;
+  width:90%;max-width:650px;max-height:85vh;display:none;flex-direction:column;
+  box-shadow:0 10px 40px rgba(0,0,0,.8);direction:rtl;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;
+  border-bottom:1px solid rgba(200,168,75,.2);background:rgba(0,0,0,.3);border-radius:12px 12px 0 0;}
+.modal-title{font-size:1.05em;color:var(--gold2);font-weight:700;}
+.modal-close{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:1.1em;transition:var(--tr);}
+.modal-close:hover{color:var(--red);}
+.modal-body{padding:18px;overflow-y:auto;color:var(--txt);font-size:.88em;line-height:1.7;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:rgba(200,168,75,.3);border-radius:2px;}
+.modal-body h4{color:var(--gold);margin:14px 0 6px;font-size:1.05em;border-bottom:1px dashed rgba(200,168,75,.3);padding-bottom:5px;}
+.modal-body h4:first-child{margin-top:0;}
+.modal-body p{margin-bottom:10px;}
+
+/* ===== RECORDING BAR ===== */
+#recbar{position:fixed;bottom:13px;left:50%;transform:translateX(-50%);z-index:2000;
+  background:rgba(210,25,25,.93);color:#fff;border-radius:20px;
+  padding:7px 18px;font-size:.82em;display:none;align-items:center;gap:8px;
+  box-shadow:0 4px 20px rgba(239,68,68,.4);backdrop-filter:blur(8px);}
+#recbar.show{display:flex;}
+.rdot{width:8px;height:8px;border-radius:50%;background:#fff;animation:rpulse 1s infinite;}
+#rtimer{font-weight:700;font-variant-numeric:tabular-nums;}
+.rsbtn{background:rgba(255,255,255,.2);border:none;color:#fff;
+  padding:3px 11px;border-radius:8px;cursor:pointer;font-size:.8em;}
+
+/* ===== TIMER ===== */
+#timerbar{position:fixed;bottom:13px;right:60px;z-index:1900;
+  background:rgba(5,10,22,.95);border:1px solid rgba(200,168,75,.28);border-radius:16px;
+  padding:6px 14px;display:none;align-items:center;gap:8px;
+  box-shadow:var(--sh);backdrop-filter:blur(10px);}
+#timerbar.show{display:flex;}
+#timerdisp{font-size:1.1em;font-weight:700;color:var(--gold2);font-variant-numeric:tabular-nums;min-width:55px;text-align:center;}
+.tbarbtn{background:none;border:none;cursor:pointer;color:var(--txt2);font-size:1em;padding:2px 5px;transition:var(--tr);}
+.tbarbtn:hover{color:var(--gold2);}
+
+/* ===== LOADER ===== */
+#gloader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;background:#06101e;z-index:5;}
+#gloader .spin{width:40px;height:40px;border:3px solid rgba(200,168,75,.2);
+  border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+#gloader p{font-size:.9em;color:var(--gold);}
+
+/* ===== LEAFLET ===== */
+.leaflet-popup-content-wrapper{background:rgba(5,10,22,.97)!important;border:1px solid rgba(200,168,75,.28)!important;border-radius:12px!important;color:var(--txt)!important;font-family:'UKIJ','Segoe UI',sans-serif!important;box-shadow:var(--sh)!important;}
+.leaflet-popup-tip{background:rgba(5,10,22,.97)!important;}
+.leaflet-popup-close-button{color:var(--gold)!important;}
+.leaflet-control-zoom a{background:rgba(5,10,22,.95)!important;color:var(--gold)!important;border-color:rgba(200,168,75,.28)!important;}
+.leaflet-bar{border:1px solid rgba(200,168,75,.28)!important;border-radius:10px!important;}
+.leaflet-control-attribution{display:none!important;}
+
+@media(max-width:768px){
+  :root{--lw:255px;}
+  .ttl,.badge{display:none;}
+  .tbtn span{display:none;}
+  #dtb{right:5px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="tb">
+  <div class="tl">
+    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/Biliklogo.png" class="logo" alt="Bilik">
+    <span class="ttl">بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى</span>
+    <span class="badge">v3.0</span>
+  </div>
+  <div class="tr">
+    <button class="tbtn on" id="btn2d" onclick="setMapMode('2d')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="20"/></svg><span>2D</span></button>
+    <button class="tbtn" id="btn3d" onclick="setMapMode('3d')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><span>3D</span></button>
+    <div class="tsep"></div>
+    <button class="tbtn on" id="btnDay" onclick="setTheme('day')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg><span>كۈندۈز</span></button>
+    <button class="tbtn" id="btnNight" onclick="setTheme('night')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>كېچە</span></button>
+    <div class="tsep"></div>
+    <div class="ddw">
+      <button class="tbtn" onclick="toggleDD('layer-dd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span>قاتلام</span></button>
+      <div class="ddm" id="layer-dd">
+        <div class="ddi on" onclick="setLayer('dark',this)"><span class="dot" style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
+        <div class="ddi" onclick="setLayer('light',this)"><span class="dot" style="background:#ddd8cc"></span>يورۇق</div>
+        <div class="ddi" onclick="setLayer('street',this)"><span class="dot" style="background:#4a7a2a"></span>ئۆلچەملىك</div>
+        <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot" style="background:#1a3050"></span>كوسموس كۆرۈنۈشى</div>
+        <div class="ddi" onclick="setLayer('topo',this)"><span class="dot" style="background:#6a9a5a"></span>توپوگرافىيە</div>
+      </div>
+    </div>
+    <button class="tbtn on" id="btnLbl" onclick="toggleLabels()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>ئۇيغۇرچە</span></button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="toggleTimer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>ۋاقىت</span></button>
+    <div class="tsep"></div>
+    <button class="tbtn" onclick="undoDraw()" title="Ctrl+Z">↩</button>
+    <button class="tbtn" onclick="redoDraw()" title="Ctrl+Y">↪</button>
+    <div class="tsep"></div>
+    <button class="tbtn rbtn" id="btnRec" onclick="toggleRecord()"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg><span id="rTxt">ۋىديوغا ئال</span></button>
+  </div>
+</div>
+
+<!-- LEFT PANEL -->
+<div id="lp">
+  <div id="ptab" onclick="togglePanel()">
+    <span class="arr">◀</span><span class="plbl">پانىل</span>
+  </div>
+  <div id="ph">
+    <h3>📍 جاي ئىزدەش</h3>
+    <div class="sbox-w">
+      <input class="sinp" id="sinput" type="text" placeholder="دۆلەت ياكى شەھەر ئىزدەڭ…" onkeyup="if(event.key==='Enter')doSearch()">
+      <button class="s-go" onclick="doSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    </div>
+    <div id="sr"></div>
+  </div>
+  <div id="pb">
+    <div class="psec">
+      <h4>تېز كۆچۈش</h4>
+      <div class="qadd-row">
+        <input class="qadd-inp" id="qaInp" placeholder="يېڭى ئورۇن قوشۇش…" onkeyup="if(event.key==='Enter')addQuickLoc()">
+        <button class="qadd-btn" onclick="addQuickLoc()">＋ قوش</button>
+      </div>
+      <div id="qbtns"></div>
+    </div>
+    <div class="psec">
+      <h4>تېزلىك تاللاش</h4>
+      <button class="qb" onclick="map&&map.setZoom(2)">🌍 دۇنيا</button>
+      <button class="qb" onclick="map&&map.setZoom(4)">🗺 قىتئە</button>
+      <button class="qb" onclick="map&&map.setZoom(6)">🏙 شەھەر</button>
+      <button class="qb" onclick="map&&map.setZoom(9)">🏘 رايون</button>
+    </div>
+    <div class="psec">
+      <h4>نۇقتىلىق يەرلەر</h4>
+      <div id="hspots"></div>
+    </div>
+    <div class="psec">
+      <h4>📚 بىلىم بانكىسى</h4>
+      <div id="kb-list" style="display:flex; flex-direction:column; gap:3px;"></div>
+      <div style="margin-top:5px; text-align:center;">
+        <button class="qb" style="width:100%; border-radius:12px; justify-content:center; padding:6px; color:var(--gold2); border-color:var(--gold);" onclick="showAddKbModal()">＋ يېڭى بىلىم قوشۇش</button>
+      </div>
+    </div>
+    <div class="psec">
+      <h4>سىزما قۇراللىرى</h4>
+      <button class="qb danger" onclick="clearAll()">🗑 سىزمىلارنى ئۆچۈر</button>
+      <button class="qb danger" onclick="clearAnnotations()">📝 ئىزاھلارنى ئۆچۈر</button>
+      <button class="qb" onclick="saveImg()">💾 رەسىم ساقلا</button>
+    </div>
+  </div>
+  <div id="brand">بۇ قۇرالنى <span>بىلىك تەتقىقات مەركىزى</span> ياساپ چىقاردى</div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div id="rp" class="closed">
+  <div id="rtab" onclick="toggleRP()">
+    <span class="arr">▶</span><span class="plbl">ئامبار</span>
+  </div>
+  <div id="ph" style="border-bottom:1px solid var(--bdr); padding-bottom:0;">
+    <h3 style="padding:12px 12px 3px 12px;font-size:.88em;color:var(--gold2);margin-bottom:9px;">🏛 ئەقىل ئامبارلىرى</h3>
+    <div style="padding:0 12px 12px;">
+      <select id="tt-select" class="fsel" style="width:100%;height:32px;font-size:.85em;" onchange="loadThinkTank(this.value)">
+         <option value="" disabled selected>‹ ئەقىل ئامبىرى تاللاڭ ›</option>
+         <option value="RANDCorporation">RAND Corporation</option>
+         <option value="CSIS">CSIS</option>
+         <option value="BrookingsInst">Brookings Institution</option>
+         <option value="ForeignAffairs">Foreign Affairs</option>
+         <option value="ForeignPolicy">Foreign Policy</option>
+         <option value="CFR_org">Council on Foreign Relations</option>
+         <option value="ChathamHouse">Chatham House</option>
+         <option value="CarnegieEndow">Carnegie Endowment</option>
+         <option value="IISS_org">IISS</option>
+         <option value="Heritage">Heritage Foundation</option>
+      </select>
+    </div>
+  </div>
+  <div id="tt-body" style="flex:1;overflow-y:auto;background:#fff;border-radius:0 0 0 10px;">
+    <div id="tw-container" style="padding:10px;color:#333;font-size:0.85em;text-align:center;margin-top:20px;">
+      يۇقىرىدىن بىر ئەقىل ئامبىرىنى تاللاپ ئۇلارنىڭ تۋىتتېر كۈندىلىكلىرىنى كۆرۈڭ.
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div id="mwrap">
+  <div id="lmap"></div>
+  <div id="cmap"></div>
+  <canvas id="dc"></canvas>
+</div>
+
+<!-- DRAW TOOLBAR -->
+<div id="dtb">
+  <button class="db on" id="dtb-toggle" onclick="toggleDTB()" title="سىزىش قۇراللىرى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button>
+  <div id="dtb-tools" style="display:flex; flex-direction:column; gap:3px;">
+    <div class="dsep"></div>
+    <button class="db on" id="dt-pan" onclick="setMode(null)" title="يۆتكەش (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg></button>
+    <div class="dsep"></div>
+    <button class="db" id="dt-pen" onclick="setMode('pen')" title="قەلەم [1]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+    <button class="db" id="dt-arrow" onclick="setMode('arrow')" title="ئوق سىزىق [2]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+    <button class="db" id="dt-rect" onclick="setMode('rect')" title="تۆت تەرەپلىك [3]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+    <button class="db" id="dt-line" onclick="setMode('line')" title="تۈز سىزىق [4]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="20" x2="20" y2="4"/></svg></button>
+    <button class="db" id="dt-poly" onclick="setMode('poly')" title="كۆپ تەرەپلىك [5]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/></svg></button>
+    <button class="db" id="dt-tri" onclick="setMode('tri')" title="ئۈچبۇلۇڭ [8]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3L2 21h20z"/></svg></button>
+    <div class="dsep"></div>
+    <button class="db" id="dt-text" onclick="setMode('text')" title="خەت رامكا [6] — خەرىتىدىن چىكىڭ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></button>
+    <button class="db" id="dt-callout" onclick="setMode('callout')" title="ئىزاھ رامكىسى [7] — خەرىتىدىن چىكىڭ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+    <div class="dsep"></div>
+    <button class="db" id="dt-fill" onclick="toggleFill()" title="تولدۇرۇش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11c0 5.55-7 11-7 11S5 16.55 5 11a7 7 0 0 1 14 0z"/><circle cx="12" cy="11" r="3" fill="currentColor"/></svg></button>
+    <div style="position:relative">
+      <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg></button>
+      <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)"></div>
+    </div>
+    <div id="cbtn" title="رەڭ تاللا"><div id="cprev"></div><input type="color" id="cinput" value="#ef4444" oninput="setCol(this.value)"></div>
+    <div class="dsep"></div>
+    <button class="db" id="dt-erase" onclick="setMode('erase')" title="ئۆچۈرگۈچ [E]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l14 14"/><path d="M21 5l-8 8"/><rect x="2" y="14" width="8" height="8" rx="1"/></svg></button>
+    <button class="db del" onclick="clearAll()" title="ھەممىنى ئۆچۈر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+  </div>
+</div>
+
+<!-- TEXT FORMAT BAR -->
+<div id="tfb">
+  <select class="fsel" id="ff" onchange="applyFmt()">
+    <option value="'UKIJ','Arial'">UKIJ ئۇيغۇرچە</option>
+    <option value="Arial,sans-serif">Arial</option>
+    <option value="'Times New Roman',serif">Times New Roman</option>
+  </select>
+  <select class="fsel" id="fs" onchange="applyFmt()">
+    <option value="14">14</option><option value="16">16</option>
+    <option value="18" selected>18</option><option value="22">22</option>
+    <option value="26">26</option><option value="32">32</option><option value="40">40</option>
+  </select>
+  <select class="fsel" id="flh" onchange="applyFmt()">
+    <option value="1.4">1.4×</option><option value="1.6">1.6×</option>
+    <option value="1.8" selected>1.8×</option><option value="2.2">2.2×</option>
+  </select>
+  <div class="tsep"></div>
+  <button class="fb on" id="fa-r" onclick="setTxtAlign('right')">ئوڭ</button>
+  <button class="fb" id="fa-c" onclick="setTxtAlign('center')">ئوتتۇرا</button>
+  <button class="fb" id="fa-j" onclick="setTxtAlign('justify')">ئىككى تەرەپ</button>
+  <div class="tsep"></div>
+  <button class="fb" id="fa-in" onclick="toggleIndent()">⇥ ئابزاس</button>
+  <button class="fb" id="fa-ul" onclick="toggleUL()" style="text-decoration:underline">U</button>
+  <button class="fb" id="fa-st" onclick="toggleStrike()" style="text-decoration:line-through">S</button>
+  <div class="tsep"></div>
+  <div style="position:relative">
+    <button class="fb" onclick="document.getElementById('tcinput').click()">🎨 رەڭ</button>
+    <input type="color" id="tcinput" value="#ffffff" oninput="setTxtCol(this.value)" style="position:absolute;opacity:0;width:0;height:0;">
+  </div>
+</div>
+
+<!-- CALLOUT STYLE BAR -->
+<div id="cstyle-bar">
+  <span style="font-size:.75em;color:var(--muted);">رامكا تۈرى:</span>
+  <button class="csb on" id="cs-gold" onclick="setCalloutStyle('gold')">🟡 ئاددىي</button>
+  <button class="csb" id="cs-info" onclick="setCalloutStyle('info')">🔵 ئۇچۇر</button>
+  <button class="csb" id="cs-warn" onclick="setCalloutStyle('warn')">🟠 دىققەت</button>
+  <button class="csb" id="cs-red"  onclick="setCalloutStyle('red')">🔴 مۇھىم</button>
+  <div style="font-size:.72em;color:var(--muted);border-right:1px solid var(--bdr);padding-right:8px;margin-right:4px;">— خەرىتىدىن چىكىڭ</div>
+</div>
+
+<!-- RECORDING BAR -->
+<div id="recbar">
+  <div class="rdot"></div>
+  ۋىديو يازىلىۋاتىدۇ — <span id="rtimer">00:00</span>
+  <button class="rsbtn" onclick="stopRec()">توختات ◼</button>
+</div>
+
+<!-- TIMER BAR -->
+<div id="timerbar">
+  <span style="font-size:.73em;color:var(--muted);">ۋاقىت:</span>
+  <span id="timerdisp">00:00</span>
+  <button class="tbarbtn" onclick="timerStart()">▶</button>
+  <button class="tbarbtn" onclick="timerPause()">⏸</button>
+  <button class="tbarbtn" onclick="timerReset()">⟳</button>
+  <button class="tbarbtn" onclick="document.getElementById('timerbar').classList.remove('show');timerReset();">✕</button>
+</div>
+
+<!-- MODAL -->
+<div id="modal-bg" class="modal-bg" onclick="closeModal()"></div>
+<div id="modal-box" class="modal-box">
+  <div class="modal-head">
+    <span id="modal-title">ماۋزۇ</span>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <div id="modal-body" class="modal-body"></div>
+</div>
+
+<script>
+'use strict';
+
+// ============================================================
+// STATE
+// ============================================================
+let map = null, globeInst = null, tileLayer = null, ctx = null;
+let mapMode = '2d', labelsOn = true, panelOpen = true;
+let drawMode = null, isDrawing = false, fillOn = false;
+let drawColor = '#ef4444', strokeW = 3;
+let startX = 0, startY = 0, lastSnap = null, polyPts = [];
+let snapStack = [], redoStack = [];
+let activeEl = null, textBoxes = [], callouts = [];
+let textMapHandler = null;
+let curCalloutStyle = 'gold';
+let mediaRec = null, mediaStream = null, recTimer = null, recSecs = 0, recChunks = [];
+let timerIntvl = null, timerSecs = 0, timerRunning = false;
+let fmtSt = { font:"'UKIJ','Arial'", size:'18', lh:'1.8', align:'right', indent:false, ul:false, strike:false, col:'#ffffff' };
+let isDarkMap = true;
+
+// ============================================================
+// TILE LAYERS
+// ============================================================
+const TILES = {
+  dark:      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light:     'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  street:    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  topo:      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+};
+
+// ============================================================
+// LABELS DATA
+// ============================================================
+const LABELS = [
+  {id:'nam',n:'شىمالى ئامېرىكا',lat:55,lng:-100,t:'continent',mn:2,mx:3},
+  {id:'sam',n:'جەنۇبى ئامېرىكا',lat:-15,lng:-58,t:'continent',mn:2,mx:3},
+  {id:'eur',n:'ياۋروپا',lat:54,lng:15,t:'continent',mn:2,mx:3},
+  {id:'afr',n:'ئافرىقا',lat:5,lng:22,t:'continent',mn:2,mx:3},
+  {id:'asi',n:'ئاسىيا',lat:45,lng:85,t:'continent',mn:2,mx:3},
+  {id:'oce',n:'ئوكيانىيە',lat:-25,lng:140,t:'continent',mn:2,mx:4},
+  {id:'usa',n:'ئامېرىكا',lat:38,lng:-97,t:'country',mn:3},
+  {id:'can',n:'كانادا',lat:56,lng:-100,t:'country',mn:3},
+  {id:'mex',n:'مېكسىكا',lat:23,lng:-102,t:'country',mn:4},
+  {id:'bra',n:'بىرازىلىيە',lat:-10,lng:-53,t:'country',mn:3},
+  {id:'arg',n:'ئارگىنتىنا',lat:-36,lng:-65,t:'country',mn:4},
+  {id:'uk',n:'ئەنگلىيە',lat:54,lng:-3,t:'country',mn:4},
+  {id:'fra',n:'فرانسىيە',lat:46,lng:2,t:'country',mn:4},
+  {id:'deu',n:'گېرمانىيە',lat:51,lng:10,t:'country',mn:4},
+  {id:'ita',n:'ئىتالىيە',lat:42,lng:12,t:'country',mn:4},
+  {id:'esp',n:'ئىسپانىيە',lat:40,lng:-4,t:'country',mn:4},
+  {id:'pol',n:'پولشا',lat:52,lng:20,t:'country',mn:5},
+  {id:'ukr',n:'ئۇكرائىنا',lat:49,lng:31,t:'country',mn:4},
+  {id:'rus',n:'رۇسسىيە',lat:62,lng:100,t:'country',mn:2},
+  {id:'tur',n:'تۈركىيە',lat:39,lng:35,t:'country',mn:4},
+  {id:'irn',n:'ئىران',lat:32,lng:53,t:'country',mn:4},
+  {id:'irq',n:'ئىراق',lat:33,lng:43,t:'country',mn:5},
+  {id:'syr',n:'سۈرىيە',lat:35,lng:38,t:'country',mn:5},
+  {id:'sau',n:'سەئۇدى ئەرەبستان',lat:24,lng:45,t:'country',mn:4},
+  {id:'isr',n:'ئىسرائىلىيە',lat:31.3,lng:35,t:'country',mn:6},
+  {id:'pse',n:'پەلەستىن',lat:31.9,lng:35.2,t:'country',mn:7},
+  {id:'jor',n:'ئۇردۇن',lat:31.2,lng:36.5,t:'country',mn:6},
+  {id:'lbn',n:'لىۋان',lat:33.9,lng:35.5,t:'country',mn:7},
+  {id:'yem',n:'يەمەن',lat:15,lng:48,t:'country',mn:5},
+  {id:'qat',n:'قەتەر',lat:25.3,lng:51.2,t:'country',mn:7},
+  {id:'uae',n:'ئىمارات',lat:24.5,lng:54.4,t:'country',mn:6},
+  {id:'egy',n:'مىسىر',lat:26,lng:30,t:'country',mn:4},
+  {id:'lby',n:'لىبىيە',lat:27,lng:17,t:'country',mn:5},
+  {id:'sdn',n:'سۇدان',lat:15,lng:32,t:'country',mn:5},
+  {id:'eth',n:'ئېتيوپىيە',lat:9,lng:40,t:'country',mn:5},
+  {id:'nga',n:'نىگېرىيە',lat:10,lng:8,t:'country',mn:5},
+  {id:'zaf',n:'جەنۇبى ئافرىقا',lat:-29,lng:25,t:'country',mn:4},
+  {id:'mar',n:'ماروككو',lat:32,lng:-6,t:'country',mn:5},
+  {id:'dza',n:'جازائىر',lat:28,lng:3,t:'country',mn:5},
+  {id:'chn',n:'خىتاي',lat:35,lng:104,t:'country',mn:3},
+  {id:'xjg',n:'شەرقىي تۈركىستان',lat:42,lng:86,t:'region',mn:5},
+  {id:'tib',n:'تىبەت',lat:31,lng:90,t:'region',mn:5},
+  {id:'twn',n:'تايۋان',lat:23.7,lng:121,t:'country',mn:6},
+  {id:'ind',n:'ھىندىستان',lat:20,lng:77,t:'country',mn:3},
+  {id:'pak',n:'پاكىستان',lat:30,lng:70,t:'country',mn:4},
+  {id:'afg',n:'ئافغانستان',lat:34,lng:67,t:'country',mn:5},
+  {id:'jpn',n:'ياپونىيە',lat:37,lng:137,t:'country',mn:4},
+  {id:'prk',n:'شىمالى كورىيە',lat:40,lng:127,t:'country',mn:5},
+  {id:'kor',n:'جەنۇبى كورىيە',lat:36,lng:128,t:'country',mn:5},
+  {id:'aus',n:'ئاۋسترالىيە',lat:-27,lng:133,t:'country',mn:3},
+  {id:'idn',n:'ئىندونېزىيە',lat:-5,lng:118,t:'country',mn:4},
+  {id:'kaz',n:'قازاقىستان',lat:48,lng:68,t:'country',mn:4},
+  {id:'uzb',n:'ئۆزبېكىستان',lat:41,lng:64,t:'country',mn:5},
+  {id:'kgz',n:'قىرغىزىستان',lat:41,lng:75,t:'country',mn:5},
+  {id:'tjk',n:'تاجىكىستان',lat:39,lng:71,t:'country',mn:6},
+  {id:'tkm',n:'تۈركمەنىستان',lat:39,lng:59,t:'country',mn:5},
+  {id:'was',n:'ۋاشىڭتون',lat:38.91,lng:-77.04,t:'city',mn:5},
+  {id:'nyc',n:'نيۇيورك',lat:40.71,lng:-74,t:'city',mn:5},
+  {id:'lon',n:'لوندون',lat:51.51,lng:-0.13,t:'city',mn:5},
+  {id:'par',n:'پارىژ',lat:48.86,lng:2.35,t:'city',mn:5},
+  {id:'ber',n:'بىرلىن',lat:52.52,lng:13.41,t:'city',mn:5},
+  {id:'mos',n:'مۇسكۋا',lat:55.75,lng:37.62,t:'city',mn:5},
+  {id:'kyi',n:'كىيف',lat:50.45,lng:30.52,t:'city',mn:5},
+  {id:'ank',n:'ئانقارا',lat:39.93,lng:32.86,t:'city',mn:5},
+  {id:'ist',n:'ئىستانبۇل',lat:41.01,lng:28.97,t:'city',mn:5},
+  {id:'teh',n:'تەھران',lat:35.69,lng:51.4,t:'city',mn:5},
+  {id:'bgd',n:'بەغداد',lat:33.34,lng:44.4,t:'city',mn:5},
+  {id:'dam',n:'دىمەشق',lat:33.51,lng:36.3,t:'city',mn:5},
+  {id:'jer',n:'قۇددۇس',lat:31.78,lng:35.22,t:'city',mn:6},
+  {id:'gaz',n:'غەززە',lat:31.5,lng:34.47,t:'city',mn:6},
+  {id:'riy',n:'رىياد',lat:24.69,lng:46.72,t:'city',mn:5},
+  {id:'cai',n:'قاھىرە',lat:30.06,lng:31.25,t:'city',mn:5},
+  {id:'bei',n:'پىكىن',lat:39.9,lng:116.4,t:'city',mn:5},
+  {id:'uru',n:'ئۈرۈمچى',lat:43.8,lng:87.6,t:'city',mn:5},
+  {id:'kas',n:'قەشقەر',lat:39.47,lng:75.99,t:'city',mn:6},
+  {id:'aqt',n:'ئاقسۇ',lat:41.17,lng:80.25,t:'city',mn:6},
+  {id:'hot',n:'خوتەن',lat:37.11,lng:79.92,t:'city',mn:6},
+  {id:'ghl',n:'غۇلجا',lat:43.92,lng:81.33,t:'city',mn:6},
+  {id:'krl',n:'كورلا',lat:41.73,lng:86.15,t:'city',mn:6},
+  {id:'trp',n:'تۇرپان',lat:42.95,lng:89.18,t:'city',mn:6},
+  {id:'kum',n:'قۇمۇل',lat:42.83,lng:93.51,t:'city',mn:6},
+  {id:'atr',n:'ئاتۇش',lat:39.71,lng:76.17,t:'city',mn:6},
+  {id:'yrk',n:'يەكەن',lat:38.41,lng:77.24,t:'city',mn:6},
+  {id:'kch',n:'كۇچار',lat:41.71,lng:82.93,t:'city',mn:6},
+  {id:'chc',n:'چۆچەك',lat:46.75,lng:82.97,t:'city',mn:6},
+  {id:'alt',n:'ئالتاي',lat:47.84,lng:88.14,t:'city',mn:6},
+  {id:'qrm',n:'قاراماي',lat:45.60,lng:84.87,t:'city',mn:6},
+  {id:'del',n:'يېڭى دىلى',lat:28.61,lng:77.21,t:'city',mn:5},
+  {id:'tok',n:'توكيو',lat:35.68,lng:139.65,t:'city',mn:5},
+  {id:'seo',n:'سائول',lat:37.57,lng:126.98,t:'city',mn:5},
+  {id:'syd',n:'سىدنى',lat:-33.87,lng:151.21,t:'city',mn:5},
+  {id:'pat',n:'ئارەم ئوكيانى',lat:0,lng:-140,t:'ocean',mn:2,mx:3},
+  {id:'aat',n:'ئاتلانتىك ئوكيانى',lat:0,lng:-30,t:'ocean',mn:2,mx:3},
+  {id:'io',n:'ھىندىستان ئوكيانى',lat:-20,lng:75,t:'ocean',mn:2,mx:3},
+  {id:'arc',n:'شىمالى مۇز ئوكيانى',lat:82,lng:0,t:'ocean',mn:2,mx:4},
+  {id:'med',n:'ئوتتۇرا دېڭىز',lat:35.5,lng:18,t:'sea',mn:3,mx:6},
+  {id:'bls',n:'قارا دېڭىز',lat:43,lng:34,t:'sea',mn:4,mx:7},
+  {id:'res',n:'قىزىل دېڭىز',lat:20,lng:38,t:'sea',mn:4,mx:7},
+  {id:'peg',n:'پارسى ئۇلۇقى',lat:27,lng:52,t:'sea',mn:4,mx:7},
+  {id:'cas',n:'خاسپى دېڭىزى',lat:42,lng:51,t:'sea',mn:4,mx:7},
+  {id:'scs',n:'جەنۇبى خىتاي دېڭىزى',lat:12,lng:113,t:'sea',mn:4,mx:6}
+];
+
+const QUICK = [
+  {n:'شەرقىي تۈركىستان',lat:42,lng:86,z:6},
+  {n:'غەززە',lat:31.5,lng:34.47,z:9},
+  {n:'ئۇكرائىنا',lat:49,lng:31,z:6},
+  {n:'تايۋان بوغازى',lat:23.8,lng:121,z:7},
+  {n:'ئوتتۇرا شەرق',lat:30,lng:42,z:5},
+  {n:'خىتاي',lat:35,lng:104,z:4},
+  {n:'ئوتتۇرا ئاسىيا',lat:42,lng:65,z:5},
+  {n:'ياۋروپا',lat:50,lng:15,z:4},
+  {n:'رۇسسىيە',lat:62,lng:90,z:3},
+  {n:'ئافرىقا',lat:5,lng:22,z:3},
+  {n:'ئامېرىكا',lat:38,lng:-97,z:4},
+  {n:'دۇنيا',lat:20,lng:20,z:2}
+];
+
+const HOTSPOTS = [
+  {n:'🔴 شەرقىي تۈركىستان',lat:43.8,lng:87.6,z:7,d:'ئۇيغۇر مەسىلىسى'},
+  {n:'🔴 غەززە ئۇرۇشى',lat:31.5,lng:34.47,z:9,d:'ئىسرائىل–غەززە 2023–'},
+  {n:'🔴 ئۇكرائىنا ئۇرۇشى',lat:49,lng:31,z:6,d:'رۇسسىيە–ئۇكرائىنا 2022–'},
+  {n:'🔴 تايۋان بوغازى',lat:23.8,lng:121,z:7,d:'خىتاي–تايۋان كەشكۈلى'},
+  {n:'🟡 سۈرىيە',lat:35,lng:38,z:6,d:'سۈرىيە تەبدىلات دەۋرى'},
+  {n:'🟡 ئوتتۇرا شەرق',lat:30,lng:42,z:5,d:'ئوتتۇرا شەرق ئومۇمىي ئەھۋال'},
+  {n:'🟡 ئوتتۇرا ئاسىيا',lat:42,lng:65,z:5,d:'قازاقىستان، ئۆزبېكىستان…'},
+  {n:'🟢 ياۋروپا ئىتتىپاقى',lat:50,lng:15,z:4,d:'NATO ۋە EU كېڭىيىشى'},
+  {n:'🟢 ئافرىقا',lat:5,lng:22,z:3,d:'ئافرىقا جۇغراپىيىلىك سىياسىتى'},
+  {n:'🌊 مالاكە بوغازى',lat:2.5,lng:103,z:7,d:'دۇنيانىڭ ئەڭ ئالدىراش دېڭىز يولى'},
+  {n:'🌊 ھومۇز بوغازى',lat:26.6,lng:56.5,z:7,d:'نېفىت ئۇلىنىش نۇقتىسى'},
+  {n:'🌊 بابۇلمەندەب',lat:12.6,lng:43.4,z:7,d:'قىزىل دېڭىز كىرىش ئاغزى'},
+  {n:'🌊 سۇۋەيش قانىلى',lat:30.5,lng:32.3,z:7,d:'ياۋروپا–ئاسىيا قىسقا يولى'},
+  {n:'🌊 ئوتتۇرا دېڭىز',lat:35,lng:18,z:4,d:'ئوتتۇرا دېڭىز ئومۇمىي كۆرۈنۈشى'},
+  {n:'🟡 تىبەت',lat:31,lng:90,z:6,d:'تىبەت مەسىلىسى'},
+  {n:'🟡 يەمەن',lat:15,lng:48,z:6,d:'يەمەن مەدەنىي جەڭ'}
+];
+
+// ============================================================
+// MAP INIT
+// ============================================================
+function initMap() {
+  map = L.map('lmap', { center:[30,20], zoom:3, zoomControl:true, attributionControl:false });
+  setLayer('dark', document.querySelector('.ddi'));
+  initCanvas();
+  initLabels();
+  buildQuickList();
+  buildHotspots();
+  map.on('zoomend', updateLblVis);
+}
+
+function setLayer(name, el) {
+  if (tileLayer) map.removeLayer(tileLayer);
+  tileLayer = L.tileLayer(TILES[name] || TILES.dark, { maxZoom:19 });
+  tileLayer.addTo(map);
+  document.querySelectorAll('.ddi').forEach(d => d.classList.remove('on'));
+  if (el) el.classList.add('on');
+  isDarkMap = ['dark','satellite'].includes(name);
+  document.body.classList.toggle('is-light',  !isDarkMap);
+  closeAllDD();
+}
+
+function setMapMode(mode) {
+  mapMode = mode;
+  const lm = document.getElementById('lmap');
+  const cm = document.getElementById('cmap');
+  document.getElementById('btn2d').classList.toggle('on', mode==='2d');
+  document.getElementById('btn3d').classList.toggle('on', mode==='3d');
+  if (mode === '2d') {
+    lm.style.display = ''; cm.style.display = 'none';
+    if(map) setTimeout(() => map.invalidateSize(), 100);
+  } else {
+    lm.style.display = 'none'; cm.style.display = '';
+    initGlobe();
+  }
+}
+
+function setTheme(t) {
+  document.getElementById('btnDay').classList.toggle('on', t==='day');
+  document.getElementById('btnNight').classList.toggle('on', t==='night');
+  setLayer(t==='night' ? 'dark' : 'light', null);
+  document.querySelectorAll('.ddi').forEach((d,i) => d.classList.toggle('on', (t==='night'&&i===0)||(t==='day'&&i===1)));
+}
+
+// ============================================================
+// 3D GLOBE (globe.gl)
+// ============================================================
+async function initGlobe() {
+  if (globeInst) return;
+  const cm = document.getElementById('cmap');
+  cm.innerHTML = `<div id="gloader"><div class="spin"></div><p>3D خەرىتە يۈكلىنىۋاتىدۇ…</p></div>`;
+  try {
+    if (!window.Globe) {
+      await loadScript('https://unpkg.com/globe.gl@2.31.0/dist/globe.gl.min.js');
+    }
+    cm.innerHTML = '';
+    const W = cm.offsetWidth, H = cm.offsetHeight;
+    globeInst = Globe()
+      .width(W).height(H)
+      .globeImageUrl(isDarkMap
+        ? '//unpkg.com/three-globe/example/img/earth-dark.jpg'
+        : '//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      (cm);
+    const c = map ? map.getCenter() : {lat:30,lng:20};
+    globeInst.pointOfView({ lat:c.lat, lng:c.lng, altitude:2.5 }, 1000);
+  } catch(e) {
+    console.error('Globe.gl failed:', e);
+    cm.innerHTML = `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:#06101e;color:#c8a84b;font-size:.9em;"><p>3D خەرىتە يۈكلىنەلمىدى</p><p style="color:#4a6080;font-size:.8em;">ئىنتېرنېت ئۇلىنىشىنى تەكشۈرۈڭ</p><button onclick="setMapMode('2d')" style="padding:6px 16px;border-radius:8px;border:1px solid #c8a84b;background:transparent;color:#f0cc72;cursor:pointer;">2D غا قايت</button></div>`;
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+// ============================================================
+// CANVAS DRAWING
+// ============================================================
+function initCanvas() {
+  const cvs = document.getElementById('dc');
+  const wrap = document.getElementById('mwrap');
+  ctx = cvs.getContext('2d');
+
+  function resize() {
+    const w = wrap.offsetWidth, h = wrap.offsetHeight;
+    const url = (cvs.width > 0 && cvs.height > 0) ? cvs.toDataURL() : null;
+    cvs.width = w; cvs.height = h;
+    if (url) { const im = new Image(); im.onload = () => ctx.drawImage(im,0,0); im.src = url; }
+    snapStack = []; redoStack = [];
+  }
+  resize();
+  new ResizeObserver(resize).observe(wrap);
+
+  cvs.addEventListener('mousedown', onDS);
+  cvs.addEventListener('mousemove', onDM);
+  cvs.addEventListener('mouseup',   onDE);
+  cvs.addEventListener('dblclick',  onDD);
+  cvs.addEventListener('touchstart', e => { e.preventDefault(); onDS(e.touches[0]); }, {passive:false});
+  cvs.addEventListener('touchmove',  e => { e.preventDefault(); onDM(e.touches[0]); }, {passive:false});
+  cvs.addEventListener('touchend',   e => { e.preventDefault(); onDE(e.changedTouches[0]); }, {passive:false});
+}
+
+function getPos(e) {
+  const r = document.getElementById('dc').getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+function getCvs() { return document.getElementById('dc'); }
+function setupCtx() {
+  ctx.strokeStyle = drawColor; ctx.fillStyle = drawColor + '44';
+  ctx.lineWidth = strokeW; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.globalCompositeOperation = 'source-over'; ctx.setLineDash([]);
+}
+function saveSnap() {
+  const c = getCvs();
+  snapStack.push(ctx.getImageData(0,0,c.width,c.height));
+  if (snapStack.length > 40) snapStack.shift();
+  redoStack = [];
+}
+function undoDraw() {
+  if (!snapStack.length) return;
+  const c = getCvs();
+  redoStack.push(ctx.getImageData(0,0,c.width,c.height));
+  ctx.putImageData(snapStack.pop(),0,0);
+}
+function redoDraw() {
+  if (!redoStack.length) return;
+  const c = getCvs();
+  snapStack.push(ctx.getImageData(0,0,c.width,c.height));
+  ctx.putImageData(redoStack.pop(),0,0);
+}
+function clearAll() {
+  saveSnap();
+  const c = getCvs();
+  ctx.clearRect(0,0,c.width,c.height);
+}
+
+function onDS(e) {
+  if (!drawMode) return;
+  const p = getPos(e); startX = p.x; startY = p.y;
+  if (drawMode==='pen'||drawMode==='erase') {
+    isDrawing = true; saveSnap();
+    ctx.beginPath(); ctx.moveTo(startX, startY);
+    if (drawMode==='erase') { ctx.globalCompositeOperation='destination-out'; ctx.lineWidth=strokeW*5; }
+    else setupCtx();
+  } else if (drawMode==='poly') {
+    if (!isDrawing) { isDrawing=true; saveSnap(); polyPts=[{x:startX,y:startY}]; }
+    else { polyPts.push({x:startX,y:startY}); ctx.putImageData(lastSnap,0,0); drawPolyPrev(); }
+    const c=getCvs(); lastSnap=ctx.getImageData(0,0,c.width,c.height);
+  } else {
+    isDrawing = true; saveSnap();
+    const c=getCvs(); lastSnap=ctx.getImageData(0,0,c.width,c.height);
+  }
+}
+function onDM(e) {
+  if (!isDrawing||!drawMode) return;
+  const p = getPos(e);
+  if (drawMode==='pen') { setupCtx(); ctx.lineTo(p.x,p.y); ctx.stroke(); }
+  else if (drawMode==='erase') { ctx.globalCompositeOperation='destination-out'; ctx.lineWidth=strokeW*5; ctx.lineTo(p.x,p.y); ctx.stroke(); }
+  else if (drawMode==='poly') {
+    if (!lastSnap) return;
+    ctx.putImageData(lastSnap,0,0); drawPolyPrev();
+    setupCtx(); ctx.setLineDash([5,4]);
+    const L = polyPts[polyPts.length-1];
+    ctx.beginPath(); ctx.moveTo(L.x,L.y); ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.setLineDash([]);
+  } else { ctx.putImageData(lastSnap,0,0); setupCtx(); drawShape(drawMode,startX,startY,p.x,p.y); }
+}
+function onDE(e) {
+  if (!isDrawing||!drawMode||drawMode==='poly') return;
+  const p = getPos(e);
+  if (drawMode!=='pen'&&drawMode!=='erase') { ctx.putImageData(lastSnap,0,0); setupCtx(); drawShape(drawMode,startX,startY,p.x,p.y); }
+  isDrawing = false; ctx.globalCompositeOperation='source-over'; ctx.setLineDash([]);
+}
+function onDD(e) {
+  if (drawMode!=='poly') return;
+  if (polyPts.length>=2) {
+    ctx.putImageData(lastSnap,0,0); setupCtx();
+    ctx.beginPath(); ctx.moveTo(polyPts[0].x,polyPts[0].y);
+    polyPts.forEach(pt => ctx.lineTo(pt.x,pt.y));
+    ctx.closePath(); if(fillOn) ctx.fill(); ctx.stroke();
+  }
+  isDrawing=false; polyPts=[]; lastSnap=null;
+}
+function drawPolyPrev() {
+  if (!polyPts.length) return;
+  setupCtx(); ctx.beginPath(); ctx.moveTo(polyPts[0].x,polyPts[0].y);
+  polyPts.forEach(p => ctx.lineTo(p.x,p.y)); ctx.stroke();
+  polyPts.forEach(p => { ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fillStyle=drawColor; ctx.fill(); });
+}
+function drawShape(m,x1,y1,x2,y2) {
+  setupCtx(); ctx.beginPath();
+  if (m==='rect') { ctx.rect(x1,y1,x2-x1,y2-y1); if(fillOn) ctx.fill(); ctx.stroke(); }
+  else if (m==='line') { ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); }
+  else if (m==='tri') {
+    ctx.moveTo(x1+(x2-x1)/2, y1); ctx.lineTo(x2, y2); ctx.lineTo(x1, y2); ctx.closePath();
+    if(fillOn) ctx.fill(); ctx.stroke();
+  }
+  else if (m==='arrow') drawArrow(x1,y1,x2,y2);
+}
+function drawArrow(x1,y1,x2,y2) {
+  const ang=Math.atan2(y2-y1,x2-x1), hl=Math.max(18,strokeW*5), ha=Math.PI/6;
+  setupCtx();
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hl*Math.cos(ang-ha), y2-hl*Math.sin(ang-ha));
+  ctx.lineTo(x2-hl*Math.cos(ang+ha), y2-hl*Math.sin(ang+ha));
+  ctx.closePath(); ctx.fillStyle=drawColor; ctx.fill();
+}
+
+// ============================================================
+// DRAW MODE
+// ============================================================
+function setMode(m) {
+  // Remove previous map click handler
+  if (textMapHandler) { map.off('click', textMapHandler); textMapHandler = null; }
+  drawMode = m; isDrawing = false; polyPts = []; lastSnap = null;
+  const cvs = getCvs();
+
+  if (!m) {
+    cvs.classList.remove('draw','erase'); cvs.style.pointerEvents='none';
+    document.getElementById('mwrap').style.cursor='';
+    map?.dragging.enable(); map?.scrollWheelZoom.enable();
+  } else if (m==='text'||m==='callout') {
+    cvs.classList.remove('draw','erase'); cvs.style.pointerEvents='none';
+    document.getElementById('mwrap').style.cursor='crosshair';
+    map?.dragging.enable(); map?.scrollWheelZoom.enable();
+    textMapHandler = (e) => {
+      const cp = map.latLngToContainerPoint(e.latlng);
+      if (m==='text') mkTextBox(cp.x, cp.y);
+      else mkCallout(cp.x, cp.y);
+    };
+    map.on('click', textMapHandler);
+  } else if (m==='erase') {
+    cvs.classList.remove('draw'); cvs.classList.add('erase'); cvs.style.pointerEvents='all';
+    map?.dragging.disable(); map?.scrollWheelZoom.disable();
+  } else {
+    cvs.classList.add('draw'); cvs.classList.remove('erase'); cvs.style.pointerEvents='all';
+    map?.dragging.disable(); map?.scrollWheelZoom.disable();
+  }
+
+  document.querySelectorAll('.db[id^="dt-"]').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById('dt-'+(m||'pan'));
+  if (btn) btn.classList.add('on');
+  document.getElementById('tfb').classList.toggle('show', m==='text');
+  document.getElementById('cstyle-bar').classList.toggle('show', m==='callout');
+}
+
+function toggleFill() { fillOn=!fillOn; document.getElementById('dt-fill').classList.toggle('on',fillOn); }
+function setCol(v) { drawColor=v; document.getElementById('cprev').style.background=v; }
+function setW(v) { strokeW=parseInt(v,10); document.getElementById('wval').textContent=v; }
+function toggleWP() { document.getElementById('wpop').classList.toggle('open'); }
+
+// ============================================================
+// TEXT BOXES
+// ============================================================
+function mkTextBox(x, y) {
+  const wrap = document.getElementById('mwrap');
+  const tb = document.createElement('div');
+  tb.className = 'ugtb'; tb.contentEditable='true'; tb.dir='rtl';
+  tb.style.left=x+'px'; tb.style.top=y+'px';
+  applyFmtEl(tb);
+  makeDrag(tb); wrap.appendChild(tb);
+  setTimeout(() => { tb.focus(); tb.click(); }, 50);
+  activeEl = tb; textBoxes.push(tb);
+}
+function applyFmtEl(el) {
+  el.style.fontFamily = (document.getElementById('ff')||{}).value||fmtSt.font;
+  el.style.fontSize   = ((document.getElementById('fs')||{}).value||fmtSt.size)+'px';
+  el.style.lineHeight = (document.getElementById('flh')||{}).value||fmtSt.lh;
+  el.style.color=fmtSt.col; el.style.textAlign=fmtSt.align;
+  el.style.textDecoration=fmtSt.ul?'underline':fmtSt.strike?'line-through':'none';
+  el.style.textIndent=fmtSt.indent?'2em':'0';
+}
+function applyFmt() { if(activeEl&&activeEl.classList.contains('ugtb')) applyFmtEl(activeEl); }
+function setTxtAlign(a) {
+  fmtSt.align=a;
+  ['r','c','j'].forEach((x,i)=>{ const el=document.getElementById('fa-'+x); if(el) el.classList.toggle('on',['right','center','justify'][i]===a); });
+  if(activeEl) activeEl.style.textAlign=a;
+}
+function toggleIndent(){fmtSt.indent=!fmtSt.indent;document.getElementById('fa-in').classList.toggle('on',fmtSt.indent);if(activeEl)activeEl.style.textIndent=fmtSt.indent?'2em':'0';}
+function toggleUL(){fmtSt.ul=!fmtSt.ul;fmtSt.strike=false;document.getElementById('fa-ul').classList.toggle('on',fmtSt.ul);document.getElementById('fa-st').classList.remove('on');if(activeEl)activeEl.style.textDecoration=fmtSt.ul?'underline':'none';}
+function toggleStrike(){fmtSt.strike=!fmtSt.strike;fmtSt.ul=false;document.getElementById('fa-st').classList.toggle('on',fmtSt.strike);document.getElementById('fa-ul').classList.remove('on');if(activeEl)activeEl.style.textDecoration=fmtSt.strike?'line-through':'none';}
+function setTxtCol(v){fmtSt.col=v;if(activeEl)activeEl.style.color=v;}
+
+// ============================================================
+// CALLOUT (ANNOTATION) BOXES
+// ============================================================
+function setCalloutStyle(s) {
+  curCalloutStyle = s;
+  document.querySelectorAll('.csb').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById('cs-'+s);
+  if (btn) btn.classList.add('on');
+}
+
+function mkCallout(x, y) {
+  const wrap = document.getElementById('mwrap');
+  const box = document.createElement('div');
+  box.className = 'callout' + (curCalloutStyle!=='gold' ? ' '+curCalloutStyle : '');
+  box.style.left = x+'px'; box.style.top = y+'px';
+
+  const del = document.createElement('div');
+  del.className = 'callout-del'; del.textContent = '×';
+  del.onclick = e => { e.stopPropagation(); box.remove(); callouts=callouts.filter(c=>c!==box); };
+
+  const head = document.createElement('div');
+  head.className = 'callout-head'; head.contentEditable='true'; head.dir='rtl';
+  head.textContent = 'ماۋزۇ';
+
+  const body = document.createElement('div');
+  body.className = 'callout-body'; body.contentEditable='true'; body.dir='rtl';
+  body.style.fontFamily="'UKIJ','Arial'";
+  body.textContent = 'چۈشەندۈرۈش ئۇچۇرىنى يازىڭ…';
+
+  box.appendChild(del); box.appendChild(head); box.appendChild(body);
+  makeDrag(box, head); // drag from header only
+  wrap.appendChild(box);
+  callouts.push(box);
+  // Select all text for easy replacement
+  setTimeout(() => { head.focus(); document.execCommand('selectAll'); }, 60);
+}
+
+function clearAnnotations() {
+  textBoxes.forEach(b => b.parentNode?.removeChild(b));
+  callouts.forEach(b => b.parentNode?.removeChild(b));
+  textBoxes = []; callouts = []; activeEl = null;
+}
+
+// ============================================================
+// DRAG
+// ============================================================
+function makeDrag(el, handle) {
+  const h = handle || el;
+  let dr=false, ox=0, oy=0;
+  h.addEventListener('mousedown', e => {
+    if (!handle && document.activeElement===el) return;
+    dr=true; ox=e.clientX-el.offsetLeft; oy=e.clientY-el.offsetTop;
+    el.style.cursor='grabbing'; e.stopPropagation();
+  });
+  document.addEventListener('mousemove', e => { if(!dr) return; el.style.left=(e.clientX-ox)+'px'; el.style.top=(e.clientY-oy)+'px'; });
+  document.addEventListener('mouseup', () => { dr=false; el.style.cursor=handle?'move':'text'; });
+  if (!handle) el.addEventListener('focus', () => { activeEl=el; });
+}
+
+// ============================================================
+// LABELS
+// ============================================================
+function initLabels() {
+  LABELS.forEach(item => {
+    const cls = {city:'city',ocean:'ocean',sea:'ocean',continent:'continent',region:'region'}[item.t]||'country';
+    const icon = L.divIcon({
+      className:'',
+      html:`<span class="ugl ${cls}" id="L${item.id}" ondblclick="editLbl(event,'${item.id}')" title="قوش چىك = ئۆزگەرتىش">${item.n}</span>`,
+      iconSize:[140,22], iconAnchor:[70,11]
+    });
+    L.marker([item.lat,item.lng],{icon,interactive:true,zIndexOffset:item.t==='city'?200:50}).addTo(map);
+  });
+  updateLblVis();
+}
+function updateLblVis() {
+  if(!map) return;
+  const z=map.getZoom();
+  LABELS.forEach(item => {
+    const el=document.getElementById('L'+item.id);
+    if(!el) return;
+    el.style.display=(labelsOn && z>=(item.mn||2) && z<=(item.mx||18))?'':'none';
+  });
+}
+function toggleLabels() {
+  labelsOn=!labelsOn;
+  document.getElementById('btnLbl').classList.toggle('on',labelsOn);
+  updateLblVis();
+}
+function editLbl(e, id) {
+  e.stopPropagation();
+  const el=document.getElementById('L'+id); if(!el) return;
+  const cur=el.textContent.trim();
+  const inp=document.createElement('input');
+  inp.value=cur;
+  inp.style.cssText=`font-family:'UKIJ',Arial;direction:rtl;text-align:center;background:rgba(5,10,22,.92);border:1px solid #c8a84b;border-radius:4px;color:#f0cc72;padding:3px 8px;font-size:inherit;outline:none;width:${Math.max(80,cur.length*13)}px;`;
+  el.textContent=''; el.appendChild(inp); inp.focus(); inp.select();
+  const save=()=>{ el.textContent=inp.value.trim()||cur; };
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',ev=>{ if(ev.key==='Enter'){save();inp.blur();} if(ev.key==='Escape')el.textContent=cur; });
+}
+
+// ============================================================
+// PANEL
+// ============================================================
+function togglePanel() {
+  panelOpen=!panelOpen;
+  document.getElementById('lp').classList.toggle('closed',!panelOpen);
+  document.querySelector('#ptab .arr').textContent=panelOpen?'◀':'▶';
+}
+
+// ============================================================
+// QUICK LOCATIONS
+// ============================================================
+function buildQuickList() {
+  QUICK.forEach(j => addQuickBtn(j, false));
+}
+function addQuickBtn(j, prepend=true) {
+  const c = document.getElementById('qbtns');
+  const b = document.createElement('button');
+  b.className='qb'; b.textContent=j.n;
+  b.title='چىكىڭ: كۆچۈش | ئوڭ چىكىڭ: ئۆچۈر';
+  b.onclick = () => map.flyTo([j.lat,j.lng],j.z,{duration:1.3});
+  b.oncontextmenu = e => { e.preventDefault(); b.remove(); };
+  if (prepend && c.firstChild) c.insertBefore(b, c.firstChild);
+  else c.appendChild(b);
+}
+async function addQuickLoc() {
+  const q=document.getElementById('qaInp').value.trim();
+  if (!q) return;
+  const btn=document.querySelector('.qadd-btn');
+  btn.textContent='ئىزدىنىۋاتىدۇ…'; btn.disabled=true;
+  try {
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`,{headers:{'Accept-Language':'ug,en'}});
+    const data=await r.json();
+    if(data.length) {
+      const item=data[0];
+      const name=item.display_name.split(',')[0];
+      addQuickBtn({n:name, lat:parseFloat(item.lat), lng:parseFloat(item.lon), z:7});
+      map.flyTo([parseFloat(item.lat),parseFloat(item.lon)],7,{duration:1.3});
+      document.getElementById('qaInp').value='';
+    } else { alert('تېپىلمىدى'); }
+  } catch(e) { alert('ئۇلىنىش خاتالىقى'); }
+  finally { btn.textContent='＋ قوش'; btn.disabled=false; }
+}
+
+// ============================================================
+// HOTSPOTS
+// ============================================================
+function buildHotspots() {
+  const c=document.getElementById('hspots');
+  HOTSPOTS.forEach(h => {
+    const b=document.createElement('button');
+    b.className='qb'; b.style.cssText='display:block;margin-bottom:3px;width:100%;text-align:right;padding:5px 9px;';
+    b.textContent=h.n; b.title=h.d;
+    b.onclick=()=>map.flyTo([h.lat,h.lng],h.z,{duration:1.5});
+    c.appendChild(b);
+  });
+}
+
+// ============================================================
+// SEARCH (Nominatim)
+// ============================================================
+async function doSearch() {
+  const q=document.getElementById('sinput').value.trim(); if(!q) return;
+  const res=document.getElementById('sr');
+  res.innerHTML='<div style="color:var(--muted);font-size:.77em;padding:5px;">ئىزدىنىۋاتىدۇ…</div>';
+  try {
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5`,{headers:{'Accept-Language':'en'}});
+    const data=await r.json();
+    res.innerHTML='';
+    if(!data.length){res.innerHTML='<div style="color:var(--muted);font-size:.77em;padding:5px;">تېپىلمىدى</div>';return;}
+    data.forEach(item=>{
+      const d=document.createElement('div'); d.className='sres';
+      d.innerHTML=`<span>📍</span><span style="font-size:.78em">${item.display_name}</span>`;
+      d.onclick=()=>{ map.flyTo([parseFloat(item.lat),parseFloat(item.lon)],8,{duration:1.5}); res.innerHTML=''; document.getElementById('sinput').value=''; };
+      res.appendChild(d);
+    });
+  } catch(e){res.innerHTML='<div style="color:var(--red);font-size:.77em;padding:5px;">خاتالىق يۈز بەردى</div>';}
+}
+
+// ============================================================
+// KNOWLEDGE BASE MODAL
+// ============================================================
+const KNOWLEDGE = {
+  theories: {
+    title: 'ئاساسلىق جۇغراپىيىلىك سىياسەت نەزەرىيەلىرى',
+    content: `
+      <h4>يۈرەك رايون نەزەرىيەسى (Heartland Theory)</h4>
+      <p>خالفورد ماكىندېر تەرىپىدىن ئوتتۇرىغا قويۇلغان. دۇنيانىڭ مەركىزى ئاۋىرو-ئاسىيا چوڭ قۇرۇقلۇقى دەپ قارايدۇ. "شەرقىي ياۋروپانى كونترول قىلغانلار يۈرەك رايونىنى كونترول قىلىدۇ؛ يۈرەك رايونىنى كونترول قىلغانلار دۇنيا ئارالنى كونترول قىلىدۇ؛ دۇنيا ئارالنى كونترول قىلغانلار دۇنيانى كونترول قىلىدۇ."</p>
+      <h4>گىرۋەك رايون نەزەرىيەسى (Rimland Theory)</h4>
+      <p>نىكولاس سپاكمان تەرىپىدىن ئوتتۇرىغا قويۇلغان. ياۋرو-ئاسىيانىڭ قىرغاق رايونلىرىنى (ياۋروپا، ئوتتۇرا شەرق، جەنۇبىي ۋە شەرقىي ئاسىيا سىرتقى گىرۋەكلىرى) كونترول قىلغان دۆلەتنىڭ دۇنياغا خوجا كېلىدىغانلىقىنى تەكىتلەيدۇ.</p>
+      <h4>مەدەنىيەتلەر توقۇنۇشى (Clash of Civilizations)</h4>
+      <p>سامۇئىل خانتىڭتون تەرىپىدىن ئوتتۇرىغا قويۇلغان. كېيىنكى ئەسىردە توقۇنۇشلار ئىدىيە ياكى ئىقتىساد ئەمەس، بەلكى كىشىلەرنىڭ مەدەنىيەت ۋە دىنىي كىملىكى سەۋەبىدىن كېلىپ چىقىدىغانلىقىنى ئىلگىرى سۈرىدۇ.</p>
+      <h4>دېڭىز ھوقۇقى نەزەرىيەسى (Sea Power)</h4>
+      <p>ئالفرېد تايېر ماھان ئوتتۇرىغا قويغان. دېڭىز يوللىرىنى ۋە دۇنيا دېڭىز تىرانسپورتىنى كونترول قىلغان دۆلەتنىڭ دۇنياغا ھۆكۈمرانلىق قىلىدىغانلىقىنى ئىسپاتلايدۇ.</p>
+    `
+  },
+  rules: {
+    title: 'جۇغراپىيىلىك سىياسەتنىڭ 7 قائىدىسى',
+    content: `
+      <ol style="margin-right:20px;line-height:1.8;">
+        <li><strong>1-قائىدە:</strong> دۆلەت مەنپەئەتى ئەڭ ئالىي پىرىنسىپ</li>
+        <li><strong>2-قائىدە:</strong> دوست-دۈشمەن تاللاش مەجبۇرىيەت</li>
+        <li><strong>3-قائىدە:</strong> ھەممىنى قايىل قىلىدىغان كۈچ ــ پۇل ۋە مۇشت</li>
+        <li><strong>4-قائىدە:</strong> جۇغراپىيە – قەۋملەرنىڭ سىياسىي تەقدىرى</li>
+        <li><strong>5-قائىدە:</strong> ئەتىگەن تۇرۇپ قوشناڭغا باق</li>
+        <li><strong>6-قائىدە:</strong> پەن-تېخنىكىنىڭ تەرەققىياتقا تەسىرى</li>
+        <li><strong>7-قائىدە:</strong> يۇمشاق كۈچنىڭ تەسىرىگە سەل قارىماسلىق</li>
+      </ol>
+    `
+  },
+  top10: {
+    title: 'دۇنيادىكى ئالدىنقى 10 دۆلەت',
+    content: `
+      <h4>💰 مىللىي ئىشلەپچىقىرىش دارامىتى (GDP) بويىچە</h4>
+      <p>1. ئامېرىكا<br>2. خىتاي<br>3. گېرمانىيە<br>4. ياپونىيە<br>5. ھىندىستان<br>6. ئەنگلىيە<br>7. فرانسىيە<br>8. ئىتالىيە<br>9. بىرازىلىيە<br>10. كانادا</p>
+      <h4>👥 نوپۇس بويىچە</h4>
+      <p>1. ھىندىستان (1.43 مىليارد)<br>2. خىتاي (1.41 مىليارد)<br>3. ئامېرىكا<br>4. ھىندونېزىيە<br>5. پاكىستان<br>6. نىگېرىيە<br>7. بىرازىلىيە<br>8. بېنگال<br>9. رۇسسىيە<br>10. مېكسىكا</p>
+      <h4>🗺 يەر مەيدانى بويىچە</h4>
+      <p>1. رۇسسىيە<br>2. كانادا<br>3. خىتاي<br>4. ئامېرىكا<br>5. بىرازىلىيە<br>6. ئاۋسترالىيە<br>7. ھىندىستان<br>8. ئارگېنتىنا<br>9. قازاقىستان<br>10. جازائىر</p>
+      <h4>🎭 يۇمشاق كۈچى (Soft Power) بويىچە</h4>
+      <p>1. ئامېرىكا<br>2. ئەنگلىيە<br>3. خىتاي<br>4. ياپونىيە<br>5. گېرمانىيە<br>6. فرانسىيە<br>7. كانادا<br>8. شىۋېتسارىيە<br>9. ئىتالىيە<br>10. ئەرەب بىرلەشمە خەلىپىلىكى</p>
+      <h4>🛢 قېزىلما بايلىق ۋە ئېنېرگىيە سېپىدە ئالدىنقى دۆلەتلەر</h4>
+      <p><strong>نېفىت:</strong> ئامېرىكا, سەئۇدى ئەرەبىستان, رۇسسىيە, كانادا, ئىراق...<br>
+      <strong>تەبىئىي گاز:</strong> ئامېرىكا, رۇسسىيە, ئىران, خىتاي, قەتەر...<br>
+      <strong>ئالتۇن:</strong> خىتاي, ئاۋسترالىيە, رۇسسىيە, كانادا, ئامېرىكا...<br>
+      <strong>ئۇران:</strong> قازاقىستان, كانادا, نامىبىيە, ئاۋسترالىيە, ئۆزبېكىستان...</p>
+    `
+  }
+};
+
+let localKBs = JSON.parse(localStorage.getItem('bilik_kbs') || '{}');
+Object.assign(KNOWLEDGE, localKBs);
+
+function renderKBs() {
+  const c = document.getElementById('kb-list');
+  if(!c) return;
+  c.innerHTML = `
+    <button class="qb" style="display:block;width:100%;text-align:right;" onclick="showModal('theories')">نەزەرىيەلەر</button>
+    <button class="qb" style="display:block;width:100%;text-align:right;" onclick="showModal('rules')">7 قائىدە</button>
+    <button class="qb" style="display:block;width:100%;text-align:right;" onclick="showModal('top10')">ئالدىنقى 10 دۆلەت</button>
+  `;
+  for(let k in localKBs) {
+    const btn = document.createElement('button');
+    btn.className = 'qb';
+    btn.style.cssText = 'display:block;width:100%;text-align:right;position:relative;';
+    btn.innerHTML = `<span>${localKBs[k].title}</span> <span class="kb-del" style="position:absolute;left:8px;top:4px;color:var(--red);font-size:1.1em;" onclick="event.stopPropagation();deleteKb('${k}')">×</span>`;
+    btn.onclick = () => showModal(k);
+    c.appendChild(btn);
+  }
+}
+
+function deleteKb(k) {
+  if(confirm('بۇ بىلىمنى ئۆچۈرەمسىز؟')) {
+    delete localKBs[k];
+    localStorage.setItem('bilik_kbs', JSON.stringify(localKBs));
+    delete KNOWLEDGE[k];
+    renderKBs();
+  }
+}
+
+function showAddKbModal() {
+  document.getElementById('modal-title').textContent = 'يېڭى بىلىم قوشۇش';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:5px;">
+      <input type="text" id="addkb-title" placeholder="بىلىم ماۋزۇسى..." style="padding:10px;border-radius:8px;border:1px solid var(--bdr);background:var(--glass);color:var(--txt);font-family:'UKIJ','Segoe UI';outline:none;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--bdr)'">
+      <textarea id="addkb-content" rows="8" placeholder="بىلىم مەزمۇنى (HTML كودلا قوللايدۇ)..." style="padding:10px;border-radius:8px;border:1px solid var(--bdr);background:var(--glass);color:var(--txt);font-family:'UKIJ','Segoe UI';outline:none;resize:vertical;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button onclick="closeModal()" style="padding:8px 16px;background:var(--glass);color:var(--txt);border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-family:'UKIJ';">بىكار قىلىش</button>
+        <button onclick="saveNewKb()" style="padding:8px 24px;background:rgba(200,168,75,.2);color:var(--gold2);border:1px solid var(--gold);border-radius:8px;cursor:pointer;font-family:'UKIJ';">ساقلاش</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-bg').style.display='block';
+  document.getElementById('modal-box').style.display='flex';
+}
+
+function saveNewKb() {
+  const t = document.getElementById('addkb-title').value.trim();
+  const c = document.getElementById('addkb-content').value.trim();
+  if(!t || !c) return alert('ماۋزۇ بىلەن مەزمۇننى تولدۇرۇڭ!');
+  const k = 'kb_' + Date.now();
+  localKBs[k] = { title: t, content: c.replace(/\n/g, '<br>') };
+  localStorage.setItem('bilik_kbs', JSON.stringify(localKBs));
+  KNOWLEDGE[k] = localKBs[k];
+  renderKBs();
+  closeModal();
+}
+
+function showModal(k) {
+  const d=KNOWLEDGE[k]; if(!d) return;
+  document.getElementById('modal-title').textContent=d.title;
+  document.getElementById('modal-body').innerHTML=d.content;
+  document.getElementById('modal-bg').style.display='block';
+  document.getElementById('modal-box').style.display='flex';
+}
+function closeModal() {
+  document.getElementById('modal-bg').style.display='none';
+  document.getElementById('modal-box').style.display='none';
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function toggleTimer() {
+  const bar=document.getElementById('timerbar');
+  bar.classList.toggle('show');
+}
+function timerStart() {
+  if(timerRunning) return;
+  timerRunning=true;
+  timerIntvl=setInterval(()=>{
+    timerSecs++;
+    const m=String(Math.floor(timerSecs/60)).padStart(2,'0');
+    const s=String(timerSecs%60).padStart(2,'0');
+    document.getElementById('timerdisp').textContent=m+':'+s;
+  },1000);
+}
+function timerPause() { timerRunning=false; clearInterval(timerIntvl); }
+function timerReset() { timerPause(); timerSecs=0; document.getElementById('timerdisp').textContent='00:00'; }
+
+// ============================================================
+// SCREEN RECORDING
+// ============================================================
+async function toggleRecord() {
+  if(mediaRec&&mediaRec.state==='recording') stopRec(); else startRec();
+}
+async function startRec() {
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      alert('بۇ بىراۋزىر ۋىديوغا ئالىشنى قوللىمايدۇ. Edge ياكى Chrome نى ئىشلىتىڭ.');
+      return;
+    }
+    mediaStream = await navigator.mediaDevices.getDisplayMedia({ video:{frameRate:30}, audio:true });
+    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+    recChunks = [];
+    mediaRec = new MediaRecorder(mediaStream,{mimeType:mime});
+    mediaRec.ondataavailable = e=>{ if(e.data.size>0) recChunks.push(e.data); };
+    mediaRec.onstop = ()=>{
+      const blob=new Blob(recChunks,{type:'video/webm'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download='bilik-geo-'+Date.now()+'.webm'; a.click();
+      document.getElementById('btnRec').classList.remove('on');
+      document.getElementById('rTxt').textContent='ۋىديوغا ئال';
+      document.getElementById('recbar').classList.remove('show');
+      clearInterval(recTimer); recSecs=0;
+    };
+    mediaStream.getTracks()[0].onended = stopRec;
+    mediaRec.start(500);
+    document.getElementById('btnRec').classList.add('on');
+    document.getElementById('rTxt').textContent='توختات ◼';
+    document.getElementById('recbar').classList.add('show');
+    recSecs=0;
+    recTimer=setInterval(()=>{
+      recSecs++;
+      const m=String(~~(recSecs/60)).padStart(2,'0'), s=String(recSecs%60).padStart(2,'0');
+      document.getElementById('rtimer').textContent=m+':'+s;
+    },1000);
+  } catch(e) {
+    console.error('Recording:',e);
+    if(e.name==='NotAllowedError') alert('ۋىديوغا ئالىشقا رۇخسەت بەرمىدى. تور كۆرگۈچ رۇخسىتىنى تەكشۈرۈڭ.');
+    else alert('ۋىديوغا ئالىش باشلانمىدى: '+e.message);
+  }
+}
+function stopRec() {
+  if(mediaRec&&mediaRec.state!=='inactive') mediaRec.stop();
+  mediaStream?.getTracks().forEach(t=>t.stop());
+  mediaStream=null; clearInterval(recTimer);
+}
+
+// ============================================================
+// SAVE IMAGE
+// ============================================================
+function saveImg() {
+  const a=document.createElement('a');
+  a.download='bilik-geo-'+Date.now()+'.png';
+  a.href=getCvs().toDataURL('image/png'); a.click();
+}
+
+// ============================================================
+// UI TOGGLES (DTB, RP, DD)
+// ============================================================
+let rpOpen = false;
+function toggleRP() {
+  rpOpen = !rpOpen;
+  document.getElementById('rp').classList.toggle('closed', !rpOpen);
+  document.querySelector('#rtab .arr').textContent = rpOpen ? '▶' : '◀';
+}
+
+function loadThinkTank(handle) {
+  if(!handle) return;
+  const c = document.getElementById('tw-container');
+  c.innerHTML = '<div style="margin-top:20px;text-align:center;">يۈكلىنىۋاتىدۇ...</div>';
+  
+  const a = document.createElement('a');
+  a.className = 'twitter-timeline';
+  a.setAttribute('data-theme', 'light');
+  a.href = 'https://twitter.com/' + handle + '?ref_src=twsrc%5Etfw';
+  a.textContent = 'Tweets by ' + handle;
+  
+  setTimeout(() => {
+    c.innerHTML = '';
+    c.appendChild(a);
+    if (window.twttr && window.twttr.widgets) {
+      window.twttr.widgets.load(c);
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://platform.twitter.com/widgets.js';
+      s.charset = 'utf-8';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }, 100);
+}
+
+function toggleDTB() {
+  const tools = document.getElementById('dtb-tools');
+  const btn = document.getElementById('dtb-toggle');
+  if(tools.style.display === 'none') {
+    tools.style.display = 'flex';
+    btn.classList.add('on');
+  } else {
+    tools.style.display = 'none';
+    btn.classList.remove('on');
+  }
+}
+
+function toggleDD(id) {
+  const el=document.getElementById(id), was=el.classList.contains('open');
+  closeAllDD(); if(!was) el.classList.add('open');
+}
+function closeAllDD() { document.querySelectorAll('.ddm').forEach(d=>d.classList.remove('open')); }
+document.addEventListener('click', e=>{ if(!e.target.closest('.ddw')) closeAllDD(); if(!e.target.closest('#dtb')) document.getElementById('wpop').classList.remove('open'); });
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', e=>{
+  const tag=document.activeElement.tagName.toLowerCase();
+  const isEditing=tag==='input'||tag==='textarea'||document.activeElement.contentEditable==='true';
+  if(isEditing && e.key!=='Escape') return;
+  if(e.ctrlKey&&e.key==='z'){e.preventDefault();undoDraw();}
+  if(e.ctrlKey&&e.key==='y'){e.preventDefault();redoDraw();}
+  if(e.ctrlKey&&e.key==='s'){e.preventDefault();saveImg();}
+  if(e.key==='Escape'){setMode(null);closeAllDD();closeModal();}
+  if(e.key==='1') setMode('pen');
+  if(e.key==='2') setMode('arrow');
+  if(e.key==='3') setMode('rect');
+  if(e.key==='4') setMode('line');
+  if(e.key==='5') setMode('poly');
+  if(e.key==='6') setMode('text');
+  if(e.key==='7') setMode('callout');
+  if(e.key==='8') setMode('tri');
+  if(e.key==='e') setMode('erase');
+  if(e.key==='f'&&e.ctrlKey){e.preventDefault();document.documentElement.requestFullscreen?.();}
+});
+
+// ============================================================
+// BOOT
+// ============================================================
+window.addEventListener('load', ()=>{
+  setCol('#ef4444');
+  initMap();
+  document.getElementById('fa-r')?.classList.add('on');
+  document.getElementById('cs-gold')?.classList.add('on');
+  renderKBs();
+});
+</script>
+</body>
+</html>
