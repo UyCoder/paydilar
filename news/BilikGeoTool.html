@@ -150,7 +150,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'UKIJ','Segoe UI',s
 #dtb{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1500;
   background:rgba(5,10,22,.97);border:1px solid rgba(200,168,75,.28);border-radius:15px;
   padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;
-  box-shadow:var(--sh);backdrop-filter:blur(15px);}
+  box-shadow:var(--sh);backdrop-filter:blur(15px);transition:var(--tr);}
+#dtb.collapsed{top:var(--th);transform:translateY(15px);}
 .db{width:37px;height:37px;border-radius:8px;border:1px solid var(--bdr);
   background:var(--glass);color:var(--txt2);cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:var(--tr);}
@@ -333,7 +334,9 @@ body.is-light .ugl.continent{color:#1a3500!important;text-shadow:0 0 6px #fff,0 
       <button class="tbtn" onclick="toggleDD('layer-dd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span>قاتلام</span></button>
       <div class="ddm" id="layer-dd">
         <div class="ddi on" onclick="setLayer('dark',this)"><span class="dot" style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
+        <div class="ddi" onclick="setLayer('nolabels',this)"><span class="dot" style="background:#0f172a"></span>قاراڭغۇ (خەتسىز ساپ)</div>
         <div class="ddi" onclick="setLayer('light',this)"><span class="dot" style="background:#ddd8cc"></span>يورۇق</div>
+        <div class="ddi" onclick="setLayer('lightnolabels',this)"><span class="dot" style="background:#f1f5f9"></span>يورۇق (خەتسىز ساپ)</div>
         <div class="ddi" onclick="setLayer('street',this)"><span class="dot" style="background:#4a7a2a"></span>ئۆلچەملىك</div>
         <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot" style="background:#1a3050"></span>كوسموس كۆرۈنۈشى</div>
         <div class="ddi" onclick="setLayer('topo',this)"><span class="dot" style="background:#6a9a5a"></span>توپوگرافىيە</div>
@@ -454,7 +457,7 @@ body.is-light .ugl.continent{color:#1a3500!important;text-shadow:0 0 6px #fff,0 
     <button class="db" id="dt-text" onclick="setMode('text')" title="خەت رامكا [6] — خەرىتىدىن چىكىڭ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></button>
     <button class="db" id="dt-callout" onclick="setMode('callout')" title="ئىزاھ رامكىسى [7] — خەرىتىدىن چىكىڭ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
     <div class="dsep"></div>
-    <button class="db" id="dt-fill" onclick="toggleFill()" title="تولدۇرۇش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11c0 5.55-7 11-7 11S5 16.55 5 11a7 7 0 0 1 14 0z"/><circle cx="12" cy="11" r="3" fill="currentColor"/></svg></button>
+    <button class="db" id="dt-marker" onclick="setMode('marker')" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
     <div style="position:relative">
       <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg></button>
       <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)"></div>
@@ -559,7 +562,9 @@ let isDarkMap = true;
 // ============================================================
 const TILES = {
   dark:      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  nolabels:  'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
   light:     'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  lightnolabels: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
   street:    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   topo:      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
@@ -621,7 +626,6 @@ const LABELS = [
   {id:'idn',n:'ھىندونېزىيە',lat:-5,lng:118,t:'country',mn:4},
   {id:'kaz',n:'قازاقىستان',lat:48,lng:68,t:'country',mn:4},
   {id:'uzb',n:'ئۆزبېكىستان',lat:41,lng:64,t:'country',mn:5},
-  {id:'kgz',n:'قىرغىزىستان',lat:41,lng:75,t:'country',mn:5},
   {id:'tjk',n:'تاجىكىستان',lat:39,lng:71,t:'country',mn:6},
   {id:'tkm',n:'تۈركمەنىستان',lat:39,lng:59,t:'country',mn:5},
   {id:'was',n:'ۋاشىڭتون',lat:38.91,lng:-77.04,t:'city',mn:5},
@@ -822,7 +826,6 @@ const LABELS = [
   // ==========================================
   {id:'geo',n:'گىرۇزىيە',lat:42.31,lng:43.35,t:'country',mn:5},
   {id:'arm',n:'ئەرمېنىيە',lat:40.06,lng:45.03,t:'country',mn:5},
-  {id:'aze',n:'ئەزەربەيجان',lat:40.14,lng:47.57,t:'country',mn:5},
 
   // ==========================================
   // جەنۇبىي ياۋروپا ۋە مىكرو دۆلەتلەر (كىچىك دۆلەتلەر)
@@ -941,7 +944,6 @@ const LABELS = [
   {id:'bgd',n:'بېنگال',lat:23.68,lng:90.35,t:'country',mn:5},
   {id:'aze',n:'ئەزەربەيجان',lat:40.14,lng:47.57,t:'country',mn:5},
   {id:'geo',n:'گىرۇزىيە',lat:42.31,lng:43.35,t:'country',mn:5},
-  {id:'arm',n:'ئەرمېنىيە',lat:40.06,lng:45.03,t:'country',mn:5},
   {id:'kgz',n:'قىرغىزىستان',lat:41.20,lng:74.76,t:'country',mn:5},
 
 // ==========================================
@@ -1046,7 +1048,7 @@ const LABELS = [
   // ==========================================
   // دۇنيادىكى باشقا مۇھىم دېڭىز بويى شەھەرلىرى
   // ==========================================
-  {id:'sin',n:'سىنگاپور ()',lat:1.35,lng:103.81,t:'city',mn:4},
+  {id:'sin',n:'سىنگاپور',lat:1.35,lng:103.81,t:'city',mn:4},
   {id:'hkg',n:'شياڭگاڭ',lat:22.31,lng:114.16,t:'city',mn:4},
   {id:'tok',n:'توكيو',lat:35.67,lng:139.65,t:'city',mn:4},
   {id:'bom',n:'مۇمباي',lat:19.07,lng:72.87,t:'city',mn:5},
@@ -1116,7 +1118,7 @@ function setLayer(name, el) {
   tileLayer.addTo(map);
   document.querySelectorAll('.ddi').forEach(d => d.classList.remove('on'));
   if (el) el.classList.add('on');
-  isDarkMap = ['dark','satellite'].includes(name);
+  isDarkMap = ['dark','nolabels','satellite'].includes(name);
   document.body.classList.toggle('is-light',  !isDarkMap);
   closeAllDD();
 }
@@ -1300,6 +1302,14 @@ function drawShape(m,x1,y1,x2,y2) {
   else if (m==='tri') {
     ctx.moveTo(x1+(x2-x1)/2, y1); ctx.lineTo(x2, y2); ctx.lineTo(x1, y2); ctx.closePath();
     if(fillOn) ctx.fill(); ctx.stroke();
+  }
+  else if (m==='marker') {
+    const r = Math.max(12, Math.hypot(x2-x1, y2-y1));
+    ctx.arc(x1, y1, r, 0, Math.PI*2);
+    ctx.moveTo(x1-r*1.4, y1); ctx.lineTo(x1+r*1.4, y1);
+    ctx.moveTo(x1, y1-r*1.4); ctx.lineTo(x1, y1+r*1.4);
+    ctx.stroke();
+    ctx.beginPath(); ctx.arc(x1, y1, r*0.25, 0, Math.PI*2); ctx.fillStyle=drawColor; ctx.fill();
   }
   else if (m==='arrow') drawArrow(x1,y1,x2,y2);
 }
@@ -1807,12 +1817,15 @@ function loadThinkTank(handle) {
 function toggleDTB() {
   const tools = document.getElementById('dtb-tools');
   const btn = document.getElementById('dtb-toggle');
+  const dtb = document.getElementById('dtb');
   if(tools.style.display === 'none') {
     tools.style.display = 'flex';
     btn.classList.add('on');
+    dtb.classList.remove('collapsed');
   } else {
     tools.style.display = 'none';
     btn.classList.remove('on');
+    dtb.classList.add('collapsed');
   }
 }
 
@@ -1842,6 +1855,7 @@ document.addEventListener('keydown', e=>{
   if(e.key==='6') setMode('text');
   if(e.key==='7') setMode('callout');
   if(e.key==='8') setMode('tri');
+  if(e.key==='9') setMode('marker');
   if(e.key==='e') setMode('erase');
   if(e.key==='f'&&e.ctrlKey){e.preventDefault();document.documentElement.requestFullscreen?.();}
 });
