@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>باتۇر چەۋەنداز - بىلىك ئويۇنلىرى</title>
+    <link rel="stylesheet" href="css/game.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- UI Layer overlaying the 3D Canvas -->
+    <div id="ui-layer">
+        
+        <!-- Name Input Screen -->
+        <div id="name-screen" class="screen glass-panel">
+            <i class="fas fa-horse-head screen-icon"></i>
+            <h1>ئىسمىڭىزنى كىرگۈزۈڭ</h1>
+            <p>سەن ئۇلۇغ ئەجدادلىرىمىزنىڭ ئىزىباشارى. باتۇرلارچە سەپەرگە ئاتلان!</p>
+            <input type="text" id="playerNameInput" placeholder="مەسىلەن: ئالىپ، باتۇر..." autocomplete="off">
+            <button id="btn-start" class="btn-primary">ئويۇننى باشلاش <i class="fas fa-arrow-left"></i></button>
+            <a href="../../index.html" class="btn-secondary">باش بەتكە قايتىش</a>
+        </div>
+
+        <!-- Story/Level Transition Screen -->
+        <div id="story-screen" class="screen glass-panel hidden">
+            <h2 id="story-title" class="gold-text"></h2>
+            <div class="story-content">
+                <p id="story-text"></p>
+            </div>
+            <button id="btn-next-level" class="btn-primary">ئالدىغا مەرش! <i class="fas fa-play"></i></button>
+        </div>
+
+        <!-- Heads Up Display (HUD) while playing -->
+        <div id="hud" class="hidden">
+            <div class="hud-top-bar">
+                <div class="hud-item user-info">
+                    <i class="fas fa-user-shield"></i> <span id="hud-name">باتۇر</span>
+                    <span class="rank-badge" id="hud-rank">ئونبېشى</span>
+                </div>
+                <div class="hud-item stats">
+                    <div><i class="fas fa-book gold-text"></i> <span id="hud-books">0</span></div>
+                    <div><i class="fas fa-coins gold-text"></i> <span id="hud-coins">0</span></div>
+                </div>
+            </div>
+            
+            <div class="level-progress">
+                <div class="progress-bar">
+                    <div id="progress-fill"></div>
+                </div>
+                <div class="progress-text">باسقۇچ <span id="hud-level">1</span>: <span id="hud-dist">0</span>m / <span id="hud-target">1000</span>m</div>
+            </div>
+        </div>
+
+        <!-- Mobile Controls Hint -->
+        <div id="mobile-controls" class="hidden">
+            <div class="swipe-hint left"><i class="fas fa-angle-right"></i> سولا</div>
+            <div class="swipe-hint right">ئوڭغا <i class="fas fa-angle-left"></i></div>
+            <div class="swipe-hint up"><i class="fas fa-angle-up"></i> سەكرەش</div>
+            <div class="tap-hint"><i class="fas fa-hand-pointer"></i> چېكىپ چېپىش</div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen glass-panel hidden">
+            <h1 id="end-title"></h1>
+            <p id="end-msg"></p>
+            <div class="final-stats">
+                <div>توپلىغان بىلىم: <span id="final-books" class="gold-text">0</span></div>
+                <div>ئېرىشكەن ئۇنۋان: <span id="final-rank" class="gold-text">ئونبېشى</span></div>
+            </div>
+            <button id="btn-restart" class="btn-primary">قايتا ئويناش <i class="fas fa-redo"></i></button>
+            <a href="../../index.html" class="btn-secondary">باش بەتكە قايتىش</a>
+        </div>
+        
+    </div>
+
+    <!-- The 3D Canvas will be injected here -->
+    <div id="game-canvas"></div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

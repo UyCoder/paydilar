@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رەسسام بالىلار - خەت يېزىش مەشىقى</title>
+    <link rel="stylesheet" href="css/game.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    
+    <!-- ئېسىم كىرگۈزۈش ئېكرانى -->
+    <div id="name-screen" class="screen">
+        <div class="modal-box floating">
+            <div class="star-icon"><i class="fas fa-palette"></i></div>
+            <h1 class="rainbow-text">رەسسام بالىلار</h1>
+            <p>سۆيۈملۈك بالام، ئىسمىڭ نېمە؟</p>
+            <input type="text" id="playerName" placeholder="ئىسمىڭىزنى يېزىڭ..." autocomplete="off">
+            <button class="btn-bounce" onclick="startGame()">رەسىم سىزىشنى باشلايلى <i class="fas fa-magic"></i></button>
+            <a href="../../index.html" class="btn-back">باش بەتكە قايتىش</a>
+        </div>
+    </div>
+
+    <!-- ئاساسلىق ئويۇن ئېكرانى -->
+    <div id="game-screen" class="screen hidden">
+        <header class="game-header">
+            <a href="../../index.html" class="btn-back-icon"><i class="fas fa-home"></i></a>
+            <div class="target-word-board">
+                <span class="board-title">بۇ سۆزنى يېزىپ باقايلى:</span>
+                <span id="current-word" class="highlight-word">ۋەتەن</span>
+            </div>
+            <div class="score-board">
+                <i class="fas fa-star gold-text bounce-anim"></i> <span id="score-text">0</span>
+            </div>
+        </header>
+
+        <div class="drawing-area-container">
+            <div class="drawing-area">
+                <!-- ئارقا كۆرۈنۈشتىكى سۇس يېزىق -->
+                <div id="tracing-word">ۋەتەن</div>
+                <canvas id="draw-canvas"></canvas>
+            </div>
+            <!-- يېزىپ بولدۇم كۇنۇپكىسى (يوشۇرۇن تۇرىدۇ، سىزغاندىن كېيىن چىقىدۇ) -->
+            <button id="btn-done" class="btn-submit hidden">
+                مەن يېزىپ بولدۇم! <i class="fas fa-check-circle"></i>
+            </button>
+        </div>
+
+        <div class="toolbar">
+            <div class="tools-group">
+                <button class="tool-btn active" id="btn-pen" title="قەلەم"><i class="fas fa-pen"></i></button>
+                <button class="tool-btn" id="btn-eraser" title="ئۆچۈرگۈچ"><i class="fas fa-eraser"></i></button>
+                <button class="tool-btn" id="btn-clear" title="تازىلاش"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            
+            <div class="colors-group">
+                <div class="color-swatch active" style="background: #ef4444" data-color="#ef4444"></div>
+                <div class="color-swatch" style="background: #3b82f6" data-color="#3b82f6"></div>
+                <div class="color-swatch" style="background: #10b981" data-color="#10b981"></div>
+                <div class="color-swatch" style="background: #f59e0b" data-color="#f59e0b"></div>
+                <div class="color-swatch" style="background: #8b5cf6" data-color="#8b5cf6"></div>
+                <div class="color-swatch" style="background: #000000" data-color="#000000"></div>
+            </div>
+
+            <div class="size-group">
+                <i class="fas fa-circle" style="font-size: 8px; color: #64748b;"></i>
+                <input type="range" id="pen-size" min="5" max="50" value="15">
+                <i class="fas fa-circle" style="font-size: 24px; color: #64748b;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- مۇكاپات ئېكرانى -->
+    <div id="reward-screen" class="screen hidden">
+        <div class="reward-modal">
+            <div class="reward-icon spin-anim"><i class="fas fa-sun"></i></div>
+            <h1 id="reward-msg" class="rainbow-text scale-anim">ماشائاللاھ!</h1>
+            <p id="reward-sub">بەك ئەقىللىقكەنسەن، <span id="reward-name" class="highlight-name">ئالىپ</span>!</p>
+            
+            <div class="star-rating">
+                <i class="fas fa-star star-anim" style="animation-delay: 0.1s"></i>
+                <i class="fas fa-star star-anim big-star" style="animation-delay: 0.3s"></i>
+                <i class="fas fa-star star-anim" style="animation-delay: 0.5s"></i>
+            </div>
+            
+            <button id="btn-next" class="btn-bounce" style="margin-top: 2rem;">يەنە بىرنى يازىمەن <i class="fas fa-arrow-left"></i></button>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
