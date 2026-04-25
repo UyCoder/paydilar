@@ -9,23 +9,47 @@
 </head>
 <body>
     
-    <!-- باشلىنىش ئېكرانى -->
+    <!-- باشلىنىش ئېكران -->
     <div id="start-screen" class="screen">
         <div class="modal-box floating">
             <div class="icon-box"><i class="fas fa-route"></i></div>
             <h1 class="gold-text">مۇستەقىللىق كارۋىنى</h1>
-            <p>كارۋان بېشى، سىزگە «بۇغرا» ئۇنۋانى بېرىلىدۇ. ئىسمىڭىز نېمە؟</p>
-            <input type="text" id="playerName" placeholder="مەسىلەن: ئالىپ، مۇجاھىد..." autocomplete="off">
+            <p>كارۋان بېشى، سىزگە «بۇغرا» ئۇنۋەنى بېرىلىدۇ. ئىسمىڭىز نېمە؟</p>
+            <input type="text" id="playerName" placeholder="مەسىلەن: ئاليپ، مۇجاھىد..." autocomplete="off">
             <button onclick="startGame()" class="btn-bounce">كارۋاننى يولغا سېلىش <i class="fas fa-arrow-left"></i></button>
             <a href="../../index.html" class="btn-back">باش بەتكە قايتىش</a>
         </div>
     </div>
 
-    <!-- ئويۇن ئېكرانى -->
+    <!-- رەسىمە كۆرۈنۈشى -->
+    <div id="gallery-screen" class="screen hidden">
+        <button class="gallery-close" onclick="closeGallery()"><i class="fas fa-times"></i></button>
+        <div class="gallery-main">
+            <img id="gallery-img" src="" alt=" رەسىمە">
+            <div class="gallery-nav">
+                <button class="gallery-btn" onclick="prevImage()"><i class="fas fa-chevron-right"></i></button>
+                <button class="gallery-btn" onclick="nextImage()"><i class="fas fa-chevron-left"></i></button>
+            </div>
+            <div class="gallery-info">
+                <span id="gallery-counter">1 / 5</span>
+            </div>
+        </div>
+        <div class="gallery-thumbnails">
+            <img class="thumb active" onclick="showImage(0)" src="pics/1777151145193-019dc674-af3a-765e-910e-16c7da6ca65b.png">
+            <img class="thumb" onclick="showImage(1)" src="pics/1777151129549-019dc674-af3a-72e2-9f38-3164c989fce6.png">
+            <img class="thumb" onclick="showImage(2)" src="pics/1777151052838-019dc674-af3a-72e2-9f38-3164c989fce6.png">
+            <img class="thumb" onclick="showImage(3)" src="pics/1777150998754-019dc673-9686-7141-8023-9734218376fd.png">
+            <img class="thumb" onclick="showImage(4)" src="pics/1777150980393-019dc673-9686-7f62-b757-b50e3eae6d4b.png">
+            <img class="thumb" onclick="showImage(5)" src="pics/1777150712591-019dc66f-267c-7cfc-a6cd-b4ce7794747e.png">
+        </div>
+    </div>
+
+    <!-- ئوين ثكران -->
     <div id="game-screen" class="screen hidden">
         <div class="hud">
             <div class="hud-left">
                 <a href="../../index.html" class="btn-home"><i class="fas fa-home"></i></a>
+                <button class="btn-gallery" onclick="openGallery()"><i class="fas fa-images"></i></button>
                 <span class="hud-name">كارۋان بېشى: بۇغرا <span id="display-name" class="gold-text"></span></span>
             </div>
             <div class="hud-right">
@@ -62,15 +86,15 @@
     <div id="knowledge-screen" class="screen hidden">
         <div class="modal-box knowledge-box">
             <div class="icon-box pulse-anim"><i class="fas fa-book-open"></i></div>
-            <h2 id="knowledge-title" class="gold-text">ئۇلۇغ تارىخ</h2>
+            <h2 id="knowledge-title" class="gold-text">ئۇلۇغ تارئخ</h2>
             <div class="knowledge-content">
-                <p id="knowledge-text">بىلىم تېكىستى بۇ يەرگە كېلىدۇ...</p>
+                <p id="knowledge-text">بىلىم تېكسنىتسى بۇ يەرگە كېلىدۇ...</p>
             </div>
             <button onclick="resumeGame()" class="btn-bounce">يولنى داۋاملاشتۇرۇش <i class="fas fa-arrow-left"></i></button>
         </div>
     </div>
 
-    <!-- ئويۇن ئاخىرلىشىش -->
+    <!-- ئوين ئاخرششن -->
     <div id="game-over-screen" class="screen hidden">
         <div class="modal-box">
             <div class="icon-box" style="color: #ef4444;"><i class="fas fa-times-circle"></i></div>

@@ -333,3 +333,59 @@ document.addEventListener('touchend', e => {
         }
     }
 });
+
+// Gallery - رەسىمە كۆرۈنۈشى ئىقتىدارلىرى
+const images = [
+    'pics/1777151145193-019dc674-af3a-765e-910e-16c7da6ca65b.png',
+    'pics/1777151129549-019dc674-af3a-72e2-9f38-3164c989fce6.png',
+    'pics/1777151052838-019dc674-af3a-72e2-9f38-3164c989fce6.png',
+    'pics/1777150998754-019dc673-9686-7141-8023-9734218376fd.png',
+    'pics/1777150980393-019dc673-9686-7f62-b757-b50e3eae6d4b.png',
+    'pics/1777150712591-019dc66f-267c-7cfc-a6cd-b4ce7794747e.png'
+];
+
+let currentImageIndex = 0;
+
+function openGallery() {
+    currentImageIndex = 0;
+    showImage(0);
+    document.getElementById('gallery-screen').classList.remove('hidden');
+}
+
+function closeGallery() {
+    document.getElementById('gallery-screen').classList.add('hidden');
+}
+
+function showImage(index) {
+    currentImageIndex = index;
+    const img = document.getElementById('gallery-img');
+    img.src = images[index];
+    img.style.animation = 'none';
+    img.offsetHeight;
+    img.style.animation = 'fadeIn 0.3s ease';
+    
+    // Update thumbnails
+    document.querySelectorAll('.gallery-thumbnails img').forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === index);
+    });
+    
+    // Update counter
+    document.getElementById('gallery-counter').innerText = `${index + 1} / ${images.length}`;
+}
+
+function prevImage() {
+    showImage((currentImageIndex - 1 + images.length) % images.length);
+}
+
+function nextImage() {
+    showImage((currentImageIndex + 1) % images.length);
+}
+
+// Keyboard navigation for gallery
+document.addEventListener('keydown', e => {
+    if(!document.getElementById('gallery-screen').classList.contains('hidden')) {
+        if(e.key === 'ArrowRight') prevImage();
+        if(e.key === 'ArrowLeft') nextImage();
+        if(e.key === 'Escape') closeGallery();
+    }
+});

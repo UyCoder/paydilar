@@ -47,6 +47,14 @@ const gamesList = [
         icon: "fa-keyboard",
         url: "../UyghurKeyboardTraining/Ug-TrainingApp.html",
         tags: ["يېزىق", "مەشىق", "سۈرئەت", "بىلىم"]
+    },
+    {
+        id: "game_airplane",
+        title: "ھەوايروتور كۇنۇپچىسى",
+        description: "شەرقىي تۈركىستان ھەوايروتورچىسى بولۇپ ئاسماندا ئۈچۈپ، دۈشمەن تۈرۈكلىرىنى يوقاتقان! باتۇرلۇق بىلەن ئۈچۈڭ.",
+        icon: "fa-plane",
+        url: "games/game-airplane.html",
+        tags: ["ئاسمان", "جەڭ", "باتۇرلۇق", "تارىخ"]
     }
     // كېيىنكى ئويۇنلارنى مۇشۇ يەرگە قوشىسىز:
     // {

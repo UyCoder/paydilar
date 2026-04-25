@@ -143,6 +143,17 @@ input[type="text"]:focus {
 
 .hud-name, .hud-right { font-size: 1.4rem; font-weight: bold; }
 
+.btn-mute {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(59, 130, 246, 0.4);
+    border-radius: 10px;
+    color: #60a5fa;
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
 .level-badge {
     background: linear-gradient(135deg, #10b981, #059669);
     padding: 5px 15px;
@@ -231,17 +242,111 @@ input[type="text"]:focus {
     max-height: 100%;
 }
 
-/* Mobile Controls */
+/* Mobile Controls - يانفون كونترولى */
 .mobile-controls {
     position: absolute;
     bottom: 20px;
-    width: 100%;
+    left: 0;
+    right: 0;
     display: none;
     justify-content: space-between;
-    padding: 0 30px;
+    align-items: flex-end;
+    padding: 15px 20px;
     box-sizing: border-box;
 }
 
+/* Joystick - يەنەلىك */
+.joystick-area {
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joystick-base {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.15);
+    border: 3px solid rgba(59, 130, 246, 0.4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.joystick-stick {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.6);
+    position: absolute;
+    transition: transform 0.05s ease-out;
+}
+
+/* Action Pad - ئەھمەل ۋە يۆنىكە */
+.action-pad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.fire-btn-large {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
+    border: 4px solid #f87171;
+    color: white;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 -4px 0 rgba(0,0,0,0.3);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+}
+.fire-btn-large:active {
+    transform: scale(0.9);
+    background: radial-gradient(circle at 30% 30%, #dc2626, #7f1d1d);
+}
+
+.dpad-directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.dir-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.2);
+    border: 2px solid rgba(59, 130, 246, 0.5);
+    color: white;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+}
+.dir-btn:active {
+    background: rgba(59, 130, 246, 0.5);
+    border-color: #60a5fa;
+}
+.dir-btn[data-dir="0"] { grid-column: 2; grid-row: 1; }
+.dir-btn[data-dir="1"] { grid-column: 3; grid-row: 2; }
+.dir-btn[data-dir="2"] { grid-column: 2; grid-row: 2; }
+.dir-btn[data-dir="3"] { grid-column: 1; grid-row: 2; }
+
+/* Legacy D-pad (keep for fallback) */
 .dpad {
     display: flex;
     flex-direction: column;
@@ -249,9 +354,7 @@ input[type="text"]:focus {
     gap: 5px;
     opacity: 0.7;
 }
-
 .dpad-middle { display: flex; gap: 40px; }
-
 .dpad-btn {
     width: 60px; height: 60px;
     border-radius: 50%;
@@ -264,7 +367,7 @@ input[type="text"]:focus {
 }
 .dpad-btn:active { background: rgba(59, 130, 246, 0.6); }
 
-.action-pad {
+.action-pad-old {
     display: flex;
     align-items: flex-end;
 }
