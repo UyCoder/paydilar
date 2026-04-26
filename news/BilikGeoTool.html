@@ -335,9 +335,10 @@
 
     #rtab .plbl {
       writing-mode: vertical-rl;
-      font-size: .65em;
-      color: var(--gold);
-      transform: rotate(180deg);
+      font-size: .75em;
+      color: var(--gold2);
+      font-weight: bold;
+      letter-spacing: 2px;
     }
 
     #ptab {
@@ -608,7 +609,7 @@
     /* ===== DRAW TOOLBAR ===== */
     #dtb {
       position: fixed;
-      right: 12px;
+      right: 60px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 1500;
@@ -1320,6 +1321,113 @@
         right: 5px;
       }
     }
+
+    /* TT List Styles - UyghurNews.html Style */
+    .tt-list {
+      padding: 15px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tt-grp-ttl {
+      font-size: 0.72em;
+      color: #8b949e;
+      margin: 15px 5px 5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(99, 120, 150, 0.2);
+      padding-bottom: 4px;
+    }
+
+    .tt-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(99, 120, 150, 0.25);
+      border-radius: 30px;
+      /* Pill style from UyghurNews */
+      text-decoration: none;
+      color: #e6edf3;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+    }
+
+    .tt-item:hover {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-color: transparent;
+      color: #fff;
+      transform: translateX(-5px);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .tt-item img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .tt-item span {
+      font-size: 0.82em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* TT Icon Grid Style */
+    .tt-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      padding: 12px 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid rgba(99, 120, 150, 0.2);
+    }
+
+    .tt-grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: var(--tr);
+    }
+
+    .tt-grid-item:hover {
+      transform: scale(1.2);
+    }
+
+    .tt-grid-item img {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #fff;
+      padding: 3px;
+      border: 1.5px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+    }
+
+    #rp {
+      background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      width: 340px;
+      /* Slightly wider for iframe */
+    }
+
+    #news-frame {
+      width: 143%;
+      height: 143%;
+      border: none;
+      background: #fff;
+      border-radius: 0 0 0 15px;
+      transform: scale(0.7);
+      transform-origin: top right;
+    }
   </style>
 </head>
 
@@ -1328,8 +1436,7 @@
   <!-- TOP BAR -->
   <div id="tb">
     <div class="tl">
-      <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/Biliklogo.png"
-        class="logo" alt="Bilik">
+      <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/Biliklogo.png" class="logo" alt="Bilik">
       <span class="ttl">بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى</span>
       <span class="badge">v3.0</span>
     </div>
@@ -1468,31 +1575,52 @@
   <!-- RIGHT PANEL -->
   <div id="rp" class="closed">
     <div id="rtab" onclick="toggleRP()">
-      <span class="arr">▶</span><span class="plbl">ئامبار</span>
+      <span class="arr">▶</span><span class="plbl">خەۋەرلەر</span>
     </div>
-    <div id="ph" style="border-bottom:1px solid var(--bdr); padding-bottom:0;">
-      <h3 style="padding:12px 12px 3px 12px;font-size:.88em;color:var(--gold2);margin-bottom:9px;">🏛 ئەقىل ئامبارلىرى
+    <div id="ph" style="border-bottom:1px solid rgba(99,120,150,0.2); padding: 15px 12px 10px;">
+      <h3 style="font-size:.9em; color:#3b82f6; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        ئەقىل ئامبارلىرى ۋە خەۋەرلەر
       </h3>
-      <div style="padding:0 12px 12px;">
-        <select id="tt-select" class="fsel" style="width:100%;height:32px;font-size:.85em;"
-          onchange="loadThinkTank(this.value)">
-          <option value="" disabled selected>‹ ئەقىل ئامبىرى تاللاڭ ›</option>
-          <option value="RANDCorporation">RAND Corporation</option>
-          <option value="CSIS">CSIS</option>
-          <option value="BrookingsInst">Brookings Institution</option>
-          <option value="ForeignAffairs">Foreign Affairs</option>
-          <option value="ForeignPolicy">Foreign Policy</option>
-          <option value="CFR_org">Council on Foreign Relations</option>
-          <option value="ChathamHouse">Chatham House</option>
-          <option value="CarnegieEndow">Carnegie Endowment</option>
-          <option value="IISS_org">IISS</option>
-          <option value="Heritage">Heritage Foundation</option>
-        </select>
-      </div>
     </div>
-    <div id="tt-body" style="flex:1;overflow-y:auto;background:#fff;border-radius:0 0 0 10px;">
-      <div id="tw-container" style="padding:10px;color:#333;font-size:0.85em;text-align:center;margin-top:20px;">
-        يۇقىرىدىن بىر ئەقىل ئامبىرىنى تاللاپ ئۇلارنىڭ تۋىتتېر كۈندىلىكلىرىنى كۆرۈڭ.
+    <div id="tt-body" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+      <div class="tt-grid">
+        <a href="https://www.rand.org" target="_blank" class="tt-grid-item" title="RAND Corporation">
+          <img src="https://www.google.com/s2/favicons?domain=rand.org&sz=64" alt="RAND">
+        </a>
+        <a href="https://www.csis.org" target="_blank" class="tt-grid-item" title="CSIS">
+          <img src="https://www.google.com/s2/favicons?domain=csis.org&sz=64" alt="CSIS">
+        </a>
+        <a href="https://www.brookings.edu" target="_blank" class="tt-grid-item" title="Brookings Institution">
+          <img src="https://www.google.com/s2/favicons?domain=brookings.edu&sz=64" alt="Brookings">
+        </a>
+        <a href="https://www.cfr.org" target="_blank" class="tt-grid-item" title="Council on Foreign Relations">
+          <img src="https://www.google.com/s2/favicons?domain=cfr.org&sz=64" alt="CFR">
+        </a>
+        <a href="https://www.chathamhouse.org" target="_blank" class="tt-grid-item" title="Chatham House">
+          <img src="https://www.google.com/s2/favicons?domain=chathamhouse.org&sz=64" alt="Chatham">
+        </a>
+        <a href="https://www.heritage.org" target="_blank" class="tt-grid-item" title="Heritage Foundation">
+          <img src="https://www.google.com/s2/favicons?domain=heritage.org&sz=64" alt="Heritage">
+        </a>
+        <a href="https://www.foreignaffairs.com" target="_blank" class="tt-grid-item" title="Foreign Affairs">
+          <img src="https://www.google.com/s2/favicons?domain=foreignaffairs.com&sz=64" alt="FA">
+        </a>
+        <a href="https://www.foreignpolicy.com" target="_blank" class="tt-grid-item" title="Foreign Policy">
+          <img src="https://www.google.com/s2/favicons?domain=foreignpolicy.com&sz=64" alt="FP">
+        </a>
+        <a href="https://thediplomat.com" target="_blank" class="tt-grid-item" title="The Diplomat">
+          <img src="https://www.google.com/s2/favicons?domain=thediplomat.com&sz=64" alt="Diplomat">
+        </a>
+        <a href="https://www.iiss.org" target="_blank" class="tt-grid-item" title="IISS">
+          <img src="https://www.google.com/s2/favicons?domain=iiss.org&sz=64" alt="IISS">
+        </a>
+      </div>
+      <div style="flex:1; position:relative;">
+        <iframe src="UyghurNews.html" id="news-frame"></iframe>
       </div>
     </div>
   </div>
@@ -1544,9 +1672,11 @@
           fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5" />
         </svg></button>
-      <button class="db" id="dt-tri" onclick="setMode('tri')" title="ئۈچبۇلۇڭ [8]"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M12 3L2 21h20z" />
+      <button class="db" id="dt-measure" onclick="setMode('measure')" title="ئارىلىق ئۆلچەش [8]"><svg
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="2" y1="20" x2="22" y2="4" />
+          <path d="M7 2l15 15" />
+          <line x1="12" y1="7" x2="17" y2="12" />
         </svg></button>
       <div class="dsep"></div>
       <button class="db" id="dt-text" onclick="setMode('text')" title="خەت رامكا [6] — خەرىتىدىن چىكىڭ"><svg
@@ -1693,7 +1823,7 @@
     let mediaRec = null, mediaStream = null, recTimer = null, recSecs = 0, recChunks = [];
     let timerIntvl = null, timerSecs = 0, timerRunning = false;
     let fmtSt = { font: "'UKIJ','Arial'", size: '18', lh: '1.8', align: 'right', indent: false, ul: false, strike: false, col: '#ffffff' };
-    let isDarkMap = true;
+    let isDarkMap = true, rpOpen = false;
 
     // ============================================================
     // TILE LAYERS
@@ -3017,6 +3147,22 @@
         ctx.stroke();
         ctx.beginPath(); ctx.arc(x1, y1, r * 0.25, 0, Math.PI * 2); ctx.fillStyle = drawColor; ctx.fill();
       }
+      else if (m === 'measure') {
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        // Calculate Distance
+        if (map) {
+          const p1 = map.containerPointToLatLng([x1, y1]);
+          const p2 = map.containerPointToLatLng([x2, y2]);
+          const d = p1.distanceTo(p2); // meters
+          const distTxt = d > 1000 ? (d / 1000).toFixed(2) + ' km' : d.toFixed(0) + ' m';
+          ctx.font = 'bold 14px UKIJ, Arial';
+          ctx.fillStyle = drawColor;
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.strokeText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
+          ctx.fillText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
+        }
+      }
       else if (m === 'arrow') drawArrow(x1, y1, x2, y2);
     }
     function drawArrow(x1, y1, x2, y2) {
@@ -3487,37 +3633,10 @@
     // ============================================================
     // UI TOGGLES (DTB, RP, DD)
     // ============================================================
-    let rpOpen = false;
     function toggleRP() {
       rpOpen = !rpOpen;
       document.getElementById('rp').classList.toggle('closed', !rpOpen);
       document.querySelector('#rtab .arr').textContent = rpOpen ? '▶' : '◀';
-    }
-
-    function loadThinkTank(handle) {
-      if (!handle) return;
-      const c = document.getElementById('tw-container');
-      c.innerHTML = '<div style="margin-top:20px;text-align:center;">يۈكلىنىۋاتىدۇ...</div>';
-
-      const a = document.createElement('a');
-      a.className = 'twitter-timeline';
-      a.setAttribute('data-theme', 'light');
-      a.href = 'https://twitter.com/' + handle + '?ref_src=twsrc%5Etfw';
-      a.textContent = 'Tweets by ' + handle;
-
-      setTimeout(() => {
-        c.innerHTML = '';
-        c.appendChild(a);
-        if (window.twttr && window.twttr.widgets) {
-          window.twttr.widgets.load(c);
-        } else {
-          const s = document.createElement('script');
-          s.src = 'https://platform.twitter.com/widgets.js';
-          s.charset = 'utf-8';
-          s.async = true;
-          document.body.appendChild(s);
-        }
-      }, 100);
     }
 
     function toggleDTB() {
@@ -3560,7 +3679,7 @@
       if (e.key === '5') setMode('poly');
       if (e.key === '6') setMode('text');
       if (e.key === '7') setMode('callout');
-      if (e.key === '8') setMode('tri');
+      if (e.key === '8') setMode('measure');
       if (e.key === '9') setMode('marker');
       if (e.key === 'e') setMode('erase');
       if (e.key === 'f' && e.ctrlKey) { e.preventDefault(); document.documentElement.requestFullscreen?.(); }
