@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ ئالماس شەھەر: كەلگۈسىگە سەپەر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root { --neon-blue: #00f2ff; --neon-gold: #ffeb3b; --neon-pink: #ff00ff; }
+        body { margin: 0; overflow: hidden; background: #050505; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; }
+        #score-box { font-size: 3rem; font-weight: 900; color: var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue); }
+        #speed-box { font-size: 1.2rem; color: var(--neon-gold); margin-top: 5px; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(20px); }
+        .btn { padding: 20px 80px; font-size: 2.5rem; background: linear-gradient(135deg, #0066cc, #00f2ff); color: white; border: none; border-radius: 10px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 900; margin-top: 30px; box-shadow: 0 0 30px rgba(0,242,255,0.5); transition: all 0.3s; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+        .btn:hover { transform: scale(1.1) skewX(-5deg); box-shadow: 0 0 50px var(--neon-blue); }
+        h1 { font-size: 5rem; margin-bottom: 10px; background: linear-gradient(to bottom, #fff, var(--neon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(0,242,255,0.3); }
+        p { font-size: 1.6rem; max-width: 800px; text-align: center; line-height: 1.6; color: #aaa; }
+        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); border-radius: 5px; cursor: pointer; text-decoration: none; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+        #combo { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 6rem; font-weight: 900; color: var(--neon-pink); display: none; pointer-events: none; text-shadow: 0 0 40px var(--neon-pink); font-style: italic; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div id="score-box">0000</div>
+        <div id="speed-box">سۈرئەت: 1x</div>
+    </div>
+    <div id="combo">GREAT!</div>
+    <div id="overlay">
+        <h1>⚡ ئالماس شەھەر</h1>
+        <p>كەلگۈسى شەھەرنىڭ توسالغۇلىرىدىن ئۆتۈپ، مەدەنىيەت كودلىرىنى يىغىڭ! <br> [W,A,S,D] ياكى ئېكراننى سۆرەش ئارقىلىق باشقۇرۇڭ.</p>
+        <button class="btn" onclick="startGame()">سەپەرنى باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كۈتۈپخانا</a>
+
+    <script>
+        let scene, camera, renderer, player, road, obstacles = [], coins = [];
+        let score = 0, speed = 0.5, gameActive = false, clock = new THREE.Clock();
+        let targetX = 0, targetY = 0;
+        let audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function synth(f, d, t='sine', v=0.1) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d);
+        }
+
+        function init() {
+            scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(0x050505, 0.05);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio); document.body.appendChild(renderer.domElement);
+
+            // Lights
+            scene.add(new THREE.AmbientLight(0x404040, 1));
+            const p1 = new THREE.PointLight(0x00f2ff, 2, 50); p1.position.set(0, 10, -10); scene.add(p1);
+
+            // Road (Neon Grid)
+            const grid = new THREE.GridHelper(100, 20, 0x00f2ff, 0x222222);
+            grid.position.z = -40; scene.add(grid);
+            road = grid;
+
+            // Player (Cyber Ship)
+            const pGrp = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 2), new THREE.MeshPhongMaterial({ color: 0x00f2ff, emissive: 0x0066cc }));
+            pGrp.add(body);
+            const wingL = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 1.2), new THREE.MeshPhongMaterial({ color: 0x00f2ff }));
+            wingL.position.set(-1, 0, 0); pGrp.add(wingL);
+            const wingR = wingL.clone(); wingR.position.x = 1; pGrp.add(wingR);
+            player = pGrp; scene.add(player);
+            player.position.y = 0.5;
+
+            camera.position.set(0, 4, 8); camera.lookAt(0, 1, -10);
+
+            // Controls
+            window.addEventListener('keydown', e => {
+                if (e.key === 'a' || e.key === 'ArrowLeft') targetX = -4;
+                if (e.key === 'd' || e.key === 'ArrowRight') targetX = 4;
+                if (e.key === 'w' || e.key === 'ArrowUp') targetY = 3;
+                if (e.key === 's' || e.key === 'ArrowDown') targetY = 0;
+            });
+            window.addEventListener('keyup', () => { targetX = 0; targetY = 0.5; });
+
+            let touchStartX = 0, touchStartY = 0;
+            window.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; });
+            window.addEventListener('touchmove', e => {
+                const dx = e.touches[0].clientX - touchStartX;
+                const dy = e.touches[0].clientY - touchStartY;
+                if (Math.abs(dx) > 30) targetX = dx > 0 ? 4 : -4;
+                if (dy < -30) targetY = 3; else if (dy > 30) targetY = 0.5;
+                e.preventDefault();
+            }, { passive: false });
+            window.addEventListener('touchend', () => { targetX = 0; targetY = 0.5; });
+        }
+
+        function spawnObstacle() {
+            const isSlide = Math.random() > 0.5;
+            const geo = isSlide ? new THREE.BoxGeometry(10, 2, 1) : new THREE.BoxGeometry(4, 10, 1);
+            const mat = new THREE.MeshPhongMaterial({ color: 0xff00ff, emissive: 0x660066 });
+            const obs = new THREE.Mesh(geo, mat);
+            obs.position.set(isSlide ? 0 : (Math.random() > 0.5 ? 4 : -4), isSlide ? 4 : 0, -100);
+            obs.userData = { isSlide: isSlide };
+            scene.add(obs); obstacles.push(obs);
+        }
+
+        function spawnCoin() {
+            const geo = new THREE.TorusGeometry(0.6, 0.1, 16, 32);
+            const mat = new THREE.MeshPhongMaterial({ color: 0xffeb3b, emissive: 0xaa8800 });
+            const coin = new THREE.Mesh(geo, mat);
+            coin.position.set((Math.random() - 0.5) * 10, 1, -100);
+            scene.add(coin); coins.push(coin);
+        }
+
+        function startGame() {
+            initAudio(); document.getElementById('overlay').style.display = 'none';
+            score = 0; speed = 0.6; gameActive = true;
+            obstacles.forEach(o => scene.remove(o)); coins.forEach(c => scene.remove(c));
+            obstacles = []; coins = [];
+            synth(440, 0.5, 'square');
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) {
+                const dt = clock.getDelta();
+                speed += 0.0001;
+                document.getElementById('score-box').innerText = Math.floor(score).toString().padStart(4, '0');
+                document.getElementById('speed-box').innerText = `سۈرئەت: ${speed.toFixed(1)}x`;
+
+                if (Math.random() < 0.03) spawnObstacle();
+                if (Math.random() < 0.05) spawnCoin();
+
+                player.position.x += (targetX - player.position.x) * 0.15;
+                player.position.y += (targetY - player.position.y) * 0.15;
+                player.rotation.z = - (player.position.x * 0.1);
+                player.rotation.x = (player.position.y - 0.5) * -0.2;
+
+                road.position.z += speed; if (road.position.z > 0) road.position.z = -40;
+
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    const o = obstacles[i]; o.position.z += speed * 1.5;
+                    if (o.position.distanceTo(player.position) < 2) {
+                        gameActive = false; synth(100, 0.8, 'sawtooth', 0.3);
+                        document.getElementById('overlay').style.display = 'flex';
+                        document.querySelector('#overlay h1').innerText = '⚡ سىستېما كاشىلا';
+                    }
+                    if (o.position.z > 20) { scene.remove(o); obstacles.splice(i, 1); score += 10; }
+                }
+
+                for (let i = coins.length - 1; i >= 0; i--) {
+                    const c = coins[i]; c.position.z += speed * 1.2; c.rotation.y += 0.1;
+                    if (c.position.distanceTo(player.position) < 1.5) {
+                        score += 50; synth(880, 0.2, 'sine', 0.2);
+                        scene.remove(c); coins.splice(i, 1);
+                        if (score % 500 === 0) { document.getElementById('combo').style.display='block'; setTimeout(()=>document.getElementById('combo').style.display='none', 1000); }
+                    }
+                    if (c.position.z > 20) { scene.remove(c); coins.splice(i, 1); }
+                }
+            }
+            renderer.render(scene, camera);
+        }
+
+        init(); animate();
+    </script>
+</body>
+</html>

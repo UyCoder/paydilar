@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى قۇرالى</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     @font-face {
@@ -589,30 +590,67 @@
     }
 
     /* ===== DRAW CANVAS ===== */
-    #dc {
+    #dc,
+    #pc {
       position: absolute;
       inset: 0;
-      z-index: 600;
+      z-index: 1000;
       pointer-events: none;
     }
 
-    #dc.draw {
-      pointer-events: all;
-      cursor: crosshair;
+    #pc {
+      z-index: 1001;
     }
 
-    #dc.erase {
-      pointer-events: all;
-      cursor: cell;
+    /* ===== DRAW TOOLBAR POPUPS ===== */
+    .wpop,
+    .mpop,
+    .apop,
+    .arpop {
+      position: absolute;
+      right: 45px;
+      top: 0;
+      background: rgba(5, 10, 22, .98);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 8px;
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      z-index: 2100;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
     }
 
-    /* ===== DRAW TOOLBAR ===== */
+    .apop,
+    .arpop {
+      grid-template-columns: repeat(2, 1fr);
+      width: 100px;
+    }
+
+    .arpop {
+      grid-template-columns: repeat(3, 1fr);
+      width: 140px;
+    }
+
+    .mpop {
+      grid-template-columns: repeat(6, 1fr);
+      width: 280px;
+      max-height: none;
+    }
+
+    .wpop.open,
+    .mpop.open,
+    .apop.open,
+    .arpop.open {
+      display: grid;
+    }
+
     #dtb {
       position: fixed;
       right: 60px;
       top: 50%;
       transform: translateY(-50%);
-      z-index: 1500;
+      z-index: 2000;
       background: rgba(5, 10, 22, .97);
       border: 1px solid rgba(200, 168, 75, .28);
       border-radius: 15px;
@@ -728,6 +766,52 @@
     #wsld {
       width: 115px;
       accent-color: var(--gold);
+    }
+
+    /* Marker Selector */
+    .mpop {
+      position: absolute;
+      right: 46px;
+      bottom: 0;
+      z-index: 10;
+      background: rgba(5, 10, 22, .98);
+      border: 1px solid rgba(200, 168, 75, .4);
+      border-radius: 12px;
+      padding: 8px;
+      display: none;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      box-shadow: var(--sh);
+      backdrop-filter: blur(15px);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .mpop.open {
+      display: grid;
+    }
+
+    .mi {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 1.2em;
+      transition: var(--tr);
+      border: 1px solid transparent;
+    }
+
+    .mi:hover {
+      background: rgba(200, 168, 75, 0.2);
+      border-color: var(--gold);
+    }
+
+    .mi.on {
+      background: rgba(200, 168, 75, 0.3);
+      border-color: var(--gold2);
     }
 
     /* ===== TEXT FORMAT BAR ===== */
@@ -906,7 +990,7 @@
     .ugtb {
       position: absolute;
       z-index: 700;
-      border: 1px dashed rgba(200, 168, 75, .65);
+      border: 1px solid transparent;
       border-radius: 5px;
       padding: 8px 10px;
       min-width: 100px;
@@ -919,6 +1003,11 @@
       cursor: move;
       outline: none;
       background: transparent;
+      transition: border-color 0.2s;
+    }
+
+    .ugtb:hover {
+      border-color: rgba(200, 168, 75, 0.3);
     }
 
     .ugtb:focus {
@@ -1428,6 +1517,27 @@
       transform: scale(0.7);
       transform-origin: top right;
     }
+
+    .rp-head-btns {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .rp-back-btn {
+      padding: 4px 10px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #3b82f6;
+      border-radius: 8px;
+      font-size: 0.75em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rp-back-btn:hover {
+      background: rgba(59, 130, 246, 0.25);
+    }
   </style>
 </head>
 
@@ -1488,9 +1598,19 @@
           <div class="ddi" onclick="setLayer('street',this)"><span class="dot"
               style="background:#4a7a2a"></span>ئۆلچەملىك</div>
           <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot"
-              style="background:#1a3050"></span>كوسموس كۆرۈنۈشى</div>
+              style="background:#1a3050"></span>سۈنئىي ھەمراھ</div>
           <div class="ddi" onclick="setLayer('topo',this)"><span class="dot"
               style="background:#6a9a5a"></span>توپوگرافىيە</div>
+          <div class="ddi" onclick="setLayer('esri-street',this)"><span class="dot"
+              style="background:#2b5a9a"></span>Esri شەھەر</div>
+          <div class="ddi" onclick="setLayer('esri-topo',this)"><span class="dot" style="background:#8a6a2a"></span>Esri
+            توپو</div>
+          <div class="ddi" onclick="setLayer('stadia-smooth',this)"><span class="dot"
+              style="background:#f9f9f9"></span>سىلىق (يورۇق)</div>
+          <div class="ddi" onclick="setLayer('usgs-sat',this)"><span class="dot" style="background:#000033"></span>USGS
+            سۈنئىي ھەمراھ</div>
+          <div class="ddi" onclick="setLayer('opentopo',this)"><span class="dot"
+              style="background:#6a7a2a"></span>OpenTopo</div>
         </div>
       </div>
       <button class="tbtn on" id="btnLbl" onclick="toggleLabels()"><svg viewBox="0 0 24 24" fill="none"
@@ -1517,7 +1637,7 @@
   <!-- LEFT PANEL -->
   <div id="lp">
     <div id="ptab" onclick="togglePanel()">
-      <span class="arr">◀</span><span class="plbl">پانىل</span>
+      <span class="arr">◀</span><span class="plbl">قوشۇمچە</span>
     </div>
     <div id="ph">
       <h3>📍 جاي ئىزدەش</h3>
@@ -1564,8 +1684,7 @@
       </div>
       <div class="psec">
         <h4>سىزما قۇراللىرى</h4>
-        <button class="qb danger" onclick="clearAll()">🗑 سىزمىلارنى ئۆچۈر</button>
-        <button class="qb danger" onclick="clearAnnotations()">📝 ئىزاھلارنى ئۆچۈر</button>
+        <button class="qb danger" onclick="clearEverything()">🗑 ھەممىنى ئۆچۈر</button>
         <button class="qb" onclick="saveImg()">💾 رەسىم ساقلا</button>
       </div>
     </div>
@@ -1577,46 +1696,52 @@
     <div id="rtab" onclick="toggleRP()">
       <span class="arr">▶</span><span class="plbl">خەۋەرلەر</span>
     </div>
-    <div id="ph" style="border-bottom:1px solid rgba(99,120,150,0.2); padding: 15px 12px 10px;">
-      <h3 style="font-size:.9em; color:#3b82f6; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        ئەقىل ئامبارلىرى ۋە خەۋەرلەر
-      </h3>
+    <div id="ph"
+      style="border-bottom:1px solid rgba(99,120,150,0.2); padding: 10px 12px; display: flex; justify-content: flex-end;">
+      <button class="rp-back-btn" onclick="goHomeNews()">🏠 خەۋەرلەرگە قايتىش</button>
     </div>
     <div id="tt-body" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
       <div class="tt-grid">
-        <a href="https://www.rand.org" target="_blank" class="tt-grid-item" title="RAND Corporation">
+        <!-- Outside / Open in new window (Left) -->
+        <a href="javascript:void(0)" onclick="window.open('https://www.rand.org')" class="tt-grid-item"
+          title="RAND Corporation">
           <img src="https://www.google.com/s2/favicons?domain=rand.org&sz=64" alt="RAND">
         </a>
-        <a href="https://www.csis.org" target="_blank" class="tt-grid-item" title="CSIS">
+        <a href="javascript:void(0)" onclick="window.open('https://www.csis.org')" class="tt-grid-item" title="CSIS">
           <img src="https://www.google.com/s2/favicons?domain=csis.org&sz=64" alt="CSIS">
         </a>
-        <a href="https://www.brookings.edu" target="_blank" class="tt-grid-item" title="Brookings Institution">
-          <img src="https://www.google.com/s2/favicons?domain=brookings.edu&sz=64" alt="Brookings">
-        </a>
-        <a href="https://www.cfr.org" target="_blank" class="tt-grid-item" title="Council on Foreign Relations">
-          <img src="https://www.google.com/s2/favicons?domain=cfr.org&sz=64" alt="CFR">
-        </a>
-        <a href="https://www.chathamhouse.org" target="_blank" class="tt-grid-item" title="Chatham House">
+        <a href="javascript:void(0)" onclick="window.open('https://www.chathamhouse.org')" class="tt-grid-item"
+          title="Chatham House">
           <img src="https://www.google.com/s2/favicons?domain=chathamhouse.org&sz=64" alt="Chatham">
         </a>
-        <a href="https://www.heritage.org" target="_blank" class="tt-grid-item" title="Heritage Foundation">
+        <a href="javascript:void(0)" onclick="window.open('https://www.heritage.org')" class="tt-grid-item"
+          title="Heritage Foundation">
           <img src="https://www.google.com/s2/favicons?domain=heritage.org&sz=64" alt="Heritage">
         </a>
-        <a href="https://www.foreignaffairs.com" target="_blank" class="tt-grid-item" title="Foreign Affairs">
+        <a href="javascript:void(0)" onclick="window.open('https://www.foreignaffairs.com')" class="tt-grid-item"
+          title="Foreign Affairs">
           <img src="https://www.google.com/s2/favicons?domain=foreignaffairs.com&sz=64" alt="FA">
         </a>
-        <a href="https://www.foreignpolicy.com" target="_blank" class="tt-grid-item" title="Foreign Policy">
+        <a href="javascript:void(0)" onclick="window.open('https://www.iiss.org')" class="tt-grid-item" title="IISS">
+          <img src="https://www.google.com/s2/favicons?domain=iiss.org&sz=64" alt="IISS">
+        </a>
+
+        <!-- Inside / Iframe (Right) -->
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.brookings.edu')" class="tt-grid-item"
+          title="Brookings Institution">
+          <img src="https://www.google.com/s2/favicons?domain=brookings.edu&sz=64" alt="Brookings">
+        </a>
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.cfr.org')" class="tt-grid-item"
+          title="Council on Foreign Relations">
+          <img src="https://www.google.com/s2/favicons?domain=cfr.org&sz=64" alt="CFR">
+        </a>
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.foreignpolicy.com')" class="tt-grid-item"
+          title="Foreign Policy">
           <img src="https://www.google.com/s2/favicons?domain=foreignpolicy.com&sz=64" alt="FP">
         </a>
-        <a href="https://thediplomat.com" target="_blank" class="tt-grid-item" title="The Diplomat">
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://thediplomat.com')" class="tt-grid-item"
+          title="The Diplomat">
           <img src="https://www.google.com/s2/favicons?domain=thediplomat.com&sz=64" alt="Diplomat">
-        </a>
-        <a href="https://www.iiss.org" target="_blank" class="tt-grid-item" title="IISS">
-          <img src="https://www.google.com/s2/favicons?domain=iiss.org&sz=64" alt="IISS">
         </a>
       </div>
       <div style="flex:1; position:relative;">
@@ -1630,6 +1755,7 @@
     <div id="lmap"></div>
     <div id="cmap"></div>
     <canvas id="dc"></canvas>
+    <canvas id="pc"></canvas>
   </div>
 
   <!-- DRAW TOOLBAR -->
@@ -1655,11 +1781,31 @@
           stroke="currentColor" stroke-width="2">
           <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
         </svg></button>
-      <button class="db" id="dt-arrow" onclick="setMode('arrow')" title="ئوق سىزىق [2]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg></button>
+      <div style="position:relative">
+        <button class="db" id="dt-arrow-grp" onclick="toggleARP()" title="ئوق سىزىق تۈرلىرى [2]"><svg
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg></button>
+        <div class="arpop" id="arpop">
+          <div class="mi" onclick="setArrow('arrow')" title="تۈز ئوق"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg></div>
+          <div class="mi" onclick="setArrow('arrow2')" title="قوش ئۇچلۇق ئوق"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="7 5 2 12 7 19" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <polyline points="17 5 22 12 17 19" />
+            </svg></div>
+          <div class="mi" onclick="setArrow('arrow-free')" title="ئەگرى ئوق"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M3 12c3-10 15-10 18 0" />
+              <polyline points="16 10 21 12 16 14" />
+            </svg></div>
+        </div>
+      </div>
       <button class="db" id="dt-rect" onclick="setMode('rect')" title="تۆت تەرەپلىك [3]"><svg viewBox="0 0 24 24"
           fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -1676,29 +1822,71 @@
           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="2" y1="20" x2="22" y2="4" />
           <path d="M7 2l15 15" />
-          <line x1="12" y1="7" x2="17" y2="12" />
         </svg></button>
       <div class="dsep"></div>
-      <button class="db" id="dt-text" onclick="setMode('text')" title="خەت رامكا [6] — خەرىتىدىن چىكىڭ"><svg
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="4 7 4 4 20 4 20 7" />
-          <line x1="9" y1="20" x2="15" y2="20" />
-          <line x1="12" y1="4" x2="12" y2="20" />
-        </svg></button>
-      <button class="db" id="dt-callout" onclick="setMode('callout')" title="ئىزاھ رامكىسى [7] — خەرىتىدىن چىكىڭ"><svg
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg></button>
+      <div style="position:relative">
+        <button class="db" id="dt-anno" onclick="toggleAP()" title="ئىزاھات قوشۇش [6,7]"><svg viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            <path d="M9 10h6M9 14h6" />
+          </svg></button>
+        <div class="apop" id="apop">
+          <div class="mi" onclick="setAnno('text')" title="خەت رامكا"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="4 7 4 4 20 4 20 7" />
+              <line x1="9" y1="20" x2="15" y2="20" />
+              <line x1="12" y1="4" x2="12" y2="20" />
+            </svg></div>
+          <div class="mi" onclick="setAnno('callout')" title="ئىزاھ رامكا"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg></div>
+        </div>
+      </div>
       <div class="dsep"></div>
-      <button class="db" id="dt-marker" onclick="setMode('marker')" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <circle cx="12" cy="12" r="3" />
-          <line x1="12" y1="2" x2="12" y2="6" />
-          <line x1="12" y1="18" x2="12" y2="22" />
-          <line x1="2" y1="12" x2="6" y2="12" />
-          <line x1="18" y1="12" x2="22" y2="12" />
-        </svg></button>
+      <div style="position:relative">
+        <button class="db" id="dt-marker" onclick="toggleMP()" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="3" />
+            <line x1="12" y1="2" x2="12" y2="6" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="6" y2="12" />
+            <line x1="18" y1="12" x2="22" y2="12" />
+          </svg></button>
+        <div class="mpop" id="mpop">
+          <div class="mi on" onclick="setMarker('default',this)" title="نىشان"><i class="fas fa-crosshairs"></i></div>
+          <div class="mi" onclick="setMarker('01%20(1).png',this)"><img src="icons/01%20(1).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(2).png',this)"><img src="icons/01%20(2).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(3).png',this)"><img src="icons/01%20(3).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(4).png',this)"><img src="icons/01%20(4).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(5).png',this)"><img src="icons/01%20(5).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(6).png',this)"><img src="icons/01%20(6).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(7).png',this)"><img src="icons/01%20(7).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(8).png',this)"><img src="icons/01%20(8).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(9).png',this)"><img src="icons/01%20(9).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(10).png',this)"><img src="icons/01%20(10).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(11).png',this)"><img src="icons/01%20(11).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(12).png',this)"><img src="icons/01%20(12).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(13).png',this)"><img src="icons/01%20(13).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(14).png',this)"><img src="icons/01%20(14).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(15).png',this)"><img src="icons/01%20(15).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(16).png',this)"><img src="icons/01%20(16).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(17).png',this)"><img src="icons/01%20(17).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(18).png',this)"><img src="icons/01%20(18).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(19).png',this)"><img src="icons/01%20(19).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(20).png',this)"><img src="icons/01%20(20).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(21).png',this)"><img src="icons/01%20(21).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(22).png',this)"><img src="icons/01%20(22).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(23).png',this)"><img src="icons/01%20(23).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(24).png',this)"><img src="icons/01%20(24).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(25).png',this)"><img src="icons/01%20(25).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(26).png',this)"><img src="icons/01%20(26).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(27).png',this)"><img src="icons/01%20(27).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(28).png',this)"><img src="icons/01%20(28).png" width="24"></div>
+          <div class="mi" onclick="setMarker('01%20(29).png',this)"><img src="icons/01%20(29).png" width="24"></div>
+        </div>
+      </div>
       <div style="position:relative">
         <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24"
             fill="currentColor">
@@ -1719,7 +1907,7 @@
           <path d="M21 5l-8 8" />
           <rect x="2" y="14" width="8" height="8" rx="1" />
         </svg></button>
-      <button class="db del" onclick="clearAll()" title="ھەممىنى ئۆچۈر"><svg viewBox="0 0 24 24" fill="none"
+      <button class="db del" onclick="clearEverything()" title="ھەممىنى ئۆچۈر"><svg viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2">
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6l-1 14H6L5 6" />
@@ -1813,7 +2001,7 @@
     // ============================================================
     // STATE
     // ============================================================
-    let map = null, globeInst = null, tileLayer = null, ctx = null;
+    let map = null, globeInst = null, tileLayer = null, ctx = null, pctx = null;
     let mapMode = '2d', labelsOn = true, panelOpen = true;
     let drawMode = null, isDrawing = false, fillOn = false;
     let drawColor = '#ef4444', strokeW = 3;
@@ -1821,7 +2009,7 @@
     let snapStack = [], redoStack = [];
     let activeEl = null, textBoxes = [], callouts = [];
     let textMapHandler = null;
-    let curCalloutStyle = 'gold';
+    let curCalloutStyle = 'gold', curMarkerType = 'default', curMarkerEl = null;
     let mediaRec = null, mediaStream = null, recTimer = null, recSecs = 0, recChunks = [];
     let timerIntvl = null, timerSecs = 0, timerRunning = false;
     let fmtSt = { font: "'UKIJ','Arial'", size: '18', lh: '1.8', align: 'right', indent: false, ul: false, strike: false, col: '#ffffff' };
@@ -1837,7 +2025,12 @@
       lightnolabels: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
       street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      topo: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+      topo: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      'esri-street': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      'esri-topo': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      'stadia-smooth': 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+      'usgs-sat': 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
+      'opentopo': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
     };
 
 
@@ -1847,7 +2040,7 @@
     // ============================================================
     function initMap() {
       map = L.map('lmap', { center: [30, 20], zoom: 3, zoomControl: true, attributionControl: false });
-      setLayer('dark', document.querySelector('.ddi'));
+      setLayer('lightnolabels', null);
       initCanvas();
       initLabels();
       buildQuickList();
@@ -1884,8 +2077,7 @@
     function setTheme(t) {
       document.getElementById('btnDay').classList.toggle('on', t === 'day');
       document.getElementById('btnNight').classList.toggle('on', t === 'night');
-      setLayer(t === 'night' ? 'dark' : 'light', null);
-      document.querySelectorAll('.ddi').forEach((d, i) => d.classList.toggle('on', (t === 'night' && i === 0) || (t === 'day' && i === 1)));
+      setLayer(t === 'night' ? 'dark' : 'street', null);
     }
 
     // ============================================================
@@ -1930,13 +2122,16 @@
     // ============================================================
     function initCanvas() {
       const cvs = document.getElementById('dc');
+      const pcvs = document.getElementById('pc');
       const wrap = document.getElementById('mwrap');
       ctx = cvs.getContext('2d');
+      pctx = pcvs.getContext('2d');
 
       function resize() {
         const w = wrap.offsetWidth, h = wrap.offsetHeight;
-        const url = (cvs.width > 0 && cvs.height > 0) ? cvs.toDataURL() : null;
-        cvs.width = w; cvs.height = h;
+        let url = null;
+        try { if (cvs.width > 0 && cvs.height > 0) url = cvs.toDataURL(); } catch (e) { }
+        cvs.width = pcvs.width = w; cvs.height = pcvs.height = h;
         if (url) { const im = new Image(); im.onload = () => ctx.drawImage(im, 0, 0); im.src = url; }
         snapStack = []; redoStack = [];
       }
@@ -1952,134 +2147,199 @@
       cvs.addEventListener('touchend', e => { e.preventDefault(); onDE(e.changedTouches[0]); }, { passive: false });
     }
 
+    const markerCache = {};
     function getPos(e) {
       const r = document.getElementById('dc').getBoundingClientRect();
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     }
     function getCvs() { return document.getElementById('dc'); }
-    function setupCtx() {
-      ctx.strokeStyle = drawColor; ctx.fillStyle = drawColor + '44';
-      ctx.lineWidth = strokeW; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      ctx.globalCompositeOperation = 'source-over'; ctx.setLineDash([]);
+    function setupCtx(c, fullOpacity = false) {
+      c.strokeStyle = drawColor;
+      c.fillStyle = fullOpacity ? drawColor : drawColor + '44';
+      c.lineWidth = strokeW; c.lineCap = 'round'; c.lineJoin = 'round';
+      c.globalCompositeOperation = 'source-over'; c.setLineDash([]);
+      c.shadowBlur = 0; c.globalAlpha = 1.0;
     }
     function saveSnap() {
-      const c = getCvs();
-      snapStack.push(ctx.getImageData(0, 0, c.width, c.height));
-      if (snapStack.length > 40) snapStack.shift();
-      redoStack = [];
+      try {
+        const c = getCvs();
+        snapStack.push(ctx.getImageData(0, 0, c.width, c.height));
+        if (snapStack.length > 40) snapStack.shift();
+        redoStack = [];
+      } catch (e) { console.error("Snap error:", e); }
     }
     function undoDraw() {
       if (!snapStack.length) return;
       const c = getCvs();
-      redoStack.push(ctx.getImageData(0, 0, c.width, c.height));
+      try { redoStack.push(ctx.getImageData(0, 0, c.width, c.height)); } catch (e) { }
       ctx.putImageData(snapStack.pop(), 0, 0);
     }
     function redoDraw() {
       if (!redoStack.length) return;
       const c = getCvs();
-      snapStack.push(ctx.getImageData(0, 0, c.width, c.height));
+      try { snapStack.push(ctx.getImageData(0, 0, c.width, c.height)); } catch (e) { }
       ctx.putImageData(redoStack.pop(), 0, 0);
     }
     function clearAll() {
       saveSnap();
       const c = getCvs();
       ctx.clearRect(0, 0, c.width, c.height);
+      pctx.clearRect(0, 0, c.width, c.height);
+    }
+    function clearEverything() {
+      if (confirm('ھەممىنى ئۆچۈرەمسىز؟ (سىزمىلار ۋە ئىزاھلار)')) {
+        clearAll();
+        clearAnnotations();
+      }
+    }
+    function clearAnnotations() {
+      saveSnap();
+      document.querySelectorAll('.ugtb, .callout').forEach(el => el.remove());
+      textBoxes = []; callouts = [];
     }
 
     function onDS(e) {
       if (!drawMode) return;
       const p = getPos(e); startX = p.x; startY = p.y;
-      if (drawMode === 'pen' || drawMode === 'erase') {
+      if (drawMode === 'pen' || drawMode === 'erase' || drawMode === 'arrow-free') {
         isDrawing = true; saveSnap();
         ctx.beginPath(); ctx.moveTo(startX, startY);
+        if (drawMode === 'arrow-free') polyPts = [{ x: startX, y: startY }];
         if (drawMode === 'erase') { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = strokeW * 5; }
-        else setupCtx();
+        else setupCtx(ctx);
       } else if (drawMode === 'poly') {
         if (!isDrawing) { isDrawing = true; saveSnap(); polyPts = [{ x: startX, y: startY }]; }
-        else { polyPts.push({ x: startX, y: startY }); ctx.putImageData(lastSnap, 0, 0); drawPolyPrev(); }
-        const c = getCvs(); lastSnap = ctx.getImageData(0, 0, c.width, c.height);
+        else { polyPts.push({ x: startX, y: startY }); setupCtx(ctx); drawPolyPrev(ctx); }
       } else {
         isDrawing = true; saveSnap();
-        const c = getCvs(); lastSnap = ctx.getImageData(0, 0, c.width, c.height);
       }
     }
     function onDM(e) {
       if (!isDrawing || !drawMode) return;
       const p = getPos(e);
-      if (drawMode === 'pen') { setupCtx(); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+      if (drawMode === 'pen' || drawMode === 'arrow-free') {
+        setupCtx(ctx); ctx.lineTo(p.x, p.y); ctx.stroke();
+        if (drawMode === 'arrow-free') polyPts.push({ x: p.x, y: p.y });
+      }
       else if (drawMode === 'erase') { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = strokeW * 5; ctx.lineTo(p.x, p.y); ctx.stroke(); }
-      else if (drawMode === 'poly') {
-        if (!lastSnap) return;
-        ctx.putImageData(lastSnap, 0, 0); drawPolyPrev();
-        setupCtx(); ctx.setLineDash([5, 4]);
-        const L = polyPts[polyPts.length - 1];
-        ctx.beginPath(); ctx.moveTo(L.x, L.y); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.setLineDash([]);
-      } else { ctx.putImageData(lastSnap, 0, 0); setupCtx(); drawShape(drawMode, startX, startY, p.x, p.y); }
+      else {
+        pctx.clearRect(0, 0, pctx.canvas.width, pctx.canvas.height);
+        setupCtx(pctx);
+        if (drawMode === 'poly') {
+          drawPolyPrev(pctx);
+          pctx.setLineDash([5, 4]);
+          const L = polyPts[polyPts.length - 1];
+          pctx.beginPath(); pctx.moveTo(L.x, L.y); pctx.lineTo(p.x, p.y); pctx.stroke();
+        } else {
+          drawShape(pctx, drawMode, startX, startY, p.x, p.y);
+        }
+      }
     }
     function onDE(e) {
       if (!isDrawing || !drawMode || drawMode === 'poly') return;
       const p = getPos(e);
-      if (drawMode !== 'pen' && drawMode !== 'erase') { ctx.putImageData(lastSnap, 0, 0); setupCtx(); drawShape(drawMode, startX, startY, p.x, p.y); }
-      isDrawing = false; ctx.globalCompositeOperation = 'source-over'; ctx.setLineDash([]);
+      pctx.clearRect(0, 0, pctx.canvas.width, pctx.canvas.height);
+      setupCtx(ctx);
+      if (drawMode === 'arrow-free' && polyPts.length > 2) {
+        const p1 = polyPts[polyPts.length - 2], p2 = polyPts[polyPts.length - 1];
+        const ang = Math.atan2(p2.y - p1.y, p2.x - p1.x), hl = Math.max(18, strokeW * 5), ha = Math.PI / 6;
+        ctx.beginPath(); ctx.moveTo(p2.x, p2.y);
+        ctx.lineTo(p2.x - hl * Math.cos(ang - ha), p2.y - hl * Math.sin(ang - ha));
+        ctx.lineTo(p2.x - hl * Math.cos(ang + ha), p2.y - hl * Math.sin(ang + ha));
+        ctx.closePath(); ctx.fillStyle = drawColor; ctx.fill();
+      } else {
+        drawShape(ctx, drawMode, startX, startY, p.x, p.y);
+      }
+      isDrawing = false;
     }
     function onDD(e) {
       if (drawMode !== 'poly') return;
+      pctx.clearRect(0, 0, pctx.canvas.width, pctx.canvas.height);
       if (polyPts.length >= 2) {
-        ctx.putImageData(lastSnap, 0, 0); setupCtx();
+        setupCtx(ctx);
         ctx.beginPath(); ctx.moveTo(polyPts[0].x, polyPts[0].y);
         polyPts.forEach(pt => ctx.lineTo(pt.x, pt.y));
         ctx.closePath(); if (fillOn) ctx.fill(); ctx.stroke();
-      }
-      isDrawing = false; polyPts = []; lastSnap = null;
-    }
-    function drawPolyPrev() {
-      if (!polyPts.length) return;
-      setupCtx(); ctx.beginPath(); ctx.moveTo(polyPts[0].x, polyPts[0].y);
-      polyPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
-      polyPts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fillStyle = drawColor; ctx.fill(); });
-    }
-    function drawShape(m, x1, y1, x2, y2) {
-      setupCtx(); ctx.beginPath();
-      if (m === 'rect') { ctx.rect(x1, y1, x2 - x1, y2 - y1); if (fillOn) ctx.fill(); ctx.stroke(); }
-      else if (m === 'line') { ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
-      else if (m === 'tri') {
-        ctx.moveTo(x1 + (x2 - x1) / 2, y1); ctx.lineTo(x2, y2); ctx.lineTo(x1, y2); ctx.closePath();
-        if (fillOn) ctx.fill(); ctx.stroke();
-      }
-      else if (m === 'marker') {
-        const r = Math.max(12, Math.hypot(x2 - x1, y2 - y1));
-        ctx.arc(x1, y1, r, 0, Math.PI * 2);
-        ctx.moveTo(x1 - r * 1.4, y1); ctx.lineTo(x1 + r * 1.4, y1);
-        ctx.moveTo(x1, y1 - r * 1.4); ctx.lineTo(x1, y1 + r * 1.4);
-        ctx.stroke();
-        ctx.beginPath(); ctx.arc(x1, y1, r * 0.25, 0, Math.PI * 2); ctx.fillStyle = drawColor; ctx.fill();
-      }
-      else if (m === 'measure') {
-        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        // Calculate Distance
-        if (map) {
-          const p1 = map.containerPointToLatLng([x1, y1]);
-          const p2 = map.containerPointToLatLng([x2, y2]);
-          const d = p1.distanceTo(p2); // meters
-          const distTxt = d > 1000 ? (d / 1000).toFixed(2) + ' km' : d.toFixed(0) + ' m';
-          ctx.font = 'bold 14px UKIJ, Arial';
-          ctx.fillStyle = drawColor;
-          ctx.strokeStyle = '#000';
-          ctx.lineWidth = 3;
-          ctx.strokeText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
-          ctx.fillText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
+        if (map && polyPts.length > 2) {
+          const latlngs = polyPts.map(p => map.containerPointToLatLng([p.x, p.y]));
+          let area = 0;
+          for (let i = 0; i < latlngs.length; i++) {
+            const p1 = latlngs[i], p2 = latlngs[(i + 1) % latlngs.length];
+            area += (p2.lng - p1.lng) * (2 + Math.sin(p1.lat * Math.PI / 180) + Math.sin(p2.lat * Math.PI / 180));
+          }
+          area = Math.abs(area * 6378137 * 6378137 / 2.0 * Math.PI / 180);
+          const areaTxt = (area / 1000000).toFixed(2) + " km²";
+          let cx = 0, cy = 0; polyPts.forEach(p => { cx += p.x; cy += p.y; });
+          cx /= polyPts.length; cy /= polyPts.length;
+          ctx.font = 'bold 15px UKIJ, Arial'; ctx.direction = 'ltr'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
+          ctx.strokeText(areaTxt, cx, cy + 20); ctx.fillText(areaTxt, cx, cy + 20); ctx.direction = 'rtl';
         }
       }
-      else if (m === 'arrow') drawArrow(x1, y1, x2, y2);
+      isDrawing = false; polyPts = [];
     }
-    function drawArrow(x1, y1, x2, y2) {
-      const ang = Math.atan2(y2 - y1, x2 - x1), hl = Math.max(18, strokeW * 5), ha = Math.PI / 6;
-      setupCtx();
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(x2, y2);
-      ctx.lineTo(x2 - hl * Math.cos(ang - ha), y2 - hl * Math.sin(ang - ha));
-      ctx.lineTo(x2 - hl * Math.cos(ang + ha), y2 - hl * Math.sin(ang + ha));
-      ctx.closePath(); ctx.fillStyle = drawColor; ctx.fill();
+    function drawPolyPrev(c) {
+      if (!polyPts.length) return;
+      setupCtx(c); c.beginPath(); c.moveTo(polyPts[0].x, polyPts[0].y);
+      polyPts.forEach(p => c.lineTo(p.x, p.y)); c.stroke();
+      polyPts.forEach(p => { c.beginPath(); c.arc(p.x, p.y, 4, 0, Math.PI * 2); c.fillStyle = drawColor; c.fill(); });
+    }
+    function drawShape(c, m, x1, y1, x2, y2) {
+      setupCtx(c);
+      if (m === 'rect') { c.beginPath(); c.rect(x1, y1, x2 - x1, y2 - y1); if (fillOn) c.fill(); c.stroke(); }
+      else if (m === 'line') { c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); }
+      else if (m === 'tri') {
+        c.beginPath(); c.moveTo(x1 + (x2 - x1) / 2, y1); c.lineTo(x2, y2); c.lineTo(x1, y2); c.closePath();
+        if (fillOn) c.fill(); c.stroke();
+      }
+      else if (m === 'arrow' || m === 'arrow2') {
+        c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+        const ang = Math.atan2(y2 - y1, x2 - x1), hl = Math.max(18, strokeW * 5), ha = Math.PI / 6;
+        c.beginPath(); c.moveTo(x2, y2);
+        c.lineTo(x2 - hl * Math.cos(ang - ha), y2 - hl * Math.sin(ang - ha));
+        c.lineTo(x2 - hl * Math.cos(ang + ha), y2 - hl * Math.sin(ang + ha));
+        c.closePath(); c.fillStyle = drawColor; c.fill();
+        if (m === 'arrow2') {
+          const ang2 = ang + Math.PI;
+          c.beginPath(); c.moveTo(x1, y1);
+          c.lineTo(x1 - hl * Math.cos(ang2 - ha), y1 - hl * Math.sin(ang2 - ha));
+          c.lineTo(x1 - hl * Math.cos(ang2 + ha), y1 - hl * Math.sin(ang2 + ha));
+          c.closePath(); c.fillStyle = drawColor; c.fill();
+        }
+      }
+      else if (m === 'marker') {
+        if (curMarkerType === 'default') {
+          setupCtx(c, true);
+          const r = Math.max(24, Math.hypot(x2 - x1, y2 - y1) * 2);
+          c.beginPath(); c.arc(x1, y1, r, 0, Math.PI * 2);
+          c.moveTo(x1 - r * 1.4, y1); c.lineTo(x1 + r * 1.4, y1);
+          c.moveTo(x1, y1 - r * 1.4); c.lineTo(x1, y1 + r * 1.4);
+          c.stroke();
+          c.beginPath(); c.arc(x1, y1, r * 0.25, 0, Math.PI * 2); c.fillStyle = drawColor; c.fill();
+        } else {
+          const size = Math.max(40, Math.hypot(x2 - x1, y2 - y1) * 2);
+          if (curMarkerEl && curMarkerEl.complete && curMarkerEl.naturalWidth > 0) {
+            c.save(); c.translate(x1, y1);
+            c.drawImage(curMarkerEl, -size / 2, -size / 2, size, size);
+            c.restore();
+          } else {
+            c.strokeStyle = drawColor; c.lineWidth = 2;
+            c.beginPath(); c.moveTo(-10, 0); c.lineTo(10, 0); c.moveTo(0, -10); c.lineTo(0, 10); c.stroke();
+          }
+        }
+      }
+      else if (m === 'measure') {
+        c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+        if (map) {
+          const p1 = map.containerPointToLatLng([x1, y1]), p2 = map.containerPointToLatLng([x2, y2]);
+          const d = p1.distanceTo(p2);
+          const distTxt = d > 1000 ? (d / 1000).toFixed(2) + " km" : d.toFixed(0) + " m";
+          c.save(); c.font = 'bold 14px UKIJ, Arial'; c.direction = 'ltr'; c.fillStyle = drawColor;
+          c.strokeStyle = '#000'; c.lineWidth = 3;
+          c.strokeText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
+          c.fillText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
+          c.restore();
+        }
+      }
     }
 
     // ============================================================
@@ -2124,6 +2384,19 @@
     function setCol(v) { drawColor = v; document.getElementById('cprev').style.background = v; }
     function setW(v) { strokeW = parseInt(v, 10); document.getElementById('wval').textContent = v; }
     function toggleWP() { document.getElementById('wpop').classList.toggle('open'); }
+    function toggleMP() { document.getElementById('mpop').classList.toggle('open'); setMode('marker'); }
+    function toggleAP() { document.getElementById('apop').classList.toggle('open'); }
+    function setAnno(m) { setMode(m); toggleAP(); }
+    function toggleARP() { document.getElementById('arpop').classList.toggle('open'); }
+    function setArrow(m) { setMode(m); toggleARP(); }
+    function setMarker(t, el) {
+      curMarkerType = t;
+      curMarkerEl = el.querySelector('img');
+      setMode('marker');
+      document.querySelectorAll('.mi').forEach(m => m.classList.remove('on'));
+      if (el) el.classList.add('on');
+      document.getElementById('mpop').classList.remove('open');
+    }
 
     // ============================================================
     // TEXT BOXES
@@ -2224,12 +2497,38 @@
         const cls = { city: 'city', ocean: 'ocean', sea: 'ocean', continent: 'continent', region: 'region' }[item.t] || 'country';
         const icon = L.divIcon({
           className: '',
-          html: `<span class="ugl ${cls}" id="L${item.id}" ondblclick="editLbl(event,'${item.id}')" title="قوش چىك = ئۆزگەرتىش">${item.n}</span>`,
+          html: `<span class="ugl ${cls}" id="L${item.id}" onclick="searchPlace('${item.n}')" ondblclick="editLbl(event,'${item.id}')" title="چىكىڭ = ئىزدەش | قوش چىك = ئۆزگەرتىش">${item.n}</span>`,
           iconSize: [140, 22], iconAnchor: [70, 11]
         });
         L.marker([item.lat, item.lng], { icon, interactive: true, zIndexOffset: item.t === 'city' ? 200 : 50 }).addTo(map);
       });
       updateLblVis();
+    }
+    function searchPlace(name) {
+      if (!rpOpen) toggleRP();
+      const frame = document.getElementById('news-frame');
+      if (frame) {
+        frame.src = `https://www.google.com/search?q=${encodeURIComponent(name)}+information&igu=1`;
+      }
+    }
+
+    function openLinkInFrame(url) {
+      const restricted = ['rand.org', 'chathamhouse.org', 'csis.org', 'heritage.org', 'foreignaffairs.com', 'iiss.org', 'cfr.org'];
+      const isRestricted = restricted.some(domain => url.includes(domain));
+
+      if (isRestricted) {
+        window.open(url, '_blank');
+        return;
+      }
+
+      if (!rpOpen) toggleRP();
+      const frame = document.getElementById('news-frame');
+      if (frame) frame.src = url;
+    }
+
+    function goHomeNews() {
+      const frame = document.getElementById('news-frame');
+      if (frame) frame.src = 'UyghurNews.html';
     }
     function updateLblVis() {
       if (!map) return;
@@ -2488,9 +2787,14 @@
     // SAVE IMAGE
     // ============================================================
     function saveImg() {
+      const c = getCvs(), pc = document.getElementById('pc'), temp = document.createElement('canvas');
+      temp.width = c.width; temp.height = c.height;
+      const tctx = temp.getContext('2d');
+      tctx.drawImage(c, 0, 0);
+      tctx.drawImage(pc, 0, 0);
       const a = document.createElement('a');
       a.download = 'bilik-geo-' + Date.now() + '.png';
-      a.href = getCvs().toDataURL('image/png'); a.click();
+      a.href = temp.toDataURL('image/png'); a.click();
     }
 
     // ============================================================
@@ -2522,7 +2826,13 @@
       closeAllDD(); if (!was) el.classList.add('open');
     }
     function closeAllDD() { document.querySelectorAll('.ddm').forEach(d => d.classList.remove('open')); }
-    document.addEventListener('click', e => { if (!e.target.closest('.ddw')) closeAllDD(); if (!e.target.closest('#dtb')) document.getElementById('wpop').classList.remove('open'); });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.ddw')) closeAllDD();
+      if (!e.target.closest('#dtb')) {
+        document.getElementById('wpop').classList.remove('open');
+        document.getElementById('mpop').classList.remove('open');
+      }
+    });
 
     // ============================================================
     // KEYBOARD SHORTCUTS
