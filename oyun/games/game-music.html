@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎵 مۇزىكا دۇنياسى: ناۋا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #1a0a2e; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(168, 85, 247, 0.8); }
+        #score { font-size: 2.8rem; font-weight: 800; color: #a855f7; }
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #ec4899; z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 10, 46, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #a855f7, #ec4899); color: white; border: none; border-radius: 50px; cursor: pointer; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #ec4899; text-shadow: 0 0 20px #a855f7; }
+        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 2px solid #a855f7; color: white; border-radius: 15px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ناۋا: 0</div></div>
+    <div id="combo-text">ناھايىتى ياخشى!</div>
+    <div id="overlay">
+        <h1>🎵 مۇزىكا دۇنياسى</h1>
+        <p>نوتىلارنى تۇتۇپ مۇزىكا ئاڭلاڭ! <br> "رەڭدار نوتىلار" 100 نومۇر بېرىدۇ. <br> ھېچقانداق يىقىلىش يوق، پەقەت مۇزىكا!</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, notes = [];
+        let score = 0, gameActive = false, audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playNote(freq, isSpecial) { if (!audioCtx) return; const t = audioCtx.currentTime; const play = (f, offset) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(f, t + offset); g.gain.setValueAtTime(0.2, t + offset); g.gain.exponentialRampToValueAtTime(0.01, t + offset + 0.5); o.connect(g); g.connect(audioCtx.destination); o.start(t + offset); o.stop(t + offset + 0.5); }; play(freq, 0); if (isSpecial) { play(freq * 1.25, 0); play(freq * 1.5, 0); } }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            new THREE.TextureLoader().load('pics/music_bg.png', (t) => scene.background = t);
+            scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 12;
+            window.addEventListener('mousedown', onCatch);
+            window.addEventListener('touchstart', e => { onCatch(e.touches[0]); e.preventDefault(); }, { passive: false });
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function spawnNote() {
+            const freqs = [261.63, 293.66, 329.63, 392.00, 440.00]; const isSpecial = Math.random() < 0.2;
+            const note = new THREE.Mesh(new THREE.TorusGeometry(1, 0.3, 16, 32), new THREE.MeshPhongMaterial({ color: isSpecial ? 0x00ff00 : 0xec4899 }));
+            note.position.set((Math.random() - 0.5) * 15, 10, 0);
+            note.userData = { freq: freqs[Math.floor(Math.random()*freqs.length)], isSpecial: isSpecial, speed: 0.04 + Math.random()*0.03 };
+            scene.add(note); notes.push(note);
+        }
+
+        function onCatch(e) {
+            if (!gameActive) return;
+            initAudio();
+            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(notes);
+            if (intersects.length > 0) {
+                const n = intersects[0].object; playNote(n.userData.freq, n.userData.isSpecial);
+                score += n.userData.isSpecial ? 100 : 20; document.getElementById('score').innerText = `ناۋا: ${score}`;
+                showCombo(n.userData.isSpecial ? "ئاجايىپ!" : "ناھايىتى ياخشى!");
+                scene.remove(n); notes = notes.filter(item => item !== n);
+            }
+        }
+
+        function startGame() {
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; document.getElementById('score').innerText = `ناۋا: 0`;
+            notes.forEach(n => scene.remove(n)); notes = [];
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) { if (Math.random() < 0.02) spawnNote(); for (let i = notes.length - 1; i >= 0; i--) { const n = notes[i]; n.position.y -= n.userData.speed; n.rotation.z += 0.03; if (n.position.y < -8) { scene.remove(n); notes.splice(i, 1); } } }
+            renderer.render(scene, camera);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>
