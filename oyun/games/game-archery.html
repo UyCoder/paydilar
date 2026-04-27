@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏹 ئوقيا ئېتىش: نىشاننى كۆزلە</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #2d6a4f; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 20px rgba(255,235,59,0.8); z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #ffeb3b, #fbc02d); color: #1b5e20; border: none; border-radius: 50px; cursor: pointer; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; }
+        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #ffeb3b; color: #1b5e20; border-radius: 15px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="combo-text">ئورۇنلۇق!</div>
+    <div id="overlay">
+        <h1>🏹 ئوقيا ئېتىش</h1>
+        <p>نىشانلارنى كۆزلەپ چىكىڭ! <br> "ئالتۇن نىشان" 200 نومۇر بېرىدۇ. <br> نىشانلار بەك چوڭ ۋە ئاسان.</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, targets = [];
+        let score = 0, gameActive = false, audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playShoot() { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(300, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            new THREE.TextureLoader().load('pics/archery_bg.png', (t) => scene.background = t);
+            scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 10;
+            window.addEventListener('mousedown', shoot);
+            window.addEventListener('touchstart', e => { shoot(e.touches[0]); e.preventDefault(); }, { passive: false });
+        }
+
+        function spawnTarget() {
+            const isGolden = Math.random() < 0.25;
+            const geo = new THREE.CylinderGeometry(2, 2, 0.2, 32); // Huge targets
+            const target = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: isGolden ? 0xffeb3b : 0xf44336 }));
+            target.rotation.x = Math.PI / 2; target.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 8, -15);
+            target.userData = { isGolden: isGolden, speed: (Math.random() - 0.5) * 0.03 };
+            scene.add(target); targets.push(target);
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function shoot(e) {
+            if (!gameActive) return;
+            initAudio(); playShoot();
+            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(targets);
+            if (intersects.length > 0) {
+                const t = intersects[0].object;
+                score += t.userData.isGolden ? 200 : 50; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                showCombo(t.userData.isGolden ? "مەرگەن!" : "ئورۇنلۇق!");
+                scene.remove(t); targets = targets.filter(item => item !== t);
+            }
+        }
+
+        function startGame() {
+            initAudio(); document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            targets.forEach(t => scene.remove(t)); targets = [];
+            for(let i=0; i<4; i++) spawnTarget();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) {
+                if (targets.length < 4) spawnTarget();
+                targets.forEach(t => { t.position.x += t.userData.speed; if (Math.abs(t.position.x) > 10) t.userData.speed *= -1; });
+            }
+            renderer.render(scene, camera);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>

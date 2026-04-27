@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🍇 مەرىپەت باغچىسى: مېۋە يىغىش</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87ceeb; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
+        #combo-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #ff00ff; z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #4caf50, #8bc34a); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 25px; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #4caf50; color: #1b5e20; border-radius: 15px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="combo-text">تاتلىق!</div>
+    <div id="overlay">
+        <h1>🍇 مەرىپەت باغچىسى</h1>
+        <p>مېۋىلەرنى سېۋەتكە يىغىڭ! <br> "رەڭدار ئالما" 200 نومۇر بېرىدۇ. <br> بارمىقىڭىز بىلەن سۆرەپ تۇتۇڭ. بەك ئاسان!</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, basket, fruits = [];
+        let score = 0, gameActive = false, audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playPop() { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            new THREE.TextureLoader().load('pics/wisdom_garden_bg.png', (t) => scene.background = t);
+            scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+            basket = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 4), new THREE.MeshPhongMaterial({ color: 0x8d6e63 }));
+            scene.add(basket); basket.position.y = -5; camera.position.z = 15;
+
+            const handleMove = x => { if (gameActive) basket.position.x = (x / window.innerWidth - 0.5) * 22; };
+            window.addEventListener('mousemove', e => handleMove(e.clientX));
+            window.addEventListener('touchmove', e => { handleMove(e.touches[0].clientX); e.preventDefault(); }, { passive: false });
+        }
+
+        function spawnFruit() {
+            const isSpecial = Math.random() < 0.2;
+            const geo = isSpecial ? new THREE.TorusKnotGeometry(0.7, 0.2, 64, 8) : new THREE.SphereGeometry(0.8, 16, 16);
+            const mat = new THREE.MeshPhongMaterial({ color: isSpecial ? 0x00ff00 : (Math.random() > 0.5 ? 0xff0000 : 0x9c27b0) });
+            const fruit = new THREE.Mesh(geo, mat);
+            fruit.position.set((Math.random() - 0.5) * 20, 12, 0);
+            fruit.userData = { isSpecial: isSpecial }; scene.add(fruit); fruits.push(fruit);
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function startGame() {
+            initAudio(); document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            fruits.forEach(f => scene.remove(f)); fruits = [];
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) {
+                if (Math.random() < 0.04) spawnFruit();
+                for (let i = fruits.length - 1; i >= 0; i--) {
+                    const f = fruits[i]; f.position.y -= 0.08 + (score / 5000);
+                    if (f.position.y < -4.5 && f.position.y > -6 && Math.abs(f.position.x - basket.position.x) < 3.5) {
+                        score += f.userData.isSpecial ? 200 : 20; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                        if (f.userData.isSpecial) showCombo("بەك تاتلىق!"); else if (score % 200 === 0) showCombo("قايتا تۇتۇڭ!");
+                        playPop(); scene.remove(f); fruits.splice(i, 1);
+                    } else if (f.position.y < -10) { scene.remove(f); fruits.splice(i, 1); }
+                }
+            }
+            renderer.render(scene, camera);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>

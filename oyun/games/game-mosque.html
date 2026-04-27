@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🕌 مەسچىت نۇرى: چىراغ يېقىش</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #011627; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 15px #00d4ff; }
+        #score { font-size: 2.8rem; font-weight: 800; color: #f9c74f; }
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #00d4ff; z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(1, 22, 39, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #00d4ff, #0066cc); color: white; border: none; border-radius: 60px; cursor: pointer; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #f9c74f; }
+        p { font-size: 1.5rem; max-width: 700px; text-align: center; line-height: 1.8; }
+        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 20px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">نۇرلار: 0</div></div>
+    <div id="combo-text">نۇرلۇق بولدى!</div>
+    <div id="overlay">
+        <h1>🕌 مەسچىت نۇرى</h1>
+        <p>مەسچىتنى يورۇتۇڭ! <br> چىراغلارنى چىكىپ يىغىڭ. <br> "چوڭ چىراغ" 200 نومۇر بېرىدۇ. بەك ئاسان!</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, mosque, lamps = [];
+        let score = 0, gameActive = false, audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSparkle(isBig) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(isBig ? 1200 : 800, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.5); }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 1));
+            const mGrp = new THREE.Group();
+            mGrp.add(new THREE.Mesh(new THREE.BoxGeometry(10, 5, 8), new THREE.MeshPhongMaterial({ color: 0xffffff })));
+            const dome = new THREE.Mesh(new THREE.SphereGeometry(3, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshPhongMaterial({ color: 0x00d4ff }));
+            dome.position.y = 2.5; mGrp.add(dome); scene.add(mGrp); mGrp.position.z = -15;
+            camera.position.set(0, 5, 15); camera.lookAt(0, 0, -10);
+            window.addEventListener('mousedown', onCollect);
+            window.addEventListener('touchstart', e => { onCollect(e.touches[0]); e.preventDefault(); }, { passive: false });
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function spawnLamp() {
+            const isBig = Math.random() < 0.2;
+            const lamp = new THREE.Mesh(new THREE.OctahedronGeometry(isBig ? 1.5 : 0.8, 0), new THREE.MeshPhongMaterial({ color: isBig ? 0xffffff : 0xf9c74f, emissive: isBig ? 0x00d4ff : 0xf9c74f }));
+            lamp.position.set((Math.random() - 0.5) * 18, (Math.random() * 8), -5 + Math.random() * 10);
+            lamp.userData = { isBig: isBig }; scene.add(lamp); lamps.push(lamp);
+        }
+
+        function onCollect(e) {
+            if (!gameActive) return;
+            initAudio();
+            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(lamps);
+            if (intersects.length > 0) {
+                const l = intersects[0].object; score += l.userData.isBig ? 200 : 50; document.getElementById('score').innerText = `نۇرلار: ${score}`;
+                showCombo(l.userData.isBig ? "مۇبارەك!" : "نۇرلۇق بولدى!"); playSparkle(l.userData.isBig);
+                scene.remove(l); lamps = lamps.filter(item => item !== l);
+            }
+        }
+
+        function startGame() {
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; document.getElementById('score').innerText = `نۇرلار: 0`;
+            lamps.forEach(l => scene.remove(l)); lamps = [];
+        }
+
+        function animate() { requestAnimationFrame(animate); if (gameActive) { if (Math.random() < 0.02) spawnLamp(); lamps.forEach(l => { l.rotation.y += 0.03; }); } renderer.render(scene, camera); }
+        init(); animate();
+    </script>
+</body>
+</html>

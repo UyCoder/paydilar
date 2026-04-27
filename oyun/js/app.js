@@ -50,11 +50,115 @@ const gamesList = [
     },
     {
         id: "game_airplane",
-        title: "ھەوايروتور كۇنۇپچىسى",
-        description: "شەرقىي تۈركىستان ھەوايروتورچىسى بولۇپ ئاسماندا ئۈچۈپ، دۈشمەن تۈرۈكلىرىنى يوقاتقان! باتۇرلۇق بىلەن ئۈچۈڭ.",
+        title: "شەرقىي تۈركىستان ھاۋا ئارمىيىسى",
+        description: "شەرقىي تۈركىستان زېمىنلىرىنىڭ ئاسمىنىدا خىتاي تاجاۋۇزلىرىنىڭ ئايروپىلانلىرىنى يوقۇتۇپ، ئۇلارغا تاجاۋۇزنىڭ تەمىنى تېتىتىپ قويۇڭ!!",
         icon: "fa-plane",
         url: "games/game-airplane.html",
         tags: ["ئاسمان", "جەڭ", "باتۇرلۇق", "تارىخ"]
+    },
+    {
+        id: "game_space",
+        title: "ئالەم كېمىسى: يۇلتۇز يىغىش",
+        description: "ئالەم بوشلۇقىدا يۇلتۇزلارنى يىغىڭ ۋە تاشلاردىن ساقلىنىڭ! كۇنۇپكا تاختىسىدىكى يۆنىلىش كۇنۇپكىلىرى بىلەن كېمىنى باشقۇرۇڭ.",
+        icon: "fa-rocket",
+        url: "games/game-space.html",
+        tags: ["3D", "ئالەم", "تېزلىك"]
+    },
+    {
+        id: "game_garden",
+        title: "مەرىپەت باغچىسى",
+        description: "باغچىدىكى پىشقان مېۋىلەرنى سېۋەتكە يىغىڭ! مائۇس ياكى بارمىقىڭىز بىلەن سېۋەتنى يۆتكەڭ.",
+        icon: "fa-seedling",
+        url: "games/game-garden.html",
+        tags: ["3D", "باغچە", "چاققانلىق"]
+    },
+    {
+        id: "game_run",
+        title: "كۆك بۆرەنىڭ تەۋەككۈلچىلىكى",
+        description: "كۆك بۆرە بىلەن تاغلار ئارىسىدا يۈگۈرۈڭ! تاشلاردىن ساقلىنىش ئۈچۈن سول ۋە ئوڭ كۇنۇپكىلارنى ئىشلىتىڭ.",
+        icon: "fa-paw",
+        url: "games/game-run.html",
+        tags: ["3D", "يۈگۈرۈش", "باتۇرلۇق"]
+    },
+    {
+        id: "game_archery",
+        title: "ئوقيا ئېتىش",
+        description: "نىشانلارنى كۆزلەپ ئوق ئېتىڭ! مائۇس بىلەن كۆزلەڭ ۋە چىكىپ ئوق ئېتىڭ. باتۇرلارنىڭ تاللىشى.",
+        icon: "fa-bullseye",
+        url: "games/game-archery.html",
+        tags: ["3D", "چاققانلىق", "باتۇرلۇق"]
+    },
+    {
+        id: "game_memory",
+        title: "خەزىنە ئىزدەش",
+        description: "ئوخشاش رەڭدىكى تاشلارنى تېپىپ ماسلاشتۇرۇڭ! تەپەككۇر ۋە ئەستە تۇتۇش قابىلىيىتىنى ئاشۇرىدۇ.",
+        icon: "fa-puzzle-piece",
+        url: "games/game-memory.html",
+        tags: ["3D", "تەپەككۇر", "ئەقىل"]
+    },
+    {
+        id: "game_balloon",
+        title: "ئۇچار شارلار",
+        description: "ئاسمانغا ئۆرلەۋاتقان شارلارنى پارتلىتىڭ! شارلارنى چىكىپ نومۇر يىغىڭ. قىزىقارلىق شار دۇنياسى.",
+        icon: "fa-certificate",
+        url: "games/game-balloon.html",
+        tags: ["3D", "شار", "خۇشاللىق"]
+    },
+    {
+        id: "game_music",
+        title: "مۇزىكا دۇنياسى",
+        description: "ئاسماندىن چۈشىۋاتقان مۇزىكا نوتىلىرىنى تۇتۇڭ! نوتىلارنى چىكىپ گۈزەل ئاۋازلارنى ئاڭلاڭ.",
+        icon: "fa-music",
+        url: "games/game-music.html",
+        tags: ["3D", "مۇزىكا", "سەنئەت"]
+    },
+    {
+        id: "game_builder",
+        title: "ئەقىللىق قۇرۇلۇشچى",
+        description: "تاشلاردىنى بىرىنىڭ ئۈستىگە بىرىنى تىزىپ، ئەڭ ئېگىز مۇنارنى سېلىڭ! سىز ئەڭ ئۇستا قۇرۇلۇشچى.",
+        icon: "fa-building",
+        url: "games/game-builder.html",
+        tags: ["3D", "قۇرۇلۇش", "سەۋر"]
+    },
+    {
+        id: "game_mosque",
+        title: "مەسچىت نۇرى",
+        description: "مەسچىتنى يورۇتۇش ئۈچۈن ئالتۇن چىراغلارنى يىغىڭ! نۇرلۇق مەسچىت سىزنى ساقلايدۇ.",
+        icon: "fa-mosque",
+        url: "games/game-mosque.html",
+        tags: ["3D", "ئىسلام", "نۇر"]
+    },
+    {
+        id: "game_halal",
+        title: "ھالال خەزىنە",
+        description: "مەززىلىك ھالال تائاملارنى سېۋەتكە يىغىڭ! نان، سامسا ۋە مېۋىلەر بىلەن داستىخاننى بېزەڭ.",
+        icon: "fa-utensils",
+        url: "games/game-halal.html",
+        tags: ["3D", "تائام", "ھالال"]
+    },
+    {
+        id: "game_morals",
+        title: "ئەخلاق يولى",
+        description: "ياخشى ئەمەللەر يېزىلغان سۇپىلارغا سەكرەپ، ئەڭ يۇقىرى چوققىغا يېتىڭ! ئەخلاق ئەڭ گۈزەل زىننەت.",
+        icon: "fa-rainbow",
+        url: "games/game-morals.html",
+        tags: ["3D", "ئەخلاق", "سەكرەش"]
+    },
+    {
+        id: "game_alphabet",
+        title: "ئەرەب ئەلىفباسى",
+        description: "ئاسماندىكى سىرلىق ھەرپلەرنى تېپىپ چىكىڭ! قۇرئان ھەرپلىرىنى ئۆگىنىش بەك قىزىقارلىق.",
+        icon: "fa-moon",
+        url: "games/game-alphabet.html",
+        tags: ["3D", "ھەرپ", "ئۆگىنىش"]
+    },
+    {
+        id: "game_camel",
+        title: "قۇتلۇق كارۋان",
+        description: "مۇقەددەس شەھەرلەرگە بىلىم توشۇۋاتقان تۆگىگە ياردەم بېرىڭ! تاشلاردىن ساقلىنىپ مەنزىلگە يېتىڭ.",
+        icon: "fa-route",
+        url: "games/game-camel.html",
+        tags: ["3D", "كارۋان", "سەپەر"]
     }
     // كېيىنكى ئويۇنلارنى مۇشۇ يەرگە قوشىسىز:
     // {
@@ -66,14 +170,14 @@ const gamesList = [
 
 function renderGames() {
     const grid = document.getElementById('gameGrid');
-    
+
     gamesList.forEach(game => {
         const card = document.createElement('a');
         card.href = game.url;
         card.className = 'game-card';
-        
+
         const tagsHtml = game.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-        
+
         card.innerHTML = `
             <div class="game-icon-wrapper">
                 <i class="fas ${game.icon}"></i>
@@ -84,7 +188,7 @@ function renderGames() {
                 ${tagsHtml}
             </div>
         `;
-        
+
         grid.appendChild(card);
     });
 }

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🚀 ئالەم كېمىسى: يۇلتۇز يىغىش</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,212,255,0.8); }
+        #score { font-size: 2.5rem; font-weight: 800; color: #00d4ff; }
+        #lives { font-size: 1.5rem; color: #ff4444; }
+        #combo-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 20px rgba(255,235,59,0.8); z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 18px 50px; font-size: 1.8rem; background: linear-gradient(135deg, #0066cc, #00d4ff); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 20px; box-shadow: 0 0 20px rgba(0,212,255,0.5); transition: all 0.3s; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #00d4ff; text-shadow: 0 0 20px #00d4ff; }
+        p { font-size: 1.5rem; max-width: 600px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 10px 25px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 15px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ئۇتۇق: 0</div><div id="lives">❤️❤️❤️❤️❤️</div></div>
+    <div id="combo-text">ئاپىرىن!</div>
+    <div id="overlay">
+        <h1>🚀 ئالەم كېمىسى</h1>
+        <p>يۇلتۇزلارنى يىغىڭ! ئالتۇن يۇلتۇز 100 نومۇر بېرىدۇ. <br> ئېكراننىڭ خالىغان يېرىنى بېسىپ باشقۇرۇڭ. بەك ئاسان!</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, ship, stars = [], obstacles = [];
+        let score = 0, lives = 5, gameActive = false, audioCtx;
+        let targetX = 0, targetY = 0;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function beep(f, d) { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            const pl = new THREE.PointLight(0x00d4ff, 1); pl.position.set(5, 5, 5); scene.add(pl);
+
+            ship = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.ConeGeometry(0.6, 2, 8), new THREE.MeshPhongMaterial({ color: 0x00d4ff }));
+            body.rotation.x = Math.PI / 2; ship.add(body); scene.add(ship);
+            ship.position.z = -5; camera.position.z = 5; camera.lookAt(0, 0, -10);
+
+            const handleInput = e => { if (gameActive) { targetX = ((e.clientX || e.touches[0].clientX) / window.innerWidth - 0.5) * 16; targetY = (0.5 - (e.clientY || e.touches[0].clientY) / window.innerHeight) * 10; } };
+            window.addEventListener('mousemove', handleInput);
+            window.addEventListener('touchmove', e => { handleInput(e); e.preventDefault(); }, { passive: false });
+        }
+
+        function spawnStar() {
+            const isGolden = Math.random() < 0.2;
+            const geo = isGolden ? new THREE.TorusKnotGeometry(0.6, 0.15, 64, 8) : new THREE.IcosahedronGeometry(0.6, 0);
+            const star = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: isGolden ? 0xffeb3b : 0x00d4ff }));
+            star.position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 15, -100);
+            star.userData = { isGolden: isGolden }; scene.add(star); stars.push(star);
+        }
+
+        function spawnObstacle() {
+            const obs = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8, 0), new THREE.MeshPhongMaterial({ color: 0x666666 }));
+            obs.position.set((Math.random() - 0.5) * 25, (Math.random() - 0.5) * 20, -120);
+            scene.add(obs); obstacles.push(obs);
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function startGame() {
+            initAudio(); document.getElementById('overlay').style.display = 'none';
+            score = 0; lives = 5; gameActive = true; updateUI();
+            stars.forEach(s => scene.remove(s)); obstacles.forEach(o => scene.remove(o));
+            stars = []; obstacles = [];
+        }
+
+        function updateUI() { document.getElementById('score').innerText = `ئۇتۇق: ${score}`; document.getElementById('lives').innerText = '❤️'.repeat(lives); }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) {
+                if (Math.random() < 0.04) spawnStar();
+                if (Math.random() < 0.015) spawnObstacle();
+                ship.position.x += (targetX - ship.position.x) * 0.1;
+                ship.position.y += (targetY - ship.position.y) * 0.1;
+                ship.rotation.z = (targetX - ship.position.x) * -0.5;
+
+                for (let i = stars.length - 1; i >= 0; i--) {
+                    const s = stars[i]; s.position.z += 0.35; s.rotation.y += 0.05;
+                    if (s.position.distanceTo(ship.position) < 1.8) {
+                        score += s.userData.isGolden ? 100 : 20; updateUI();
+                        if (s.userData.isGolden) showCombo("بەك ياخشى!"); else if (score % 100 === 0) showCombo("ئاپىرىن!");
+                        beep(s.userData.isGolden ? 800 : 600, 0.1);
+                        scene.remove(s); stars.splice(i, 1); continue;
+                    }
+                    if (s.position.z > 5) { scene.remove(s); stars.splice(i, 1); }
+                }
+
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    const o = obstacles[i]; o.position.z += 0.35;
+                    if (o.position.distanceTo(ship.position) < 1.5) {
+                        lives--; updateUI(); beep(200, 0.3, 'sawtooth');
+                        scene.remove(o); obstacles.splice(i, 1);
+                        if (lives <= 0) { gameActive = false; document.getElementById('overlay').style.display = 'flex'; }
+                        continue;
+                    }
+                    if (o.position.z > 5) { scene.remove(o); obstacles.splice(i, 1); }
+                }
+            }
+            renderer.render(scene, camera);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>

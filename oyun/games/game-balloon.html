@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎈 ئۇچار شارلار: شار پارتلىتىش</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Tajawal', sans-serif; color: white; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        #score { font-size: 2.8rem; font-weight: 800; color: #ff006e; }
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #ff006e; z-index: 50; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(135, 206, 235, 0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #ff006e, #ff85a1); color: white; border: none; border-radius: 50px; cursor: pointer; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #ff006e; text-shadow: 0 0 20px white; }
+        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #ff006e; color: #ff006e; border-radius: 15px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="combo-text">پارتلىدى!</div>
+    <div id="overlay">
+        <h1>🎈 ئۇچار شارلار</h1>
+        <p>شارلارنى پارتلىتىڭ! <br> "ئالتۇن شار" 100 نومۇر بېرىدۇ. <br> ھېچقانداق يىقىلىش يوق، پەقەت كۆڭۈل ئېچىش!</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+
+    <script>
+        let scene, camera, renderer, balloons = [];
+        let score = 0, gameActive = false, audioCtx;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playPop(isGolden) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(isGolden ? 1200 : 800, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+
+        function init() {
+            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            new THREE.TextureLoader().load('pics/balloon_bg.png', (t) => scene.background = t);
+            scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 15;
+            window.addEventListener('mousedown', onPop);
+            window.addEventListener('touchstart', e => { onPop(e.touches[0]); e.preventDefault(); }, { passive: false });
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+
+        function spawnBalloon() {
+            const isGolden = Math.random() < 0.2;
+            const geo = new THREE.SphereGeometry(1.5, 20, 20); geo.scale(1, 1.2, 1); // Huge balloons
+            const balloon = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: isGolden ? 0xffd700 : (Math.random()*0xffffff), transparent: true, opacity: 0.8 }));
+            balloon.position.set((Math.random() - 0.5) * 20, -12, Math.random() * 5);
+            balloon.userData = { isGolden: isGolden, speed: 0.03 + Math.random() * 0.04 }; scene.add(balloon); balloons.push(balloon);
+        }
+
+        function onPop(e) {
+            if (!gameActive) return;
+            initAudio();
+            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(balloons);
+            if (intersects.length > 0) {
+                const b = intersects[0].object; score += b.userData.isGolden ? 100 : 20; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                showCombo(b.userData.isGolden ? "مۇبارەك!" : "پارتلىدى!"); playPop(b.userData.isGolden);
+                scene.remove(b); balloons = balloons.filter(item => item !== b);
+            }
+        }
+
+        function startGame() {
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            balloons.forEach(b => scene.remove(b)); balloons = [];
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) { if (Math.random() < 0.025) spawnBalloon(); for (let i = balloons.length - 1; i >= 0; i--) { const b = balloons[i]; b.position.y += b.userData.speed; if (b.position.y > 15) { scene.remove(b); balloons.splice(i, 1); } } }
+            renderer.render(scene, camera);
+        }
+        init(); animate();
+    </script>
+</body>
+</html>
