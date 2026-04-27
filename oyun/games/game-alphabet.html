@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ug" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,26 +8,118 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #003049; font-family: 'Tajawal', sans-serif; color: white; }
-        canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px #d62828; }
-        #score { font-size: 2.5rem; font-weight: 800; color: #fcbf49; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #fcbf49; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 48, 73, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #fcbf49, #f77f00); color: #003049; border: none; border-radius: 60px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #fcbf49; }
-        p { font-size: 1.5rem; max-width: 700px; text-align: center; line-height: 1.8; }
-        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(214, 40, 40, 0.1); border: 2px solid #d62828; color: white; border-radius: 20px; cursor: pointer; text-decoration: none; }
-        #letter-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15rem; font-weight: 800; color: #fcbf49; pointer-events: none; text-shadow: 0 0 50px rgba(252, 191, 73, 0.5); display: none; }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #003049;
+            font-family: 'Tajawal', sans-serif;
+            color: white;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #ui {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            pointer-events: none;
+            text-shadow: 0 0 10px #d62828;
+        }
+
+        #score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fcbf49;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 48, 73, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            backdrop-filter: blur(15px);
+        }
+
+        .btn {
+            padding: 18px 60px;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fcbf49, #f77f00);
+            color: #003049;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
+            margin-top: 25px;
+            box-shadow: 0 10px 30px rgba(252, 191, 73, 0.4);
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            color: #fcbf49;
+        }
+
+        p {
+            font-size: 1.5rem;
+            max-width: 700px;
+            text-align: center;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        #back-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            padding: 12px 35px;
+            background: rgba(214, 40, 40, 0.1);
+            border: 2px solid #d62828;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        #letter-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15rem;
+            font-weight: 800;
+            color: #fcbf49;
+            pointer-events: none;
+            text-shadow: 0 0 50px rgba(252, 191, 73, 0.5);
+            display: none;
+        }
     </style>
 </head>
+
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="ui">
+        <div id="score">باغلانغانلار: 0</div>
+    </div>
     <div id="letter-display">ا</div>
-    <div id="combo-text">ياخشى!</div>
     <div id="overlay">
         <h1>🌙 ئەرەب ئەلىفباسى</h1>
-        <p>ھەرپلەرنى تېپىپ ئۆگىنىڭ! <br> "ئالتۇن ھەرپ" 200 نومۇر بېرىدۇ. <br> ھېچقانداق يىقىلىش يوق، بەك ئاسان!</p>
+        <p>ئاسماندىكى سىرلىق ھەرپلەرنى تېپىپ چىكىڭ! <br> قۇرئان ھەرپلىرىنى ئۆگىنىش بەك قىزىقارلىق.</p>
         <button class="btn" onclick="startGame()">باشلاش</button>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
@@ -37,24 +130,47 @@
         const alphabet = ["ا", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playTone(freq, isSpecial) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(isSpecial ? 800 : freq, audioCtx.currentTime); g.gain.setValueAtTime(0.2, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.6); }
+        function playTone(freq) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        }
 
         function init() {
             scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 15;
+            scene.background = new THREE.Color(0x003049);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const pl = new THREE.PointLight(0xfcbf49, 1.5, 50); pl.position.set(0, 5, 5); scene.add(pl);
+
+            // Stars
+            const sGeo = new THREE.BufferGeometry();
+            const sPos = [];
+            for (let i = 0; i < 2000; i++) { sPos.push((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200); }
+            sGeo.setAttribute('position', new THREE.Float32BufferAttribute(sPos, 3));
+            scene.add(new THREE.Points(sGeo, new THREE.PointsMaterial({ color: 0xffffff })));
+
+            camera.position.z = 15;
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
             window.addEventListener('mousedown', onCollect);
-            window.addEventListener('touchstart', e => { onCollect(e.touches[0]); e.preventDefault(); }, { passive: false });
+            window.addEventListener('touchstart', (e) => { onCollect(e.touches[0]); e.preventDefault(); }, { passive: false });
         }
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
-
         function spawnLetter() {
-            const isSpecial = Math.random() < 0.25; const char = alphabet[Math.floor(Math.random() * alphabet.length)];
-            const mesh = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.4, 16, 32), new THREE.MeshPhongMaterial({ color: isSpecial ? 0xffd700 : 0xfcbf49 }));
+            const char = alphabet[Math.floor(Math.random() * alphabet.length)];
+            const geo = new THREE.TorusKnotGeometry(0.8, 0.2, 64, 8);
+            const mat = new THREE.MeshPhongMaterial({ color: 0xfcbf49, emissive: 0xd62828, emissiveIntensity: 0.5 });
+            const mesh = new THREE.Mesh(geo, mat);
             mesh.position.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 12, Math.random() * -10);
-            mesh.userData = { char: char, isSpecial: isSpecial }; scene.add(mesh); letters.push(mesh);
+            mesh.userData.char = char;
+            scene.add(mesh); letters.push(mesh);
         }
 
         function onCollect(e) {
@@ -64,22 +180,37 @@
             const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(letters);
             if (intersects.length > 0) {
-                const l = intersects[0].object; score += l.userData.isSpecial ? 200 : 50; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
-                showLetter(l.userData.char); showCombo(l.userData.isSpecial ? "ئەزىمەت!" : "ياخشى!"); playTone(400 + alphabet.indexOf(l.userData.char) * 10, l.userData.isSpecial);
+                const l = intersects[0].object;
+                const char = l.userData.char;
+                showLetter(char);
                 scene.remove(l); letters = letters.filter(item => item !== l);
+                score++; document.getElementById('score').innerText = `باغلانغانلار: ${score}`;
+                playTone(400 + alphabet.indexOf(char) * 20);
             }
         }
 
-        function showLetter(char) { const disp = document.getElementById('letter-display'); disp.innerText = char; disp.style.display = 'block'; setTimeout(() => disp.style.display = 'none', 1000); }
+        function showLetter(char) {
+            const disp = document.getElementById('letter-display');
+            disp.innerText = char; disp.style.display = 'block';
+            setTimeout(() => disp.style.display = 'none', 1000);
+        }
 
         function startGame() {
             document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            score = 0; gameActive = true;
             letters.forEach(l => scene.remove(l)); letters = [];
         }
 
-        function animate() { requestAnimationFrame(animate); if (gameActive) { if (Math.random() < 0.02 && letters.length < 6) spawnLetter(); letters.forEach(l => { l.rotation.y += 0.02; }); } renderer.render(scene, camera); }
+        function animate() {
+            requestAnimationFrame(animate);
+            if (gameActive) {
+                if (Math.random() < 0.03 && letters.length < 10) spawnLetter();
+                letters.forEach(l => { l.rotation.y += 0.02; l.rotation.x += 0.01; });
+            }
+            renderer.render(scene, camera);
+        }
         init(); animate();
     </script>
 </body>
+
 </html>
