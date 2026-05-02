@@ -70,6 +70,11 @@
       }
     }
 
+    @keyframes gpsPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,.7), 0 0 0 4px rgba(59,130,246,.2); }
+      50% { box-shadow: 0 0 0 8px rgba(59,130,246,0), 0 0 0 14px rgba(59,130,246,0); }
+    }
+
     @keyframes rpulse {
 
       0%,
@@ -1551,34 +1556,6 @@
       <span class="badge">v3.0</span>
     </div>
     <div class="tr">
-      <button class="tbtn on" id="btn2d" onclick="setMapMode('2d')"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-          <line x1="2" y1="10" x2="22" y2="10" />
-          <line x1="8" y1="4" x2="8" y2="20" />
-        </svg><span>2D</span></button>
-      <button class="tbtn" id="btn3d" onclick="setMapMode('3d')"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-          <path d="M2 12h20" />
-        </svg><span>3D</span></button>
-      <div class="tsep"></div>
-      <button class="tbtn on" id="btnDay" onclick="setTheme('day')"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="5" />
-          <line x1="12" y1="1" x2="12" y2="3" />
-          <line x1="12" y1="21" x2="12" y2="23" />
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-          <line x1="1" y1="12" x2="3" y2="12" />
-          <line x1="21" y1="12" x2="23" y2="12" />
-        </svg><span>كۈندۈز</span></button>
-      <button class="tbtn" id="btnNight" onclick="setTheme('night')"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg><span>كېچە</span></button>
-      <div class="tsep"></div>
       <div class="ddw">
         <button class="tbtn" onclick="toggleDD('layer-dd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2">
@@ -1587,50 +1564,89 @@
             <polyline points="2 12 12 17 22 12" />
           </svg><span>قاتلام</span></button>
         <div class="ddm" id="layer-dd">
-          <div class="ddi on" onclick="setLayer('dark',this)"><span class="dot"
-              style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
-          <div class="ddi" onclick="setLayer('nolabels',this)"><span class="dot"
-              style="background:#0f172a"></span>قاراڭغۇ (خەتسىز ساپ)</div>
-          <div class="ddi" onclick="setLayer('light',this)"><span class="dot" style="background:#ddd8cc"></span>يورۇق
-          </div>
-          <div class="ddi" onclick="setLayer('lightnolabels',this)"><span class="dot"
-              style="background:#f1f5f9"></span>يورۇق (خەتسىز ساپ)</div>
-          <div class="ddi" onclick="setLayer('street',this)"><span class="dot"
-              style="background:#4a7a2a"></span>ئۆلچەملىك</div>
-          <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot"
-              style="background:#1a3050"></span>سۈنئىي ھەمراھ</div>
-          <div class="ddi" onclick="setLayer('topo',this)"><span class="dot"
-              style="background:#6a9a5a"></span>توپوگرافىيە</div>
-          <div class="ddi" onclick="setLayer('esri-street',this)"><span class="dot"
-              style="background:#2b5a9a"></span>Esri شەھەر</div>
-          <div class="ddi" onclick="setLayer('esri-topo',this)"><span class="dot" style="background:#8a6a2a"></span>Esri
-            توپو</div>
-          <div class="ddi" onclick="setLayer('stadia-smooth',this)"><span class="dot"
-              style="background:#f9f9f9"></span>سىلىق (يورۇق)</div>
-          <div class="ddi" onclick="setLayer('usgs-sat',this)"><span class="dot" style="background:#000033"></span>USGS
-            سۈنئىي ھەمراھ</div>
-          <div class="ddi" onclick="setLayer('opentopo',this)"><span class="dot"
-              style="background:#6a7a2a"></span>OpenTopo</div>
+          <div class="ddi on" onclick="setLayer('dark',this)"><span class="dot" style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
+          <div class="ddi" onclick="setLayer('nolabels',this)"><span class="dot" style="background:#0f172a"></span>قاراڭغۇ (خەتسىز ساپ)</div>
+          <div class="ddi" onclick="setLayer('light',this)"><span class="dot" style="background:#ddd8cc"></span>يورۇق</div>
+          <div class="ddi" onclick="setLayer('lightnolabels',this)"><span class="dot" style="background:#f1f5f9"></span>يورۇق (خەتسىز ساپ)</div>
+          <div class="ddi" onclick="setLayer('voyager',this)"><span class="dot" style="background:#e8e4d8"></span>سىلىق (يورۇق)</div>
+          <div class="ddi" onclick="setLayer('street',this)"><span class="dot" style="background:#4a7a2a"></span>ئۆلچەملىك</div>
+          <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot" style="background:#1a3050"></span>سۈنئىي ھەمراھ</div>
+          <div class="ddi" onclick="setLayer('esri-sat',this)"><span class="dot" style="background:#0a2040"></span>Esri سۈنئىي ھەمراھ</div>
+          <div class="ddi" onclick="setLayer('topo',this)"><span class="dot" style="background:#6a9a5a"></span>توپوگرافىيە</div>
+          <div class="ddi" onclick="setLayer('wikimedia-topo',this)"><span class="dot" style="background:#7a9a6a"></span>Wikimedia توپو</div>
+          <div class="ddi" onclick="setLayer('esri-street',this)"><span class="dot" style="background:#2b5a9a"></span>Esri شەھەر</div>
+          <div class="ddi" onclick="setLayer('esri-topo',this)"><span class="dot" style="background:#8a6a2a"></span>Esri توپو</div>
+          <div class="ddi" onclick="setLayer('usgs-sat',this)"><span class="dot" style="background:#000033"></span>USGS سۈنئىي ھەمراھ</div>
+          <div class="ddi" onclick="setLayer('cartodb-antique',this)"><span class="dot" style="background:#d4b896"></span>ئانتىك خەرىتە</div>
+          <div class="ddi" onclick="setLayer('stamen-terrain',this)"><span class="dot" style="background:#5a8a4a"></span>NatGeo خەرىتە</div>
+          <div class="ddi" onclick="setLayer('natgeo-nolabels',this)"><span class="dot" style="background:#3a6a3a"></span>NatGeo (خەتسىز)</div>
         </div>
       </div>
-      <button class="tbtn on" id="btnLbl" onclick="toggleLabels()"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-          <line x1="7" y1="7" x2="7.01" y2="7" />
-        </svg><span>ئۇيغۇرچە</span></button>
       <div class="tsep"></div>
-      <button class="tbtn" onclick="toggleTimer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg><span>ۋاقىت</span></button>
+      <div class="ddw">
+        <button class="tbtn" onclick="toggleDD('extras-dd')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="19" r="1" fill="currentColor"/></svg><span>باشقا</span></button>
+        <div class="ddm" id="extras-dd" style="min-width:200px;right:0">
+          <div style="padding:4px 8px;font-size:.68em;color:var(--muted);border-bottom:1px solid var(--bdr);margin-bottom:3px">🗺 خەرىتە ھالىتى</div>
+          <div class="ddi" onclick="setMapMode('2d');closeAllDD()" id="dd-2d">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="8" y1="4" x2="8" y2="20"/></svg>
+            2D خەرىتە
+          </div>
+          <div class="ddi" onclick="setMapMode('3d');closeAllDD()" id="dd-3d">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/><path d="M2 12h20"/></svg>
+            3D گلوبۇس
+          </div>
+          <div class="ddi" onclick="setTheme('day');closeAllDD()" id="dd-day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+            كۈندۈز ھالىتى
+          </div>
+          <div class="ddi" onclick="setTheme('night');closeAllDD()" id="dd-night">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            كېچە ھالىتى
+          </div>
+          <div class="ddi" onclick="toggleTimer();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ۋاقىت ساناش
+          </div>
+          <div style="padding:4px 8px;font-size:.68em;color:var(--muted);border-bottom:1px solid var(--bdr);margin:3px 0">💾 ھۆججەت</div>
+          <div class="ddi" onclick="saveState();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            خەرىتەنى ساقلا
+          </div>
+          <div class="ddi" onclick="loadState();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            ساقلانغاننى يۈكلە
+          </div>
+          <div class="ddi" onclick="uploadGeoJSON();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            GeoJSON يۈكلە
+          </div>
+          <div style="padding:4px 8px;font-size:.68em;color:var(--muted);border-bottom:1px solid var(--bdr);margin:3px 0">🛠 قوشۇمچە قۇراللار</div>
+          <div class="ddi" id="dd-weather" onclick="toggleWeather()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+            ھاۋارايى قاتلامى
+          </div>
+          <div class="ddi" id="dd-minimap" onclick="toggleMiniMap()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="8" y="13" width="7" height="6" rx="1"/></svg>
+            كىچىك خەرىتە
+          </div>
+          <div class="ddi" onclick="toggleTitleBox();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 1 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            خەرىتە ماۋزۇسى
+          </div>
+          <div class="ddi" onclick="showQRCode();closeAllDD()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            QR كود
+          </div>
+        </div>
+      </div>
+      <button class="tbtn on" id="btnLbl" onclick="toggleLabels()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>ئۇيغۇرچە</span></button>
       <div class="tsep"></div>
       <button class="tbtn" onclick="undoDraw()" title="Ctrl+Z">↩</button>
       <button class="tbtn" onclick="redoDraw()" title="Ctrl+Y">↪</button>
       <div class="tsep"></div>
-      <button class="tbtn rbtn" id="btnRec" onclick="toggleRecord()"><svg viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="8" />
-        </svg><span id="rTxt">ۋىديوغا ئال</span></button>
+      <button class="tbtn rbtn" id="btnRec" onclick="toggleRecord()"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg><span id="rTxt">ۋىديوغا ئال</span></button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="btnGPS" onclick="toggleGPS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9"/></svg><span>ئورنۇم</span></button>
     </div>
   </div>
 
@@ -1683,6 +1699,11 @@
         </div>
       </div>
       <div class="psec">
+        <h4>🗺 GeoJSON قاتلاملار</h4>
+        <div id="geojson-list" style="margin-bottom:5px"></div>
+        <button class="qb" style="width:100%;justify-content:center;border-radius:10px;padding:5px" onclick="uploadGeoJSON()">＋ GeoJSON يۈكلە</button>
+      </div>
+      <div class="psec">
         <h4>سىزما قۇراللىرى</h4>
         <button class="qb danger" onclick="clearEverything()">🗑 ھەممىنى ئۆچۈر</button>
         <button class="qb" onclick="saveImg()">💾 رەسىم ساقلا</button>
@@ -1702,7 +1723,31 @@
     </div>
     <div id="tt-body" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
       <div class="tt-grid">
-        <!-- Outside / Open in new window (Left) -->
+        <!-- 1-قۇر: ئىچىدە ئېچىلىدىغانلار -->
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://thediplomat.com')" class="tt-grid-item"
+          title="The Diplomat">
+          <img src="https://www.google.com/s2/favicons?domain=thediplomat.com&sz=64" alt="Diplomat">
+        </a>
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.foreignpolicy.com')" class="tt-grid-item"
+          title="Foreign Policy">
+          <img src="https://www.google.com/s2/favicons?domain=foreignpolicy.com&sz=64" alt="FP">
+        </a>
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.brookings.edu')" class="tt-grid-item"
+          title="Brookings Institution">
+          <img src="https://www.google.com/s2/favicons?domain=brookings.edu&sz=64" alt="Brookings">
+        </a>
+
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.geopoliticalmonitor.com')" class="tt-grid-item" title="Geopolitical Monitor">
+          <img src="https://www.google.com/s2/favicons?domain=geopoliticalmonitor.com&sz=64" alt="GeoMon">
+        </a>
+        <a href="javascript:void(0)" onclick="openLinkInFrame('https://geopoliticalfutures.com')" class="tt-grid-item" title="Geopolitical Futures">
+          <img src="https://www.google.com/s2/favicons?domain=geopoliticalfutures.com&sz=64" alt="GeoFut">
+        </a>
+
+        <!-- ئايرىغۇچ -->
+        <div style="grid-column: 1 / -1; height: 1px; background: rgba(200,168,75,0.2); margin: 2px 0;"></div>
+
+        <!-- 2-قۇر: سىرتتا ئېچىلىدىغانلار -->
         <a href="javascript:void(0)" onclick="window.open('https://www.rand.org')" class="tt-grid-item"
           title="RAND Corporation">
           <img src="https://www.google.com/s2/favicons?domain=rand.org&sz=64" alt="RAND">
@@ -1725,24 +1770,19 @@
         <a href="javascript:void(0)" onclick="window.open('https://www.iiss.org')" class="tt-grid-item" title="IISS">
           <img src="https://www.google.com/s2/favicons?domain=iiss.org&sz=64" alt="IISS">
         </a>
+        <a href="javascript:void(0)" onclick="window.open('https://www.intelligenceonline.com')" class="tt-grid-item" title="Intelligence Online">
+          <img src="https://www.google.com/s2/favicons?domain=intelligenceonline.com&sz=64" alt="Intell">
+        </a>
+        <a href="javascript:void(0)" onclick="window.open('https://centerforchinaanalysis.asiasociety.org/s/pla-watch')" class="tt-grid-item" title="PLA Watch">
+          <img src="https://www.google.com/s2/favicons?domain=asiasociety.org&sz=64" alt="PLA Watch">
+        </a>
+        <a href="javascript:void(0)" onclick="window.open('https://chinaeconomicreview.substack.com')" class="tt-grid-item" title="China Economic Review">
+          <img src="https://www.google.com/s2/favicons?domain=chinaeconomicreview.substack.com&sz=64" alt="CER">
+        </a>
+        <a href="javascript:void(0)" onclick="window.open('https://cn.nikkei.com')" class="tt-grid-item" title="Nikkei Asia">
+          <img src="https://www.google.com/s2/favicons?domain=cn.nikkei.com&sz=64" alt="Nikkei">
+        </a>
 
-        <!-- Inside / Iframe (Right) -->
-        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.brookings.edu')" class="tt-grid-item"
-          title="Brookings Institution">
-          <img src="https://www.google.com/s2/favicons?domain=brookings.edu&sz=64" alt="Brookings">
-        </a>
-        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.cfr.org')" class="tt-grid-item"
-          title="Council on Foreign Relations">
-          <img src="https://www.google.com/s2/favicons?domain=cfr.org&sz=64" alt="CFR">
-        </a>
-        <a href="javascript:void(0)" onclick="openLinkInFrame('https://www.foreignpolicy.com')" class="tt-grid-item"
-          title="Foreign Policy">
-          <img src="https://www.google.com/s2/favicons?domain=foreignpolicy.com&sz=64" alt="FP">
-        </a>
-        <a href="javascript:void(0)" onclick="openLinkInFrame('https://thediplomat.com')" class="tt-grid-item"
-          title="The Diplomat">
-          <img src="https://www.google.com/s2/favicons?domain=thediplomat.com&sz=64" alt="Diplomat">
-        </a>
       </div>
       <div style="flex:1; position:relative;">
         <iframe src="UyghurNews.html" id="news-frame"></iframe>
@@ -1760,160 +1800,62 @@
 
   <!-- DRAW TOOLBAR -->
   <div id="dtb">
-    <button class="db on" id="dtb-toggle" onclick="toggleDTB()" title="سىزىش قۇراللىرى"><svg viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 19l7-7 3 3-7 7-3-3z" />
-        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-        <path d="M2 2l7.586 7.586" />
-        <circle cx="11" cy="11" r="2" />
-      </svg></button>
-    <div id="dtb-tools" style="display:flex; flex-direction:column; gap:3px;">
+    <button class="db on" id="dtb-toggle" onclick="toggleDTB()" title="سىزىش قۇراللىرى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button>
+    <div id="dtb-tools" style="display:flex;flex-direction:column;gap:3px;">
       <div class="dsep"></div>
-      <button class="db on" id="dt-pan" onclick="setMode(null)" title="يۆتكەش (Esc)"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 3H5a2 2 0 0 0-2 2v4" />
-          <path d="M9 21H5a2 2 0 0 1-2-2v-4" />
-          <path d="M15 3h4a2 2 0 0 1 2 2v4" />
-          <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
-        </svg></button>
+      <button class="db on" id="dt-pan" onclick="setMode(null)" title="يۆتكەش (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 21H5a2 2 0 0 1-2-2v-4"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/></svg></button>
       <div class="dsep"></div>
-      <button class="db" id="dt-pen" onclick="setMode('pen')" title="قەلەم [1]"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-        </svg></button>
       <div style="position:relative">
-        <button class="db" id="dt-arrow-grp" onclick="toggleARP()" title="ئوق سىزىق تۈرلىرى [2]"><svg
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg></button>
+        <button class="db" id="dt-pen-grp" onclick="togglePenGrp()" title="قەلەم / تۈز سىزىق [1]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+        <div class="arpop" id="pengrp-pop" style="width:90px;grid-template-columns:repeat(2,1fr)">
+          <div class="mi" onclick="setMode('pen');closePenGrp()" title="قەلەم"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+          <div class="mi" onclick="setMode('line');closePenGrp()" title="تۈز سىزىق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="20" x2="20" y2="4"/></svg></div>
+        </div>
+      </div>
+      <div style="position:relative">
+        <button class="db" id="dt-arrow-grp" onclick="toggleARP()" title="ئوق سىزىق تۈرلىرى [2]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
         <div class="arpop" id="arpop">
-          <div class="mi" onclick="setArrow('arrow')" title="تۈز ئوق"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg></div>
-          <div class="mi" onclick="setArrow('arrow2')" title="قوش ئۇچلۇق ئوق"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <polyline points="7 5 2 12 7 19" />
-              <line x1="2" y1="12" x2="22" y2="12" />
-              <polyline points="17 5 22 12 17 19" />
-            </svg></div>
-          <div class="mi" onclick="setArrow('arrow-free')" title="ئەگرى ئوق"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <path d="M3 12c3-10 15-10 18 0" />
-              <polyline points="16 10 21 12 16 14" />
-            </svg></div>
+          <div class="mi" onclick="setArrow('arrow')" title="تۈز ئوق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+          <div class="mi" onclick="setArrow('arrow2')" title="قوش ئۇچلۇق ئوق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 5 2 12 7 19"/><line x1="2" y1="12" x2="22" y2="12"/><polyline points="17 5 22 12 17 19"/></svg></div>
+          <div class="mi" onclick="setArrow('arrow-free')" title="ئەگرە ئوق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c3-10 15-10 18 0"/><polyline points="16 10 21 12 16 14"/></svg></div>
         </div>
       </div>
-      <button class="db" id="dt-rect" onclick="setMode('rect')" title="تۆت تەرەپلىك [3]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-        </svg></button>
-      <button class="db" id="dt-line" onclick="setMode('line')" title="تۈز سىزىق [4]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="4" y1="20" x2="20" y2="4" />
-        </svg></button>
-      <button class="db" id="dt-poly" onclick="setMode('poly')" title="كۆپ تەرەپلىك [5]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5" />
-        </svg></button>
-      <button class="db" id="dt-measure" onclick="setMode('measure')" title="ئارىلىق ئۆلچەش [8]"><svg
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="2" y1="20" x2="22" y2="4" />
-          <path d="M7 2l15 15" />
-        </svg></button>
+      <div style="position:relative">
+        <button class="db" id="dt-shape-grp" onclick="toggleShapeGrp()" title="شەكىللەر [3]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+        <div class="arpop" id="shapegrp-pop" style="width:130px;grid-template-columns:repeat(3,1fr)">
+          <div class="mi" onclick="setMode('rect');closeShapeGrp()" title="تۆت تەرەپلىك"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+          <div class="mi" onclick="setMode('circle');closeShapeGrp()" title="چەمبەر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div>
+          <div class="mi" onclick="setMode('ellipse');closeShapeGrp()" title="ئېلىپس"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="6"/></svg></div>
+        </div>
+      </div>
+      <button class="db" id="dt-poly" onclick="setMode('poly')" title="كۆپ تەرەپلىك [5]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/></svg></button>
+      <button class="db" id="dt-measure" onclick="setMode('measure')" title="ئارىلىق ئۆلچەش [8]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="20" x2="22" y2="4"/><path d="M7 2l15 15"/></svg></button>
       <div class="dsep"></div>
       <div style="position:relative">
-        <button class="db" id="dt-anno" onclick="toggleAP()" title="ئىزاھات قوشۇش [6,7]"><svg viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            <path d="M9 10h6M9 14h6" />
-          </svg></button>
+        <button class="db" id="dt-anno" onclick="toggleAP()" title="ئىزاھات قوشۇش [6,7]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 10h6M9 14h6"/></svg></button>
         <div class="apop" id="apop">
-          <div class="mi" onclick="setAnno('text')" title="خەت رامكا"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <polyline points="4 7 4 4 20 4 20 7" />
-              <line x1="9" y1="20" x2="15" y2="20" />
-              <line x1="12" y1="4" x2="12" y2="20" />
-            </svg></div>
-          <div class="mi" onclick="setAnno('callout')" title="ئىزاھ رامكا"><svg viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg></div>
+          <div class="mi" onclick="setAnno('text')" title="خەت رامكا"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+          <div class="mi" onclick="setAnno('callout')" title="ئىزاھ رامكا"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
         </div>
       </div>
       <div class="dsep"></div>
       <div style="position:relative">
-        <button class="db" id="dt-marker" onclick="toggleMP()" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" />
-            <circle cx="12" cy="12" r="3" />
-            <line x1="12" y1="2" x2="12" y2="6" />
-            <line x1="12" y1="18" x2="12" y2="22" />
-            <line x1="2" y1="12" x2="6" y2="12" />
-            <line x1="18" y1="12" x2="22" y2="12" />
-          </svg></button>
-        <div class="mpop" id="mpop">
-          <div class="mi on" onclick="setMarker('default',this)" title="نىشان"><i class="fas fa-crosshairs"></i></div>
-          <div class="mi" onclick="setMarker('01%20(1).png',this)"><img src="icons/01%20(1).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(2).png',this)"><img src="icons/01%20(2).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(3).png',this)"><img src="icons/01%20(3).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(4).png',this)"><img src="icons/01%20(4).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(5).png',this)"><img src="icons/01%20(5).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(6).png',this)"><img src="icons/01%20(6).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(7).png',this)"><img src="icons/01%20(7).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(8).png',this)"><img src="icons/01%20(8).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(9).png',this)"><img src="icons/01%20(9).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(10).png',this)"><img src="icons/01%20(10).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(11).png',this)"><img src="icons/01%20(11).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(12).png',this)"><img src="icons/01%20(12).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(13).png',this)"><img src="icons/01%20(13).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(14).png',this)"><img src="icons/01%20(14).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(15).png',this)"><img src="icons/01%20(15).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(16).png',this)"><img src="icons/01%20(16).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(17).png',this)"><img src="icons/01%20(17).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(18).png',this)"><img src="icons/01%20(18).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(19).png',this)"><img src="icons/01%20(19).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(20).png',this)"><img src="icons/01%20(20).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(21).png',this)"><img src="icons/01%20(21).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(22).png',this)"><img src="icons/01%20(22).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(23).png',this)"><img src="icons/01%20(23).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(24).png',this)"><img src="icons/01%20(24).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(25).png',this)"><img src="icons/01%20(25).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(26).png',this)"><img src="icons/01%20(26).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(27).png',this)"><img src="icons/01%20(27).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(28).png',this)"><img src="icons/01%20(28).png" width="24"></div>
-          <div class="mi" onclick="setMarker('01%20(29).png',this)"><img src="icons/01%20(29).png" width="24"></div>
-        </div>
+        <button class="db" id="dt-marker" onclick="openMarkerModal()" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
       </div>
       <div style="position:relative">
-        <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24"
-            fill="currentColor">
-            <rect x="2" y="7" width="20" height="2" rx="1" />
-            <rect x="2" y="12" width="20" height="3" rx="1.5" />
-            <rect x="2" y="18" width="20" height="4" rx="2" />
-          </svg></button>
-        <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1"
-            max="22" value="3" oninput="setW(this.value)"></div>
+        <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg></button>
+        <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)"></div>
       </div>
       <div id="cbtn" title="رەڭ تاللا">
         <div id="cprev"></div><input type="color" id="cinput" value="#ef4444" oninput="setCol(this.value)">
       </div>
       <div class="dsep"></div>
-      <button class="db" id="dt-erase" onclick="setMode('erase')" title="ئۆچۈرگۈچ [E]"><svg viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 6l14 14" />
-          <path d="M21 5l-8 8" />
-          <rect x="2" y="14" width="8" height="8" rx="1" />
-        </svg></button>
-      <button class="db del" onclick="clearEverything()" title="ھەممىنى ئۆچۈر"><svg viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <polyline points="3 6 5 6 21 6" />
-          <path d="M19 6l-1 14H6L5 6" />
-        </svg></button>
+      <button class="db" id="dt-erase" onclick="setMode('erase')" title="ئۆچۈرگۈچ [E]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l14 14"/><path d="M21 5l-8 8"/><rect x="2" y="14" width="8" height="8" rx="1"/></svg></button>
+      <button class="db del" onclick="clearEverything()" title="ھەممىنى ئۆچۈر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
     </div>
   </div>
+
+
 
   <!-- TEXT FORMAT BAR -->
   <div id="tfb">
@@ -1993,6 +1935,22 @@
     <div id="modal-body" class="modal-body"></div>
   </div>
 
+  <!-- MARKER MODAL -->
+  <div id="marker-modal-bg" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:5000;display:none;backdrop-filter:blur(4px)" onclick="closeMarkerModal()"></div>
+  <div id="marker-modal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5001;background:rgba(6,14,28,.98);border:1px solid rgba(200,168,75,.4);border-radius:16px;width:min(92vw,540px);max-height:80vh;display:none;flex-direction:column;box-shadow:0 16px 48px rgba(0,0,0,.8);direction:rtl">
+    <div style="padding:12px 16px;border-bottom:1px solid rgba(200,168,75,.2);display:flex;align-items:center;justify-content:space-between;">
+      <span style="color:var(--gold2);font-weight:700;font-size:.95em">🎯 بەلگە تاللاش</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label style="padding:5px 12px;border-radius:8px;border:1px solid rgba(200,168,75,.4);background:rgba(200,168,75,.1);color:var(--gold2);cursor:pointer;font-size:.75em" title="لوكالدىن PNG قوشۇش">
+          📁 لوكالدىن قوش
+          <input type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" multiple style="display:none" onchange="addLocalMarkers(this)">
+        </label>
+        <button onclick="closeMarkerModal()" style="background:none;border:none;color:var(--txt2);font-size:1.2em;cursor:pointer;padding:2px 6px">✕</button>
+      </div>
+    </div>
+    <div id="marker-modal-grid" style="padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px;overflow-y:auto;max-height:calc(80vh - 60px)"></div>
+  </div>
+
   <script src="data/labels.js"></script>
   <script src="data/knowledge.js"></script>
   <script>
@@ -2023,14 +1981,18 @@
       nolabels: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
       light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
       lightnolabels: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+      voyager: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
       street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      'esri-sat': 'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       topo: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      'wikimedia-topo': 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
       'esri-street': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'esri-topo': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-      'stadia-smooth': 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
       'usgs-sat': 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
-      'opentopo': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+      'cartodb-antique': 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+      'stamen-terrain': 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
+      'natgeo-nolabels': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}'
     };
 
 
@@ -2089,17 +2051,18 @@
       cm.innerHTML = `<div id="gloader"><div class="spin"></div><p>3D خەرىتە يۈكلىنىۋاتىدۇ…</p></div>`;
       try {
         if (!window.Globe) {
-          await loadScript('https://unpkg.com/globe.gl@2.31.0/dist/globe.gl.min.js');
+          await loadScript('https://unpkg.com/globe.gl@2/dist/globe.gl.min.js');
         }
         cm.innerHTML = '';
-        const W = cm.offsetWidth, H = cm.offsetHeight;
+        const W = cm.offsetWidth || window.innerWidth;
+        const H = cm.offsetHeight || window.innerHeight;
         globeInst = Globe()
           .width(W).height(H)
           .globeImageUrl(isDarkMap
-            ? '//unpkg.com/three-globe/example/img/earth-dark.jpg'
-            : '//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-          .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-          .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+            ? 'https://unpkg.com/three-globe/example/img/earth-dark.jpg'
+            : 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+          .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+          .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
           (cm);
         const c = map ? map.getCenter() : { lat: 30, lng: 20 };
         globeInst.pointOfView({ lat: c.lat, lng: c.lng, altitude: 2.5 }, 1000);
@@ -2340,6 +2303,25 @@
           c.restore();
         }
       }
+      else if (m === 'circle') {
+        const r = Math.hypot(x2 - x1, y2 - y1);
+        c.beginPath(); c.arc(x1, y1, r, 0, Math.PI * 2);
+        if (fillOn) c.fill(); c.stroke();
+        if (map && r > 5) {
+          const p1 = map.containerPointToLatLng([x1, y1]), p2 = map.containerPointToLatLng([x2, y2]);
+          const dist = p1.distanceTo(p2);
+          const txt = dist > 1000 ? 'r=' + (dist/1000).toFixed(1) + 'km' : 'r=' + dist.toFixed(0) + 'm';
+          c.save(); c.font = 'bold 13px UKIJ,Arial'; c.direction='ltr'; c.fillStyle=drawColor;
+          c.strokeStyle='#000'; c.lineWidth=3;
+          c.strokeText(txt, x1, y1 - r - 6); c.fillText(txt, x1, y1 - r - 6); c.restore();
+        }
+      }
+      else if (m === 'ellipse') {
+        const rx = Math.abs(x2 - x1), ry = Math.abs(y2 - y1);
+        if (rx < 2 && ry < 2) return;
+        c.beginPath(); c.ellipse(x1, y1, Math.max(rx, 2), Math.max(ry, 2), 0, 0, Math.PI * 2);
+        if (fillOn) c.fill(); c.stroke();
+      }
     }
 
     // ============================================================
@@ -2380,22 +2362,102 @@
       document.getElementById('cstyle-bar').classList.toggle('show', m === 'callout');
     }
 
-    function toggleFill() { fillOn = !fillOn; document.getElementById('dt-fill').classList.toggle('on', fillOn); }
+    function toggleFill() { fillOn = !fillOn; document.getElementById('dt-fill')?.classList.toggle('on', fillOn); }
     function setCol(v) { drawColor = v; document.getElementById('cprev').style.background = v; }
     function setW(v) { strokeW = parseInt(v, 10); document.getElementById('wval').textContent = v; }
     function toggleWP() { document.getElementById('wpop').classList.toggle('open'); }
-    function toggleMP() { document.getElementById('mpop').classList.toggle('open'); setMode('marker'); }
     function toggleAP() { document.getElementById('apop').classList.toggle('open'); }
     function setAnno(m) { setMode(m); toggleAP(); }
     function toggleARP() { document.getElementById('arpop').classList.toggle('open'); }
     function setArrow(m) { setMode(m); toggleARP(); }
+    function togglePenGrp() { document.getElementById('pengrp-pop').classList.toggle('open'); }
+    function closePenGrp() { document.getElementById('pengrp-pop').classList.remove('open'); }
+    function toggleShapeGrp() { document.getElementById('shapegrp-pop').classList.toggle('open'); }
+    function closeShapeGrp() { document.getElementById('shapegrp-pop').classList.remove('open'); }
+
+    // ============================================================
+    // MARKER MODAL
+    // ============================================================
+    let localMarkerDataURLs = JSON.parse(localStorage.getItem('bilik_local_markers') || '[]');
+
+    function buildMarkerGrid() {
+      const grid = document.getElementById('marker-modal-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      // Default crosshair
+      const def = document.createElement('div');
+      def.style.cssText = 'width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:2px solid transparent;cursor:pointer;font-size:1.6em;transition:all .2s;background:rgba(255,255,255,.04)';
+      def.innerHTML = '<i class="fas fa-crosshairs" style="color:var(--gold2)"></i>';
+      def.title = 'نىشان';
+      def.onclick = () => { curMarkerType = 'default'; curMarkerEl = null; highlightMarkerItem(def); setMode('marker'); setTimeout(closeMarkerModal, 180); };
+      grid.appendChild(def);
+      // Built-in icons
+      for (let i = 1; i <= 29; i++) {
+        const fn = `01%20(${i}).png`;
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.04)';
+        const img = document.createElement('img');
+        img.src = `icons/${fn}`; img.width = 36; img.height = 36; img.style.objectFit = 'contain';
+        wrap.appendChild(img);
+        wrap.onclick = () => { curMarkerType = fn; curMarkerEl = img; highlightMarkerItem(wrap); setMode('marker'); setTimeout(closeMarkerModal, 180); };
+        grid.appendChild(wrap);
+      }
+      // Local markers
+      localMarkerDataURLs.forEach((dataUrl, idx) => addLocalMarkerToGrid(dataUrl, idx, grid));
+    }
+
+    function addLocalMarkerToGrid(dataUrl, idx, grid) {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:2px solid rgba(200,168,75,.3);cursor:pointer;transition:all .2s;background:rgba(255,255,255,.06);position:relative';
+      const img = document.createElement('img');
+      img.src = dataUrl; img.width = 36; img.height = 36; img.style.objectFit = 'contain';
+      const del = document.createElement('span');
+      del.textContent = '×'; del.title = 'ئۆچۈر';
+      del.style.cssText = 'position:absolute;top:-6px;left:-6px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;line-height:1;cursor:pointer;z-index:2';
+      del.onclick = (e) => { e.stopPropagation(); localMarkerDataURLs.splice(idx, 1); localStorage.setItem('bilik_local_markers', JSON.stringify(localMarkerDataURLs)); buildMarkerGrid(); };
+      wrap.appendChild(img); wrap.appendChild(del);
+      wrap.onclick = () => { curMarkerType = '_local_'; curMarkerEl = img; highlightMarkerItem(wrap); setMode('marker'); setTimeout(closeMarkerModal, 180); };
+      grid.appendChild(wrap);
+    }
+
+    function highlightMarkerItem(el) {
+      document.querySelectorAll('#marker-modal-grid > div').forEach(d => { d.style.borderColor = 'transparent'; d.style.background = 'rgba(255,255,255,.04)'; });
+      el.style.borderColor = 'var(--gold)'; el.style.background = 'rgba(200,168,75,.15)';
+    }
+
+    function openMarkerModal() {
+      buildMarkerGrid();
+      document.getElementById('marker-modal-bg').style.display = 'block';
+      document.getElementById('marker-modal').style.display = 'flex';
+    }
+
+    function closeMarkerModal() {
+      document.getElementById('marker-modal-bg').style.display = 'none';
+      document.getElementById('marker-modal').style.display = 'none';
+    }
+
+    function addLocalMarkers(input) {
+      const files = Array.from(input.files);
+      let loaded = 0;
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          localMarkerDataURLs.push(ev.target.result);
+          loaded++;
+          if (loaded === files.length) {
+            localStorage.setItem('bilik_local_markers', JSON.stringify(localMarkerDataURLs));
+            buildMarkerGrid();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
+
     function setMarker(t, el) {
       curMarkerType = t;
-      curMarkerEl = el.querySelector('img');
+      curMarkerEl = el ? el.querySelector('img') : null;
       setMode('marker');
-      document.querySelectorAll('.mi').forEach(m => m.classList.remove('on'));
-      if (el) el.classList.add('on');
-      document.getElementById('mpop').classList.remove('open');
     }
 
     // ============================================================
@@ -2854,6 +2916,7 @@
       if (e.key === '7') setMode('callout');
       if (e.key === '8') setMode('measure');
       if (e.key === '9') setMode('marker');
+      if (e.key === '0') setMode('circle');
       if (e.key === 'e') setMode('erase');
       if (e.key === 'f' && e.ctrlKey) { e.preventDefault(); document.documentElement.requestFullscreen?.(); }
     });
@@ -2868,6 +2931,198 @@
       document.getElementById('cs-gold')?.classList.add('on');
       renderKBs();
     });
+
+    // ============================================================
+    // GPS LOCATION
+    // ============================================================
+    let gpsMarker = null, gpsWatch = null, gpsOn = false;
+    function toggleGPS() { if (gpsOn) stopGPS(); else startGPS(); }
+    function startGPS() {
+      if (!navigator.geolocation) { alert('بۇ بىراۋزىر GPS نى قوللىمايدۇ'); return; }
+      document.getElementById('btnGPS').classList.add('on');
+      gpsOn = true;
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        showGPSMarker(lat, lng, pos.coords.accuracy);
+        map.flyTo([lat, lng], 13, { duration: 1.8 });
+      }, err => {
+        alert('ئورۇن ئېلىشتا خاتالىق: ' + (err.code === 1 ? 'رۇخسەت بەرمىدى' : err.message));
+        stopGPS();
+      }, { enableHighAccuracy: true, timeout: 12000 });
+      gpsWatch = navigator.geolocation.watchPosition(
+        pos => showGPSMarker(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
+        null, { enableHighAccuracy: true }
+      );
+    }
+    function stopGPS() {
+      gpsOn = false;
+      document.getElementById('btnGPS')?.classList.remove('on');
+      if (gpsWatch !== null) { navigator.geolocation.clearWatch(gpsWatch); gpsWatch = null; }
+      if (gpsMarker) { map.removeLayer(gpsMarker); gpsMarker = null; }
+    }
+    function showGPSMarker(lat, lng, acc) {
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="width:18px;height:18px;border-radius:50%;background:#3b82f6;border:3px solid #fff;animation:gpsPulse 1.5s ease-in-out infinite;"></div>`,
+        iconSize: [18, 18], iconAnchor: [9, 9]
+      });
+      const popupHtml = `<b style="color:#60a5fa">📍 مەۋجۇت ئورنۇڭىز</b><br>كەڭلىك: ${lat.toFixed(6)}<br>ئۇزۇنلۇق: ${lng.toFixed(6)}<br>تەكشۈرۈم: ±${acc ? Math.round(acc) : '?'} m<br><small style="color:#4a6080">${new Date().toLocaleTimeString()}</small>`;
+      if (gpsMarker) {
+        gpsMarker.setLatLng([lat, lng]);
+        if (gpsMarker.getPopup()) gpsMarker.getPopup().setContent(popupHtml);
+      } else {
+        gpsMarker = L.marker([lat, lng], { icon, zIndexOffset: 2000 }).addTo(map);
+        gpsMarker.bindPopup(popupHtml).openPopup();
+      }
+    }
+
+    // ============================================================
+    // SAVE / LOAD STATE
+    // ============================================================
+    function saveState() {
+      const cvs = getCvs();
+      const layerKey = Object.keys(TILES).find(k => tileLayer && TILES[k] === tileLayer._url) || 'dark';
+      const c = map.getCenter();
+      const data = { v: 2, layer: layerKey, center: { lat: c.lat, lng: c.lng }, zoom: map.getZoom(), canvas: cvs.toDataURL('image/png') };
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'bilik-map-' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+    }
+    function loadState() {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = '.json';
+      inp.onchange = async e => {
+        try {
+          const text = await e.target.files[0].text();
+          const data = JSON.parse(text);
+          if (data.layer) setLayer(data.layer, null);
+          if (data.center) map.setView([data.center.lat, data.center.lng], data.zoom || 5);
+          if (data.canvas) {
+            const im = new Image();
+            im.onload = () => { ctx.clearRect(0, 0, getCvs().width, getCvs().height); ctx.drawImage(im, 0, 0); };
+            im.src = data.canvas;
+          }
+        } catch (err) { alert('ھۆججەت ئوقۇشتا خاتالىق: ' + err.message); }
+      };
+      inp.click();
+    }
+
+    // ============================================================
+    // GEOJSON UPLOAD
+    // ============================================================
+    let geojsonLayers = [];
+    function uploadGeoJSON() {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = '.geojson,.json'; inp.multiple = true;
+      inp.onchange = async e => {
+        for (const file of Array.from(e.target.files)) {
+          try {
+            const data = JSON.parse(await file.text());
+            const layer = L.geoJSON(data, {
+              style: () => ({ color: drawColor, weight: 2.5, opacity: 0.85, fillOpacity: 0.12 }),
+              pointToLayer: (f, latlng) => L.circleMarker(latlng, { radius: 6, fillColor: drawColor, color: '#fff', weight: 1, fillOpacity: 0.9 }),
+              onEachFeature: (feat, lyr) => {
+                if (feat.properties) {
+                  const info = Object.entries(feat.properties).slice(0, 6).map(([k, v]) => `<b>${k}:</b> ${v}`).join('<br>');
+                  lyr.bindPopup(info || file.name);
+                }
+              }
+            }).addTo(map);
+            geojsonLayers.push({ name: file.name, layer });
+            if (layer.getBounds && layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [30, 30] });
+            renderGeoJSONList();
+          } catch { alert(file.name + ' ئوقۇشتا خاتالىق'); }
+        }
+      };
+      inp.click();
+    }
+    function removeGeoJSON(idx) {
+      if (geojsonLayers[idx]) { map.removeLayer(geojsonLayers[idx].layer); geojsonLayers.splice(idx, 1); renderGeoJSONList(); }
+    }
+    function renderGeoJSONList() {
+      const c = document.getElementById('geojson-list');
+      if (!c) return;
+      c.innerHTML = '';
+      geojsonLayers.forEach((g, i) => {
+        const d = document.createElement('div');
+        d.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:4px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--bdr);font-size:.75em;margin-bottom:3px';
+        d.innerHTML = `<span style="color:var(--txt2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${g.name}</span><button onclick="removeGeoJSON(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:1.1em">×</button>`;
+        c.appendChild(d);
+      });
+    }
+
+    // ============================================================
+    // WEATHER LAYER (RainViewer free)
+    // ============================================================
+    let weatherLayer = null, weatherOn = false;
+    function toggleWeather() {
+      if (weatherOn) {
+        if (weatherLayer) { map.removeLayer(weatherLayer); weatherLayer = null; }
+        weatherOn = false;
+        document.getElementById('btnWeather')?.classList.remove('on');
+      } else {
+        weatherLayer = L.tileLayer(
+          'https://tilecache.rainviewer.com/v2/coverage/0/256/{z}/{x}/{y}/1/1_1.png',
+          { maxZoom: 18, opacity: 0.55, attribution: 'RainViewer' }
+        ).addTo(map);
+        weatherOn = true;
+        document.getElementById('btnWeather')?.classList.add('on');
+      }
+    }
+
+    // ============================================================
+    // MINI-MAP
+    // ============================================================
+    let miniMapWrap = null, miniMapInst = null;
+    function toggleMiniMap() {
+      const btn = document.getElementById('btnMiniMap');
+      if (miniMapWrap) {
+        map.off('move zoom', miniMapInst._sync);
+        miniMapInst.remove(); miniMapWrap.remove();
+        miniMapWrap = null; miniMapInst = null;
+        btn?.classList.remove('on'); return;
+      }
+      miniMapWrap = document.createElement('div');
+      miniMapWrap.style.cssText = 'position:fixed;bottom:20px;left:295px;width:185px;height:130px;z-index:1500;border-radius:10px;overflow:hidden;border:2px solid rgba(200,168,75,.4);box-shadow:0 4px 20px rgba(0,0,0,.6)';
+      document.body.appendChild(miniMapWrap);
+      miniMapInst = L.map(miniMapWrap, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, keyboard: false });
+      L.tileLayer(TILES.dark, { maxZoom: 18 }).addTo(miniMapInst);
+      const sync = () => { const c = map.getCenter(); miniMapInst.setView([c.lat, c.lng], Math.max(0, map.getZoom() - 4)); };
+      miniMapInst._sync = sync;
+      sync(); map.on('move zoom', sync);
+      btn?.classList.add('on');
+    }
+
+    // ============================================================
+    // MAP TITLE BOX
+    // ============================================================
+    let mapTitleEl = null;
+    function toggleTitleBox() {
+      if (mapTitleEl) { mapTitleEl.remove(); mapTitleEl = null; return; }
+      const title = prompt('خەرىتە ماۋزۇسى:', 'بىلىك جۇغراپىيىلىك تەھلىلى');
+      if (!title) return;
+      mapTitleEl = document.createElement('div');
+      mapTitleEl.style.cssText = 'position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:1500;padding:10px 26px;border-radius:14px;border:1px solid rgba(200,168,75,.45);background:rgba(5,10,22,.88);color:var(--gold2);font-size:1.1em;font-weight:700;cursor:move;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:nowrap;text-align:center;user-select:none';
+      mapTitleEl.textContent = title;
+      mapTitleEl.ondblclick = () => { const t = prompt('ماۋزۇنى ئۆزگەرتىش:', mapTitleEl.textContent); if (t !== null) mapTitleEl.textContent = t; };
+      makeDrag(mapTitleEl);
+      document.getElementById('mwrap').appendChild(mapTitleEl);
+    }
+
+    // ============================================================
+    // QR CODE
+    // ============================================================
+    function showQRCode() {
+      const c = map.getCenter(), z = map.getZoom();
+      const url = `https://www.openstreetmap.org/#map=${z}/${c.lat.toFixed(4)}/${c.lng.toFixed(4)}`;
+      const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=c8a84b&bgcolor=06101e&data=${encodeURIComponent(url)}`;
+      document.getElementById('modal-title').textContent = '📱 QR كود — خەرىتە ئورنى';
+      document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:16px 10px"><img src="${qrSrc}" style="border-radius:12px;border:3px solid rgba(200,168,75,.5);max-width:220px" onerror="this.alt='QR يۈكلەنمىدى'"><p style="margin-top:14px;font-size:.78em;color:var(--muted);word-break:break-all;direction:ltr">${url}</p><button onclick="navigator.clipboard.writeText('${url}').then(()=>this.textContent='✓ كۆچۈرۈلدى!')" style="margin-top:8px;padding:6px 18px;border-radius:8px;border:1px solid var(--gold);background:rgba(200,168,75,.1);color:var(--gold2);cursor:pointer;font-size:.8em;font-family:'UKIJ'">🔗 ئۇلانمىنى كۆچۈر</button></div>`;
+      document.getElementById('modal-bg').style.display = 'block';
+      document.getElementById('modal-box').style.display = 'flex';
+    }
   </script>
 </body>
 
