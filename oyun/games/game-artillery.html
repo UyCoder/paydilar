@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💥 توپ قۇرال قىسىمى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: linear-gradient(to bottom, #1a1a2e, #16213e); font-family: 'Tajawal', sans-serif; touch-action: none; color: white;}
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; left: 20px; z-index: 5; }
+        #score { font-size: 3rem; font-weight: 900; color: #e94560; text-shadow: 0 0 10px #e94560; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 26, 46, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 15px 50px; font-size: 2rem; background: #e94560; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4); margin-top: 20px; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #e94560; text-align: center;}
+        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 2px solid #e94560; color: #e94560; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">يوقىتىلغان نىشان: 0</div></div>
+    <div id="overlay">
+        <h1>💥 شەرقىي تۈركىستان توپ قۇرال قىسىمى</h1>
+        <p>توسالغۇ تېغىنىڭ ئارقىسىدىكى تاجاۋۇزچى نىشانلارنى كۆرمەيلا ئېتىپ پارتلىتىڭ! <br> بۇلۇڭ ۋە كۈچنى تەڭشەش ئۈچۈن سىزىقنى تارتىڭ.</p>
+        <button class="btn" onclick="startGame()">جەڭگە كىرىش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        let gameActive = false, score = 0, audioCtx;
+        const gravity = 0.3;
+        
+        let cannon = { x: 50, y: 0, angle: 0 };
+        let shell = { x: 0, y: 0, vx: 0, vy: 0, active: false };
+        let target = { x: 0, y: 0, w: 60, h: 60 };
+        let mountain = { x: 0, h: 0 };
+        let particles = [];
+        let isDragging = false, dragStartX = 0, dragStartY = 0, dragEndX = 0, dragEndY = 0;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSound(type) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
+            if(type === 'shoot') {
+                o.type = 'sawtooth'; o.frequency.setValueAtTime(100, now); o.frequency.exponentialRampToValueAtTime(10, now + 0.5);
+                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                o.start(now); o.stop(now + 0.5);
+            } else if(type === 'boom') {
+                o.type = 'square'; o.frequency.setValueAtTime(150, now); o.frequency.exponentialRampToValueAtTime(20, now + 0.5);
+                g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                o.start(now); o.stop(now + 0.5);
+            }
+        }
+
+        function spawnTarget() {
+            cannon.y = canvas.height - 50;
+            // Mountain blocks view
+            mountain.x = canvas.width / 2 - 50 + Math.random() * 100;
+            mountain.h = 200 + Math.random() * (canvas.height/2);
+            
+            // Target behind mountain
+            target.x = mountain.x + 100 + Math.random() * (canvas.width - mountain.x - 200);
+            target.y = canvas.height - target.h - 50;
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; document.getElementById('score').innerText = `يوقىتىلغان نىشان: ${score}`;
+            gameActive = true;
+            spawnTarget();
+            animate();
+        }
+
+        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+        
+        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchmove', e => { if(isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchend', handleEnd);
+
+        function handleStart(x, y) { if(!gameActive || shell.active) return; isDragging = true; dragStartX = x; dragStartY = y; dragEndX = x; dragEndY = y; }
+        function handleMove(x, y) { if(isDragging) { dragEndX = x; dragEndY = y; cannon.angle = Math.atan2(dragStartY - y, dragStartX - x); } }
+        function handleEnd() {
+            if(isDragging) {
+                isDragging = false; shell.active = true;
+                let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
+                shell.x = cannon.x; shell.y = cannon.y;
+                shell.vx = dx * 0.1; shell.vy = dy * 0.1;
+                playSound('shoot');
+            }
+        }
+
+        function createExplosion(x, y) {
+            playSound('boom');
+            for(let i=0; i<30; i++) {
+                particles.push({ x: x, y: y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 1, color: Math.random() > 0.5 ? '#e94560' : '#ffb703' });
+            }
+        }
+
+        function drawTrajectory() {
+            let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
+            let tx = cannon.x, ty = cannon.y;
+            let tvx = dx * 0.1, tvy = dy * 0.1;
+            ctx.beginPath(); ctx.moveTo(tx, ty);
+            for(let i=0; i<40; i++) {
+                tx += tvx; ty += tvy; tvy += gravity;
+                if(i % 2 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
+            }
+            ctx.strokeStyle = 'rgba(233, 69, 96, 0.5)'; ctx.lineWidth = 2; ctx.stroke();
+        }
+
+        function animate() {
+            if(!gameActive) return;
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ground
+            ctx.fillStyle = '#0f3460'; ctx.fillRect(0, canvas.height-50, canvas.width, 50);
+
+            // Mountain
+            ctx.fillStyle = '#16213e';
+            ctx.beginPath(); ctx.moveTo(mountain.x - 100, canvas.height-50); ctx.lineTo(mountain.x, canvas.height - 50 - mountain.h); ctx.lineTo(mountain.x + 100, canvas.height-50); ctx.fill();
+
+            // Target (Invader Box)
+            ctx.fillStyle = '#333'; ctx.fillRect(target.x, target.y, target.w, target.h);
+            ctx.fillStyle = '#e94560'; ctx.font = '30px Arial'; ctx.fillText('✖', target.x + 15, target.y + 40);
+
+            // Cannon
+            ctx.save(); ctx.translate(cannon.x, cannon.y); ctx.rotate(cannon.angle);
+            ctx.fillStyle = '#4caf50'; ctx.fillRect(0, -10, 40, 20); // Barrel
+            ctx.restore();
+            ctx.fillStyle = '#2e7d32'; ctx.beginPath(); ctx.arc(cannon.x, cannon.y, 20, 0, Math.PI*2); ctx.fill(); // Base
+            ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.fillText('ئاي-يۇلتۇز', cannon.x-35, cannon.y+30);
+
+            if(isDragging) drawTrajectory();
+
+            // Shell
+            if(shell.active) {
+                shell.vy += gravity; shell.x += shell.vx; shell.y += shell.vy;
+                ctx.fillStyle = '#ffb703'; ctx.beginPath(); ctx.arc(shell.x, shell.y, 8, 0, Math.PI*2); ctx.fill();
+
+                // Hit Target
+                if(shell.x > target.x && shell.x < target.x + target.w && shell.y > target.y && shell.y < target.y + target.h) {
+                    shell.active = false; createExplosion(target.x + target.w/2, target.y + target.h/2);
+                    score++; document.getElementById('score').innerText = `يوقىتىلغان نىشان: ${score}`;
+                    setTimeout(spawnTarget, 1000);
+                }
+                // Hit Mountain
+                // Simple triangle collision approximation: just check x range and y below mountain line
+                if(shell.x > mountain.x - 100 && shell.x < mountain.x + 100) {
+                    let mx = shell.x < mountain.x ? (shell.x - (mountain.x - 100))/100 : ((mountain.x + 100) - shell.x)/100;
+                    let my = canvas.height - 50 - mountain.h * mx;
+                    if(shell.y > my) { shell.active = false; createExplosion(shell.x, shell.y); setTimeout(spawnTarget, 1000); }
+                }
+                // Miss
+                if(shell.y > canvas.height || shell.x > canvas.width) { shell.active = false; setTimeout(spawnTarget, 500); }
+            }
+
+            // Particles
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.02;
+                ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+                ctx.globalAlpha = 1;
+                if(p.life <= 0) particles.splice(i, 1);
+            }
+        }
+    </script>
+</body>
+</html>

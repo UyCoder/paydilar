@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🐪 قۇملۇقتىكى ساياھەتچى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: #e67e22; font-family: 'Tajawal', sans-serif; touch-action: none; color: #fff;}
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; left: 20px; z-index: 5; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        #score { font-size: 3rem; font-weight: 900; color: #fff; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(211, 84, 0, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 15px 50px; font-size: 2rem; background: #f1c40f; color: #d35400; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(241, 196, 15, 0.4); margin-top: 20px; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #f1c40f; text-align: center; }
+        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.2); border: 2px solid #fff; color: #fff; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">خەزىنە: 0</div></div>
+    <div id="overlay">
+        <h1>🐪 قۇملۇقتىكى ساياھەتچى</h1>
+        <p>ئېكراننى چېكىپ ساياھەتچىنى ماڭدۇرۇڭ. <br> كەڭ تەكلىماكاننى كېزىپ قەدىمكى خەزىنىلەرنى تېپىڭ!</p>
+        <button class="btn" onclick="startGame()">سەپەرگە چىقىش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        let gameActive = false, score = 0, audioCtx;
+        
+        let player = { x: 0, y: 0, targetX: 0, targetY: 0, speed: 4, r: 20 };
+        let camera = { x: 0, y: 0 };
+        let treasures = [];
+        let mapSize = 3000;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSound(type) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
+            if(type === 'coin') {
+                o.type = 'sine'; o.frequency.setValueAtTime(800, now); o.frequency.linearRampToValueAtTime(1200, now + 0.1);
+                g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                o.start(now); o.stop(now + 0.1);
+            }
+        }
+
+        function spawnTreasures() {
+            treasures = [];
+            for(let i=0; i<100; i++) {
+                treasures.push({
+                    x: (Math.random() - 0.5) * mapSize,
+                    y: (Math.random() - 0.5) * mapSize,
+                    r: 15,
+                    collected: false
+                });
+            }
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; document.getElementById('score').innerText = `خەزىنە: 0`;
+            gameActive = true;
+            player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0;
+            spawnTreasures();
+            animate();
+        }
+
+        window.addEventListener('mousedown', e => setTarget(e.clientX, e.clientY));
+        window.addEventListener('touchstart', e => { 
+            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { 
+                e.preventDefault(); setTarget(e.touches[0].clientX, e.touches[0].clientY); 
+            } 
+        }, {passive: false});
+        window.addEventListener('touchmove', e => { 
+            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { 
+                e.preventDefault(); setTarget(e.touches[0].clientX, e.touches[0].clientY); 
+            } 
+        }, {passive: false});
+
+        function setTarget(cx, cy) {
+            if(!gameActive) return;
+            player.targetX = cx + camera.x;
+            player.targetY = cy + camera.y;
+        }
+
+        function animate() {
+            if(!gameActive) return;
+            requestAnimationFrame(animate);
+
+            // Move player
+            let dx = player.targetX - player.x;
+            let dy = player.targetY - player.y;
+            let dist = Math.hypot(dx, dy);
+            if(dist > player.speed) {
+                player.x += (dx / dist) * player.speed;
+                player.y += (dy / dist) * player.speed;
+            } else {
+                player.x = player.targetX;
+                player.y = player.targetY;
+            }
+
+            // Camera follow
+            camera.x += (player.x - canvas.width/2 - camera.x) * 0.1;
+            camera.y += (player.y - canvas.height/2 - camera.y) * 0.1;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-camera.x, -camera.y);
+
+            // Draw Desert Grid / Pattern
+            ctx.strokeStyle = '#d35400';
+            ctx.lineWidth = 2;
+            let startCol = Math.floor(camera.x / 100) * 100;
+            let startRow = Math.floor(camera.y / 100) * 100;
+            ctx.beginPath();
+            for(let x = startCol; x < camera.x + canvas.width + 100; x+=100) {
+                ctx.moveTo(x, camera.y); ctx.lineTo(x, camera.y + canvas.height);
+            }
+            for(let y = startRow; y < camera.y + canvas.height + 100; y+=100) {
+                ctx.moveTo(camera.x, y); ctx.lineTo(camera.x + canvas.width, y);
+            }
+            ctx.globalAlpha = 0.2;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            // Draw Treasures
+            for(let i=0; i<treasures.length; i++) {
+                let t = treasures[i];
+                if(t.collected) continue;
+
+                // Culling
+                if(t.x < camera.x - 50 || t.x > camera.x + canvas.width + 50 || t.y < camera.y - 50 || t.y > camera.y + canvas.height + 50) continue;
+
+                ctx.fillStyle = '#f1c40f';
+                ctx.beginPath(); ctx.arc(t.x, t.y, t.r, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#fff'; ctx.font = '15px Arial'; ctx.fillText('💎', t.x - 8, t.y + 5);
+
+                // Collision
+                if(Math.hypot(player.x - t.x, player.y - t.y) < player.r + t.r) {
+                    t.collected = true;
+                    score++; document.getElementById('score').innerText = `خەزىنە: ${score}`;
+                    playSound('coin');
+                }
+            }
+
+            // Draw Player
+            ctx.fillStyle = '#2980b9'; // Blue shirt
+            ctx.beginPath(); ctx.arc(player.x, player.y, player.r, 0, Math.PI*2); ctx.fill();
+            // Direction indicator
+            if(dist > 0) {
+                ctx.save();
+                ctx.translate(player.x, player.y);
+                ctx.rotate(Math.atan2(dy, dx));
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath(); ctx.moveTo(player.r, -5); ctx.lineTo(player.r + 10, 0); ctx.lineTo(player.r, 5); ctx.fill();
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+    </script>
+</body>
+</html>
