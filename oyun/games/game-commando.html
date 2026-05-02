@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مىللىي ئارمىيە كوماندىرلىرى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #2c3e50; overflow: hidden; font-family: 'Tajawal', sans-serif; touch-action: none; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 15px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: white; font-size: 20px; font-weight: bold; pointer-events: none; z-index: 5; text-shadow: 2px 2px 0 #000; line-height: 1.5; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+        h1 { font-size: 3.5rem; color: #f1c40f; margin: 0 0 20px 0; text-shadow: 2px 2px 0 #000; }
+        p { font-size: 1.5rem; max-width: 600px; line-height: 1.6; margin-bottom: 30px; }
+        .btn { padding: 15px 40px; font-size: 1.8rem; background: #27ae60; color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #2ecc71; transition: transform 0.1s; }
+        .btn:active { transform: translateY(5px); box-shadow: none; }
+        .back-btn { position: absolute; top: 60px; right: 20px; color: white; text-decoration: none; font-size: 1.2rem; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; z-index: 5; }
+        #controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 5; pointer-events: none; }
+        .ctrl-btn { width: 80px; height: 80px; background: rgba(255,255,255,0.3); border-radius: 50%; border: 3px solid white; color: white; font-size: 30px; pointer-events: auto; touch-action: none; display: flex; justify-content: center; align-items: center; font-family: sans-serif; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div>داۋاملىشىش: <span id="distance">0</span>m</div>
+        <div>جان: <span id="lives">❤️❤️❤️❤️❤️</span></div>
+    </div>
+    <div id="overlay">
+        <h1>مىللىي ئارمىيە كوماندىرلىرى</h1>
+        <p>تاجاۋۇزچىلارنىڭ توساقلىرىنى بۆسۈپ ئۆتۈپ، مىللىي ئارمىيەنىڭ باتۇرلۇقىنى كۆرسىتىڭ! ئېكراننىڭ ئوڭىنى بېسىپ سەكرەڭ، سولىنى بېسىپ ئوق ئېتىڭ.</p>
+        <button class="btn" onclick="startGame()">ھۇجۇمغا ئۆتۈش</button>
+    </div>
+    <a href="../index.html" class="back-btn">← قايتىش</a>
+    
+    <div id="controls">
+        <div class="ctrl-btn" id="btn-shoot">🎯</div>
+        <div class="ctrl-btn" id="btn-jump">⬆</div>
+    </div>
+
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        let player, obstacles, bullets, distance, gameActive = false, speed = 1.5;
+        let GROUND_Y;
+        let audioCtx;
+        let lives = 5;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            let now = audioCtx.currentTime;
+            if(type === 'jump') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            } else if(type === 'shoot') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            } else if(type === 'boom') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(20, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+        }
+
+        function init() {
+            GROUND_Y = canvas.height - 100;
+            player = { x: 100, y: GROUND_Y, w: 40, h: 60, vy: 0, gravity: 0.25, jumpPower: -8, isJumping: false, invincible: 0 };
+            obstacles = [];
+            bullets = [];
+            distance = 0;
+            speed = 1.5;
+            lives = 5;
+            updateUI();
+        }
+
+        document.getElementById('btn-jump').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); jump(); });
+        document.getElementById('btn-jump').addEventListener('mousedown', (e) => { e.preventDefault(); initAudio(); jump(); });
+        document.getElementById('btn-shoot').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); shoot(); });
+        document.getElementById('btn-shoot').addEventListener('mousedown', (e) => { e.preventDefault(); initAudio(); shoot(); });
+
+        window.addEventListener('keydown', e => {
+            initAudio();
+            if(e.code === 'Space' || e.code === 'ArrowUp') jump();
+            if(e.code === 'Enter' || e.code === 'ArrowRight') shoot();
+        });
+
+        function jump() {
+            if(!player.isJumping && gameActive) {
+                player.vy = player.jumpPower;
+                player.isJumping = true;
+                playSound('jump');
+            }
+        }
+
+        function shoot() {
+            if(gameActive) {
+                bullets.push({x: player.x + player.w, y: player.y - player.h/2, speed: 20});
+                playSound('shoot');
+            }
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            init();
+            gameActive = true;
+            animate();
+        }
+
+        function updateUI() {
+            document.getElementById('distance').innerText = Math.floor(distance);
+            document.getElementById('lives').innerText = '❤️'.repeat(Math.max(0, lives));
+        }
+
+        function gameOver() {
+            gameActive = false;
+            playSound('boom');
+            document.getElementById('overlay').style.display = 'flex';
+            document.querySelector('#overlay h1').innerText = "شەھىدلەر ئۆلمەيدۇ!";
+            document.querySelector('#overlay p').innerText = `سىز ${Math.floor(distance)} مېتىر ئىلگىرىلىدىڭىز. مۇستەقىللىق يولىدا قايتا ئاتلىنىڭ!`;
+        }
+
+        function animate() {
+            if (!gameActive) return;
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ground
+            ctx.fillStyle = '#34495e';
+            ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
+            
+            distance += speed * 0.01;
+            // No speed acceleration to keep it easy for 7yo
+            updateUI();
+            
+            if(player.invincible > 0) player.invincible--;
+
+            player.vy += player.gravity;
+            player.y += player.vy;
+            if(player.y >= GROUND_Y) {
+                player.y = GROUND_Y;
+                player.vy = 0;
+                player.isJumping = false;
+            }
+
+            // Draw player (Blue uniform)
+            ctx.globalAlpha = (player.invincible > 0 && Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1;
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(player.x, player.y - player.h, player.w, player.h);
+            ctx.fillStyle = '#f1c40f'; // golden emblem
+            ctx.fillRect(player.x+15, player.y - player.h + 15, 10, 10);
+            ctx.globalAlpha = 1;
+
+            // Bullets
+            ctx.fillStyle = '#f1c40f';
+            for(let i=bullets.length-1; i>=0; i--) {
+                let b = bullets[i];
+                b.x += b.speed;
+                ctx.fillRect(b.x, b.y - 5, 20, 10); // larger bullet
+                if(b.x > canvas.width) bullets.splice(i, 1);
+            }
+
+            // Obstacles - very rare and tiny
+            if(Math.random() < 0.003) {
+                obstacles.push({
+                    x: canvas.width, 
+                    y: GROUND_Y, 
+                    w: 20, 
+                    h: 20,
+                    destructible: true,
+                    hit: false
+                });
+            }
+
+            for(let i=obstacles.length-1; i>=0; i--) {
+                let obs = obstacles[i];
+                obs.x -= speed;
+                
+                ctx.fillStyle = obs.destructible ? '#e74c3c' : '#c0392b';
+                ctx.fillRect(obs.x, obs.y - obs.h, obs.w, obs.h);
+
+                // Collision with player
+                if(player.invincible <= 0 && !obs.hit && player.x + player.w > obs.x && player.x < obs.x + obs.w && player.y > obs.y - obs.h) {
+                    obs.hit = true;
+                    lives--;
+                    player.invincible = 100; // invincible for 100 frames
+                    playSound('boom');
+                    updateUI();
+                    
+                    // Flash red
+                    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    if(lives <= 0) gameOver();
+                }
+
+                // Collision with bullets
+                for(let j=bullets.length-1; j>=0; j--) {
+                    let b = bullets[j];
+                    if(obs.destructible && b.x + 20 > obs.x && b.x < obs.x + obs.w && b.y > obs.y - obs.h && b.y < obs.y) {
+                        playSound('boom');
+                        obstacles.splice(i, 1);
+                        bullets.splice(j, 1);
+                        distance += 10;
+                        break;
+                    }
+                }
+
+                if(obs.x < -obs.w) obstacles.splice(i, 1);
+            }
+        }
+    </script>
+</body>
+</html>

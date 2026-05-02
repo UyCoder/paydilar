@@ -7,114 +7,150 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #003049; font-family: 'Tajawal', sans-serif; color: white; }
-        canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 48, 73, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #00d4ff, #0066cc); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: all 0.2s; }
+        body { margin: 0; background: linear-gradient(135deg, #1e3c72, #2a5298); font-family: 'Tajawal', sans-serif; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; }
+        #score { font-size: 2.5rem; font-weight: 800; color: #ffeb3b; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 60, 114, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 15px 50px; font-size: 2rem; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 30px; box-shadow: 0 10px 20px rgba(230, 126, 34, 0.4); transition: transform 0.2s; }
         .btn:hover { transform: scale(1.05); }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #00d4ff; color: #003049; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; }
-        #city-name { position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); font-size: 5rem; font-weight: 900; color: #ffeb3b; text-shadow: 0 0 30px rgba(255,235,59,0.8); display: none; pointer-events: none; }
+        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; text-shadow: 0 4px 10px rgba(0,0,0,0.5); text-align: center; }
+        p { font-size: 1.5rem; max-width: 600px; text-align: center; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.2); border: 2px solid white; color: white; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 10; }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; perspective: 1000px; padding: 20px; max-width: 800px; width: 100%; }
+        @media (max-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
+        
+        .card { width: 100%; aspect-ratio: 3/4; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: pointer; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .card.flipped { transform: rotateY(180deg); }
+        .card.matched { opacity: 0.8; transform: rotateY(180deg) scale(0.95); }
+        
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; text-align: center; padding: 10px; box-sizing: border-box; box-shadow: inset 0 0 20px rgba(255,255,255,0.2); }
+        .front { background: linear-gradient(135deg, #00c6ff, #0072ff); transform: rotateY(0deg); border: 2px solid rgba(255,255,255,0.5); }
+        .front::after { content: '?'; font-size: 4rem; color: rgba(255,255,255,0.5); }
+        
+        .back { background: linear-gradient(135deg, #f1c40f, #e67e22); transform: rotateY(180deg); color: #2c3e50; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); border: 2px solid #f39c12; }
     </style>
 </head>
 <body>
     <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
-    <div id="city-name">قەشقەر</div>
+    
+    <div class="grid" id="game-board"></div>
+
     <div id="overlay">
         <h1>🧩 خەزىنە ئىزدەش</h1>
-        <p>ۋەتەندىكى شەھەرلەرنى تېپىڭ! <br> ئوخشاش تاشلارنى جۈپلەپ، بىلىمىڭىزنى ئاشۇرۇڭ. <br> 12 تاش، كۆپ شەھەرلەر.</p>
+        <p>ئوخشاش شەھەر ئىسىملىرىنى تېپىپ جۈپلەڭ. <br> خەزىنە تاشلىرىنى ئۆرۈپ، بىلىمىڭىزنى سىناپ بېقىڭ!</p>
         <button class="btn" onclick="startGame()">باشلاش</button>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, tiles = [], selected = [];
-        let score = 0, gameActive = false, audioCtx;
         const cities = ["قەشقەر", "خوتەن", "ئاقسۇ", "تۇرپان", "قۇمۇل", "غۇلجا"];
+        let cards = [];
+        let flippedCards = [];
+        let score = 0;
+        let matchedCount = 0;
+        let lockBoard = false;
+        let audioCtx;
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function beep(f, d) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.setValueAtTime(f, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
+        function playSound(type) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = 'sine';
+            let now = audioCtx.currentTime;
+            if(type === 'flip') {
+                o.frequency.setValueAtTime(300, now);
+                o.frequency.exponentialRampToValueAtTime(500, now + 0.1);
+                g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            } else if(type === 'match') {
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(600, now);
+                o.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
+                g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            } else if(type === 'wrong') {
+                o.type = 'sawtooth';
+                o.frequency.setValueAtTime(200, now);
+                o.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            }
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(now); o.stop(now + 0.3);
+        }
 
-        function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            new THREE.TextureLoader().load('pics/memory_bg.png', (t) => scene.background = t);
-            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-            const pl = new THREE.PointLight(0xffffff, 0.5); pl.position.set(5, 5, 10); scene.add(pl);
-
-            camera.position.z = 18;
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+        function createBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = '';
+            cards = [...cities, ...cities].sort(() => Math.random() - 0.5);
+            
+            cards.forEach((city, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.city = city;
+                
+                card.innerHTML = `
+                    <div class="face front"></div>
+                    <div class="face back">${city}</div>
+                `;
+                
+                card.addEventListener('click', () => flipCard(card));
+                board.appendChild(card);
             });
-            window.addEventListener('mousedown', onSelect);
-            window.addEventListener('touchstart', e => { onSelect(e.touches[0]); e.preventDefault(); }, { passive: false });
         }
 
-        function createGrid() {
-            const deck = [...cities, ...cities].sort(() => Math.random() - 0.5);
-            for (let i = 0; i < 12; i++) {
-                const geo = new THREE.BoxGeometry(3, 3, 0.8);
-                const mat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
-                const tile = new THREE.Mesh(geo, mat);
-                tile.position.set((i % 4 - 1.5) * 4, Math.floor(i / 4) * -4 + 4, 0);
-                tile.userData = { city: deck[i], flipped: false, matched: false, color: new THREE.Color().setHSL(cities.indexOf(deck[i])/6, 0.7, 0.5) };
-                scene.add(tile); tiles.push(tile);
+        function flipCard(card) {
+            if (lockBoard) return;
+            if (card === flippedCards[0] || card.classList.contains('matched')) return;
+
+            initAudio();
+            playSound('flip');
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                checkForMatch();
             }
         }
 
-        function onSelect(e) {
-            if (!gameActive || selected.length >= 2) return;
-            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
-            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(tiles);
-            if (intersects.length > 0) {
-                const t = intersects[0].object;
-                if (!t.userData.flipped && !t.userData.matched) {
-                    flipTile(t); selected.push(t);
-                    if (selected.length === 2) checkMatch();
-                }
-            }
-        }
+        function checkForMatch() {
+            lockBoard = true;
+            let isMatch = flippedCards[0].dataset.city === flippedCards[1].dataset.city;
 
-        function flipTile(t) {
-            t.userData.flipped = !t.userData.flipped;
-            t.material.color.set(t.userData.flipped ? t.userData.color : 0xcccccc);
-            t.rotation.y = t.userData.flipped ? Math.PI : 0;
-            beep(400 + (t.userData.flipped ? 200 : 0), 0.1);
-            if (t.userData.flipped) showCity(t.userData.city);
-        }
-
-        function showCity(name) {
-            const el = document.getElementById('city-name');
-            el.innerText = name; el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 800);
-        }
-
-        function checkMatch() {
-            if (selected[0].userData.city === selected[1].userData.city) {
-                selected.forEach(t => t.userData.matched = true);
-                score += 100; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
-                selected = []; beep(800, 0.3);
-                if (tiles.every(t => t.userData.matched)) { gameActive = false; document.getElementById('overlay').style.display = 'flex'; }
+            if (isMatch) {
+                setTimeout(() => {
+                    playSound('match');
+                    flippedCards[0].classList.add('matched');
+                    flippedCards[1].classList.add('matched');
+                    score += 100;
+                    matchedCount += 2;
+                    document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                    resetBoard();
+                    if (matchedCount === cards.length) {
+                        setTimeout(() => document.getElementById('overlay').style.display = 'flex', 1000);
+                    }
+                }, 400);
             } else {
-                setTimeout(() => { selected.forEach(t => flipTile(t)); selected = []; }, 1000);
+                setTimeout(() => {
+                    playSound('wrong');
+                    flippedCards[0].classList.remove('flipped');
+                    flippedCards[1].classList.remove('flipped');
+                    resetBoard();
+                }, 1000);
             }
+        }
+
+        function resetBoard() {
+            flippedCards = [];
+            lockBoard = false;
         }
 
         function startGame() {
-            initAudio(); document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
-            tiles.forEach(t => scene.remove(t)); tiles = []; selected = [];
-            createGrid();
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            score = 0;
+            matchedCount = 0;
+            document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            createBoard();
         }
-
-        function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); }
-        init(); animate();
     </script>
 </body>
 </html>
