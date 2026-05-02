@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏹 يىراقتىكى نىشانغا ئوقياچى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: linear-gradient(to bottom, #2c3e50, #34495e); font-family: 'Tajawal', sans-serif; touch-action: none; color: white;}
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; left: 20px; z-index: 5; }
+        #score { font-size: 3rem; font-weight: 900; color: #2ecc71; text-shadow: 0 0 10px #2ecc71; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        .btn { padding: 15px 50px; font-size: 2rem; background: #2ecc71; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(46, 204, 113, 0.4); margin-top: 20px; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #2ecc71; text-align: center;}
+        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 2px solid #2ecc71; color: #2ecc71; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">يوقىتىلغان تاجاۋۇزچى: 0</div></div>
+    <div id="overlay">
+        <h1>🏹 يىراقتىكى نىشانغا ئوقياچى</h1>
+        <p>تاجاۋۇزچىنى يىراقتىن ئېتىڭ! <br> ئېكراننى تارتىپ بۇلۇڭ چىقىرىڭ، ئوقياڭىزنى قويۇپ بېرىڭ.</p>
+        <button class="btn" onclick="startGame()">ئوقيا تارتىش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        let gameActive = false, score = 0, audioCtx;
+        const gravity = 0.2;
+        
+        let archer = { x: 50, y: 0 };
+        let arrow = { x: 0, y: 0, vx: 0, vy: 0, active: false, angle: 0 };
+        let invader = { x: 0, y: 0, w: 50, h: 80 };
+        let isDragging = false, dragStartX = 0, dragStartY = 0, dragEndX = 0, dragEndY = 0;
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSound(type) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
+            if(type === 'shoot') {
+                o.type = 'triangle'; o.frequency.setValueAtTime(600, now); o.frequency.exponentialRampToValueAtTime(200, now + 0.2);
+                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                o.start(now); o.stop(now + 0.2);
+            } else if(type === 'hit') {
+                o.type = 'sawtooth'; o.frequency.setValueAtTime(150, now); o.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o.start(now); o.stop(now + 0.3);
+            }
+        }
+
+        function spawnTarget() {
+            archer.y = canvas.height - 100;
+            invader.x = canvas.width - 150 - Math.random() * (canvas.width/3);
+            invader.y = canvas.height - invader.h - 50;
+            invader.isDead = false;
+            invader.rotation = 0;
+            invader.alpha = 1;
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; document.getElementById('score').innerText = `يوقىتىلغان تاجاۋۇزچى: ${score}`;
+            gameActive = true;
+            spawnTarget();
+            animate();
+        }
+
+        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+        
+        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchmove', e => { if(isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchend', handleEnd);
+
+        function handleStart(x, y) { if(!gameActive || arrow.active || invader.isDead) return; isDragging = true; dragStartX = x; dragStartY = y; dragEndX = x; dragEndY = y; }
+        function handleMove(x, y) { if(isDragging) { dragEndX = x; dragEndY = y; } }
+        function handleEnd() {
+            if(isDragging) {
+                isDragging = false; arrow.active = true;
+                let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
+                arrow.x = archer.x; arrow.y = archer.y;
+                arrow.vx = dx * 0.15; arrow.vy = dy * 0.15;
+                playSound('shoot');
+            }
+        }
+
+        function drawTrajectory() {
+            let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
+            let tx = archer.x, ty = archer.y;
+            let tvx = dx * 0.15, tvy = dy * 0.15;
+            ctx.beginPath(); ctx.moveTo(tx, ty);
+            for(let i=0; i<40; i++) {
+                tx += tvx; ty += tvy; tvy += gravity;
+                if(i % 2 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
+            }
+            ctx.strokeStyle = 'rgba(46, 204, 113, 0.5)'; ctx.lineWidth = 2; ctx.stroke();
+        }
+
+        function animate() {
+            if(!gameActive) return;
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ground
+            ctx.fillStyle = '#27ae60'; ctx.fillRect(0, canvas.height-50, canvas.width, 50);
+
+            // Invader
+            ctx.save();
+            if (invader.isDead) {
+                invader.rotation += 0.1;
+                invader.y += 5;
+                invader.alpha -= 0.05;
+                if(invader.alpha < 0) invader.alpha = 0;
+            }
+            ctx.globalAlpha = invader.alpha || 1;
+            ctx.translate(invader.x + invader.w/2, invader.y + invader.h);
+            ctx.rotate(invader.rotation || 0);
+            ctx.fillStyle = '#c0392b'; ctx.fillRect(-invader.w/2, -invader.h, invader.w, invader.h);
+            ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.fillText('😠', -10, -invader.h + 30);
+            ctx.restore();
+            ctx.globalAlpha = 1;
+
+            // Archer
+            ctx.fillStyle = '#2980b9'; ctx.fillRect(archer.x - 10, archer.y, 20, 50);
+            ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.arc(archer.x, archer.y - 15, 15, 0, Math.PI*2); ctx.fill();
+
+            if(isDragging) {
+                drawTrajectory();
+                // Bow String
+                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(archer.x, archer.y - 20); ctx.lineTo(archer.x - (dragStartX-dragEndX)*0.1, archer.y - (dragStartY-dragEndY)*0.1); ctx.lineTo(archer.x, archer.y + 20); ctx.stroke();
+            }
+
+            // Arrow
+            if(arrow.active) {
+                arrow.vy += gravity; arrow.x += arrow.vx; arrow.y += arrow.vy;
+                arrow.angle = Math.atan2(arrow.vy, arrow.vx);
+                
+                ctx.save(); ctx.translate(arrow.x, arrow.y); ctx.rotate(arrow.angle);
+                ctx.fillStyle = '#fff'; ctx.fillRect(-15, -2, 30, 4); // shaft
+                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.moveTo(15, -5); ctx.lineTo(25, 0); ctx.lineTo(15, 5); ctx.fill(); // tip
+                ctx.restore();
+
+                // Hit Target
+                if(!invader.isDead && arrow.x > invader.x && arrow.x < invader.x + invader.w && arrow.y > invader.y && arrow.y < invader.y + invader.h) {
+                    arrow.active = false; playSound('hit');
+                    invader.isDead = true;
+                    score++; document.getElementById('score').innerText = `يوقىتىلغان تاجاۋۇزچى: ${score}`;
+                    setTimeout(spawnTarget, 1000);
+                }
+                // Miss
+                if(arrow.y > canvas.height || arrow.x > canvas.width) { arrow.active = false; setTimeout(spawnTarget, 500); }
+            }
+        }
+    </script>
+</body>
+</html>

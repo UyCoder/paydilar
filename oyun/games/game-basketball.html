@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏀 ۋاسكىتبول چولپىنى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: linear-gradient(to bottom, #00b4d8, #caf0f8); font-family: 'Tajawal', sans-serif; touch-action: none; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 20px; left: 20px; text-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 5; }
+        #score { font-size: 3rem; font-weight: 900; color: #03045e; text-shadow: 2px 2px 0px white; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 119, 182, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); color: white; }
+        .btn { padding: 15px 50px; font-size: 2rem; background: #ffb703; color: #023e8a; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(255, 183, 3, 0.4); margin-top: 20px; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #fff; text-shadow: 0 0 20px #00b4d8; text-align: center;}
+        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.8); border: 2px solid #0077b6; color: #0077b6; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+    </style>
+</head>
+<body>
+    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="overlay">
+        <h1>🏀 شەرقىي تۈركىستان ۋاسكىتبول چولپىنى</h1>
+        <p>سىزىقنى تارتىپ نىشانلاڭ ۋە قويۇپ بېرىپ توپنى گارغا تاشلاڭ! <br> كۆك ئاسمان ئاستىدا ئەركىن توپ ئويناڭ.</p>
+        <button class="btn" onclick="startGame()">باشلاش</button>
+    </div>
+    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <canvas id="game"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        let gameActive = false, score = 0, audioCtx;
+        const gravity = 0.5;
+        
+        let ball = { x: 0, y: 0, r: 25, vx: 0, vy: 0, isShooting: false, isDragging: false, startX: 0, startY: 0 };
+        let hoop = { x: 0, y: 0, w: 100, h: 10 };
+        
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSound(type) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
+            if(type === 'swish') {
+                o.type = 'sine'; o.frequency.setValueAtTime(600, now); o.frequency.exponentialRampToValueAtTime(1000, now + 0.3);
+                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o.start(now); o.stop(now + 0.3);
+            } else if(type === 'bounce') {
+                o.type = 'triangle'; o.frequency.setValueAtTime(200, now); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                o.start(now); o.stop(now + 0.1);
+            }
+        }
+
+        function resetRound() {
+            ball.x = 100;
+            ball.y = canvas.height - 100;
+            ball.vx = 0; ball.vy = 0;
+            ball.isShooting = false;
+            
+            hoop.x = canvas.width - 150 - Math.random() * 100;
+            hoop.y = canvas.height / 2 - Math.random() * 100;
+        }
+
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            score = 0; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+            gameActive = true;
+            resetRound();
+            animate();
+        }
+
+        let dragEndX = 0, dragEndY = 0;
+
+        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+        
+        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchmove', e => { if(ball.isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchend', handleEnd);
+
+        function handleStart(x, y) {
+            if(!gameActive || ball.isShooting) return;
+            let dist = Math.hypot(ball.x - x, ball.y - y);
+            if(dist < 100) { // generous touch area
+                ball.isDragging = true;
+                ball.startX = x; ball.startY = y;
+                dragEndX = x; dragEndY = y;
+            }
+        }
+
+        function handleMove(x, y) {
+            if(ball.isDragging) { dragEndX = x; dragEndY = y; }
+        }
+
+        function handleEnd() {
+            if(ball.isDragging) {
+                ball.isDragging = false;
+                ball.isShooting = true;
+                let dx = ball.startX - dragEndX;
+                let dy = ball.startY - dragEndY;
+                ball.vx = dx * 0.15;
+                ball.vy = dy * 0.15;
+                playSound('bounce');
+            }
+        }
+
+        function drawTrajectory() {
+            let dx = ball.startX - dragEndX;
+            let dy = ball.startY - dragEndY;
+            let tx = ball.x, ty = ball.y;
+            let tvx = dx * 0.15, tvy = dy * 0.15;
+            
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            for(let i=0; i<30; i++) {
+                tx += tvx; ty += tvy; tvy += gravity;
+                if(i % 2 === 0) { ctx.lineTo(tx, ty); }
+                else { ctx.moveTo(tx, ty); }
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function animate() {
+            if(!gameActive) return;
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Court/Background
+            ctx.fillStyle = '#0077b6';
+            ctx.fillRect(0, canvas.height - 75, canvas.width, 75); // floor
+
+            // Draw Hoop pole
+            ctx.fillStyle = '#ccc';
+            ctx.fillRect(hoop.x + hoop.w - 10, hoop.y, 10, canvas.height - hoop.y - 75);
+            // Draw Backboard
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(hoop.x + hoop.w, hoop.y - 50, 10, 100);
+            // Draw Hoop rim
+            ctx.fillStyle = '#e63946';
+            ctx.fillRect(hoop.x, hoop.y, hoop.w, hoop.h);
+            
+            // Draw Net
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(hoop.x, hoop.y+hoop.h); ctx.lineTo(hoop.x+20, hoop.y+hoop.h+40);
+            ctx.moveTo(hoop.x+hoop.w, hoop.y+hoop.h); ctx.lineTo(hoop.x+hoop.w-20, hoop.y+hoop.h+40);
+            ctx.stroke();
+
+            // Ball Physics
+            if(ball.isShooting) {
+                ball.vy += gravity;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+                // Collision with rim
+                if(ball.vy > 0 && ball.x > hoop.x && ball.x < hoop.x + hoop.w && ball.y + ball.r > hoop.y && ball.y - ball.r < hoop.y + hoop.h) {
+                    playSound('swish');
+                    score += 10;
+                    document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                    ball.isShooting = false;
+                    setTimeout(resetRound, 500);
+                }
+
+                // Missed / Out of bounds
+                if(ball.y > canvas.height || ball.x > canvas.width) {
+                    ball.isShooting = false;
+                    setTimeout(resetRound, 500);
+                }
+            }
+
+            if(ball.isDragging) drawTrajectory();
+
+            // Draw Ball
+            ctx.fillStyle = '#f4a261'; // Basketball orange
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+            // Lines
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ball.x-ball.r, ball.y); ctx.lineTo(ball.x+ball.r, ball.y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ball.x, ball.y-ball.r); ctx.lineTo(ball.x, ball.y+ball.r); ctx.stroke();
+            
+            // East Turkistan flag star (small decor on ball)
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText('⭐', ball.x - 10, ball.y + 7);
+        }
+    </script>
+</body>
+</html>
