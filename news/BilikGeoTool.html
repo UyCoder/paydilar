@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى قۇرالى</title>
+  <link rel="icon" type="image/png" href="BilikGeoTool_Offline/pics/Biliklogo.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1621,6 +1622,10 @@
             GeoJSON يۈكلە
           </div>
           <div style="padding:4px 8px;font-size:.68em;color:var(--muted);border-bottom:1px solid var(--bdr);margin:3px 0">🛠 قوشۇمچە قۇراللار</div>
+          <div class="ddi on" id="dd-coords" onclick="toggleCoords()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            كوئوردېنات كۆرسىتىش
+          </div>
           <div class="ddi" id="dd-weather" onclick="toggleWeather()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
             ھاۋارايى قاتلامى
@@ -1647,6 +1652,7 @@
       <button class="tbtn rbtn" id="btnRec" onclick="toggleRecord()"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg><span id="rTxt">ۋىديوغا ئال</span></button>
       <div class="tsep"></div>
       <button class="tbtn" id="btnGPS" onclick="toggleGPS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9"/></svg><span>ئورنۇم</span></button>
+      <button class="tbtn" id="btnSaveGPS" onclick="saveGPSTrack()" style="display:none;" title="يۈرگەن لىنىيەنى GeoJSON قىلىپ ساقلاش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span>يولنى ساقلا</span></button>
     </div>
   </div>
 
@@ -1717,13 +1723,10 @@
     <div id="rtab" onclick="toggleRP()">
       <span class="arr">▶</span><span class="plbl">خەۋەرلەر</span>
     </div>
-    <div id="ph"
-      style="border-bottom:1px solid rgba(99,120,150,0.2); padding: 10px 12px; display: flex; justify-content: flex-end;">
-      <button class="rp-back-btn" onclick="goHomeNews()">🏠 خەۋەرلەرگە قايتىش</button>
-    </div>
     <div id="tt-body" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
       <div class="tt-grid">
         <!-- 1-قۇر: ئىچىدە ئېچىلىدىغانلار -->
+        <button class="rp-back-btn" style="grid-column: span 5; display:flex; align-items:center; justify-content:center; height:34px; font-family:'UKIJ',sans-serif;" onclick="goHomeNews()">🏠 خەۋەرلەرگە قايتىش</button>
         <a href="javascript:void(0)" onclick="openLinkInFrame('https://thediplomat.com')" class="tt-grid-item"
           title="The Diplomat">
           <img src="https://www.google.com/s2/favicons?domain=thediplomat.com&sz=64" alt="Diplomat">
@@ -1800,6 +1803,7 @@
 
   <!-- DRAW TOOLBAR -->
   <div id="dtb">
+    <div id="dtb-handle" style="width:100%;height:14px;cursor:move;background:rgba(255,255,255,0.1);border-radius:4px 4px 0 0;margin-bottom:2px;display:flex;justify-content:center;align-items:center;" title="تۇتۇپ يۆتكەڭ"><div style="width:12px;height:2px;background:rgba(255,255,255,0.4);border-radius:1px;"></div></div>
     <button class="db on" id="dtb-toggle" onclick="toggleDTB()" title="سىزىش قۇراللىرى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button>
     <div id="dtb-tools" style="display:flex;flex-direction:column;gap:3px;">
       <div class="dsep"></div>
@@ -1832,21 +1836,28 @@
       <button class="db" id="dt-measure" onclick="setMode('measure')" title="ئارىلىق ئۆلچەش [8]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="2" y1="20" x2="22" y2="4"/><path d="M7 2l15 15"/></svg></button>
       <div class="dsep"></div>
       <div style="position:relative">
+        <button class="db" id="dt-route" onclick="setMode('route')" title="يول سىزىش (ماشىنا)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M6 15v-1a4 4 0 0 1 4-4h4a4 4 0 0 0 4-4V7"/></svg></button>
+        <button class="db on" id="dt-route-info" onclick="toggleRouteInfo()" title="ۋاقىت ۋە مۇساپىنى كۆرسىتىش/يوشۇرۇش" style="margin-top:3px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="dsep"></div>
+      <div style="position:relative">
         <button class="db" id="dt-anno" onclick="toggleAP()" title="ئىزاھات قوشۇش [6,7]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 10h6M9 14h6"/></svg></button>
-        <div class="apop" id="apop">
+        <div class="apop" id="apop" style="width:120px;grid-template-columns:repeat(2,1fr)">
           <div class="mi" onclick="setAnno('text')" title="خەت رامكا"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
           <div class="mi" onclick="setAnno('callout')" title="ئىزاھ رامكا"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="mi" onclick="setAnno('sticker')" title="چاپلاق (Sticker)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="4"/><line x1="8" y1="2" x2="8" y2="4"/></svg></div>
+          <div class="mi" onclick="setAnno('bubble')" title="گەپ پوپايكىسى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
         </div>
       </div>
       <div class="dsep"></div>
       <div style="position:relative">
         <button class="db" id="dt-marker" onclick="openMarkerModal()" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
       </div>
-      <div style="position:relative">
+      <div style="position:relative;display:none;" id="dt-color-opts1">
         <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg></button>
         <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)"></div>
       </div>
-      <div id="cbtn" title="رەڭ تاللا">
+      <div id="cbtn" title="رەڭ تاللا" style="display:none;" id="dt-color-opts2">
         <div id="cprev"></div><input type="color" id="cinput" value="#ef4444" oninput="setCol(this.value)">
       </div>
       <div class="dsep"></div>
@@ -1890,7 +1901,7 @@
     <div class="tsep"></div>
     <div style="position:relative">
       <button class="fb" onclick="document.getElementById('tcinput').click()">🎨 رەڭ</button>
-      <input type="color" id="tcinput" value="#ffffff" oninput="setTxtCol(this.value)"
+      <input type="color" id="tcinput" value="#000000" oninput="setTxtCol(this.value)"
         style="position:absolute;opacity:0;width:0;height:0;">
     </div>
   </div>
@@ -1966,12 +1977,15 @@
     let startX = 0, startY = 0, lastSnap = null, polyPts = [];
     let snapStack = [], redoStack = [];
     let activeEl = null, textBoxes = [], callouts = [];
-    let textMapHandler = null;
+    let textMapHandler = null, mapDrawings = [], routePts = [];
     let curCalloutStyle = 'gold', curMarkerType = 'default', curMarkerEl = null;
     let mediaRec = null, mediaStream = null, recTimer = null, recSecs = 0, recChunks = [];
     let timerIntvl = null, timerSecs = 0, timerRunning = false;
-    let fmtSt = { font: "'UKIJ','Arial'", size: '18', lh: '1.8', align: 'right', indent: false, ul: false, strike: false, col: '#ffffff' };
+    let fmtSt = { font: "'UKIJ','Arial'", size: '18', lh: '1.8', align: 'right', indent: false, ul: false, strike: false, col: '#000000' };
     let isDarkMap = true, rpOpen = false;
+    let customQuickLocs = JSON.parse(localStorage.getItem('bilik_quick') || '[]');
+    let routeInfoVis = true;
+    let showCoords = true;
 
     // ============================================================
     // TILE LAYERS
@@ -2001,18 +2015,58 @@
     // MAP INIT
     // ============================================================
     function initMap() {
+      L.Control.Scale.include({
+         _updateMetric: function (maxMeters) {
+            var meters = this._getRoundNum(maxMeters),
+                label = meters < 1000 ? meters + ' مېتىر' : (meters / 1000) + ' كىلومېتىر';
+            this._updateScale(this._mScale, label + ' (ماسشىتاب)', meters / maxMeters);
+         }
+      });
       map = L.map('lmap', { center: [30, 20], zoom: 3, zoomControl: true, attributionControl: false });
+      L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+      
+      const style = document.createElement('style');
+      style.textContent = '.leaflet-control-scale-line { font-family: "UKIJ", sans-serif !important; font-size: 11px !important; }';
+      document.head.appendChild(style);
+      
+      const coordCtrl = L.control({position: 'bottomleft'});
+      coordCtrl.onAdd = function() {
+         const div = L.DomUtil.create('div', 'coord-box');
+         div.id = 'coord-box';
+         div.style.cssText = 'background:rgba(5,10,22,0.85);color:#e8edf5;padding:2px 6px;border:1px solid rgba(200,168,75,0.4);border-radius:4px;font-size:12px;font-family:monospace;pointer-events:none;display:none;backdrop-filter:blur(4px);margin-bottom:8px;margin-left:8px;';
+         return div;
+      };
+      coordCtrl.addTo(map);
+      
       setLayer('lightnolabels', null);
       initCanvas();
       initLabels();
       buildQuickList();
       buildHotspots();
       map.on('zoomend', updateLblVis);
+      map.on('move', syncAnnotations);
+      map.on('zoom', syncAnnotations);
+      map.on('mousemove', e => {
+         if (!showCoords) return;
+         const cb = document.getElementById('coord-box');
+         if(cb) { cb.style.display = 'block'; cb.textContent = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
+      });
+      map.on('mouseout', () => {
+         const cb = document.getElementById('coord-box');
+         if(cb) cb.style.display = 'none';
+      });
+    }
+    
+    function toggleCoords() {
+       showCoords = !showCoords;
+       document.getElementById('dd-coords')?.classList.toggle('on', showCoords);
+       const cb = document.getElementById('coord-box');
+       if (cb && !showCoords) cb.style.display = 'none';
     }
 
     function setLayer(name, el) {
       if (tileLayer) map.removeLayer(tileLayer);
-      tileLayer = L.tileLayer(TILES[name] || TILES.dark, { maxZoom: 19 });
+      tileLayer = L.tileLayer(TILES[name] || TILES.dark, { maxZoom: 19, crossOrigin: true });
       tileLayer.addTo(map);
       document.querySelectorAll('.ddi').forEach(d => d.classList.remove('on'));
       if (el) el.classList.add('on');
@@ -2037,8 +2091,8 @@
     }
 
     function setTheme(t) {
-      document.getElementById('btnDay').classList.toggle('on', t === 'day');
-      document.getElementById('btnNight').classList.toggle('on', t === 'night');
+      document.getElementById('dd-day')?.classList.toggle('on', t === 'day');
+      document.getElementById('dd-night')?.classList.toggle('on', t === 'night');
       setLayer(t === 'night' ? 'dark' : 'street', null);
     }
 
@@ -2083,6 +2137,20 @@
     // ============================================================
     // CANVAS DRAWING
     // ============================================================
+    function drawPrettyBoxText(c, text, cx, cy) {
+      c.save(); 
+      c.font = "12px 'UKIJ', Arial"; c.direction = 'rtl';
+      const tw = c.measureText(text).width + 20;
+      const th = 26;
+      c.fillStyle = 'rgba(5,10,22,0.85)'; c.strokeStyle = 'rgba(200,168,75,0.5)'; c.lineWidth = 1;
+      c.beginPath(); 
+      if(c.roundRect) c.roundRect(cx - tw/2, cy - th/2, tw, th, 6); else c.rect(cx - tw/2, cy - th/2, tw, th);
+      c.fill(); c.stroke();
+      c.fillStyle = '#f0cc72'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillText(text, cx, cy + 1);
+      c.restore();
+    }
+
     function initCanvas() {
       const cvs = document.getElementById('dc');
       const pcvs = document.getElementById('pc');
@@ -2153,6 +2221,8 @@
       if (confirm('ھەممىنى ئۆچۈرەمسىز؟ (سىزمىلار ۋە ئىزاھلار)')) {
         clearAll();
         clearAnnotations();
+        mapDrawings.forEach(l => map.removeLayer(l));
+        mapDrawings = [];
       }
     }
     function clearAnnotations() {
@@ -2231,11 +2301,10 @@
             area += (p2.lng - p1.lng) * (2 + Math.sin(p1.lat * Math.PI / 180) + Math.sin(p2.lat * Math.PI / 180));
           }
           area = Math.abs(area * 6378137 * 6378137 / 2.0 * Math.PI / 180);
-          const areaTxt = (area / 1000000).toFixed(2) + " km²";
+          const areaTxt = (area / 1000000).toFixed(2) + " كۋادرات كىلومېتىر";
           let cx = 0, cy = 0; polyPts.forEach(p => { cx += p.x; cy += p.y; });
           cx /= polyPts.length; cy /= polyPts.length;
-          ctx.font = 'bold 15px UKIJ, Arial'; ctx.direction = 'ltr'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
-          ctx.strokeText(areaTxt, cx, cy + 20); ctx.fillText(areaTxt, cx, cy + 20); ctx.direction = 'rtl';
+          drawPrettyBoxText(ctx, areaTxt, cx, cy + 20);
         }
       }
       isDrawing = false; polyPts = [];
@@ -2269,38 +2338,13 @@
           c.closePath(); c.fillStyle = drawColor; c.fill();
         }
       }
-      else if (m === 'marker') {
-        if (curMarkerType === 'default') {
-          setupCtx(c, true);
-          const r = Math.max(24, Math.hypot(x2 - x1, y2 - y1) * 2);
-          c.beginPath(); c.arc(x1, y1, r, 0, Math.PI * 2);
-          c.moveTo(x1 - r * 1.4, y1); c.lineTo(x1 + r * 1.4, y1);
-          c.moveTo(x1, y1 - r * 1.4); c.lineTo(x1, y1 + r * 1.4);
-          c.stroke();
-          c.beginPath(); c.arc(x1, y1, r * 0.25, 0, Math.PI * 2); c.fillStyle = drawColor; c.fill();
-        } else {
-          const size = Math.max(40, Math.hypot(x2 - x1, y2 - y1) * 2);
-          if (curMarkerEl && curMarkerEl.complete && curMarkerEl.naturalWidth > 0) {
-            c.save(); c.translate(x1, y1);
-            c.drawImage(curMarkerEl, -size / 2, -size / 2, size, size);
-            c.restore();
-          } else {
-            c.strokeStyle = drawColor; c.lineWidth = 2;
-            c.beginPath(); c.moveTo(-10, 0); c.lineTo(10, 0); c.moveTo(0, -10); c.lineTo(0, 10); c.stroke();
-          }
-        }
-      }
       else if (m === 'measure') {
         c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
         if (map) {
           const p1 = map.containerPointToLatLng([x1, y1]), p2 = map.containerPointToLatLng([x2, y2]);
           const d = p1.distanceTo(p2);
-          const distTxt = d > 1000 ? (d / 1000).toFixed(2) + " km" : d.toFixed(0) + " m";
-          c.save(); c.font = 'bold 14px UKIJ, Arial'; c.direction = 'ltr'; c.fillStyle = drawColor;
-          c.strokeStyle = '#000'; c.lineWidth = 3;
-          c.strokeText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
-          c.fillText(distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
-          c.restore();
+          const distTxt = d > 1000 ? (d / 1000).toFixed(2) + " كىلومېتىر" : d.toFixed(0) + " مېتىر";
+          drawPrettyBoxText(c, distTxt, (x1 + x2) / 2, (y1 + y2) / 2 - 10);
         }
       }
       else if (m === 'circle') {
@@ -2310,10 +2354,8 @@
         if (map && r > 5) {
           const p1 = map.containerPointToLatLng([x1, y1]), p2 = map.containerPointToLatLng([x2, y2]);
           const dist = p1.distanceTo(p2);
-          const txt = dist > 1000 ? 'r=' + (dist/1000).toFixed(1) + 'km' : 'r=' + dist.toFixed(0) + 'm';
-          c.save(); c.font = 'bold 13px UKIJ,Arial'; c.direction='ltr'; c.fillStyle=drawColor;
-          c.strokeStyle='#000'; c.lineWidth=3;
-          c.strokeText(txt, x1, y1 - r - 6); c.fillText(txt, x1, y1 - r - 6); c.restore();
+          const txt = dist > 1000 ? 'r=' + (dist/1000).toFixed(1) + ' كىلومېتىر' : 'r=' + dist.toFixed(0) + ' مېتىر';
+          drawPrettyBoxText(c, txt, x1, y1 - r - 15);
         }
       }
       else if (m === 'ellipse') {
@@ -2330,21 +2372,86 @@
     function setMode(m) {
       // Remove previous map click handler
       if (textMapHandler) { map.off('click', textMapHandler); textMapHandler = null; }
-      drawMode = m; isDrawing = false; polyPts = []; lastSnap = null;
+      drawMode = m; isDrawing = false; polyPts = []; lastSnap = null; routePts = [];
       const cvs = getCvs();
 
       if (!m) {
         cvs.classList.remove('draw', 'erase'); cvs.style.pointerEvents = 'none';
         document.getElementById('mwrap').style.cursor = '';
         map?.dragging.enable(); map?.scrollWheelZoom.enable();
-      } else if (m === 'text' || m === 'callout') {
+      } else if (m === 'text' || m === 'callout' || m === 'sticker' || m === 'bubble' || m === 'marker' || m === 'route') {
         cvs.classList.remove('draw', 'erase'); cvs.style.pointerEvents = 'none';
         document.getElementById('mwrap').style.cursor = 'crosshair';
         map?.dragging.enable(); map?.scrollWheelZoom.enable();
         textMapHandler = (e) => {
-          const cp = map.latLngToContainerPoint(e.latlng);
-          if (m === 'text') mkTextBox(cp.x, cp.y);
-          else mkCallout(cp.x, cp.y);
+          if (m === 'text') {
+            const cp = map.latLngToContainerPoint(e.latlng);
+            mkTextBox(cp.x, cp.y);
+          }
+          else if (m === 'callout') {
+            const cp = map.latLngToContainerPoint(e.latlng);
+            mkCallout(cp.x, cp.y);
+          }
+          else if (m === 'sticker') {
+            const cp = map.latLngToContainerPoint(e.latlng);
+            mkSticker(cp.x, cp.y);
+          }
+          else if (m === 'bubble') {
+            const cp = map.latLngToContainerPoint(e.latlng);
+            mkBubble(cp.x, cp.y);
+          }
+          else if (m === 'marker') {
+            if (curMarkerType === 'default') {
+              const icon = L.divIcon({
+                className: '',
+                html: `<div style="width:24px;height:24px;border:2px solid ${drawColor};border-radius:50%;display:flex;align-items:center;justify-content:center;"><div style="width:6px;height:6px;background:${drawColor};border-radius:50%"></div></div>`,
+                iconSize: [24,24], iconAnchor: [12,12]
+              });
+              const mkr = L.marker(e.latlng, {icon, interactive:true, draggable:true}).addTo(map);
+              mapDrawings.push(mkr);
+            } else if (curMarkerEl) {
+               const size = 36;
+               const icon = L.icon({
+                 iconUrl: curMarkerEl.src,
+                 iconSize: [size, size],
+                 iconAnchor: [size/2, size/2]
+               });
+               const mkr = L.marker(e.latlng, {icon, interactive:true, draggable:true}).addTo(map);
+               mapDrawings.push(mkr);
+            }
+          }
+          else if (m === 'route') {
+            const num = routePts.length;
+            const lbl = num === 0 ? 'باشلىنىش' : num + '-نىشان';
+            routePts.push(e.latlng);
+            const icon = L.divIcon({className:'', html:`<div style="display:flex;flex-direction:column;align-items:center;"><div style="width:14px;height:14px;background:#3b82f6;border:2px solid #fff;border-radius:50%;box-shadow:0 0 5px rgba(0,0,0,.5)"></div><div class="route-lbl" style="background:rgba(0,0,0,0.75);color:#fff;font-family:'UKIJ',sans-serif;font-size:12px;padding:2px 6px;border-radius:4px;margin-top:3px;white-space:nowrap;display:${routeInfoVis?'block':'none'};">${lbl}</div></div>`, iconSize:[120,40], iconAnchor:[60,7]});
+            const mkr = L.marker(e.latlng, {icon}).addTo(map);
+            mapDrawings.push(mkr);
+            if (routePts.length >= 2) {
+               const p1 = routePts[routePts.length-2], p2 = routePts[routePts.length-1];
+               fetch(`https://router.project-osrm.org/route/v1/driving/${p1.lng},${p1.lat};${p2.lng},${p2.lat}?overview=full&geometries=geojson`)
+                 .then(r => r.json())
+                 .then(data => {
+                    if(data.routes && data.routes[0]) {
+                       const route = data.routes[0];
+                       const distKm = (route.distance / 1000).toFixed(1);
+                       const timeMin = Math.round(route.duration / 60);
+                       const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+                       const line = L.polyline(coords, {color: drawColor, weight: strokeW}).addTo(map);
+                       mapDrawings.push(line);
+                       
+                       const midPoint = coords[Math.floor(coords.length / 2)];
+                       const infoIcon = L.divIcon({
+                          className: '',
+                          html: `<div class="route-info" style="background:rgba(5,10,22,0.85);color:#f0cc72;font-family:'UKIJ',sans-serif;font-size:12px;padding:4px 8px;border:1px solid rgba(200,168,75,0.5);border-radius:6px;white-space:nowrap;direction:rtl;display:${routeInfoVis?'block':'none'};">🚗 ${distKm} كىلومېتىر ⏱ ${timeMin} مىنۇت</div>`,
+                          iconSize: [200, 30], iconAnchor: [100, 15]
+                       });
+                       const infoMkr = L.marker(midPoint, {icon: infoIcon}).addTo(map);
+                       mapDrawings.push(infoMkr);
+                    }
+                 });
+            }
+          }
         };
         map.on('click', textMapHandler);
       } else if (m === 'erase') {
@@ -2360,6 +2467,12 @@
       if (btn) btn.classList.add('on');
       document.getElementById('tfb').classList.toggle('show', m === 'text');
       document.getElementById('cstyle-bar').classList.toggle('show', m === 'callout');
+      
+      const isPenLine = (m === 'pen' || m === 'line');
+      const co1 = document.getElementById('dt-color-opts1');
+      const co2 = document.getElementById('dt-color-opts2');
+      if (co1) co1.style.display = isPenLine ? 'flex' : 'none';
+      if (co2) co2.style.display = isPenLine ? 'flex' : 'none';
     }
 
     function toggleFill() { fillOn = !fillOn; document.getElementById('dt-fill')?.classList.toggle('on', fillOn); }
@@ -2463,11 +2576,29 @@
     // ============================================================
     // TEXT BOXES
     // ============================================================
+    function syncAnnotations() {
+      if (!map) return;
+      textBoxes.forEach(el => {
+        if (el._latlng) {
+          const p = map.latLngToContainerPoint(el._latlng);
+          el.style.left = p.x + 'px'; el.style.top = p.y + 'px';
+        }
+      });
+      callouts.forEach(el => {
+        if (el._latlng) {
+          const p = map.latLngToContainerPoint(el._latlng);
+          el.style.left = p.x + 'px'; el.style.top = p.y + 'px';
+        }
+      });
+    }
+
     function mkTextBox(x, y) {
       const wrap = document.getElementById('mwrap');
       const tb = document.createElement('div');
       tb.className = 'ugtb'; tb.contentEditable = 'true'; tb.dir = 'rtl';
-      tb.style.left = x + 'px'; tb.style.top = y + 'px';
+      tb._latlng = map.containerPointToLatLng([x, y]);
+      const p = map.latLngToContainerPoint(tb._latlng);
+      tb.style.left = p.x + 'px'; tb.style.top = p.y + 'px';
       applyFmtEl(tb);
       makeDrag(tb); wrap.appendChild(tb);
       setTimeout(() => { tb.focus(); tb.click(); }, 50);
@@ -2502,11 +2633,73 @@
       if (btn) btn.classList.add('on');
     }
 
+    function mkSticker(x, y) {
+      const wrap = document.getElementById('mwrap');
+      const box = document.createElement('div');
+      box.className = 'sticker';
+      box.style.cssText = 'position:absolute;background:#fef08a;color:#1e293b;padding:12px;box-shadow:2px 4px 10px rgba(0,0,0,0.5);transform:rotate(-2deg);border-radius:2px;min-width:100px;min-height:100px;z-index:2500;font-family:"UKIJ",Arial;';
+      box._latlng = map.containerPointToLatLng([x, y]);
+      const p = map.latLngToContainerPoint(box._latlng);
+      box.style.left = p.x + 'px'; box.style.top = p.y + 'px';
+
+      const del = document.createElement('div');
+      del.className = 'callout-del'; del.textContent = '×';
+      del.style.color = '#ef4444';
+      del.onclick = e => { e.stopPropagation(); box.remove(); callouts = callouts.filter(c => c !== box); };
+
+      const body = document.createElement('div');
+      body.contentEditable = 'true'; body.dir = 'rtl';
+      body.style.cssText = 'outline:none;min-height:80px;';
+      body.textContent = 'چاپلاق ئۇچۇرى...';
+
+      box.appendChild(del); box.appendChild(body);
+      makeDrag(box); 
+      wrap.appendChild(box);
+      callouts.push(box);
+      setTimeout(() => { body.focus(); document.execCommand('selectAll'); }, 60);
+    }
+
+    function mkBubble(x, y) {
+      const wrap = document.getElementById('mwrap');
+      const box = document.createElement('div');
+      box.className = 'bubble';
+      box.style.cssText = 'position:absolute;background:#ffffff;color:#000000;padding:12px 18px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,0.4);min-width:80px;z-index:2500;font-family:"UKIJ",Arial;border:2px solid #3b82f6;';
+      
+      const tail = document.createElement('div');
+      tail.style.cssText = 'position:absolute;bottom:-10px;left:20px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid #3b82f6;';
+      const tailInner = document.createElement('div');
+      tailInner.style.cssText = 'position:absolute;bottom:-7px;left:22px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #ffffff;z-index:1;';
+      
+      box._latlng = map.containerPointToLatLng([x, y]);
+      const p = map.latLngToContainerPoint(box._latlng);
+      box.style.left = p.x + 'px'; box.style.top = p.y + 'px';
+
+      const del = document.createElement('div');
+      del.className = 'callout-del'; del.textContent = '×';
+      del.style.color = '#ef4444';
+      del.style.top = '-8px'; del.style.right = '-8px';
+      del.onclick = e => { e.stopPropagation(); box.remove(); callouts = callouts.filter(c => c !== box); };
+
+      const body = document.createElement('div');
+      body.contentEditable = 'true'; body.dir = 'rtl';
+      body.style.cssText = 'outline:none;';
+      body.textContent = 'گەپ...';
+
+      box.appendChild(tail); box.appendChild(tailInner);
+      box.appendChild(del); box.appendChild(body);
+      makeDrag(box); 
+      wrap.appendChild(box);
+      callouts.push(box);
+      setTimeout(() => { body.focus(); document.execCommand('selectAll'); }, 60);
+    }
+
     function mkCallout(x, y) {
       const wrap = document.getElementById('mwrap');
       const box = document.createElement('div');
       box.className = 'callout' + (curCalloutStyle !== 'gold' ? ' ' + curCalloutStyle : '');
-      box.style.left = x + 'px'; box.style.top = y + 'px';
+      box._latlng = map.containerPointToLatLng([x, y]);
+      const p = map.latLngToContainerPoint(box._latlng);
+      box.style.left = p.x + 'px'; box.style.top = p.y + 'px';
 
       const del = document.createElement('div');
       del.className = 'callout-del'; del.textContent = '×';
@@ -2547,7 +2740,15 @@
         el.style.cursor = 'grabbing'; e.stopPropagation();
       });
       document.addEventListener('mousemove', e => { if (!dr) return; el.style.left = (e.clientX - ox) + 'px'; el.style.top = (e.clientY - oy) + 'px'; });
-      document.addEventListener('mouseup', () => { dr = false; el.style.cursor = handle ? 'move' : 'text'; });
+      document.addEventListener('mouseup', () => { 
+        if (dr && map) {
+           const cx = parseInt(el.style.left) || 0;
+           const cy = parseInt(el.style.top) || 0;
+           el._latlng = map.containerPointToLatLng([cx, cy]);
+        }
+        dr = false; 
+        el.style.cursor = handle ? 'move' : 'text'; 
+      });
       if (!handle) el.addEventListener('focus', () => { activeEl = el; });
     }
 
@@ -2565,6 +2766,29 @@
         L.marker([item.lat, item.lng], { icon, interactive: true, zIndexOffset: item.t === 'city' ? 200 : 50 }).addTo(map);
       });
       updateLblVis();
+      
+      const zoomCtrl = document.querySelector('.leaflet-control-zoom');
+      if (zoomCtrl) {
+         zoomCtrl.style.position = 'absolute';
+         zoomCtrl.style.right = '20px';
+         zoomCtrl.style.top = '70px';
+         const handle = document.createElement('div');
+         handle.style.cssText = 'width:100%;height:10px;background:rgba(255,255,255,0.1);cursor:move;border-radius:4px 4px 0 0;';
+         zoomCtrl.insertBefore(handle, zoomCtrl.firstChild);
+         let drZ = false, oxZ = 0, oyZ = 0;
+         handle.addEventListener('mousedown', e => {
+            drZ = true;
+            oxZ = e.clientX - zoomCtrl.offsetLeft;
+            oyZ = e.clientY - zoomCtrl.offsetTop;
+         });
+         document.addEventListener('mousemove', e => {
+            if (!drZ) return;
+            zoomCtrl.style.left = (e.clientX - oxZ) + 'px';
+            zoomCtrl.style.top = (e.clientY - oyZ) + 'px';
+            zoomCtrl.style.right = 'auto';
+         });
+         document.addEventListener('mouseup', () => drZ = false);
+      }
     }
     function searchPlace(name) {
       if (!rpOpen) toggleRP();
@@ -2633,6 +2857,7 @@
     // ============================================================
     function buildQuickList() {
       QUICK.forEach(j => addQuickBtn(j, false));
+      customQuickLocs.forEach(j => addQuickBtn(j, false));
     }
     function addQuickBtn(j, prepend = true) {
       const c = document.getElementById('qbtns');
@@ -2655,7 +2880,10 @@
         if (data.length) {
           const item = data[0];
           const name = item.display_name.split(',')[0];
-          addQuickBtn({ n: name, lat: parseFloat(item.lat), lng: parseFloat(item.lon), z: 7 });
+          const newLoc = { n: name, lat: parseFloat(item.lat), lng: parseFloat(item.lon), z: 7 };
+          addQuickBtn(newLoc);
+          customQuickLocs.push(newLoc);
+          localStorage.setItem('bilik_quick', JSON.stringify(customQuickLocs));
           map.flyTo([parseFloat(item.lat), parseFloat(item.lon)], 7, { duration: 1.3 });
           document.getElementById('qaInp').value = '';
         } else { alert('تېپىلمىدى'); }
@@ -2682,6 +2910,17 @@
     // ============================================================
     async function doSearch() {
       const q = document.getElementById('sinput').value.trim(); if (!q) return;
+      
+      const coordMatch = q.match(/^(-?\d+(\.\d+)?)[,\s]+(-?\d+(\.\d+)?)$/);
+      if (coordMatch) {
+        const lat = parseFloat(coordMatch[1]);
+        const lng = parseFloat(coordMatch[3]);
+        map.flyTo([lat, lng], 12, {duration: 1.5});
+        L.marker([lat, lng]).addTo(map).bindPopup('ئىزدەلگەن كوئوردېنات: ' + lat + ', ' + lng).openPopup();
+        document.getElementById('sinput').value = '';
+        return;
+      }
+      
       const res = document.getElementById('sr');
       res.innerHTML = '<div style="color:var(--muted);font-size:.77em;padding:5px;">ئىزدىنىۋاتىدۇ…</div>';
       try {
@@ -2848,20 +3087,44 @@
     // ============================================================
     // SAVE IMAGE
     // ============================================================
-    function saveImg() {
-      const c = getCvs(), pc = document.getElementById('pc'), temp = document.createElement('canvas');
-      temp.width = c.width; temp.height = c.height;
-      const tctx = temp.getContext('2d');
-      tctx.drawImage(c, 0, 0);
-      tctx.drawImage(pc, 0, 0);
-      const a = document.createElement('a');
-      a.download = 'bilik-geo-' + Date.now() + '.png';
-      a.href = temp.toDataURL('image/png'); a.click();
+    async function saveImg() {
+      try {
+        if (!window.html2canvas) {
+          const s = document.createElement('script');
+          s.src = 'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js';
+          document.head.appendChild(s);
+          await new Promise(r => s.onload = r);
+        }
+        const btn = document.querySelector('button[onclick="saveImg()"]');
+        const origTxt = btn.innerHTML;
+        btn.innerHTML = 'ساقلىنىۋاتىدۇ…';
+        
+        const cb = document.getElementById('coord-box');
+        if (cb) cb.style.display = 'none';
+
+        const canvas = await html2canvas(document.getElementById('mwrap'), { useCORS: true, allowTaint: true, backgroundColor: null });
+        const a = document.createElement('a');
+        a.download = 'bilik-geo-' + Date.now() + '.png';
+        a.href = canvas.toDataURL('image/png'); a.click();
+        
+        btn.innerHTML = origTxt;
+      } catch (e) {
+        alert('رەسىمگە ئېلىشتا خاتالىق: ' + e.message);
+      }
     }
 
     // ============================================================
     // UI TOGGLES (DTB, RP, DD)
     // ============================================================
+    function toggleRouteInfo() {
+       routeInfoVis = !routeInfoVis;
+       document.querySelectorAll('.route-info, .route-lbl').forEach(el => {
+          el.style.display = routeInfoVis ? 'block' : 'none';
+       });
+       const btn = document.getElementById('dt-route-info');
+       if (btn) btn.classList.toggle('on', routeInfoVis);
+    }
+
     function toggleRP() {
       rpOpen = !rpOpen;
       document.getElementById('rp').classList.toggle('closed', !rpOpen);
@@ -2930,21 +3193,47 @@
       document.getElementById('fa-r')?.classList.add('on');
       document.getElementById('cs-gold')?.classList.add('on');
       renderKBs();
+      toggleMiniMap();
+      
+      const dtbEl = document.getElementById('dtb');
+      const dtbH = document.getElementById('dtb-handle');
+      let dtbDr = false, ox = 0, oy = 0;
+      dtbH.addEventListener('mousedown', e => {
+         dtbDr = true;
+         if (dtbEl.style.transform !== 'none') {
+             const rect = dtbEl.getBoundingClientRect();
+             dtbEl.style.transform = 'none';
+             dtbEl.style.right = 'auto';
+             dtbEl.style.left = rect.left + 'px';
+             dtbEl.style.top = rect.top + 'px';
+             ox = e.clientX - rect.left;
+             oy = e.clientY - rect.top;
+         } else {
+             ox = e.clientX - dtbEl.offsetLeft;
+             oy = e.clientY - dtbEl.offsetTop;
+         }
+      });
+      document.addEventListener('mousemove', e => {
+         if (!dtbDr) return;
+         dtbEl.style.left = (e.clientX - ox) + 'px';
+         dtbEl.style.top = (e.clientY - oy) + 'px';
+      });
+      document.addEventListener('mouseup', () => dtbDr = false);
     });
 
     // ============================================================
     // GPS LOCATION
     // ============================================================
-    let gpsMarker = null, gpsWatch = null, gpsOn = false;
+    let gpsMarker = null, gpsWatch = null, gpsOn = false, gpsTrack = [], gpsPolyline = null;
     function toggleGPS() { if (gpsOn) stopGPS(); else startGPS(); }
     function startGPS() {
       if (!navigator.geolocation) { alert('بۇ بىراۋزىر GPS نى قوللىمايدۇ'); return; }
       document.getElementById('btnGPS').classList.add('on');
-      gpsOn = true;
+      gpsOn = true; gpsTrack = [];
       navigator.geolocation.getCurrentPosition(pos => {
         const { latitude: lat, longitude: lng } = pos.coords;
         showGPSMarker(lat, lng, pos.coords.accuracy);
-        map.flyTo([lat, lng], 13, { duration: 1.8 });
+        map.flyTo([lat, lng], 15, { duration: 1.8 });
       }, err => {
         alert('ئورۇن ئېلىشتا خاتالىق: ' + (err.code === 1 ? 'رۇخسەت بەرمىدى' : err.message));
         stopGPS();
@@ -2957,8 +3246,10 @@
     function stopGPS() {
       gpsOn = false;
       document.getElementById('btnGPS')?.classList.remove('on');
+      document.getElementById('btnSaveGPS').style.display = 'none';
       if (gpsWatch !== null) { navigator.geolocation.clearWatch(gpsWatch); gpsWatch = null; }
       if (gpsMarker) { map.removeLayer(gpsMarker); gpsMarker = null; }
+      if (gpsPolyline) { map.removeLayer(gpsPolyline); gpsPolyline = null; }
     }
     function showGPSMarker(lat, lng, acc) {
       const icon = L.divIcon({
@@ -2974,6 +3265,29 @@
         gpsMarker = L.marker([lat, lng], { icon, zIndexOffset: 2000 }).addTo(map);
         gpsMarker.bindPopup(popupHtml).openPopup();
       }
+      gpsTrack.push([lat, lng]);
+      if (!gpsPolyline) {
+         gpsPolyline = L.polyline(gpsTrack, {color: '#eab308', weight: 4, dashArray: '5,10'}).addTo(map);
+      } else {
+         gpsPolyline.setLatLngs(gpsTrack);
+      }
+      document.getElementById('btnSaveGPS').style.display = 'flex';
+    }
+    function saveGPSTrack() {
+      if (!gpsTrack.length) return;
+      const geojson = {
+         "type": "FeatureCollection",
+         "features": [{
+            "type": "Feature",
+            "properties": {"name": "GPS ئىزى"},
+            "geometry": { "type": "LineString", "coordinates": gpsTrack.map(p => [p[1], p[0]]) }
+         }]
+      };
+      const blob = new Blob([JSON.stringify(geojson)], {type: "application/json"});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "GPS_Track_" + Date.now() + ".geojson";
+      a.click();
     }
 
     // ============================================================
@@ -2983,13 +3297,42 @@
       const cvs = getCvs();
       const layerKey = Object.keys(TILES).find(k => tileLayer && TILES[k] === tileLayer._url) || 'dark';
       const c = map.getCenter();
-      const data = { v: 2, layer: layerKey, center: { lat: c.lat, lng: c.lng }, zoom: map.getZoom(), canvas: cvs.toDataURL('image/png') };
+      
+      const drawingsData = [];
+      mapDrawings.forEach(l => {
+         if (l instanceof L.Polyline && !(l instanceof L.Polygon)) {
+             drawingsData.push({type: 'polyline', latlngs: l.getLatLngs(), color: l.options.color, weight: l.options.weight});
+         }
+         else if (l instanceof L.Marker) {
+             let html = null, iconUrl = null;
+             if (l.options.icon instanceof L.DivIcon) html = l.options.icon.options.html;
+             else if (l.options.icon instanceof L.Icon) iconUrl = l.options.icon.options.iconUrl;
+             drawingsData.push({ type: 'marker', latlng: l.getLatLng(), html: html, iconUrl: iconUrl });
+         }
+      });
+      const textData = textBoxes.map(t => ({ latlng: t._latlng, html: t.innerHTML, cssText: t.style.cssText }));
+      const calloutData = callouts.map(c => ({ latlng: c._latlng, head: c.childNodes[1].innerHTML, body: c.childNodes[2].innerHTML, css: c.style.cssText, style: c.className }));
+      
+      const data = { 
+        v: 3, 
+        layer: layerKey, 
+        center: { lat: c.lat, lng: c.lng }, 
+        zoom: map.getZoom(), 
+        canvas: cvs.toDataURL('image/png'),
+        drawings: drawingsData,
+        texts: textData,
+        callouts: calloutData,
+        gpsTrack: gpsTrack,
+        localKBs: localKBs,
+        quickLocs: customQuickLocs
+      };
       const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'bilik-map-' + new Date().toISOString().slice(0, 10) + '.json';
       a.click();
     }
+    
     function loadState() {
       const inp = document.createElement('input');
       inp.type = 'file'; inp.accept = '.json';
@@ -3003,6 +3346,62 @@
             const im = new Image();
             im.onload = () => { ctx.clearRect(0, 0, getCvs().width, getCvs().height); ctx.drawImage(im, 0, 0); };
             im.src = data.canvas;
+          }
+          if (data.drawings) {
+             data.drawings.forEach(d => {
+                 if (d.type === 'polyline') {
+                     const l = L.polyline(d.latlngs, {color: d.color, weight: d.weight}).addTo(map);
+                     mapDrawings.push(l);
+                 } else if (d.type === 'marker') {
+                     let icon;
+                     if (d.html) icon = L.divIcon({className: '', html: d.html});
+                     else if (d.iconUrl) icon = L.icon({iconUrl: d.iconUrl, iconSize: [36,36], iconAnchor:[18,18]});
+                     if (icon) {
+                         const m = L.marker(d.latlng, {icon, interactive:true, draggable:true}).addTo(map);
+                         mapDrawings.push(m);
+                     }
+                 }
+             });
+          }
+          if (data.texts) {
+             data.texts.forEach(t => {
+                mkTextBox(0, 0);
+                const el = textBoxes[textBoxes.length - 1];
+                el.innerHTML = t.html;
+                el.style.cssText = t.cssText;
+                el._latlng = L.latLng(t.latlng);
+             });
+             syncAnnotations();
+          }
+          if (data.callouts) {
+             data.callouts.forEach(c => {
+                mkCallout(0, 0);
+                const el = callouts[callouts.length - 1];
+                el.className = c.style || 'callout';
+                el.childNodes[1].innerHTML = c.head;
+                el.childNodes[2].innerHTML = c.body;
+                el.style.cssText = c.css;
+                el._latlng = L.latLng(c.latlng);
+             });
+             syncAnnotations();
+          }
+          if (data.gpsTrack && data.gpsTrack.length) {
+             gpsTrack = data.gpsTrack;
+             gpsPolyline = L.polyline(gpsTrack, {color: '#eab308', weight: 4, dashArray: '5,10'}).addTo(map);
+          }
+          if (data.localKBs) {
+             Object.assign(localKBs, data.localKBs);
+             Object.assign(KNOWLEDGE, data.localKBs);
+             localStorage.setItem('bilik_kbs', JSON.stringify(localKBs));
+             renderKBs();
+          }
+          if (data.quickLocs) {
+             data.quickLocs.forEach(q => {
+                 if (!customQuickLocs.find(exist => exist.n === q.n)) customQuickLocs.push(q);
+             });
+             localStorage.setItem('bilik_quick', JSON.stringify(customQuickLocs));
+             document.getElementById('qbtns').innerHTML = '';
+             buildQuickList();
           }
         } catch (err) { alert('ھۆججەت ئوقۇشتا خاتالىق: ' + err.message); }
       };
@@ -3075,24 +3474,44 @@
     // ============================================================
     // MINI-MAP
     // ============================================================
-    let miniMapWrap = null, miniMapInst = null;
+    let miniMapWrap = null, miniMapInst = null, miniMapRect = null;
     function toggleMiniMap() {
-      const btn = document.getElementById('btnMiniMap');
+      const ddBtn = document.getElementById('dd-minimap');
       if (miniMapWrap) {
         map.off('move zoom', miniMapInst._sync);
         miniMapInst.remove(); miniMapWrap.remove();
-        miniMapWrap = null; miniMapInst = null;
-        btn?.classList.remove('on'); return;
+        miniMapWrap = null; miniMapInst = null; miniMapRect = null;
+        if (ddBtn) ddBtn.classList.remove('on'); return;
       }
       miniMapWrap = document.createElement('div');
-      miniMapWrap.style.cssText = 'position:fixed;bottom:20px;left:295px;width:185px;height:130px;z-index:1500;border-radius:10px;overflow:hidden;border:2px solid rgba(200,168,75,.4);box-shadow:0 4px 20px rgba(0,0,0,.6)';
+      miniMapWrap.style.cssText = 'position:fixed;bottom:20px;left:295px;width:220px;height:140px;z-index:1500;border-radius:10px;overflow:hidden;border:2px solid rgba(200,168,75,.4);box-shadow:0 4px 20px rgba(0,0,0,.6)';
+      
+      const dragHandle = document.createElement('div');
+      dragHandle.style.cssText = 'position:absolute;top:0;left:0;right:0;height:24px;cursor:move;z-index:2000;display:flex;justify-content:center;align-items:center;';
+      miniMapWrap.appendChild(dragHandle);
+      
       document.body.appendChild(miniMapWrap);
-      miniMapInst = L.map(miniMapWrap, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, keyboard: false });
-      L.tileLayer(TILES.dark, { maxZoom: 18 }).addTo(miniMapInst);
-      const sync = () => { const c = map.getCenter(); miniMapInst.setView([c.lat, c.lng], Math.max(0, map.getZoom() - 4)); };
+      
+      let dr = false, ox = 0, oy = 0;
+      dragHandle.addEventListener('mousedown', e => { 
+          dr = true; 
+          const rect = miniMapWrap.getBoundingClientRect();
+          miniMapWrap.style.bottom = 'auto';
+          miniMapWrap.style.left = rect.left + 'px';
+          miniMapWrap.style.top = rect.top + 'px';
+          ox = e.clientX - rect.left; 
+          oy = e.clientY - rect.top; 
+      });
+      document.addEventListener('mousemove', e => { if (!dr) return; miniMapWrap.style.left = (e.clientX - ox) + 'px'; miniMapWrap.style.top = (e.clientY - oy) + 'px'; });
+      document.addEventListener('mouseup', () => dr = false);
+      
+      miniMapInst = L.map(miniMapWrap, { center: [20, 0], zoom: 0, zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, keyboard: false });
+      L.tileLayer(TILES.street, { maxZoom: 18 }).addTo(miniMapInst);
+      miniMapRect = L.rectangle(map.getBounds(), {color: '#ef4444', weight: 1, fillOpacity: 0.2}).addTo(miniMapInst);
+      const sync = () => { miniMapRect.setBounds(map.getBounds()); };
       miniMapInst._sync = sync;
       sync(); map.on('move zoom', sync);
-      btn?.classList.add('on');
+      if (ddBtn) ddBtn.classList.add('on');
     }
 
     // ============================================================
