@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>بىلىك جۇغراپىيىلىك سىياسەت تەھلىلى قۇرالى</title>
-  <link rel="icon" type="image/png" href="BilikGeoTool_Offline/pics/Biliklogo.png">
+  <link rel="icon" type="image/png" id="favicon" href="https://raw.githubusercontent.com/UyCoder/paydilar/master/Biliklogo.png">
+  <script>
+    // Favicon: online-first, fall back to local
+    (function(){var f=document.getElementById('favicon'),i=new Image();i.onerror=function(){f.href='BilikGeoTool_Offline/pics/Biliklogo.png';};i.src=f.href;})();
+  </script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1544,6 +1548,126 @@
     .rp-back-btn:hover {
       background: rgba(59, 130, 246, 0.25);
     }
+
+    /* ===== COUNTRY PAINT PANEL ===== */
+    #country-paint-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4500;
+      background: rgba(6, 14, 28, .98);
+      border: 1px solid rgba(200, 168, 75, .4);
+      border-radius: 16px;
+      width: min(92vw, 480px);
+      max-height: 80vh;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 16px 48px rgba(0,0,0,.8);
+      direction: rtl;
+    }
+    #country-paint-panel.show { display: flex; }
+    .cpp-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(200,168,75,.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cpp-search {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(200,168,75,.15);
+      display: flex;
+      gap: 6px;
+    }
+    .cpp-search input {
+      flex: 1;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(200,168,75,.25);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--txt);
+      font-family: 'UKIJ', sans-serif;
+      font-size: .82em;
+      outline: none;
+    }
+    #cpp-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+    }
+    #cpp-list::-webkit-scrollbar { width: 3px; }
+    #cpp-list::-webkit-scrollbar-thumb { background: rgba(200,168,75,.2); border-radius: 2px; }
+    .cpp-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 6px;
+      border-radius: 8px;
+      transition: background .2s;
+      cursor: pointer;
+    }
+    .cpp-row:hover { background: rgba(255,255,255,.05); }
+    .cpp-row .cpp-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.2);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .cpp-row .cpp-name {
+      flex: 1;
+      font-size: .82em;
+      color: var(--txt2);
+    }
+    .cpp-row .cpp-clr-inp {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+    .cpp-foot {
+      padding: 10px 14px;
+      border-top: 1px solid rgba(200,168,75,.15);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .cpp-preset {
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--bdr);
+      background: var(--glass);
+      color: var(--txt2);
+      font-size: .74em;
+      cursor: pointer;
+      font-family: 'UKIJ', sans-serif;
+      transition: var(--tr);
+    }
+    .cpp-preset:hover { border-color: var(--gold); color: var(--gold2); }
+    
+    /* ===== LABEL SIZE CONTROL ===== */
+    #lbl-size-bar {
+      position: fixed;
+      bottom: 13px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1900;
+      background: rgba(5,10,22,.95);
+      border: 1px solid rgba(200,168,75,.28);
+      border-radius: 14px;
+      padding: 5px 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--sh);
+      backdrop-filter: blur(10px);
+    }
+    #lbl-size-bar.show { display: flex; }
+    #lbl-size-bar label { font-size: .74em; color: var(--muted); }
+    #lbl-size-sld { width: 100px; accent-color: var(--gold); }
+    #lbl-size-val { font-size: .78em; color: var(--gold2); min-width: 28px; text-align: center; }
   </style>
 </head>
 
@@ -1645,6 +1769,8 @@
         </div>
       </div>
       <button class="tbtn on" id="btnLbl" onclick="toggleLabels()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>ئۇيغۇرچە</span></button>
+      <button class="tbtn" id="btnLblSize" onclick="toggleLblSizeBar()" title="خەت چوڭلىقى"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="4" y="18" font-size="14" fill="currentColor" stroke="none">A</text><text x="13" y="20" font-size="18" fill="currentColor" stroke="none">A</text></svg><span>چوڭلۇق</span></button>
+      <button class="tbtn" onclick="openCountryPaint()" title="دۆلەتلەرگە رەڭ بەر"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>دۆلەت رەڭ</span></button>
       <div class="tsep"></div>
       <button class="tbtn" onclick="undoDraw()" title="Ctrl+Z">↩</button>
       <button class="tbtn" onclick="redoDraw()" title="Ctrl+Y">↪</button>
@@ -1793,6 +1919,42 @@
     </div>
   </div>
 
+  <!-- COUNTRY PAINT PANEL -->
+  <div id="country-paint-bg" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:4499;display:none;backdrop-filter:blur(3px)" onclick="closeCountryPaint()"></div>
+  <div id="country-paint-panel">
+    <div class="cpp-head">
+      <span style="color:var(--gold2);font-weight:700;font-size:.95em">🎨 دۆلەتلەرگە رەڭ بەر</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="clearAllCountryColors()" style="padding:4px 10px;border-radius:8px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:#f87171;font-size:.74em;cursor:pointer;font-family:'UKIJ',sans-serif">ھەممىنى تازىلا</button>
+        <button onclick="closeCountryPaint()" style="background:none;border:none;color:var(--txt2);font-size:1.2em;cursor:pointer">✕</button>
+      </div>
+    </div>
+    <div class="cpp-search">
+      <input type="text" id="cpp-search-inp" placeholder="دۆلەت ئىزدەش…" oninput="filterCppList(this.value)">
+    </div>
+    <div id="cpp-list"></div>
+    <div class="cpp-foot">
+      <span style="font-size:.72em;color:var(--muted);width:100%;margin-bottom:4px">تېز رەڭلەر:</span>
+      <button class="cpp-preset" onclick="applyPresetColor('#ef444466',this)">🔴 قىزىل</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#3b82f666',this)">🔵 كۆك</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#22c55e66',this)">🟢 يېشىل</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#f59e0b66',this)">🟡 سېرىق</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#a855f766',this)">🟣 بىنەپشە</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#06b6d466',this)">🩵 ئاسمان</button>
+      <button class="cpp-preset" onclick="applyPresetColor('#f9731666',this)">🟠 ئاپتۇل</button>
+    </div>
+  </div>
+
+  <!-- LABEL SIZE BAR -->
+  <div id="lbl-size-bar">
+    <label>ئۇيغۇرچە خەت چوڭلىقى:</label>
+    <button onclick="changeLblSize(-2)" style="background:none;border:1px solid var(--bdr);color:var(--txt2);border-radius:5px;padding:1px 7px;cursor:pointer;font-size:.9em">−</button>
+    <input type="range" id="lbl-size-sld" min="6" max="30" value="13" oninput="setLblSize(this.value)">
+    <span id="lbl-size-val">13px</span>
+    <button onclick="changeLblSize(2)" style="background:none;border:1px solid var(--bdr);color:var(--txt2);border-radius:5px;padding:1px 7px;cursor:pointer;font-size:.9em">＋</button>
+    <button onclick="document.getElementById('lbl-size-bar').classList.remove('show')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1em">✕</button>
+  </div>
+
   <!-- MAP -->
   <div id="mwrap">
     <div id="lmap"></div>
@@ -1854,11 +2016,21 @@
         <button class="db" id="dt-marker" onclick="openMarkerModal()" title="نۇقتا / بەلگە [9]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
       </div>
       <div style="position:relative;display:none;" id="dt-color-opts1">
-        <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg></button>
-        <div class="wpop" id="wpop"><label>قەلەملىك: <b id="wval">3</b>px</label><input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)"></div>
-      </div>
-      <div id="cbtn" title="رەڭ تاللا" style="display:none;" id="dt-color-opts2">
-        <div id="cprev"></div><input type="color" id="cinput" value="#ef4444" oninput="setCol(this.value)">
+        <button class="db" id="dt-sw" onclick="toggleWP()" title="قەلەملىك ۋە رەڭ">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="20" height="2" rx="1"/><rect x="2" y="12" width="20" height="3" rx="1.5"/><rect x="2" y="18" width="20" height="4" rx="2"/></svg>
+        </button>
+        <div class="wpop" id="wpop" style="min-width:160px">
+          <label style="font-size:.72em;color:var(--muted);display:block;margin-bottom:4px">قەلەملىك: <b id="wval">3</b>px</label>
+          <input type="range" id="wsld" min="1" max="22" value="3" oninput="setW(this.value)" style="width:130px">
+          <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(200,168,75,.2)">
+            <label style="font-size:.72em;color:var(--muted);display:block;margin-bottom:6px">رەڭ:</label>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div id="cprev" style="width:30px;height:30px;border-radius:6px;border:2px solid rgba(200,168,75,.5);cursor:pointer;flex-shrink:0;background:#ef4444" onclick="document.getElementById('cinput').click()"></div>
+              <input type="color" id="cinput" value="#ef4444" oninput="setCol(this.value)" style="position:absolute;opacity:0;width:0;height:0">
+              <span style="font-size:.7em;color:var(--muted)">چىكىپ رەڭ تاللاڭ</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="dsep"></div>
       <button class="db" id="dt-erase" onclick="setMode('erase')" title="ئۆچۈرگۈچ [E]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l14 14"/><path d="M21 5l-8 8"/><rect x="2" y="14" width="8" height="8" rx="1"/></svg></button>
@@ -2019,14 +2191,47 @@
          _updateMetric: function (maxMeters) {
             var meters = this._getRoundNum(maxMeters),
                 label = meters < 1000 ? meters + ' مېتىر' : (meters / 1000) + ' كىلومېتىر';
-            this._updateScale(this._mScale, label + ' (ماسشىتاب)', meters / maxMeters);
+            this._updateScale(this._mScale, label, meters / maxMeters);
          }
       });
       map = L.map('lmap', { center: [30, 20], zoom: 3, zoomControl: true, attributionControl: false });
       L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
       
       const style = document.createElement('style');
-      style.textContent = '.leaflet-control-scale-line { font-family: "UKIJ", sans-serif !important; font-size: 11px !important; }';
+      style.textContent = `
+        .leaflet-control-scale { overflow: visible !important; position: relative !important; }
+        .leaflet-control-scale::before {
+          content: 'ماسشىتاب';
+          display: block;
+          font-family: "UKIJ", sans-serif;
+          font-size: 9px;
+          color: #f0cc72;
+          text-align: center;
+          margin-bottom: 2px;
+          direction: rtl;
+          background: rgba(5,10,22,0.85);
+          border-radius: 4px 4px 0 0;
+          padding: 1px 4px;
+          border: 1px solid rgba(200,168,75,0.4);
+          border-bottom: none;
+          box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
+        }
+        .leaflet-control-scale-line {
+          font-family: "UKIJ", sans-serif !important;
+          font-size: 10px !important;
+          white-space: nowrap !important;
+          overflow: visible !important;
+          max-width: none !important;
+          direction: rtl !important;
+          background: rgba(5,10,22,0.85) !important;
+          border-color: rgba(200,168,75,0.6) !important;
+          color: #f0cc72 !important;
+          padding: 2px 6px !important;
+          border-radius: 0 0 4px 4px !important;
+          border-top: none !important;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+      `;
       document.head.appendChild(style);
       
       const coordCtrl = L.control({position: 'bottomleft'});
@@ -2079,8 +2284,8 @@
       mapMode = mode;
       const lm = document.getElementById('lmap');
       const cm = document.getElementById('cmap');
-      document.getElementById('btn2d').classList.toggle('on', mode === '2d');
-      document.getElementById('btn3d').classList.toggle('on', mode === '3d');
+      document.getElementById('dd-2d')?.classList.toggle('on', mode === '2d');
+      document.getElementById('dd-3d')?.classList.toggle('on', mode === '3d');
       if (mode === '2d') {
         lm.style.display = ''; cm.style.display = 'none';
         if (map) setTimeout(() => map.invalidateSize(), 100);
@@ -2468,15 +2673,21 @@
       document.getElementById('tfb').classList.toggle('show', m === 'text');
       document.getElementById('cstyle-bar').classList.toggle('show', m === 'callout');
       
-      const isPenLine = (m === 'pen' || m === 'line');
+      const isDrawShape = !!(m) && m !== 'text' && m !== 'callout' && m !== 'sticker' && m !== 'bubble' && m !== 'marker' && m !== 'route' && m !== 'erase';
       const co1 = document.getElementById('dt-color-opts1');
-      const co2 = document.getElementById('dt-color-opts2');
-      if (co1) co1.style.display = isPenLine ? 'flex' : 'none';
-      if (co2) co2.style.display = isPenLine ? 'flex' : 'none';
+      if (co1) co1.style.display = isDrawShape ? 'flex' : 'none';
+      // auto-close width popup when switching tools
+      if (!isDrawShape) document.getElementById('wpop')?.classList.remove('open');
     }
 
     function toggleFill() { fillOn = !fillOn; document.getElementById('dt-fill')?.classList.toggle('on', fillOn); }
-    function setCol(v) { drawColor = v; document.getElementById('cprev').style.background = v; }
+    function setCol(v) {
+      drawColor = v;
+      const cprev = document.getElementById('cprev');
+      const cinput = document.getElementById('cinput');
+      if (cprev) cprev.style.background = v;
+      if (cinput) cinput.value = v;
+    }
     function setW(v) { strokeW = parseInt(v, 10); document.getElementById('wval').textContent = v; }
     function toggleWP() { document.getElementById('wpop').classList.toggle('open'); }
     function toggleAP() { document.getElementById('apop').classList.toggle('open'); }
@@ -3542,7 +3753,282 @@
       document.getElementById('modal-bg').style.display = 'block';
       document.getElementById('modal-box').style.display = 'flex';
     }
+    // ============================================================
+    // COUNTRY PAINT
+    // ============================================================
+    const COUNTRY_LIST = [
+      {n:'ئافغانىستان',iso:'AF'},{n:'ئالبانىيە',iso:'AL'},{n:'جازائىر',iso:'DZ'},
+      {n:'ئاندوررا',iso:'AD'},{n:'ئانگولا',iso:'AO'},{n:'ئارگېنتىنا',iso:'AR'},
+      {n:'ئەرمېنىيە',iso:'AM'},{n:'ئاۋستىرالىيە',iso:'AU'},{n:'ئاۋستىرىيە',iso:'AT'},
+      {n:'ئەزىربەيجان',iso:'AZ'},{n:'باھاما',iso:'BS'},{n:'بەھرەين',iso:'BH'},
+      {n:'بانگلادېش',iso:'BD'},{n:'بېلارۇس',iso:'BY'},{n:'بېلگىيە',iso:'BE'},
+      {n:'بولىۋىيە',iso:'BO'},{n:'بوسنىيە',iso:'BA'},{n:'بوتسۋانا',iso:'BW'},
+      {n:'برازىلىيە',iso:'BR'},{n:'بۇلغارىيە',iso:'BG'},{n:'كامبودژا',iso:'KH'},
+      {n:'كامىرون',iso:'CM'},{n:'كانادا',iso:'CA'},{n:'چىلى',iso:'CL'},
+      {n:'جۇڭگو',iso:'CN'},{n:'كولومبىيە',iso:'CO'},{n:'كروئاتسىيە',iso:'HR'},
+      {n:'كۇبا',iso:'CU'},{n:'چېخىيە',iso:'CZ'},{n:'دانىيە',iso:'DK'},
+      {n:'مىسىر',iso:'EG'},{n:'ئېكۋادور',iso:'EC'},{n:'ئارتىرىيە',iso:'ER'},
+      {n:'ئېستونىيە',iso:'EE'},{n:'ئېفىيوپىيە',iso:'ET'},{n:'فىنلاندىيە',iso:'FI'},
+      {n:'فىرانسىيە',iso:'FR'},{n:'گابون',iso:'GA'},{n:'گورجىستان',iso:'GE'},
+      {n:'گېرمانىيە',iso:'DE'},{n:'گانا',iso:'GH'},{n:'گرېسىيە',iso:'GR'},
+      {n:'گىۋاتىمالا',iso:'GT'},{n:'گىۋىنىيە',iso:'GN'},{n:'ھايتى',iso:'HT'},
+      {n:'ھوندۇراس',iso:'HN'},{n:'ھۇنگارىيە',iso:'HU'},{n:'ھىندىستان',iso:'IN'},
+      {n:'ئىندونېزىيە',iso:'ID'},{n:'ئىران',iso:'IR'},{n:'ئىراق',iso:'IQ'},
+      {n:'ئىرلاندىيە',iso:'IE'},{n:'ئىسرائىلىيە',iso:'IL'},{n:'ئىتالىيە',iso:'IT'},
+      {n:'ياپونىيە',iso:'JP'},{n:'ئۇردۇن',iso:'JO'},{n:'قازاقستان',iso:'KZ'},
+      {n:'كېنىيە',iso:'KE'},{n:'كورىيە (جەنۇبى)',iso:'KR'},{n:'كورىيە (شىمالى)',iso:'KP'},
+      {n:'كۇۋەيت',iso:'KW'},{n:'لاتۋىيە',iso:'LV'},{n:'لىبنان',iso:'LB'},
+      {n:'لىبىيە',iso:'LY'},{n:'لىتۋانىيە',iso:'LT'},{n:'ماكىدونىيە',iso:'MK'},
+      {n:'مالايزىيە',iso:'MY'},{n:'مالى',iso:'ML'},{n:'مەكسىكا',iso:'MX'},
+      {n:'مولدوۋا',iso:'MD'},{n:'مونگغۇلىيە',iso:'MN'},{n:'مارۇككو',iso:'MA'},
+      {n:'موزامبىك',iso:'MZ'},{n:'ميانمار',iso:'MM'},{n:'ناميبىيە',iso:'NA'},
+      {n:'نىپال',iso:'NP'},{n:'نىدىرلاندىيە',iso:'NL'},{n:'يېڭى زېلاندىيە',iso:'NZ'},
+      {n:'نىكاراگۇا',iso:'NI'},{n:'نىگېرىيە',iso:'NG'},{n:'نورۋېگىيە',iso:'NO'},
+      {n:'پاكىستان',iso:'PK'},{n:'پانامىيە',iso:'PA'},{n:'فىلىپپىن',iso:'PH'},
+      {n:'پولشا',iso:'PL'},{n:'پورتۇگالىيە',iso:'PT'},{n:'قاتار',iso:'QA'},
+      {n:'رومانىيە',iso:'RO'},{n:'رۇسىيە',iso:'RU'},{n:'سەئۇدىيە ئەرەبىستانى',iso:'SA'},
+      {n:'سىنېگال',iso:'SN'},{n:'سېربىيە',iso:'RS'},{n:'سوماليە',iso:'SO'},
+      {n:'جەنۇبى ئافرىقا',iso:'ZA'},{n:'جەنۇبى سۇدان',iso:'SS'},{n:'ئىسپانىيە',iso:'ES'},
+      {n:'سىرىلانكا',iso:'LK'},{n:'سۇدان',iso:'SD'},{n:'سۋېدىيە',iso:'SE'},
+      {n:'شىۋىتسارىيە',iso:'CH'},{n:'سۇرىيە',iso:'SY'},{n:'تايۋان',iso:'TW'},
+      {n:'تاجىكستان',iso:'TJ'},{n:'تانزانىيە',iso:'TZ'},{n:'تايلاند',iso:'TH'},
+      {n:'تۈركمەنىستان',iso:'TM'},{n:'تۇنىس',iso:'TN'},{n:'تۈركىيە',iso:'TR'},
+      {n:'ئۇگاندا',iso:'UG'},{n:'ئۇكراينا',iso:'UA'},{n:'ئەمىرلىكلەر',iso:'AE'},
+      {n:'بىرلەشمە قىراللىق',iso:'GB'},{n:'ئامىرىكا',iso:'US'},{n:'ئۆزبىكىستان',iso:'UZ'},
+      {n:'ۋېنېزۇئېلا',iso:'VE'},{n:'ۋيېتنام',iso:'VN'},{n:'يىمەن',iso:'YE'},
+      {n:'زامبىيە',iso:'ZM'},{n:'زىمبابۋې',iso:'ZW'},{n:'فىلىستىن',iso:'PS'},
+      {n:'ئازادلىق زونىسى شىنجاڭ',iso:'XJ'}
+    ];
+
+    let countryColors = JSON.parse(localStorage.getItem('bilik_country_colors') || '{}');
+    let countryLayers = {};
+    let selectedCppColor = '#3b82f666';
+    let cppPresetColor = null;
+
+    function openCountryPaint() {
+      buildCppList(COUNTRY_LIST);
+      document.getElementById('country-paint-bg').style.display = 'block';
+      document.getElementById('country-paint-panel').classList.add('show');
+      document.getElementById('cpp-search-inp').value = '';
+    }
+
+    function closeCountryPaint() {
+      document.getElementById('country-paint-bg').style.display = 'none';
+      document.getElementById('country-paint-panel').classList.remove('show');
+    }
+
+    function buildCppList(list) {
+      const c = document.getElementById('cpp-list');
+      c.innerHTML = '';
+      list.forEach(country => {
+        const row = document.createElement('div');
+        row.className = 'cpp-row';
+        const painted = countryColors[country.iso];
+        const swatch = document.createElement('div');
+        swatch.className = 'cpp-swatch';
+        swatch.style.background = painted || 'rgba(255,255,255,0.1)';
+        swatch.title = 'رەڭ تاللا';
+        const inp = document.createElement('input');
+        inp.type = 'color';
+        inp.className = 'cpp-clr-inp';
+        inp.value = (painted || '#3b82f6').substring(0,7);
+        inp.oninput = (e) => paintCountry(country, e.target.value + 'aa');
+        swatch.onclick = () => {
+          if (cppPresetColor) { paintCountry(country, cppPresetColor); }
+          else { inp.click(); }
+        };
+        const enName = ISO_EN[country.iso] || '';
+        const name = document.createElement('span');
+        name.className = 'cpp-name';
+        name.innerHTML = country.n + (enName ? ` <span style="color:var(--muted);font-size:.82em;direction:ltr;margin-right:4px">(${enName})</span>` : '');
+        const clrBtn = document.createElement('button');
+        clrBtn.textContent = '✕';
+        clrBtn.title = 'رەڭنى تازىلا';
+        clrBtn.style.cssText = 'background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9em;padding:2px 5px;';
+        clrBtn.onclick = (e) => { e.stopPropagation(); clearCountryColor(country); swatch.style.background = 'rgba(255,255,255,0.1)'; };
+        row.appendChild(swatch);
+        row.appendChild(inp);
+        row.appendChild(name);
+        if (painted) row.appendChild(clrBtn);
+        c.appendChild(row);
+      });
+    }
+
+    function applyPresetColor(color, btn) {
+      cppPresetColor = color;
+      document.querySelectorAll('.cpp-preset').forEach(b => b.classList.remove('on'));
+      if (btn) btn.classList.add('on');
+    }
+
+    function filterCppList(q) {
+      if (!q) { buildCppList(COUNTRY_LIST); return; }
+      const ql = q.toLowerCase();
+      const filtered = COUNTRY_LIST.filter(c => {
+        const en = (ISO_EN[c.iso] || '').toLowerCase();
+        return c.n.includes(q) || en.includes(ql) || c.iso.toLowerCase() === ql;
+      });
+      buildCppList(filtered);
+    }
+
+    // English name map for Nominatim API queries
+    const ISO_EN = {
+      AF:'Afghanistan',AL:'Albania',DZ:'Algeria',AD:'Andorra',AO:'Angola',AR:'Argentina',
+      AM:'Armenia',AU:'Australia',AT:'Austria',AZ:'Azerbaijan',BS:'Bahamas',BH:'Bahrain',
+      BD:'Bangladesh',BY:'Belarus',BE:'Belgium',BO:'Bolivia',BA:'Bosnia and Herzegovina',
+      BW:'Botswana',BR:'Brazil',BG:'Bulgaria',KH:'Cambodia',CM:'Cameroon',CA:'Canada',
+      CL:'Chile',CN:'China',CO:'Colombia',HR:'Croatia',CU:'Cuba',CZ:'Czech Republic',
+      DK:'Denmark',EG:'Egypt',EC:'Ecuador',ER:'Eritrea',EE:'Estonia',ET:'Ethiopia',
+      FI:'Finland',FR:'France',GA:'Gabon',GE:'Georgia',DE:'Germany',GH:'Ghana',
+      GR:'Greece',GT:'Guatemala',GN:'Guinea',HT:'Haiti',HN:'Honduras',HU:'Hungary',
+      IN:'India',ID:'Indonesia',IR:'Iran',IQ:'Iraq',IE:'Ireland',IL:'Israel',IT:'Italy',
+      JP:'Japan',JO:'Jordan',KZ:'Kazakhstan',KE:'Kenya',KR:'South Korea',KP:'North Korea',
+      KW:'Kuwait',LV:'Latvia',LB:'Lebanon',LY:'Libya',LT:'Lithuania',MK:'North Macedonia',
+      MY:'Malaysia',ML:'Mali',MX:'Mexico',MD:'Moldova',MN:'Mongolia',MA:'Morocco',
+      MZ:'Mozambique',MM:'Myanmar',NA:'Namibia',NP:'Nepal',NL:'Netherlands',NZ:'New Zealand',
+      NI:'Nicaragua',NG:'Nigeria',NO:'Norway',PK:'Pakistan',PA:'Panama',PH:'Philippines',
+      PL:'Poland',PT:'Portugal',QA:'Qatar',RO:'Romania',RU:'Russia',SA:'Saudi Arabia',
+      SN:'Senegal',RS:'Serbia',SO:'Somalia',ZA:'South Africa',SS:'South Sudan',ES:'Spain',
+      LK:'Sri Lanka',SD:'Sudan',SE:'Sweden',CH:'Switzerland',SY:'Syria',TW:'Taiwan',
+      TJ:'Tajikistan',TZ:'Tanzania',TH:'Thailand',TM:'Turkmenistan',TN:'Tunisia',TR:'Turkey',
+      UG:'Uganda',UA:'Ukraine',AE:'United Arab Emirates',GB:'United Kingdom',US:'United States',
+      UZ:'Uzbekistan',VE:'Venezuela',VN:'Vietnam',YE:'Yemen',ZM:'Zambia',ZW:'Zimbabwe',
+      PS:'Palestine'
+    };
+
+    async function paintCountry(country, color) {
+      countryColors[country.iso] = color;
+      localStorage.setItem('bilik_country_colors', JSON.stringify(countryColors));
+
+      // Remove old layer
+      if (countryLayers[country.iso]) {
+        map.removeLayer(countryLayers[country.iso]);
+        delete countryLayers[country.iso];
+      }
+
+      const hexColor = color.substring(0, 7);
+      const fillOpacity = 0.45;
+
+      // Show loading indicator on swatch
+      const allSwatches = document.querySelectorAll('.cpp-swatch');
+
+      let data = null;
+
+      // Strategy 1: Nominatim with ISO countrycode (most reliable)
+      if (!data) {
+        try {
+          const enName = ISO_EN[country.iso] || country.n;
+          const nomUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(enName)}&format=geojson&polygon_geojson=1&limit=1&countrycodes=${country.iso.toLowerCase()}&accept-language=en`;
+          const resp = await fetch(nomUrl, { headers: { 'User-Agent': 'BilikGeoTool/1.0' } });
+          if (resp.ok) {
+            const j = await resp.json();
+            if (j.features && j.features.length) data = j;
+          }
+        } catch(e1) { console.warn('Nominatim 1 failed:', e1); }
+      }
+
+      // Strategy 2: Nominatim without countrycodes restriction
+      if (!data) {
+        try {
+          const enName = ISO_EN[country.iso] || country.n;
+          const nomUrl2 = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(enName + ' country')}&format=geojson&polygon_geojson=1&limit=1&accept-language=en`;
+          const resp2 = await fetch(nomUrl2);
+          if (resp2.ok) {
+            const j2 = await resp2.json();
+            if (j2.features && j2.features.length) data = j2;
+          }
+        } catch(e2) { console.warn('Nominatim 2 failed:', e2); }
+      }
+
+      // Strategy 3: restcountries + polygon lookup
+      if (!data) {
+        try {
+          const url3 = `https://raw.githubusercontent.com/georgique/world-geojson/develop/countries/${country.iso.toLowerCase()}.json`;
+          const resp3 = await fetch(url3);
+          if (resp3.ok) { data = await resp3.json(); }
+        } catch(e3) { console.warn('world-geojson failed:', e3); }
+      }
+
+      if (data) {
+        try {
+          const layer = L.geoJSON(data, {
+            style: () => ({
+              color: hexColor,
+              weight: 2.5,
+              fillColor: hexColor,
+              fillOpacity: fillOpacity,
+              opacity: 0.9
+            })
+          }).addTo(map);
+          countryLayers[country.iso] = layer;
+          layer.bindPopup(`<div style="direction:rtl;font-family:'UKIJ',sans-serif;color:${hexColor};font-weight:700;font-size:.95em">${country.n}</div>`);
+        } catch(ge) { console.error('GeoJSON render error:', ge); }
+      } else {
+        // Fallback: show a circle marker at country centroid if we can find it
+        console.warn('All GeoJSON sources failed for:', country.iso);
+        alert(`"${country.n}" دۆلىتىنىڭ چىگرا مەلۇماتى تېپىلمىدى.\nئىنتېرنېت ئۇلىنىشىنى تەكشۈرۈڭ.`);
+      }
+
+      // Rebuild list to show current state
+      const searchInp = document.getElementById('cpp-search-inp');
+      const q = searchInp?.value || '';
+      buildCppList(q ? COUNTRY_LIST.filter(c => c.n.includes(q)) : COUNTRY_LIST);
+    }
+
+
+    function clearCountryColor(country) {
+      delete countryColors[country.iso];
+      localStorage.setItem('bilik_country_colors', JSON.stringify(countryColors));
+      if (countryLayers[country.iso]) {
+        map.removeLayer(countryLayers[country.iso]);
+        delete countryLayers[country.iso];
+      }
+    }
+
+    function clearAllCountryColors() {
+      if (!confirm('بارلىق دۆلەت رەڭلىرىنى تازىلامسىز؟')) return;
+      Object.keys(countryLayers).forEach(iso => { map.removeLayer(countryLayers[iso]); });
+      countryLayers = {}; countryColors = {};
+      localStorage.removeItem('bilik_country_colors');
+      buildCppList(COUNTRY_LIST);
+    }
+
+    function restoreCountryColors() {
+      Object.entries(countryColors).forEach(([iso, color]) => {
+        const country = COUNTRY_LIST.find(c => c.iso === iso);
+        if (country) paintCountry(country, color);
+      });
+    }
+
+    // ============================================================
+    // LABEL SIZE CONTROL
+    // ============================================================
+    let lblSizeBase = 13;
+    function toggleLblSizeBar() {
+      const bar = document.getElementById('lbl-size-bar');
+      bar.classList.toggle('show');
+      document.getElementById('btnLblSize').classList.toggle('on', bar.classList.contains('show'));
+    }
+    function setLblSize(v) {
+      lblSizeBase = parseInt(v);
+      document.getElementById('lbl-size-val').textContent = v + 'px';
+      document.getElementById('lbl-size-sld').value = v;
+      applyLblSize();
+    }
+    function changeLblSize(delta) {
+      const newV = Math.max(6, Math.min(30, lblSizeBase + delta));
+      setLblSize(newV);
+    }
+    function applyLblSize() {
+      const scale = lblSizeBase / 13;
+      document.querySelectorAll('.ugl').forEach(el => {
+        const base = el.classList.contains('continent') ? 15 :
+                     el.classList.contains('country') ? 13 :
+                     el.classList.contains('region') ? 11 :
+                     el.classList.contains('ocean') ? 12 :
+                     el.classList.contains('sea') ? 10 : 10;
+        el.style.fontSize = Math.round(base * scale) + 'px';
+      });
+    }
   </script>
 </body>
-
 </html>
