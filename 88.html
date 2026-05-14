@@ -76,8 +76,13 @@
    - شى جىنپىڭنىڭ نۆۋەتتىكى سىياسىتى بويىچە قانداق قارىلىدۇ؟
 3. خىتاي ئىدىيەسى ۋە پەيلاسوپلىرى نەزىرىدە:
    - كوڭزى ئىدىيىسى (روھىي ۋە ئەخلاقىي) بويىچە تەھلىل.
+   - موزىچىلار ئىدىيەسى (Mohism - 墨家) بويىچە تەھلىل.
+   - داۋچىلىق ئىدىيەسى (Daoism - 道家) بويىچە تەھلىل.
    - خىتاي قانۇنچىلىرى (فاجيا - قەبىھ ۋە مۇستەبىت قانۇنچىلىق) نەزىرىدە.
+   - جاڭزىيانىڭ (Jiang Ziya - 姜子牙) ئىستراتېگىيەلىك پىكرى بويىچە.
    - سۇنزىنىڭ (孙子) ئۇرۇش سەنئىتى پىكرى بويىچە.
+   - جۇگې لياڭ (Zhuge Liang - 诸葛亮) ۋە ساۋ ساۋ (Cao Cao - 曹操) نىڭ ھىيلە-مىكىرلىرى بويىچە.
+   - ئوتتۇز ئالتە ھىيلە (Thirty-Six Stratagems - 三十六计) بويىچە ئانالىز قىلىش.
 4. خىتاينىڭ زامانىۋى ئىستراتېگىيەچىلىرى ۋە سىياسىي كۈچلىرى:
    - خىتاي دېموكراتچىلىرى نەزىرىدە.
    - يەن شۆتوڭ (阎学通) نەزىرىدە.
@@ -109,8 +114,13 @@
   },
   "chinese_philosophy": {
     "confucius": "...",
+    "mohism": "...",
+    "daoism": "...",
     "legalism": "...",
-    "sun_tzu": "..."
+    "jiang_ziya": "...",
+    "sun_tzu": "...",
+    "zhuge_liang_cao_cao": "...",
+    "thirty_six_stratagems": "..."
   },
   "modern_thinkers": {
     "democrats": "...",
@@ -270,6 +280,20 @@
                             </div>
                             <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.confucius)}</div>
                         </div>
+                        <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-lime-50/30">
+                            <div class="w-full md:w-48 bg-lime-100 p-4 rounded-xl text-center flex-none">
+                                <span class="text-4xl block mb-2">🕊️</span>
+                                <h4 class="font-bold text-lime-900">موزىچىلار</h4>
+                            </div>
+                            <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.mohism)}</div>
+                        </div>
+                        <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-emerald-50/30">
+                            <div class="w-full md:w-48 bg-emerald-100 p-4 rounded-xl text-center flex-none">
+                                <span class="text-4xl block mb-2">🌿</span>
+                                <h4 class="font-bold text-emerald-900">داۋچىلىق ئىدىيەسى</h4>
+                            </div>
+                            <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.daoism)}</div>
+                        </div>
                         <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-stone-50">
                             <div class="w-full md:w-48 bg-stone-200 p-4 rounded-xl text-center flex-none">
                                 <span class="text-4xl block mb-2">⚖️</span>
@@ -277,12 +301,33 @@
                             </div>
                             <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.legalism)}</div>
                         </div>
+                        <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-indigo-50/30">
+                            <div class="w-full md:w-48 bg-indigo-100 p-4 rounded-xl text-center flex-none">
+                                <span class="text-4xl block mb-2">🎣</span>
+                                <h4 class="font-bold text-indigo-900">جاڭزىيا</h4>
+                            </div>
+                            <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.jiang_ziya)}</div>
+                        </div>
                         <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-orange-50/50">
                             <div class="w-full md:w-48 bg-orange-200 p-4 rounded-xl text-center flex-none">
                                 <span class="text-4xl block mb-2">⚔️</span>
                                 <h4 class="font-bold text-orange-900">سۇنزى (Sun Tzu)</h4>
                             </div>
                             <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.sun_tzu)}</div>
+                        </div>
+                        <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-rose-50/30">
+                            <div class="w-full md:w-48 bg-rose-100 p-4 rounded-xl text-center flex-none">
+                                <span class="text-4xl block mb-2">🎭</span>
+                                <h4 class="font-bold text-rose-900">ساۋ ساۋ ۋە جۇگې لياڭ</h4>
+                            </div>
+                            <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.zhuge_liang_cao_cao)}</div>
+                        </div>
+                        <div class="card p-6 flex flex-col md:flex-row gap-6 items-start bg-cyan-50/30">
+                            <div class="w-full md:w-48 bg-cyan-100 p-4 rounded-xl text-center flex-none">
+                                <span class="text-4xl block mb-2">🧩</span>
+                                <h4 class="font-bold text-cyan-900">36 ھىيلە</h4>
+                            </div>
+                            <div class="flex-1 text-sm text-slate-700">${formatParagraphs(data.chinese_philosophy?.thirty_six_stratagems)}</div>
                         </div>
                     </div>
 
