@@ -17,6 +17,30 @@
 </head>
 <body class="h-screen overflow-hidden flex flex-col">
 
+    <!-- Global Tools Navigation -->
+    <nav class="bg-slate-950 border-b border-slate-800 px-4 py-2 flex items-center justify-center gap-2 z-[60] shadow-md w-full overflow-x-auto" dir="rtl">
+        <span class="text-amber-500 font-bold text-xs uppercase tracking-widest ml-2 whitespace-nowrap">قۇراللار ئامبىرى:</span>
+        <div id="global-tools-nav" class="flex gap-2">
+            <a href="80.html" data-page="80.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">80: ئاساسىي (v10)</a>
+            <a href="85.html" data-page="85.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">85: 19 دۆلەت (يېڭى)</a>
+            <a href="86.html" data-page="86.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">86: 4 دەرىجىدىن تاشقىرى كۈچ</a>
+            <a href="87.html" data-page="87.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">87: 6 غەرب مۇتەخەسسىسى</a>
+            <a href="88.html" data-page="88.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">88: خىتاي نەزەرىيەسى</a>
+            <a href="89.html" data-page="89.html" class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">89: مۇستەقىللىق ماترىسساسى</a>
+        </div>
+    </nav>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const currentPath = window.location.pathname.split('/').pop();
+            document.querySelectorAll('#global-tools-nav .nav-link').forEach(link => {
+                if (link.getAttribute('data-page') === currentPath) {
+                    link.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-700');
+                    link.classList.add('bg-amber-600', 'text-white', 'border-amber-500', 'shadow-[0_0_10px_rgba(245,158,11,0.3)]');
+                }
+            });
+        });
+    </script>
+
     <!-- Header -->
     <header class="h-16 border-b border-slate-700 bg-slate-900 flex items-center justify-between px-6 z-50 shadow-2xl">
         <div class="flex items-center gap-4">

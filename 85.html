@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بىلىك 19 دۆلەت ئەقىل ئامبارلىرى ئانالىزى</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'UKIJ Ekran';
+            src: local('UKIJ Ekran'), local('UKIJ_Ekran');
+        }
+
+        @font-face {
+            font-family: 'UKIJ Tuz';
+            src: local('UKIJ Tuz'), local('UKIJ_Tuz');
+        }
+
+        body {
+            font-family: "UKIJ Ekran", "Noto Naskh Arabic", sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <!-- Global Tools Navigation -->
+    <nav class="bg-slate-950 border-b border-slate-800 px-4 py-2 flex items-center justify-center gap-2 z-[60] shadow-md w-full overflow-x-auto"
+        dir="rtl">
+        <span class="text-amber-500 font-bold text-xs uppercase tracking-widest ml-2 whitespace-nowrap">قۇراللار
+            ئامبىرى:</span>
+        <div id="global-tools-nav" class="flex gap-2">
+            <a href="80.html" data-page="80.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">80:
+                ئاساسىي (v10)</a>
+            <a href="85.html" data-page="85.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">85:
+                19 دۆلەت (يېڭى)</a>
+            <a href="86.html" data-page="86.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">86:
+                4 دەرىجىدىن تاشقىرى كۈچ</a>
+            <a href="87.html" data-page="87.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">87:
+                6 غەرب مۇتەخەسسىسى</a>
+            <a href="88.html" data-page="88.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">88:
+                خىتاي نەزەرىيەسى</a>
+            <a href="89.html" data-page="89.html"
+                class="nav-link px-3 py-1.5 rounded-md text-[11px] font-bold transition-all duration-300 border border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white whitespace-nowrap">89:
+                مۇستەقىللىق ماترىسساسى</a>
+        </div>
+    </nav>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const currentPath = window.location.pathname.split('/').pop();
+            document.querySelectorAll('#global-tools-nav .nav-link').forEach(link => {
+                if (link.getAttribute('data-page') === currentPath) {
+                    link.classList.remove('bg-slate-900', 'text-slate-400', 'border-slate-700');
+                    link.classList.add('bg-amber-600', 'text-white', 'border-amber-500', 'shadow-[0_0_10px_rgba(245,158,11,0.3)]');
+                }
+            });
+        });
+    </script>
+
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-700 bg-slate-900 flex items-center justify-between px-6 z-50 shadow-2xl">
+        <div class="flex items-center gap-4">
+            <div
+                class="bg-amber-500 text-slate-900 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-2xl">
+                B</div>
+            <div>
+                <h1 class="text-xl font-bold text-white">بىلىك تەتقىقات مەركىزى <span class="text-amber-500 text-xs">19
+                        Nations</span></h1>
+                <p class="text-[10px] text-slate-400 font-mono tracking-widest uppercase">Global Think Tanks Perspective
+                    Engine</p>
+            </div>
+        </div>
+        <div id="clock" class="text-xs text-amber-500 font-mono"></div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Control Panel -->
+        <aside class="w-[500px] border-l border-slate-700 bg-slate-800/50 flex flex-col z-40">
+
+            <div class="p-4 bg-slate-900/50 border-b border-slate-700">
+                <label class="block text-[10px] font-bold text-amber-500 mb-2 uppercase">1. ئانالىز تۈرىنى
+                    تاللاڭ</label>
+                <select id="journalSelect" onchange="loadJournalPrompt()"
+                    class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded-lg p-3 outline-none focus:ring-2 focus:ring-amber-500 transition-all">
+                    <option value="strategic">🌍 19 دۆلەت / رايون ئەقىل ئامبارلىرى ئانالىزى</option>
+                </select>
+            </div>
+
+            <div class="flex-1 p-4 flex flex-col min-h-0">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] text-slate-400 font-bold">AI غا بېرىدىغان مەخسۇس بۇيرۇق (كۆچۈرۈڭ):</span>
+                    <button onclick="copyPromptText()"
+                        class="bg-amber-600 hover:bg-amber-500 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg">كۆچۈرۈش
+                        📋</button>
+                </div>
+                <textarea id="promptArea" readonly
+                    class="w-full flex-1 bg-slate-900 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-slate-300 resize-none outline-none leading-relaxed border-dashed"
+                    dir="ltr"></textarea>
+            </div>
+
+            <div class="p-4 bg-slate-900/80 border-t border-slate-700">
+                <label class="block text-[10px] font-bold text-emerald-500 mb-2 uppercase">2. نەتىجە JSON نى
+                    چاپلاڭ</label>
+                <textarea id="jsonInput"
+                    class="w-full h-32 bg-slate-950 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-emerald-400 outline-none mb-3 focus:border-emerald-500 transition-all"
+                    placeholder='{"article_info": {...}}' dir="ltr"></textarea>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="renderFinalReport()"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2"><span>⚡</span>
+                        ئانالىزلاش</button>
+                    <button onclick="saveReportHTML()"
+                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2"><span>💾</span>
+                        HTML ساقلاش</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <div class="flex-1 bg-slate-950 relative overflow-hidden">
+            <iframe id="reportPreview" class="w-full h-full border-none bg-white"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // --- PROMPT ENGINE ---
+        const strategicPrompt = `مەن ساڭا بىر خەۋەر ياكى ماقالە بېرىمەن. سەن بۇنى تۆۋەندىكى 19 دۆلەت ۋە رايونغا ۋەكىللىك قىلىدىغان ئەقىل ئامبارلىرى ۋە مۇھىم شەخسلەرنىڭ نەزىرىدىكى تەھلىللەر بىلەن تەھلىل قىلىپ بېرىسەن. نەتىجىنى پەقەتلا مەن بەرگەن JSON فورماتىدا قايتۇر. ھەرگىز قىسقارتىۋەتمە، ھەربىر نۇقتىنى ئۇزۇن ۋە ئەتراپلىق ياز! ھېچقانداق يەرگە قەتئىي شىنجاڭ دەپ يازما، چوقۇم شەرقىي تۈركىستان دەپ ياز. جۇڭگونى خىتاي دەپ ياز.
+
+تەھلىل قىلىنىدىغان 19 دۆلەت/رايون ئۈچۈن پايدىلىنىدىغان نۇقتىلار:
+
+1. ئامېرىكا: ئەقىل ئامبارلىرى (Brookings, CFR, CSIS). مۇتەخەسسىسلەر (John Mearsheimer, Joseph Nye, Richard Haass).
+2. خىتاي: ئەقىل ئامبارلىرى (CICIR, CASS, SIIS). مۇتەخەسسىسلەر (يەن شۆتۇڭ، ۋاڭ جىسى، سۈي تيەنكەي، جىن سەنروڭ، سۇنزى).
+3. رۇسىيە: ئەقىل ئامبارلىرى (Valdai Club, RIAC, IMEMO). مۇتەخەسسىسلەر (Sergey Karaganov, Fyodor Lukyanov, Dmitri Trenin, Alexander Dugin).
+4. تۈركىيە: ئەقىل ئامبارلىرى (SETA, EDAM, ORSAM). مۇتەخەسسىسلەر (ئىبراھىم قالىن، بۇرھانەتتىن دۇران، سىنان ئۈلگەن، جەم گۈردېنىز، جىھاد يايجى).
+5. ئىران: ئەقىل ئامبارلىرى (IPIS, CSR, TISRI). مۇتەخەسسىسلەر (مۇھەممەد جاۋاد زەرىف، سەيىد مۇھەممەد مەرەندى، ناسىر ھادىيان).
+6. ئاۋىسترالىيە: ئەقىل ئامبارلىرى (Lowy Institute, ASPI, AIIA). مۇتەخەسسىسلەر (Hugh White, Rory Medcalf, Michael Fullilove).
+7. ھىندىستان: ئەقىل ئامبارلىرى (ORF, IDSA, CPR). مۇتەخەسسىسلەر (S. Jaishankar, C. Raja Mohan, Samir Saran).
+8. پاكىستان: ئەقىل ئامبارلىرى (ISSI, Jinnah Institute, IPRI). مۇتەخەسسىسلەر (Maleeha Lodhi, Moeed Yusuf, Huma Baqai).
+9. تەيۋەن: ئەقىل ئامبارلىرى (INDSR, Prospect Foundation, CIER). مۇتەخەسسىسلەر (لىن چوڭپىن، ئالېكساندېر خۇاڭ، ئارتۇر دىڭ).
+10. سىنگاپور: ئەقىل ئامبارلىرى (RSIS, ISEAS, LKYSPP). مۇتەخەسسىسلەر (Kishore Mahbubani, Bilahari Kausikan, Barry Desker).
+11. ھىندونېزىيە: ئەقىل ئامبارلىرى (CSIS Indonesia, FPCI, Habibie Center). مۇتەخەسسىسلەر (Dino Patti Djalal, Rizal Sukma, Marty Natalegawa).
+12. مىسىر: ئەقىل ئامبارلىرى (ACPSS, ECFA, IDSC). مۇتەخەسسىسلەر (ئابدۇلمۇنئىم سەئىد ئەلى، نەبىل فەھمى، مۇستەفا ئەل فىقى).
+13. ياپونىيە: ئەقىل ئامبارلىرى (JIIA, NIRA, Tokyo Foundation). مۇتەخەسسىسلەر (ئاكىھىكو تاناكا، كېنىچىرو ساسائې، يۈيچى خوسويا).
+14. لاتىن ئامېرىكىسى: ئەقىل ئامبارلىرى (FGV, CEPAL, CARI). مۇتەخەسسىسلەر (Celso Amorim, Jorge Castañeda, Andrés Velasco).
+15. ئافرىقا: ئەقىل ئامبارلىرى (ISS, SAIIA, IMANI Center). مۇتەخەسسىسلەر (Jakkie Cilliers, Carlos Lopes, Mohamed Ibn Chambas).
+16. ئوتتۇرا شەرق: ئەقىل ئامبارلىرى (INSS, KFCRIS, EPC). مۇتەخەسسىسلەر (, abdullah nafisi, Amos Yadlin, Ebtesam Al-Ketbi, Abdulaziz Sager).
+17. ئەنگلىيە: ئەقىل ئامبارلىرى (Chatham House, IISS, RUSI). مۇتەخەسسىسلەر (Lawrence Freedman, John Chipman, Robin Niblett).
+18. گېرمانىيە: ئەقىل ئامبارلىرى (SWP, MERICS, DGAP). مۇتەخەسسىسلەر (Christoph Heusgen, Daniela Schwarzer, Volker Perthes).
+19. فىرانسىيە: ئەقىل ئامبارلىرى (IFRI, IRIS, FRS). مۇتەخەسسىسلەر (Thierry de Montbrial, Pascal Boniface, Bruno Tertrais).
+
+ھەربىر دۆلەت/رايون ئۈچۈن تۆۋەندىكىلەرنى تەپسىلىي ياز:
+- "think_tank_perspective": يۇقىرىدا تىلغا ئېلىنغان ئەقىل ئامبارلىرى نۇقتىسىدىن ۋەقەنىڭ ماھىيىتى، ئارقا كۆرۈنۈشى ۋە كەلگۈسىگە كۆرسىتىدىغان تەسىرى.
+- "key_figures_analysis": يۇقىرىدا تىلغا ئېلىنغان ئانالىزچىلار/مۇتەخەسسىسلەر نۇقتىسىدىن تەھلىل، پىكىر ۋە مۆلچەر.
+
+نەتىجىنى پەقەت مۇشۇ JSON قېلىپىدىلا قايتۇر:
+{
+  "article_info": { "title": "...", "summary": "...", "author_analysis": "..." },
+  "country_analyses": {
+    "usa": { "name": "ئامېرىكا (USA)", "icon": "🇺🇸", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "china": { "name": "خىتاي (China)", "icon": "🇨🇳", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "russia": { "name": "رۇسىيە (Russia)", "icon": "🇷🇺", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "turkey": { "name": "تۈركىيە (Turkey)", "icon": "🇹🇷", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "iran": { "name": "ئىران (Iran)", "icon": "🇮🇷", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "australia": { "name": "ئاۋىسترالىيە (Australia)", "icon": "🇦🇺", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "india": { "name": "ھىندىستان (India)", "icon": "🇮🇳", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "pakistan": { "name": "پاكىستان (Pakistan)", "icon": "🇵🇰", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "taiwan": { "name": "تەيۋەن (Taiwan)", "icon": "🇹🇼", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "singapore": { "name": "سىنگاپور (Singapore)", "icon": "🇸🇬", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "indonesia": { "name": "ھىندونېزىيە (Indonesia)", "icon": "🇮🇩", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "egypt": { "name": "مىسىر (Egypt)", "icon": "🇪🇬", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "japan": { "name": "ياپونىيە (Japan)", "icon": "🇯🇵", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "latin_america": { "name": "لاتىن ئامېرىكىسى (Latin America)", "icon": "🌎", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "africa": { "name": "ئافرىقا (Africa)", "icon": "🌍", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "middle_east": { "name": "ئوتتۇرا شەرق (Middle East)", "icon": "🕌", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "uk": { "name": "ئەنگلىيە (UK)", "icon": "🇬🇧", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "germany": { "name": "گېرمانىيە (Germany)", "icon": "🇩🇪", "think_tank_perspective": "...", "key_figures_analysis": "..." },
+    "france": { "name": "فىرانسىيە (France)", "icon": "🇫🇷", "think_tank_perspective": "...", "key_figures_analysis": "..." }
+  }
+}`;
+
+        function loadJournalPrompt() {
+            document.getElementById('promptArea').value = strategicPrompt;
+        }
+        loadJournalPrompt();
+
+        function copyPromptText() {
+            const area = document.getElementById('promptArea');
+            area.select();
+            navigator.clipboard.writeText(area.value);
+            alert("پىرومپت كۆچۈرۈلدى! گۇگېل جېمىناي (Gemini) غا چاپلاڭ.");
+        }
+
+        // --- RENDER ENGINE ---
+        let generatedHTML = "";
+
+        function renderFinalReport() {
+            const jsonStr = document.getElementById('jsonInput').value;
+            if (!jsonStr.trim()) return;
+            try {
+                const data = JSON.parse(jsonStr.replace(/```json/g, '').replace(/```/g, '').trim());
+                generatedHTML = buildUniversalHTML(data);
+
+                const iframe = document.getElementById('reportPreview');
+                iframe.srcdoc = generatedHTML;
+
+            } catch (e) { alert("JSON خاتالىقى ياكى فورمات توغرا ئەمەس: " + e.message); }
+        }
+
+        function saveReportHTML() {
+            if (!generatedHTML) {
+                alert("ئالدى بىلەن ئانالىزلاپ دوكلات ھاسىل قىلىڭ!");
+                return;
+            }
+            const blob = new Blob([generatedHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Bilik_19Nations_Analysis_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function buildUniversalHTML(data) {
+            const formatParagraphs = (text) => {
+                if (!text) return '';
+                return text.split('\n').filter(p => p.trim()).map(p => `<p class="indent-[2.5em] text-justify leading-[2] mb-3">${p}</p>`).join('');
+            };
+
+            let countriesHtml = '';
+            const analyses = data.country_analyses;
+            if (analyses) {
+                const keys = Object.keys(analyses);
+                keys.forEach((key, index) => {
+                    const country = analyses[key];
+                    let colors = ['border-indigo-500', 'border-rose-500', 'border-teal-500', 'border-orange-500', 'border-fuchsia-500', 'border-sky-500', 'border-purple-500', 'border-emerald-500', 'border-amber-500'];
+                    let bgColors = ['bg-indigo-50', 'bg-rose-50', 'bg-teal-50', 'bg-orange-50', 'bg-fuchsia-50', 'bg-sky-50', 'bg-purple-50', 'bg-emerald-50', 'bg-amber-50'];
+
+                    countriesHtml += `
+                    <div class="card p-6 border-r-4 ${colors[index % colors.length]} ${bgColors[index % bgColors.length]} mb-8 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 opacity-[0.03] text-9xl">${country.icon}</div>
+                        <h3 class="font-bold text-slate-800 text-2xl mb-5 title-tuz border-b border-slate-300 pb-3 flex items-center gap-3 relative z-10">
+                            <span class="text-3xl">${country.icon}</span> ${country.name} نەزىرىدە
+                        </h3>
+                        
+                        <div class="space-y-4 relative z-10">
+                            <div class="bg-white/90 p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-900 mb-3 flex items-center gap-2 title-tuz text-lg">
+                                    <span class="text-amber-600 text-xl">🏛️</span> ئەقىل ئامبارلىرىنىڭ تەھلىلى
+                                </h4>
+                                <div class="text-[15px] text-slate-700 leading-[2] text-justify">
+                                    ${formatParagraphs(country.think_tank_perspective)}
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white/90 p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-900 mb-3 flex items-center gap-2 title-tuz text-lg">
+                                    <span class="text-blue-600 text-xl">👤</span> ئانالىزچى ۋە مۇتەخەسسىسلەرنىڭ پىكىرى
+                                </h4>
+                                <div class="text-[15px] text-slate-700 leading-[2] text-justify">
+                                    ${formatParagraphs(country.key_figures_analysis)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+
+            const htmlContent = `
+            <!DOCTYPE html>
+            <html lang="ug" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <script src="https://cdn.tailwindcss.com"><\/script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+                <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+                <style>
+                    @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'); }
+                    @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'); }
+                    body { font-family: 'UKIJ Ekran', serif; background: #f8fafc; padding: 20px; padding-bottom: 120px; color: #1e293b;}
+                    .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
+                    .title-tuz { font-family: 'UKIJ Tuz', sans-serif; }
+                    .indent-\\[2\\.5em\\] { text-indent: 2.5em; }
+                    .text-justify { text-align: justify; }
+                    .section-title { font-family: 'UKIJ Tuz', sans-serif; font-size: 1.5rem; font-weight: bold; color: #0f172a; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;}
+                </style>
+            </head>
+            <body class="max-w-5xl mx-auto">
+                <div id="report-content" class="bg-white p-8 md:p-12 shadow-2xl rounded-2xl border border-slate-200">
+                    
+                    <!-- Header -->
+                    <div class="text-center mb-12 border-b-2 border-slate-800 pb-8 relative">
+                        <div class="text-amber-600 font-bold tracking-[0.2em] text-sm mb-2 font-mono">19 COUNTRIES THINK TANKS ANALYSIS</div>
+                        <h1 class="text-3xl md:text-4xl font-bold title-tuz text-slate-900 leading-tight mb-4">${data.article_info?.title || '19 دۆلەت ئەقىل ئامبارلىرى ئانالىزى'}</h1>
+                        <div class="inline-block bg-slate-100 text-slate-600 px-4 py-2 rounded-full text-sm font-mono border border-slate-200">
+                            19-Nations Perspective Edition
+                        </div>
+                    </div>
+
+                    <!-- Basic Info & Author -->
+                    <div class="mb-12">
+                        <h2 class="section-title"><span class="text-blue-600">📌</span> ئاساسىي مەزمۇن ۋە ئاپتور تەھلىلى</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><span class="text-xl">📄</span> يادرولۇق خۇلاسە</h3>
+                                <div class="text-[15px] leading-[2] text-justify">${formatParagraphs(data.article_info?.summary)}</div>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><span class="text-xl">👤</span> ئاپتور تەھلىلى</h3>
+                                <div class="text-[15px] leading-[2] text-justify">${formatParagraphs(data.article_info?.author_analysis)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 19 Countries Analysis -->
+                    <div class="mb-12">
+                        <h2 class="section-title"><span class="text-red-600">🌐</span> 19 دۆلەت / رايون ئانالىزى</h2>
+                        ${countriesHtml}
+                    </div>
+
+                    <div class="text-center mt-12 pt-6 border-t border-slate-200">
+                        <p class="text-slate-500 font-bold title-tuz">بىلىك تەتقىقات مەركىزى مەخسۇس دوكلاتى</p>
+                        <p class="text-slate-400 text-xs mt-1 font-mono">Generated securely by 19-Nations Perspective Engine</p>
+                    </div>
+                </div>
+
+                <!-- 100% ORIGINAL FLOATING CONTROLS FOR TTS & PDF (DO NOT TOUCH) -->
+                <div id="controlsContainer" class="fixed bottom-4 left-4 z-50 flex items-end gap-2" data-html2canvas-ignore="true">
+                    <!-- Toggle Button -->
+                    <button onclick="toggleControls()" id="toggleBtn" class="bg-slate-800 text-white w-8 h-8 rounded-full shadow-xl flex items-center justify-center text-xs hover:bg-slate-700 transition">⚙️</button>
+                    
+                    <!-- Main Panel (Hidden by default) -->
+                    <div id="controlPanelMain" class="hidden bg-slate-900/95 backdrop-blur-sm p-2 rounded-lg shadow-2xl border border-slate-700 flex flex-col gap-2 w-64">
+                        <div class="flex gap-1">
+                            <select id="voiceSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-full dir-ltr focus:outline-none focus:ring-1 focus:ring-sky-500">
+                                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                                <option value="ar-SA">العربية (ئەرەبچە)</option>
+                                <option value="en-US">English (ئېنگلىزچە)</option>
+                            </select>
+                            <select id="rateSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-14 text-center focus:outline-none focus:ring-1 focus:ring-sky-500">
+                                <option value="1.0">1.0x</option>
+                                <option value="1.5" selected>1.5x</option>
+                                <option value="2.0">2.0x</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-5 gap-1">
+                            <button onclick="prevChunk()" class="bg-slate-600 hover:bg-slate-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئالدىنقى">⏮</button>
+                            <button onclick="startReading()" class="bg-sky-600 hover:bg-sky-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئوقۇش">▶</button>
+                            <button onclick="nextChunk()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-1.5 rounded text-[10px] font-bold" title="كېيىنكى">⏭</button>
+                            <button onclick="stopReading()" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded text-[10px] font-bold" title="توختا">■</button>
+                            <button onclick="savePDF()" class="bg-pink-600 hover:bg-pink-500 text-white p-1.5 rounded text-[10px] font-bold" title="PDF">📄</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TTS & PDF JAVASCRIPT LOGIC (ORIGINAL UNCHANGED) -->
+                <script>
+                    const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+                    const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+                    function convertForTTS(text, map) {
+                        return text.split('').map(c => map[c] || c).join('');
+                    }
+
+                    let chunks = [];
+                    let chunkIndex = 0;
+                    let isReading = false;
+
+                    function toggleControls() {
+                        const panel = document.getElementById('controlPanelMain');
+                        const btn = document.getElementById('toggleBtn');
+                        if (panel.classList.contains('hidden')) {
+                            panel.classList.remove('hidden');
+                            btn.innerHTML = '▼';
+                        } else {
+                            panel.classList.add('hidden');
+                            btn.innerHTML = '⚙️';
+                        }
+                    }
+
+                    function startReading() {
+                        stopReading();
+                        isReading = true;
+                        
+                        const voiceVal = document.getElementById('voiceSelect').value;
+                        const reportEl = document.getElementById('report-content');
+                        let clone = reportEl.cloneNode(true);
+                        let fullText = "";
+
+                        // --- Language Logic ---
+                        if (voiceVal === 'ar-SA') {
+                            const arSummary = clone.querySelector('#summary-ar p');
+                            fullText = arSummary ? arSummary.innerText : "تېكىست تېپىلمىدى";
+                        } else if (voiceVal === 'en-US') {
+                            const enSummary = clone.querySelector('#summary-en p');
+                            fullText = enSummary ? enSummary.innerText : "Text not found";
+                        } else {
+                            // Uyghur Mode: Read Everything EXCEPT Foreign Summaries
+                            const noTts = clone.querySelectorAll('.no-tts');
+                            noTts.forEach(el => el.remove());
+                            fullText = clone.innerText;
+                        }
+
+                        // --- Chunking & Deduplication ---
+                        let rawChunks = fullText.split(/\\n+/);
+                        chunks = [];
+                        let lastChunk = "";
+                        for (let i = 0; i < rawChunks.length; i++) {
+                            let clean = rawChunks[i].trim();
+                            if (clean.length > 0 && clean !== lastChunk) {
+                                chunks.push(clean);
+                                lastChunk = clean;
+                            }
+                        }
+
+                        chunkIndex = 0;
+                        speakNextChunk();
+                    }
+
+                    function speakNextChunk() {
+                        if (!isReading) return;
+                        if (chunkIndex >= chunks.length) {
+                            isReading = false;
+                            return;
+                        }
+
+                        const voiceVal = document.getElementById('voiceSelect').value;
+                        const rateVal = parseFloat(document.getElementById('rateSelect').value);
+                        let chunkText = chunks[chunkIndex];
+                        let finalText = chunkText;
+
+                        // Apply mapping only for Uyghur voices
+                        if(voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+                        else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+                        const utterance = new SpeechSynthesisUtterance(finalText);
+                        const voices = window.speechSynthesis.getVoices();
+                        let chosenVoice = null;
+                        
+                        if(voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+                        else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+                        else chosenVoice = voices.find(v => v.lang === voiceVal);
+
+                        if(chosenVoice) utterance.voice = chosenVoice;
+                        utterance.rate = rateVal;
+
+                        utterance.onend = function() {
+                            if (isReading) {
+                                chunkIndex++;
+                                speakNextChunk();
+                            }
+                        };
+                        utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    function nextChunk() {
+                        if (!isReading || chunks.length === 0) return;
+                        window.speechSynthesis.cancel();
+                    }
+
+                    function prevChunk() {
+                        if (!isReading || chunks.length === 0) return;
+                        if (chunkIndex > 0) {
+                            chunkIndex -= 2; 
+                            if (chunkIndex < -1) chunkIndex = -1;
+                            window.speechSynthesis.cancel();
+                        }
+                    }
+
+                    function stopReading() { 
+                        isReading = false;
+                        window.speechSynthesis.cancel(); 
+                    }
+
+                    function savePDF() {
+                        const el = document.getElementById('report-content');
+                        const d = new Date();
+                        const f = (n) => n.toString().padStart(2, '0');
+                        const fname = \`Bilik_Report_\${d.getFullYear()}-\${f(d.getMonth()+1)}-\${f(d.getDate())}_\${f(d.getHours())}-\${f(d.getMinutes())}-\${f(d.getSeconds())}.pdf\`;
+                        
+                        const opt = { margin: [10,10,10,10], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
+                        html2pdf().set(opt).from(el).save();
+                    }
+                <\/script>
+            </body>
+            </html>`;
+            return htmlContent;
+        }
+
+        // Clock logic
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('clock').innerText = d.toLocaleDateString('ug-CN') + ' ' + d.toLocaleTimeString('ug-CN');
+        }, 1000);
+    </script>
+</body>
+
+</html>
