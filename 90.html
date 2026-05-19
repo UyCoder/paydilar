@@ -226,20 +226,23 @@
 
             if (data.items) {
                 // Weekly Summary Mode
+                const imageAdderHTML = `
+                <div class="image-adder no-print" data-html2canvas-ignore="true">
+                    <label class="btn-add-img">
+                        📷 رەسىم قوشۇش
+                        <input type="file" accept="image/*" onchange="parent.handleImageUpload(this)" style="display:none;">
+                    </label>
+                </div>`;
+
                 const itemsHtml = data.items.map((item, i) => `
                     <div class="weekly-item">
                         <div class="trans-content">
-                            <div class="point-number">${i+1}-نۇقتا:</div>
+                            <div class="point-number" contenteditable="true">${i+1}-نۇقتا:</div>
                             ${item.translation ? fp(item.translation) : ''}
                         </div>
-                        <div class="image-adder no-print">
-                            <label class="btn-add-img">
-                                📷 رەسىم قوشۇش
-                                <input type="file" accept="image/*" onchange="parent.handleImageUpload(this)" style="display:none;">
-                            </label>
-                        </div>
+                        ${imageAdderHTML}
                         <div class="bilik-analysis">
-                            <div class="analysis-title">«بىلىك» تىن تەھلىل:</div>
+                            <div class="analysis-title" contenteditable="true">«بىلىك» تىن تەھلىل:</div>
                             ${item.bilik_analysis ? fp(item.bilik_analysis) : ''}
                         </div>
                     </div>
@@ -265,14 +268,19 @@
                             ھەپتىلىك بىخەتەرلىك دوكلاتى 
                             <span style="font-size:18px; color:#0c4a6e; font-family:sans-serif;" class="edit-no">No. 001</span>
                         </div>
-                        <div class="para" contenteditable="true" style="color:#475569; font-style:italic; text-indent:0; text-align:center; margin-top:10px; font-size:16px;">
-                            بۇ يەرگە قىسقىچە كىرىش سۆز ياكى ئەسكەرتىش يېزىڭ (كېرەك بولمىسا ئۆچۈرۈۋېتىڭ)...
-                        </div>
                     </div>
+
+                    <div class="para intro-box" contenteditable="true" style="background:#f1f5f9; padding:15px; border-radius:8px; text-indent:0; text-align:justify; margin-bottom:20px; color:#475569; font-style:italic;">بۇ يەرگە قىسقىچە كىرىش سۆز ياكى ئەسكەرتىش يېزىڭ (كېرەك بولمىسا ئۆچۈرۈۋېتىڭ)...</div>
                     
+                    ${imageAdderHTML}
+
                     ${data.short_summary ? `<div class="section"><div class="section-title" contenteditable="true">📋 قىسقىچە مەزمۇنى</div>${fp(data.short_summary)}</div>` : ''}
                     
+                    ${imageAdderHTML}
+
                     ${data.overall_analysis ? `<div class="section"><div class="section-title" contenteditable="true">💡 ئومۇمىي تەھلىل</div>${fp(data.overall_analysis)}</div>` : ''}
+
+                    ${imageAdderHTML}
 
                     <div class="section">
                         <div class="section-title" contenteditable="true">📄 ئەسلى دوكلات مەزمۇنى</div>
@@ -352,20 +360,22 @@ body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;co
 /* Weekly Summary Styles */
 .weekly-item{margin-bottom:40px;}
 .point-number{font-weight:700;color:#d97706;margin-bottom:8px;font-size:18px;font-family:'UKIJ Tuz',sans-serif;}
-.bilik-analysis{margin-top:15px;padding:20px;background:#f8fafc;border-right:4px solid #f59e0b;border-radius:8px;}
-.analysis-title{font-weight:700;color:#d97706;margin-bottom:12px;font-size:16px;font-family:'UKIJ Tuz',sans-serif;}
+.bilik-analysis{margin-top:15px;padding:20px;background:#f8fafc;border-right:4px solid #0369a1;border-radius:8px;}
+.analysis-title{font-weight:700;color:#0369a1;margin-bottom:12px;font-size:16px;font-family:'UKIJ Tuz',sans-serif;}
 .bilik-analysis .para{font-size:16px;font-style:italic;color:#475569;line-height:1.7;}
 .key-sentence-box{background:#fff;border:1px solid #e2e8f0;padding:15px;border-radius:8px;margin-bottom:12px;font-size:15px;line-height:1.6;color:#1e293b;}
 .key-sentence-box strong{color:#0369a1;display:inline-block;width:35px;font-family:sans-serif;}
 .key-sentence-box div{margin-bottom:6px;padding-bottom:6px;border-bottom:1px dashed #f1f5f9;}
 .key-sentence-box div:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
 
-.image-adder{margin:15px 0;}
-.btn-add-img{display:inline-block;padding:8px 16px;background:#f1f5f9;border:1px dashed #94a3b8;border-radius:8px;color:#475569;cursor:pointer;font-size:14px;transition:all .2s;}
+.image-adder{margin:15px 0; text-align:center;}
+.btn-add-img{display:inline-block;padding:6px 12px;background:#f1f5f9;border:1px dashed #94a3b8;border-radius:8px;color:#475569;cursor:pointer;font-size:13px;transition:all .2s;}
 .btn-add-img:hover{background:#e2e8f0;border-color:#64748b;}
-.inserted-img{width:100%;max-height:400px;object-fit:cover;border-radius:12px;margin:15px 0 0 0;display:block;border:1px solid #e2e8f0;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);}
+.inserted-img{width:100%;max-height:400px;object-fit:cover;border-radius:0;margin:15px 0 0 0;display:block;border:1px solid #e2e8f0;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);}
 .img-caption{font-size:14px;font-style:italic;color:#94a3b8;margin-top:8px;margin-bottom:15px;text-align:center;outline:none;font-family:'UKIJ Tuz',sans-serif;}
 [contenteditable="true"]:focus { outline: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
+.para:empty { display: none !important; }
+.intro-box:empty { display: none !important; }
 
 @media print{
     .no-print{display:none!important;}
