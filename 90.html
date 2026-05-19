@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بىلىك ماقالە تەرجىمە ۋە خۇلاسە قۇرالى v1.0</title>
+    <title>بىلىك ماقالە ۋە خۇلاسە قۇرالى v2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'), local('UKIJ_Ekran'); }
         @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'), local('UKIJ_Tuz'); }
-        body { font-family: "UKIJ Ekran", "Noto Naskh Arabic", sans-serif; background: #0f172a; color: #e2e8f0; }
+        body { font-family: "UKIJ Tuz", "Noto Naskh Arabic", sans-serif; background: #0f172a; color: #e2e8f0; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
     </style>
@@ -46,8 +45,8 @@
         <div class="flex items-center gap-4">
             <div class="bg-sky-500 text-slate-900 w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl">📰</div>
             <div>
-                <h1 class="text-lg font-bold text-white">ماقالە تەرجىمە ۋە خۇلاسە قۇرالى <span class="text-sky-400 text-xs">v1.0</span></h1>
-                <p class="text-[9px] text-slate-400 font-mono uppercase tracking-widest">Article Translation · Summary · PDF Export</p>
+                <h1 class="text-lg font-bold text-white">ماقالە ۋە خۇلاسە قۇرالى <span class="text-sky-400 text-xs">v2.0</span></h1>
+                <p class="text-[9px] text-slate-400 font-mono uppercase tracking-widest">Article & Weekly Summary · Print Export</p>
             </div>
         </div>
         <div id="clock" class="text-xs text-sky-400 font-mono"></div>
@@ -58,16 +57,19 @@
         <aside class="w-[480px] border-l border-slate-700 bg-slate-800/50 flex flex-col z-40 flex-none">
 
             <div class="p-3 bg-slate-900/50 border-b border-slate-700">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[10px] text-slate-400 font-bold">AI غا بېرىدىغان بۇيرۇق:</span>
-                    <button onclick="copyPrompt()" class="bg-sky-600 hover:bg-sky-500 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg">كۆچۈرۈش 📋</button>
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex gap-2">
+                        <button onclick="setPromptType('article')" id="btn-article" class="bg-sky-600 text-white text-[10px] px-3 py-1 rounded">ئادەتتىكى ماقالە</button>
+                        <button onclick="setPromptType('weekly')" id="btn-weekly" class="bg-slate-600 text-white text-[10px] px-3 py-1 rounded">ھەپتىلىك خۇلاسە</button>
+                    </div>
+                    <button onclick="copyPrompt()" class="bg-slate-700 hover:bg-slate-600 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg border border-slate-500">كۆچۈرۈش 📋</button>
                 </div>
                 <textarea id="promptArea" readonly class="w-full h-44 bg-slate-900 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-slate-300 resize-none outline-none leading-relaxed border-dashed" dir="ltr"></textarea>
             </div>
 
             <div class="p-3 bg-slate-900/80 border-b border-slate-700 flex-1 flex flex-col min-h-0">
                 <label class="block text-[10px] font-bold text-emerald-500 mb-1">JSON نەتىجىسىنى چاپلاڭ:</label>
-                <textarea id="jsonInput" class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-emerald-400 outline-none focus:border-emerald-500 transition-all resize-none" placeholder='{"article_url":"...","article_original_title":"..."}' dir="ltr"></textarea>
+                <textarea id="jsonInput" class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-emerald-400 outline-none focus:border-emerald-500 transition-all resize-none" placeholder='{}' dir="ltr"></textarea>
             </div>
 
             <div class="p-3 bg-slate-900/80 border-t border-slate-700 grid grid-cols-2 gap-2">
@@ -77,23 +79,23 @@
         </aside>
 
         <!-- Preview -->
-        <div class="flex-1 bg-slate-950 overflow-hidden">
+        <div class="flex-1 bg-slate-950 overflow-hidden relative">
             <iframe id="reportPreview" class="w-full h-full border-none bg-white"></iframe>
         </div>
     </main>
 
     <script>
-    const PROMPT = `مەن ساڭا بىر ماقالە بېرىمەن. سەن تۆۋەندىكى بارلىق ئۇچۇرلارنى چوقۇم تولۇق، ئۇزۇن ۋە ئەتراپلىق يېزىپ، پەقەت JSON شەكلىدىلا قايتۇر. ھەرگىز قىسقارتما!
+    const PROMPT_ARTICLE = `مەن ساڭا بىر ماقالە بېرىمەن. سەن تۆۋەندىكى بارلىق ئۇچۇرلارنى چوقۇم تولۇق، ئۇزۇن ۋە ئەتراپلىق يېزىپ، پەقەت JSON شەكلىدىلا قايتۇر. ھەرگىز قىسقارتما!
 
 1. article_url: ماقالىنىڭ ئەسلى ئۇلانمىسى
 2. article_original_title: ئەسلى ماقالە ئىسمى (ئۆزگەرتمە)
 3. article_uyghur_title: ماقالە ئىسمىنىڭ ئۇيغۇرچە تەرجىمىسى
 4. publication_name: ماقالىنى ئېلان قىلغان توربەت/گازىتا/ژۇرنال ئىسمى
-5. publication_intro: شۇ توربەت/نەشرىيات ھەققىدە 3-4 جۈملىلىك تونۇشتۇرۇش (قاچان قۇرۇلغان، قانداق توربەت، قانچىلىك ئوقۇرمىنى بار ۋ.ب)
+5. publication_intro: شۇ توربەت/نەشرىيات ھەققىدە 3-4 جۈملىلىك تونۇشتۇرۇش
 6. author_name: ئاپتورنىڭ تولۇق ئىسمى
-7. author_bio: ئاپتور ھەققىدە ئەڭ ئاز 200 سۆزلۈك ئۇزۇن تەرجىمىھال — كىمدۇ، قەيەردىن، قانداق تەگلىككە ئىگە، ئىلمىي ئۇنۋانى، قانداق ئورگانلاردا ئىشلىگەن، داڭلىق ئەسەرلىرى، نۇقتىئىنەزىرى، ئالىي ئۈگىنىش تارىخى
+7. author_bio: ئاپتور ھەققىدە ئەڭ ئاز 200 سۆزلۈك ئۇزۇن تەرجىمىھال
 8. article_images: ماقالىدىكى بارلىق رەسىملەرنىڭ URL ئۇلانمىسى تىزىملىكى (بوش بولسا [])
-9. long_summary: پۈتۈن ماقالىنىڭ ئەڭ ئاز 600 سۆزلۈك ئۇيغۇرچە چوڭقۇر خۇلاسىسى — ماقالىنىڭ ئاساسلىق ئىدىيىسى، دەلىللىرى، خۇلاسىسى ۋە مۇھىملىقى ھەققىدە تەپسىلىي يازغىن
+9. long_summary: پۈتۈن ماقالىنىڭ ئەڭ ئاز 600 سۆزلۈك ئۇيغۇرچە چوڭقۇر خۇلاسىسى
 10. full_translation: پۈتۈن ماقالىنىڭ تولۇق تەرجىمىسى (ھەر بىر ئابزاسنى بىر قۇر قىلىپ ئايرىپ، تولۇق ۋە راۋان ئۇيغۇرچە تەرجىمە قىلىپ بەر)
 
 نەتىجىنى پەقەت مۇشۇ JSON قېلىپىدىلا قايتۇر:
@@ -105,18 +107,59 @@
   "publication_intro": "...",
   "author_name": "...",
   "author_bio": "...",
-  "article_images": ["url1", "url2"],
+  "article_images": ["url1"],
   "long_summary": "...",
   "full_translation": [
-    "بىرىنچى ئابزاس تەرجىمىسى تۇلۇق يېزىلىدۇ...",
+    "بىرىنچى ئابزاس...",
     "ئىككىنچى ئابزاس..."
   ]
 }`;
 
-        document.getElementById('promptArea').value = PROMPT;
+    const PROMPT_WEEKLY = `ھەپتىلىك خۇلاسە تەرجىمە قىلىش
+========================
+مەن ساڭا بىر ھەپتىلىك خۇلاسە بېرىمەن. تۆۋەندىكى تەلەپلەر بويىچە بىر تەرەپ قىلىپ، قەتئىي قىسقارتمي پەقەت JSON قېلىپىدىلا قايتۇر:
+
+1. تەرجىمە. بۇ ھەپتىلىك خۇلاسىسىنى تەرجىمە قىپ بەرگىن. راۋان ۋە چۈشىنىشلىك ئۇيغۇر تىلىدا بولسۇن. مۇھىم ئاتالغۇلارنى چوقۇم ئېنگىزلىچىسنى تىرناق ئىچىگە ئەسكەرتىپ تەرجىمە قىلغىن. جۇڭگو دېمەي خىتاي دەپ تەرجمە قىل، شىنجاڭ دېمەي شەرقىي تۈركىستان دەپ تەرجىمە قىل، Geopolitical نى جۇغراپىيىلىك سىياسەت، MILITARY نى ھەربىي ئىشلار، COUNTERINTELLIGENCE نى قارشى ئىستىخبارات، PRACTICAL نى ئەمەلىي تەكلىپ دەپ يازساڭ بولىدۇ. خىتايلارنىڭ بىرلىك سەپ بۆلۈمى، ئەرەب بىرلەشمە ئىمارىتى قاتارلىق سۆزلەرگىمۇ دىققەت قىلغىن.
+2. بىلىكتىن تەھلىل. ھەربىر نومۇر قويۇلغان ئابزاسنى تەرجىمە قىپ بولۇپلا، كەينىگە «بىلىكتىن تەھلىل» دەپ 3 ئۇزۇن ئابزاس چۈشەندۈرۈش بەرگىن. ھەربىر ئابزاسئەڭ ئاز 10 جۈملىدىن تۈزۈلسۇن. مۇھىم ئاتالغۇلارنىڭ نېمە مەنىدە ئىكەنلىكىنى ئىلمىي چۈشەندۈرۈش بەرگىن. چۈنكى ھەربىر كىچىك تېما تەرجىمىسىدىن كېيىن «بىلىكتىن تەھلىل» قىسىمى بېرىلمىسە نۇرغۇنلىغان ئىنچىكە تەھلىللەر ۋە بىز مۇستەقىلچى ئۇيغۇرلارغا نېمە پايدىسى بارلىقى ئېنىق ئەسكەرتىلمەي قالىدىكەن. شۇڭا بۇ تەھلىلگە چوقۇم قايىل قىلارلىق، ئالدىنقى تېمىنى ناھايىتى چۈشىنىشلىك چۈشەندۈرۈپ قويىشىڭ كېرەك. بۇ ئابزاسقا چوقۇم قايىل قىلارلىق ئىسىل مەزمۇنلۇق ۋە چۈشىنىشلىك ئىنچىكە تېمىلارنى قوشۇشنى ئۇنۇتما. بىلىكتىن تەھلىل بەك قىسقا بولۇپ قالمىسۇن. ھەمدە بىلىكتىن تەھلىلدە چوقۇم تەرجىمىدە چۈشىنىلمەي قېلىشى مۇمكىن بولغان يەرلەرنىمۇ ئەسكەرتىشنى ۋە قوشۇمچە بىلىملەرنى بېرىشكە ئەھمىيەت بەرگىن. ئېسىڭدە بولسۇن، ھەربىر تەرجىمىدىن كېيىن بىر 3 ئابزاسلىق چۈشەندۈرۈش بولىشى كېرەك. مەسىلەن جۇغراپيىلىك سىياسەتتىكى 1-ئابزاسنى تەرجىمە قىلىپ ئاندىن كەينىگە 3 ئابزاسلىق تەھلىلى، ئاندىن 2-تەرجمە ئاندىن 3 ئابزاسلىق تەھلىل.. شەكىلدە بولسۇن.
+3. ئومۇمىي خۇلاسە. ئەمدى پۈتۈن خۇلاسىنىڭ قىسقا خۇلاسىسىنى يېزىپ بەر. ھەممە مەزمۇن بولسۇن ئەمما قىسقا-قىسقا يىغىنچاقلاپ بەرگىن. چۈنكى مەن بۇ دوكىلاتنى باشقىلارغا سۆزلەپ بېرىش ئۈچۈن مۇشۇ يەرگە قاراپلا ھېچقانداق مەزمۇننى چۈشۈرۈپ قويماي يەتكۈزەلىشىم كېرەك.
+4. ئومۇمىي تەھلىل. سېنىڭچە بۇ ھەپتىلىك خۇلاسىدىكى مۇھىم نۇقتىلار قايسى؟ قايسى نۇقتىلارغا دىققەت قىلىنماي قېلىشى مۇمكىن؟ مۇستەقىلچى شەرقىي تۈركىستانلىقلار ئۈچۈن قانداق ئەمەلىي ھەرىكەتلەرنى قىلىشى كېرەك؟ خىتايغا قانداق قىلساق تاقابىل تۇرغىلى بولىدۇ؟ بۇ نۇقتىلار بەك ئىلمىي ۋە رىئال ھالدا تەھلىل قىلىنسۇن. بىر ئەقىل ئامبىرىنىڭ سەۋىيىسىدە يېزىلىشى كېرەك.
+5. سېنىڭچە مەن بۇ ئېنگزىلچە ھەپتىلىك خۇلاسىدە قايسى 3 جۈملىنى يادلىۋالسام، بۇندىن كېيىنكى سۆھبەتلەردە پايدىسى بولىدۇ؟ ھەمدە بۇ 3 ئېنگلىزچە جۈملىنىڭ ئەرەبچە، سۈرىيە شىۋىسىدە، تۈركچە،خىتايچە يېزىلىشىىنىمۇ قوشۇپ يېزىپ قويغىن. 
+
+ئەمما سەن بۇ پرومپتنى قەتئىي قىسارتىۋەتمەي ئەينەن قوش.
+نەتىجىنى پەقەت مۇشۇ JSON قېلىپىدىلا قايتۇر (ئاساسىي تېكىستلەرنى string غا ئەمەس string ئەتراپىدىكى array غا تىزىپ بەر، ھەر بىر ئابزاس بىر قۇر بولسۇن):
+{
+  "report_title": "ھەپتىلىك خۇلاسە",
+  "items": [
+    {
+      "translation": ["1-ئابزاس تەرجىمىسى تۇلۇق يېزىلىدۇ..."],
+      "bilik_analysis": ["تەھلىل 1-ئابزاس...", "تەھلىل 2-ئابزاس...", "تەھلىل 3-ئابزاس..."]
+    }
+  ],
+  "short_summary": ["ئومۇمىي قىسقا خۇلاسە بىرىنچى ئابزاس...", "ئىككىنچى ئابزاس..."],
+  "overall_analysis": ["ئومۇمىي تەھلىل 1...", "ئومۇمىي تەھلىل 2..."],
+  "key_sentences": [
+    {
+      "english": "...",
+      "arabic": "...",
+      "syrian": "...",
+      "turkish": "...",
+      "chinese": "...",
+      "uyghur": "..."
+    }
+  ]
+}`;
+
+        function setPromptType(type) {
+            document.getElementById('btn-article').className = type === 'article' ? 'bg-sky-600 text-white text-[10px] px-3 py-1 rounded' : 'bg-slate-600 text-white text-[10px] px-3 py-1 rounded';
+            document.getElementById('btn-weekly').className = type === 'weekly' ? 'bg-sky-600 text-white text-[10px] px-3 py-1 rounded' : 'bg-slate-600 text-white text-[10px] px-3 py-1 rounded';
+            document.getElementById('promptArea').value = type === 'article' ? PROMPT_ARTICLE : PROMPT_WEEKLY;
+        }
+
+        // Init
+        setPromptType('article');
 
         function copyPrompt() {
-            navigator.clipboard.writeText(PROMPT);
+            navigator.clipboard.writeText(document.getElementById('promptArea').value);
             alert('پىرومپت كۆچۈرۈلدى! Gemini غا چاپلاڭ.');
         }
 
@@ -136,130 +179,351 @@
             if (!generatedHTML) { alert('ئالدى كۆرسەتسىڭىز!'); return; }
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([generatedHTML], {type:'text/html;charset=utf-8'}));
-            a.download = `BilikTranslation_${Date.now()}.html`;
+            a.download = `BilikReport_${Date.now()}.html`;
             a.click();
         }
 
+        window.handleImageUpload = function(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgWrap = document.createElement('div');
+                    imgWrap.style.textAlign = 'center';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = "inserted-img";
+                    
+                    const caption = document.createElement('div');
+                    caption.contentEditable = "true";
+                    caption.className = "img-caption";
+                    caption.innerText = "رەسىم چۈشەندۈرۈشىنى بۇ يەرگە يېزىڭ...";
+                    
+                    imgWrap.appendChild(img);
+                    imgWrap.appendChild(caption);
+                    
+                    input.closest('.image-adder').insertAdjacentElement('afterend', imgWrap);
+                    input.closest('.image-adder').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
         function buildHTML(data) {
-            const fp = t => t ? t.split(/\\n+/).filter(p=>p.trim()).map(p=>`<p class="para">${p}</p>`).join('') : '';
-            const fpArray = arr => (arr && Array.isArray(arr)) ? arr.filter(p=>p.trim()).map(p=>`<p class="para">${p}</p>`).join('') : '';
-
-            const imagesHtml = (data.article_images && data.article_images.length > 0)
-                ? `<div class="img-grid">${data.article_images.map(url=>`<div class="img-wrap"><img src="${url}" onerror="this.parentElement.style.display='none'" crossorigin="anonymous"/></div>`).join('')}</div>`
-                : '';
-
-            const translationHtml = data.full_translation ? fpArray(data.full_translation) : (data.translation ? '<p>تەرجىمە قۇرۇلمىسى كونىكەن. يېڭىدىن ئەۋەتىڭ.</p>' : '');
+            const fp = t => {
+                if(!t) return '';
+                if(Array.isArray(t)) return t.filter(p=>p.trim()).map(p=>`<p class="para" contenteditable="true">${p}</p>`).join('');
+                return t.split(/\\n+/).filter(p=>p.trim()).map(p=>`<p class="para" contenteditable="true">${p}</p>`).join('');
+            };
 
             const d = new Date();
-            const months = ['يانۋار', 'فېۋرال', 'مارت', 'ئاپرېل', 'ماي', 'ئىيۇن', 'ئىيۇل', 'ئاۋغۇست', 'سېنتەبىر', 'ئۆكتەبىر', 'نويابىر', 'دېكابىر'];
+            const months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
             const fPad = n => n.toString().padStart(2, '0');
-            const ugDate = `ياسالغان ۋاقتى: ${d.getFullYear()}-يىلى ${d.getDate()}-${months[d.getMonth()]}، سائەت ${fPad(d.getHours())}:${fPad(d.getMinutes())}`;
+            const ugDate = `${d.getFullYear()}-يىلى ${months[d.getMonth()]}-ئاينىڭ ${d.getDate()}-كۈنى. سائەت ${fPad(d.getHours())}:${fPad(d.getMinutes())}`;
+
+            let contentBody = '';
+
+            if (data.items) {
+                // Weekly Summary Mode
+                const itemsHtml = data.items.map((item, i) => `
+                    <div class="weekly-item">
+                        <div class="trans-content">
+                            <div class="point-number">${i+1}-نۇقتا:</div>
+                            ${item.translation ? fp(item.translation) : ''}
+                        </div>
+                        <div class="image-adder no-print">
+                            <label class="btn-add-img">
+                                📷 رەسىم قوشۇش
+                                <input type="file" accept="image/*" onchange="parent.handleImageUpload(this)" style="display:none;">
+                            </label>
+                        </div>
+                        <div class="bilik-analysis">
+                            <div class="analysis-title">«بىلىك» تىن تەھلىل:</div>
+                            ${item.bilik_analysis ? fp(item.bilik_analysis) : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                const keySentencesHtml = data.key_sentences && data.key_sentences.length > 0 ? 
+                    `<div class="section no-print"><div class="section-title">🗝️ مۇھىم جۈملىلەر تەرجىمىسى</div>` + 
+                    data.key_sentences.map(k => `
+                        <div class="key-sentence-box">
+                            <div><strong>EN:</strong> ${k.english}</div>
+                            <div><strong>UG:</strong> ${k.uyghur || ''}</div>
+                            <div><strong>AR:</strong> ${k.arabic || ''}</div>
+                            <div><strong>SY:</strong> ${k.syrian || ''}</div>
+                            <div><strong>TR:</strong> ${k.turkish || ''}</div>
+                            <div><strong>CN:</strong> ${k.chinese || ''}</div>
+                        </div>
+                    `).join('') + `</div>` : '';
+
+                contentBody = `
+                    <div style="text-align:center; font-size:26px; font-family:'Times New Roman', serif; margin-bottom:10px;">﷽</div>
+                    <div class="doc-header">
+                        <div class="main-title" contenteditable="true">
+                            ھەپتىلىك بىخەتەرلىك دوكلاتى 
+                            <span style="font-size:18px; color:#0c4a6e; font-family:sans-serif;" class="edit-no">No. 001</span>
+                        </div>
+                        <div class="para" contenteditable="true" style="color:#475569; font-style:italic; text-indent:0; text-align:center; margin-top:10px; font-size:16px;">
+                            بۇ يەرگە قىسقىچە كىرىش سۆز ياكى ئەسكەرتىش يېزىڭ (كېرەك بولمىسا ئۆچۈرۈۋېتىڭ)...
+                        </div>
+                    </div>
+                    
+                    ${data.short_summary ? `<div class="section"><div class="section-title" contenteditable="true">📋 قىسقىچە مەزمۇنى</div>${fp(data.short_summary)}</div>` : ''}
+                    
+                    ${data.overall_analysis ? `<div class="section"><div class="section-title" contenteditable="true">💡 ئومۇمىي تەھلىل</div>${fp(data.overall_analysis)}</div>` : ''}
+
+                    <div class="section">
+                        <div class="section-title" contenteditable="true">📄 ئەسلى دوكلات مەزمۇنى</div>
+                        ${itemsHtml}
+                    </div>
+                    
+                    ${keySentencesHtml}
+                `;
+            } else {
+                // Article Mode
+                const imagesHtml = (data.article_images && data.article_images.length > 0)
+                    ? `<div class="img-grid">${data.article_images.map(url=>`<div class="img-wrap"><img src="${url}" onerror="this.parentElement.style.display='none'" crossorigin="anonymous"/></div>`).join('')}</div>`
+                    : '';
+                const translationHtml = data.full_translation ? fp(data.full_translation) : (data.translation ? '<p>تەرجىمە قۇرۇلمىسى كونىكەن. يېڭىدىن ئەۋەتىڭ.</p>' : '');
+
+                contentBody = `
+                    <div style="text-align:center; font-size:26px; font-family:'Amiri', serif; margin-bottom:10px;">﷽</div>
+                    <div class="doc-header">
+                        <div class="main-title">${data.article_uyghur_title || 'ماقالە تەرجىمىسى'}</div>
+                        <div class="original-title">${data.article_original_title || ''}</div>
+                        ${data.article_url && data.article_url !== '...' ? `<a class="url-link" href="${data.article_url}" target="_blank">🔗 ئەسلى مەنبە ئۇلانمىسى</a>` : ''}
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🌐 نەشرىيات ھەققىدە: <span class="inline-meta">${data.publication_name || ''}</span></div>
+                        <div>${fp(data.publication_intro)}</div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">✍️ ئاپتور تەرجىمىھالى: <span class="inline-meta">${data.author_name || ''}</span></div>
+                        <div>${fp(data.author_bio)}</div>
+                    </div>
+
+                    ${imagesHtml ? `<div class="section"><div class="section-title">🖼️ ماقالىدىكى رەسىملەر</div>${imagesHtml}</div>` : ''}
+
+                    <div class="section">
+                        <div class="section-title">📋 ماقالىنىڭ ئۇزۇن خۇلاسىسى</div>
+                        ${fp(data.long_summary)}
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">🔤 ماقالىنىڭ تولۇق تەرجىمىسى</div>
+                        ${translationHtml}
+                    </div>
+                `;
+            }
 
             return `<!DOCTYPE html>
 <html lang="ug" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${data.article_uyghur_title || 'ماقالە تەرجىمىسى'}</title>
+<title>${data.report_title || data.article_uyghur_title || 'بىلىك دوكلاتى'}</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
 <style>
 @font-face{font-family:'UKIJ Ekran';src:local('UKIJ Ekran'),local('UKIJ_Ekran');}
 @font-face{font-family:'UKIJ Tuz';src:local('UKIJ Tuz'),local('UKIJ_Tuz');}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;color:#1a202c;direction:rtl;padding:20px;padding-bottom:100px;font-size:15px;line-height:2;}
-.page{max-width:800px;margin:0 auto;}
+.page{max-width:800px;margin:0 auto;position:relative;}
 .doc-header{background:transparent;padding:20px 0 30px;margin-bottom:20px;border-bottom:2px solid #e2e8f0;text-align:center;}
 .main-title{font-family:'UKIJ Tuz',serif;font-size:32px;font-weight:700;line-height:1.4;color:#000;margin-bottom:12px;text-align:center;}
 .original-title{font-size:15px;color:#64748b;margin-bottom:20px;direction:ltr;text-align:center;font-style:italic;}
 .url-link{display:block;text-align:left;color:#94a3b8;font-size:12px;text-decoration:none;direction:ltr;word-break:break-all;}
 .url-link:hover{color:#64748b;}
 .section{margin-bottom:32px;}
-.section-title{font-family:'UKIJ Tuz',sans-serif;font-size:20px;font-weight:700;color:#0f172a;padding-bottom:8px;margin-bottom:16px;border-bottom:2px solid #0284c7;display:flex;align-items:center;gap:8px;}
-.para{text-indent:2.5em;text-align:justify;margin-bottom:14px;line-height:1.8;font-size:16px;color:#000;font-family:'UKIJ Tuz',sans-serif;}
-.pub-name{font-weight:700;font-size:16px;color:#0f172a;margin-bottom:10px;font-family:'UKIJ Tuz',sans-serif;}
+.section-title{font-family:'UKIJ Tuz',sans-serif;font-size:22px;font-weight:700;color:#0f172a;padding-bottom:8px;margin-bottom:16px;border-bottom:2px solid #0284c7;display:flex;align-items:center;gap:8px;}
+.para{text-indent:2.5em;text-align:justify;margin-bottom:16px;line-height:1.6;font-size:20px;color:#000;font-family:'UKIJ Tuz',sans-serif;}
+.inline-meta{color:#0c4a6e;margin-right:8px;font-weight:normal;font-size:16px;}
 .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:20px;}
 .img-wrap{border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc;}
 .img-wrap img{width:100%;height:auto;object-fit:cover;display:block;}
-.doc-footer{text-align:center;padding:30px 20px;color:#64748b;font-size:13px;font-family:'UKIJ Tuz',sans-serif;}
-.float-btn{position:fixed;bottom:20px;left:20px;z-index:9999;display:flex;gap:8px;}
-.btn{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.2);}
-.btn-pdf{background:#dc2626;color:#fff;}.btn-pdf:hover{background:#b91c1c;}
+.doc-footer{text-align:center;padding:30px 20px;color:#64748b;font-size:14px;font-family:'UKIJ Tuz',sans-serif;}
+.btn{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.2);display:flex;align-items:center;gap:6px;}
 .btn-print{background:#0369a1;color:#fff;}.btn-print:hover{background:#075985;}
-@media print{.float-btn{display:none!important;}.page{max-width:100%;}body{background:#fff;padding:0;}}
+
+/* Weekly Summary Styles */
+.weekly-item{margin-bottom:40px;}
+.point-number{font-weight:700;color:#d97706;margin-bottom:8px;font-size:18px;font-family:'UKIJ Tuz',sans-serif;}
+.bilik-analysis{margin-top:15px;padding:20px;background:#f8fafc;border-right:4px solid #f59e0b;border-radius:8px;}
+.analysis-title{font-weight:700;color:#d97706;margin-bottom:12px;font-size:16px;font-family:'UKIJ Tuz',sans-serif;}
+.bilik-analysis .para{font-size:16px;font-style:italic;color:#475569;line-height:1.7;}
+.key-sentence-box{background:#fff;border:1px solid #e2e8f0;padding:15px;border-radius:8px;margin-bottom:12px;font-size:15px;line-height:1.6;color:#1e293b;}
+.key-sentence-box strong{color:#0369a1;display:inline-block;width:35px;font-family:sans-serif;}
+.key-sentence-box div{margin-bottom:6px;padding-bottom:6px;border-bottom:1px dashed #f1f5f9;}
+.key-sentence-box div:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+
+.image-adder{margin:15px 0;}
+.btn-add-img{display:inline-block;padding:8px 16px;background:#f1f5f9;border:1px dashed #94a3b8;border-radius:8px;color:#475569;cursor:pointer;font-size:14px;transition:all .2s;}
+.btn-add-img:hover{background:#e2e8f0;border-color:#64748b;}
+.inserted-img{width:100%;max-height:400px;object-fit:cover;border-radius:12px;margin:15px 0 0 0;display:block;border:1px solid #e2e8f0;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);}
+.img-caption{font-size:14px;font-style:italic;color:#94a3b8;margin-top:8px;margin-bottom:15px;text-align:center;outline:none;font-family:'UKIJ Tuz',sans-serif;}
+[contenteditable="true"]:focus { outline: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
+
+@media print{
+    .no-print{display:none!important;}
+    .page{max-width:100%;}
+    body{background:#fff;padding:0;}
+    .inserted-img{display:block!important;}
+}
 @page{size:A4;margin:18mm 18mm 18mm 18mm;}
 </style>
 </head>
 <body>
 <div class="page" id="report-content">
-
-  <div class="doc-header">
-    <div class="main-title">${data.article_uyghur_title || 'ماقالە تەرجىمىسى'}</div>
-    <div class="original-title">${data.article_original_title || ''}</div>
-    ${data.article_url && data.article_url !== '...' ? `<a class="url-link" href="${data.article_url}" target="_blank">🔗 ئەسلى مەنبە ئۇلانمىسى</a>` : ''}
-  </div>
-
-  <div class="section">
-    <div class="section-title">🌐 نەشرىيات ھەققىدە</div>
-    <div class="pub-name">${data.publication_name || ''}</div>
-    <div>${fp(data.publication_intro)}</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">✍️ ئاپتور تەرجىمىھالى</div>
-    <div class="pub-name">${data.author_name || ''}</div>
-    <div>${fp(data.author_bio)}</div>
-  </div>
-
-  ${imagesHtml ? `<div class="section"><div class="section-title">🖼️ ماقالىدىكى رەسىملەر</div>${imagesHtml}</div>` : ''}
-
-  <div class="section">
-    <div class="section-title">📋 ماقالىنىڭ ئۇزۇن خۇلاسىسى</div>
-    ${fp(data.long_summary)}
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔤 ماقالىنىڭ تولۇق تەرجىمىسى</div>
-    ${translationHtml}
-  </div>
+  ${contentBody}
 
   <div class="doc-footer">
-    <img src="https://uycoder.github.io/paydilar/Biliklogo.png" alt="Bilik Logo" style="width:60px;height:60px;object-fit:contain;margin:0 auto 12px;display:block;" crossorigin="anonymous" onerror="this.style.display='none'">
-    <div style="font-weight:700;font-size:16px;color:#1e293b;margin-bottom:6px;">بىلىك تەتقىقات مەركىزى</div>
+    <img src="https://uycoder.github.io/paydilar/BiliklogoWithBlackLetters.png" alt="Bilik Logo" style="height:100px;width:auto;object-fit:contain;margin:0 auto 12px;display:block;" crossorigin="anonymous" onerror="this.style.display='none'">
     <div style="color:#64748b;">${ugDate}</div>
   </div>
 </div>
 
-<div class="float-btn" data-html2canvas-ignore="true">
-  <button class="btn btn-pdf" onclick="savePDF()">📄 PDF ساقلاش</button>
-  <button class="btn btn-print" onclick="window.print()">🖨️ بېسىش</button>
+<div class="no-print" style="position:fixed; bottom:20px; left:20px; z-index:9999; display:flex; align-items:flex-end; gap:8px;">
+    <!-- Main Panel for TTS (Hidden by default) -->
+    <div id="controlPanelMain" style="background:rgba(15,23,42,0.95); padding:10px; border-radius:8px; display:none; flex-direction:column; gap:8px; width:220px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+        <div style="display:flex; gap:4px;">
+            <select id="voiceSelect" style="flex:1; background:#334155; color:white; padding:6px; font-size:12px; border-radius:4px; border:none; direction:ltr; outline:none;">
+                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                <option value="ar-SA">العربية (ئەرەبچە)</option>
+                <option value="en-US">English (ئېنگلىزچە)</option>
+            </select>
+            <select id="rateSelect" style="width:60px; background:#334155; color:white; padding:6px; font-size:12px; border-radius:4px; border:none; outline:none;">
+                <option value="1.0">1.0x</option>
+                <option value="1.5" selected>1.5x</option>
+                <option value="2.0">2.0x</option>
+            </select>
+        </div>
+        <div style="display:flex; gap:4px;">
+            <button onclick="prevChunk()" style="flex:1; background:#475569; color:white; padding:6px; border-radius:4px; border:none; cursor:pointer;" title="ئالدىنقى">⏮</button>
+            <button onclick="startReading()" style="flex:1; background:#0284c7; color:white; padding:6px; border-radius:4px; border:none; cursor:pointer;" title="ئوقۇش">▶</button>
+            <button onclick="nextChunk()" style="flex:1; background:#4f46e5; color:white; padding:6px; border-radius:4px; border:none; cursor:pointer;" title="كېيىنكى">⏭</button>
+            <button onclick="stopReading()" style="flex:1; background:#dc2626; color:white; padding:6px; border-radius:4px; border:none; cursor:pointer;" title="توختا">■</button>
+        </div>
+    </div>
+
+    <button class="btn" style="background:#1e293b; color:white; padding:10px;" onclick="toggleControls()" id="toggleBtn" title="ئاۋازلىق ئوقۇش تەڭشەكلىرى">⚙️</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ بېسىش</button>
 </div>
 
 <script>
-function savePDF(){
-  const el=document.getElementById('report-content');
-  const d=new Date();
-  const f=n=>n.toString().padStart(2,'0');
-  const fname=\`BilikTranslation_\${d.getFullYear()}-\${f(d.getMonth()+1)}-\${f(d.getDate())}_\${f(d.getHours())}-\${f(d.getMinutes())}.pdf\`;
-  const opt={
-    margin:[15,15,15,15],
-    filename:fname,
-    image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,allowTaint:true},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-  };
-  document.querySelector('.float-btn').style.display='none';
-  html2pdf().set(opt).from(el).save().then(()=>{
-    document.querySelector('.float-btn').style.display='flex';
-  });
+const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+function convertForTTS(text, map) {
+    return text.split('').map(c => map[c] || c).join('');
+}
+
+let chunks = [];
+let chunkIndex = 0;
+let isReading = false;
+
+function toggleControls() {
+    const panel = document.getElementById('controlPanelMain');
+    const btn = document.getElementById('toggleBtn');
+    if (panel.style.display === 'none' || !panel.style.display) {
+        panel.style.display = 'flex';
+        btn.innerHTML = '▼';
+    } else {
+        panel.style.display = 'none';
+        btn.innerHTML = '⚙️';
+    }
+}
+
+function startReading() {
+    stopReading();
+    isReading = true;
+    
+    const voiceVal = document.getElementById('voiceSelect').value;
+    const reportEl = document.getElementById('report-content');
+    let clone = reportEl.cloneNode(true);
+    
+    const noTts = clone.querySelectorAll('.no-tts, .no-print');
+    noTts.forEach(el => el.remove());
+    let fullText = clone.innerText;
+
+    let rawChunks = fullText.split(/\\n+/);
+    chunks = [];
+    let lastChunk = "";
+    for (let i = 0; i < rawChunks.length; i++) {
+        let clean = rawChunks[i].trim();
+        if (clean.length > 0 && clean !== lastChunk) {
+            chunks.push(clean);
+            lastChunk = clean;
+        }
+    }
+
+    chunkIndex = 0;
+    speakNextChunk();
+}
+
+function speakNextChunk() {
+    if (!isReading) return;
+    if (chunkIndex >= chunks.length) {
+        isReading = false;
+        return;
+    }
+
+    const voiceVal = document.getElementById('voiceSelect').value;
+    const rateVal = parseFloat(document.getElementById('rateSelect').value);
+    let chunkText = chunks[chunkIndex];
+    let finalText = chunkText;
+
+    if(voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+    else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+    const utterance = new SpeechSynthesisUtterance(finalText);
+    const voices = window.speechSynthesis.getVoices();
+    let chosenVoice = null;
+    
+    if(voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+    else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+    else chosenVoice = voices.find(v => v.lang === voiceVal);
+
+    if(chosenVoice) utterance.voice = chosenVoice;
+    utterance.rate = rateVal;
+
+    utterance.onend = function() {
+        if (isReading) {
+            chunkIndex++;
+            speakNextChunk();
+        }
+    };
+    utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+    window.speechSynthesis.speak(utterance);
+}
+
+function nextChunk() {
+    if (!isReading || chunks.length === 0) return;
+    window.speechSynthesis.cancel();
+}
+
+function prevChunk() {
+    if (!isReading || chunks.length === 0) return;
+    if (chunkIndex > 0) {
+        chunkIndex -= 2; 
+        if (chunkIndex < -1) chunkIndex = -1;
+        window.speechSynthesis.cancel();
+    }
+}
+
+function stopReading() { 
+    isReading = false;
+    window.speechSynthesis.cancel(); 
 }
 <\/script>
 </body>
 </html>`;
         }
-
-        // Update nav for 90.html in all files — just update prompt area
-        document.getElementById('promptArea').value = PROMPT;
 
         // Clock
         setInterval(()=>{
