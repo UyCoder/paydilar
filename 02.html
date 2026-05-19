@@ -19,6 +19,29 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
+    <!-- Global Tools Navigation -->
+    <nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;">
+        <style>
+            #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+            #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#f59e0b;letter-spacing:.1em;white-space:nowrap;}
+            #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+            #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+            #bilik-global-nav a.bgn.active{background:#d97706;color:#fff;border-color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.35);}
+        </style>
+        <div id="bilik-global-nav-wrap">
+            <span class="bgl">بىلىك قۇراللىرى:</span>
+            <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+            <a href="02.html" data-page="02.html" class="bgn">02 · ماقالە</a>
+            <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+            <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+            <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+            <a href="87.html" data-page="87.html" class="bgn">87 · 6 مۇتەخەسسىس</a>
+            <a href="88.html" data-page="88.html" class="bgn">88 · خىتاي</a>
+            <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
+        </div>
+    </nav>
+    <script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
+
 <!-- Navbar -->
 <nav class="bg-slate-900 text-white shadow-lg border-b-4 border-sky-600">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
