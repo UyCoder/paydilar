@@ -52,8 +52,27 @@
                 <button class="btn-gallery" onclick="openGallery()"><i class="fas fa-images"></i></button>
                 <span class="hud-name">كارۋان بېشى: بۇغرا <span id="display-name" class="gold-text"></span></span>
             </div>
-            <div class="hud-right">
-                <i class="fas fa-gem gold-text"></i> يىغىلغان مال: <span id="score-text" class="gold-text">0</span>
+            <div class="hud-right" style="display:flex;align-items:center;gap:15px;">
+                <div id="combo-box" style="display:none;align-items:center;gap:5px;background:rgba(251,191,36,0.2);padding:5px 12px;border-radius:10px;">
+                    <span>🔥</span>
+                    <span id="combo-text-val" style="font-weight:900;color:#ff6b6b;font-size:1.3rem;">0</span>
+                </div>
+                <div id="powerup-indicator" class="hidden" style="display:flex;align-items:center;gap:5px;background:rgba(96,165,250,0.2);padding:5px 12px;border-radius:10px;">
+                    <span id="powerup-icon">🛡</span>
+                    <span style="font-size:0.9rem;">قۇۋۋەت</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-crown gold-text"></i>
+                    <span class="gold-text" style="font-size:1.1rem;">: ئەڭ يۇقىرى</span>
+                    <span id="high-score-text" class="gold-text" style="font-weight:900;">0</span>
+                </div>
+                <div>
+                    <i class="fas fa-layer-group gold-text"></i>
+                    <span id="level-text" class="gold-text" style="font-weight:900;">1</span>
+                </div>
+                <div>
+                    <i class="fas fa-gem gold-text"></i> يىغىلغان مال: <span id="score-text" class="gold-text" style="font-weight:900;">0</span>
+                </div>
             </div>
         </div>
         <div class="game-body">
@@ -70,6 +89,8 @@
                 <canvas id="game-canvas"></canvas>
                 
                 <!-- يانفوندا كونترول قىلىش كۇنۇپكىلىرى -->
+                <div id="combo-text" class="hidden"></div>
+                
                 <div id="dpad" class="dpad">
                     <button onmousedown="startBoost(0, -1)" onmouseup="stopBoost()" ontouchstart="startBoost(0, -1)" ontouchend="stopBoost()" class="dpad-btn up"><i class="fas fa-caret-up"></i></button>
                     <div class="dpad-middle">
@@ -101,6 +122,20 @@
             <h1 class="gold-text">كارۋان توختىدى!</h1>
             <p>سىز جەمئىي <span id="final-score" class="gold-text" style="font-size:1.5rem; font-weight:900;"></span> دانە مال ۋە بىلىم خەزىنىسى يىغدىڭىز.</p>
             <p>كارۋان يولى ئەگرى-توقايدۇر، ئەمما ئىرادىلىك كارۋان ھامان مەنزىلگە يېتىدۇ!</p>
+            <div style="display:flex;gap:20px;justify-content:center;margin-bottom:15px;">
+                <div style="text-align:center;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">
+                    <div style="font-size:0.9rem;color:#94a3b8;">باسقۇچ</div>
+                    <div style="font-size:1.5rem;color:#fbbf24;font-weight:900;" id="final-level">0</div>
+                </div>
+                <div style="text-align:center;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">
+                    <div style="font-size:0.9rem;color:#94a3b8;">ئالاھىدە كومبو</div>
+                    <div style="font-size:1.5rem;color:#ff6b6b;font-weight:900;" id="final-combo">0</div>
+                </div>
+                <div style="text-align:center;background:rgba(255,255,255,0.1);padding:10px 15px;border-radius:10px;">
+                    <div style="font-size:0.9rem;color:#94a3b8;">ئەڭ يۇقىرى</div>
+                    <div style="font-size:1.5rem;color:#fbbf24;font-weight:900;" id="final-high-score">0</div>
+                </div>
+            </div>
             <button onclick="showStartScreen()" class="btn-bounce">قايتا سەپەرگە چىقىش</button>
             <a href="../../index.html" class="btn-back">باش بەتكە قايتىش</a>
         </div>
