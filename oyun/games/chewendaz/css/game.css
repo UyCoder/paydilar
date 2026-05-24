@@ -7,7 +7,10 @@ body, html {
     height: 100%;
     overflow: hidden;
     font-family: 'UKIJ Tuz Tom', 'UKIJ Tuz', 'Alkatip Tor', 'Microsoft Uighur', sans-serif;
-    background-color: #87CEEB; /* Sky fallback */
+    background-color: #4a90d9;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
 }
 
 #game-canvas {
@@ -26,23 +29,19 @@ body, html {
     width: 100%;
     height: 100%;
     z-index: 10;
-    pointer-events: none; /* Let clicks pass to canvas if needed */
+    pointer-events: none;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Make screens interactive */
 .screen {
     pointer-events: auto;
 }
-#hud {
-    pointer-events: none;
-}
-#mobile-controls {
-    pointer-events: auto; /* To catch swipes if we place transparent overlay, but we handle it on document */
-}
 
+/* ============================================
+   Screens & Glass Panel
+   ============================================ */
 .hidden {
     display: none !important;
 }
@@ -51,20 +50,65 @@ body, html {
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
-    padding: 3rem;
+    padding: 2.5rem;
     text-align: center;
     color: white;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
     animation: fadeIn 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05), transparent 60%);
+    pointer-events: none;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.6); }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 .screen-icon {
@@ -72,6 +116,7 @@ body, html {
     color: #fbbf24;
     margin-bottom: 1rem;
     filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.5));
+    animation: float 3s ease-in-out infinite;
 }
 
 h1 {
@@ -79,13 +124,21 @@ h1 {
     margin-top: 0;
     margin-bottom: 0.5rem;
     color: #f8fafc;
+    font-weight: 900;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #f8fafc;
 }
 
 p {
     color: #cbd5e1;
     font-size: 1.1rem;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .gold-text {
@@ -104,29 +157,32 @@ input[type="text"] {
     text-align: center;
     margin-bottom: 1.5rem;
     box-sizing: border-box;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
 }
 
 input[type="text"]:focus {
     outline: none;
     border-color: #60a5fa;
     background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary, .btn-secondary, .btn-success, .btn-danger {
     display: inline-block;
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     font-size: 1.2rem;
     font-weight: bold;
     border: none;
     border-radius: 12px;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s;
+    transition: all 0.3s;
     text-decoration: none;
     box-sizing: border-box;
     margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-primary {
@@ -136,8 +192,33 @@ input[type="text"]:focus {
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:hover {
+    transform: translateY(-3px);
 }
 
 .btn-secondary {
@@ -149,65 +230,82 @@ input[type="text"]:focus {
 .btn-secondary:hover {
     background: rgba(255,255,255,0.05);
     color: white;
+    border-color: #64748b;
 }
 
-/* HUD */
+/* ============================================
+   HUD
+   ============================================ */
 #hud {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 20px;
+    padding: 16px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    pointer-events: none;
 }
 
 .hud-top-bar {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    gap: 10px;
+    pointer-events: none;
 }
 
 .hud-item {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 20px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 10px 16px;
     border-radius: 15px;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
+    pointer-events: none;
+    animation: slideUp 0.5s ease-out;
 }
 
 .rank-badge {
     background: linear-gradient(135deg, #d97706, #b45309);
     padding: 4px 10px;
     border-radius: 8px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     box-shadow: 0 2px 10px rgba(217, 119, 6, 0.5);
+    animation: glow 2s ease-in-out infinite;
+}
+
+.stats {
+    display: flex;
+    gap: 16px;
 }
 
 .stats div {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .level-progress {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(10px);
-    padding: 15px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 12px 16px;
     border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.15);
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .progress-bar {
@@ -215,65 +313,452 @@ input[type="text"]:focus {
     background: rgba(255,255,255,0.1);
     border-radius: 5px;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 #progress-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #10b981, #34d399);
+    background: linear-gradient(90deg, #10b981, #34d399, #fbbf24);
+    background-size: 200% 100%;
     transition: width 0.3s linear;
+    border-radius: 5px;
+    animation: shimmer 2s linear infinite;
 }
 
 .progress-text {
     color: white;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
 }
 
-/* Floating text for wisdom/math */
+/* ============================================
+   Power-up Indicator
+   ============================================ */
+#powerup-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 24px;
+    border-radius: 20px;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    pointer-events: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+#powerup-indicator i {
+    font-size: 1.5rem;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.powerup-timer {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   Combo Display
+   ============================================ */
+#combo-display {
+    position: absolute;
+    top: 35%;
+    right: 20px;
+    z-index: 50;
+    pointer-events: none;
+    animation: bounceIn 0.3s ease-out;
+}
+
+.combo-text {
+    color: #fbbf24;
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5), 0 2px 10px rgba(0,0,0,0.5);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* ============================================
+   Floating Text
+   ============================================ */
 .floating-text {
     position: absolute;
     color: #fbbf24;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 900;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(251, 191, 36, 0.5);
+    text-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 30px rgba(251, 191, 36, 0.5);
     pointer-events: none;
     z-index: 100;
     transform: translate(-50%, -50%);
-    animation: floatUp 1.5s ease-out forwards;
+    animation: floatUp 2s ease-out forwards;
 }
 
 @keyframes floatUp {
     0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-    20% { opacity: 1; transform: translate(-50%, -80%) scale(1.2); }
-    80% { opacity: 1; transform: translate(-50%, -150%) scale(1); }
-    100% { opacity: 0; transform: translate(-50%, -200%) scale(0.8); }
+    20% { opacity: 1; transform: translate(-50%, -80%) scale(1.1); }
+    80% { opacity: 1; transform: translate(-50%, -180%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -250%) scale(0.8); }
 }
 
-/* Mobile Hints */
+/* ============================================
+   Mobile Controls - Touch Buttons
+   ============================================ */
 #mobile-controls {
     position: absolute;
-    bottom: 120px;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    color: rgba(255,255,255,0.5);
-    font-size: 1.2rem;
+    z-index: 30;
     pointer-events: none;
 }
 
+.touch-controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 16px 16px 24px;
+    pointer-events: none;
+}
+
+.touch-btn-group {
+    display: flex;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.touch-btn {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    pointer-events: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:active {
+    transform: scale(0.9);
+    background: rgba(59, 130, 246, 0.5);
+    border-color: #60a5fa;
+}
+
+.touch-btn.jump-btn {
+    width: 80px;
+    height: 80px;
+    background: rgba(16, 185, 129, 0.4);
+    border-color: rgba(16, 185, 129, 0.5);
+    font-size: 1.8rem;
+}
+
+.touch-btn.jump-btn:active {
+    background: rgba(16, 185, 129, 0.7);
+}
+
+.touch-btn.attack-btn {
+    background: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.touch-btn.attack-btn:active {
+    background: rgba(239, 68, 68, 0.7);
+}
+
+/* Mobile swipe hints (shown on larger mobile) */
+.swipe-hint {
+    display: none;
+}
+
+.tap-hint {
+    display: none;
+}
+
+/* ============================================
+   Pause Button
+   ============================================ */
+#pause-btn {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    pointer-events: auto;
+}
+
+#btn-pause {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+#btn-pause:hover {
+    background: rgba(15, 23, 42, 0.8);
+}
+
+/* ============================================
+   Pause Screen
+   ============================================ */
+#pause-screen {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+#pause-screen .glass-panel {
+    max-width: 350px;
+}
+
+#pause-screen h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* ============================================
+   Level Complete Screen
+   ============================================ */
+#level-complete-screen {
+    z-index: 100;
+}
+
+#level-complete-screen .glass-panel {
+    max-width: 400px;
+}
+
+.level-complete-stars {
+    font-size: 2.5rem;
+    margin: 1rem 0;
+    animation: bounceIn 0.5s ease-out;
+}
+
+.lc-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 1.5rem 0;
+}
+
+.lc-stat-item {
+    text-align: center;
+}
+
+.lc-stat-item i {
+    font-size: 1.5rem;
+    color: #fbbf24;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.lc-stat-item span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.lc-stat-item .stat-label {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* ============================================
+   Story Screen
+   ============================================ */
+.story-content {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.story-content p {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* ============================================
+   Game Over Screen
+   ============================================ */
+.final-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.final-stats div {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+}
+
+.final-stars {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+
+/* ============================================
+   Media Queries - Responsive
+   ============================================ */
 @media (max-width: 768px) {
+    .glass-panel {
+        padding: 1.5rem;
+        width: 92%;
+        border-radius: 20px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .screen-icon {
+        font-size: 3rem;
+    }
+
     .hud-top-bar {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
+
     .hud-item {
+        font-size: 0.85rem;
+        padding: 8px 12px;
         justify-content: center;
     }
-    #mobile-controls {
-        display: flex !important;
+
+    .stats {
+        gap: 12px;
+    }
+
+    .level-progress {
+        padding: 8px 12px;
+    }
+
+    .progress-text {
+        font-size: 0.8rem;
+    }
+
+    .touch-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 1.2rem;
+    }
+
+    .touch-btn.jump-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+    }
+
+    .floating-text {
+        font-size: 1.3rem;
+    }
+
+    .lc-stats {
+        gap: 20px;
+    }
+
+    #powerup-indicator {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+
+    .combo-text {
+        font-size: 1.8rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-panel {
+        padding: 1.2rem;
+        border-radius: 16px;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    .touch-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1rem;
+    }
+
+    .touch-btn.jump-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.3rem;
+    }
+
+    .touch-controls-container {
+        padding: 8px 8px 16px;
+    }
+
+    .touch-btn-group {
+        gap: 6px;
+    }
+
+    .hud-item {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+    .rank-badge {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+    }
+}
+
+@media (min-width: 769px) {
+    #mobile-controls .touch-btn-group {
+        display: none;
     }
 }
