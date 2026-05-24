@@ -16,6 +16,9 @@
         .ui-box .value { font-size: 1.6rem; font-weight: 900; }
         #score-val { color: #ffb703; text-shadow: 0 0 15px rgba(255,183,3,0.4); }
         #streak-val { color: #e63946; text-shadow: 0 0 15px rgba(230,57,70,0.3); }
+        #timer-val { color: #00f2ff; font-size: 1.2rem; }
+        #timer-val.warning { color: #e63946; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
         #high-val { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
         
         #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 900; color: #ffb703; display: none; pointer-events: none; text-shadow: 0 0 40px rgba(255,183,3,0.8), 0 4px 15px rgba(0,0,0,0.5); z-index: 50; white-space: nowrap; }
@@ -53,6 +56,10 @@
             <div class="label">ئۇدا ئۇتۇش</div>
             <div class="value" id="streak-val">0</div>
         </div>
+        <div class="ui-box" style="text-align:center">
+            <div class="label">ۋاقىت</div>
+            <div class="value" id="timer-val">45</div>
+        </div>
     </div>
     <div id="effects-bar"></div>
     <div id="combo-text">ئاجايىپ!</div>
@@ -65,6 +72,8 @@
             <div class="final-stats" id="final-stats" style="display:none">
                 <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">نومۇر</div></div>
                 <div class="final-stat"><div class="v" id="f-streak">0</div><div class="l">ئەڭ يۇقىرى ئۇدا</div></div>
+                <div class="final-stat"><div class="v" id="f-games">0</div><div class="l">ئېتىش</div></div>
+                <div class="final-stat"><div class="v" id="f-accuracy">0%</div><div class="l">توغرىلىق</div></div>
             </div>
             <button class="btn" onclick="startGame()">باشلاش</button>
         </div>
@@ -81,7 +90,8 @@
         let gameActive = false, score = 0, bestStreak = 0, highScore = parseInt(localStorage.getItem('bball_high')||'0');
         document.getElementById('high-score').innerText = highScore;
         let audioCtx, streak = 0, particles = [], confettis = [], netStrings = [];
-        let frameCount = 0;
+        let frameCount = 0, gameStartTime = 0, gameTimeLeft = 45, totalShots = 0, successfulShots = 0;
+        let gameTime = 45;
         const gravity = 0.45;
         
         let ball = { x: 0, y: 0, r: 25, vx: 0, vy: 0, isShooting: false, isDragging: false, startX: 0, startY: 0, angle: 0, spin: 0, fire: false, mega: false, bankShot: false };
@@ -135,10 +145,15 @@
             ball.bankShot = false;
             ball.r = ball.mega ? 35 : 25;
             
+            // Difficulty progression: hoop narrows, moves faster
+            const diffFactor = Math.min(score / 200, 1);
+            const hoopWidth = 120 - Math.floor(diffFactor * 40); // shrinks from 120 to 80
+            hoop.w = Math.max(hoopWidth, 80);
+            hoop.speed = 1.5 + diffFactor * 2.5; // faster movement
             hoop.x = Math.min(canvas.width - 180, canvas.width - 250 - Math.random() * 150);
             hoop.x = Math.max(hoop.x, 150);
             hoop.y = canvas.height / 3.5 + Math.random() * 100;
-            hoop.moving = score >= 30;
+            hoop.moving = score >= 20; // starts moving earlier
             netSway = 0;
             netAnimating = false;
             
@@ -166,8 +181,48 @@
             document.getElementById('final-stats').style.display = 'none';
             resetGame();
             gameActive = true;
+            gameTimeLeft = 45;
+            gameStartTime = Date.now();
+            totalShots = 0; successfulShots = 0;
+            document.getElementById('timer-val').textContent = gameTimeLeft;
+            document.getElementById('timer-val').classList.remove('warning');
             resetRound();
             if (!animateLoopStarted) { animateLoopStarted = true; animate(); }
+        }
+
+        function roundRect(c, x, y, w, h, r) {
+            if(w < 2 * r) r = w / 2;
+            if(h < 2 * r) r = h / 2;
+            c.beginPath();
+            c.moveTo(x + r, y);
+            c.lineTo(x + w - r, y);
+            c.quadraticCurveTo(x + w, y, x + w, y + r);
+            c.lineTo(x + w, y + h - r);
+            c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            c.lineTo(x + r, y + h);
+            c.quadraticCurveTo(x, y + h, x, y + h - r);
+            c.lineTo(x, y + r);
+            c.quadraticCurveTo(x, y, x + r, y);
+            c.closePath();
+        }
+
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('end-title').innerText = '🏆 ۋاقىت تۈگىدى!';
+            document.getElementById('end-desc').innerHTML = 'تامام! نەتىجىڭىزنى كۆرۈڭ.';
+            document.getElementById('final-stats').style.display = 'flex';
+            document.getElementById('f-score').textContent = score;
+            document.getElementById('f-streak').textContent = bestStreak + '×';
+            document.getElementById('f-games').textContent = totalShots;
+            const acc = totalShots > 0 ? Math.round(successfulShots / totalShots * 100) : 0;
+            document.getElementById('f-accuracy').textContent = acc + '%';
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem('bball_high', highScore.toString());
+                document.getElementById('high-score').innerText = highScore;
+            }
+            addConfetti(80);
         }
 
         function updateUI() {
@@ -583,6 +638,17 @@
                 if (hoop.y > canvas.height - 250 || hoop.y < 120) hoop.dir *= -1;
             }
 
+            // Timer countdown
+            const elapsed = (Date.now() - gameStartTime) / 1000;
+            gameTimeLeft = Math.max(0, Math.ceil(gameTime - elapsed));
+            document.getElementById('timer-val').textContent = gameTimeLeft;
+            document.getElementById('timer-val').classList.toggle('warning', gameTimeLeft <= 10);
+            
+            if(gameTimeLeft <= 0) {
+                gameOver();
+                return;
+            }
+            
             // Ball physics
             if (ball.isShooting) {
                 // Magnet attraction
@@ -655,6 +721,8 @@
                     ballCenterY + ball.r > hoop.y + hoop.h && ballCenterY < hoop.y + hoop.h + 10) {
                     
                     // SCORE!
+                    totalShots++;
+                    successfulShots++;
                     const isBank = ball.bankShot || false;
                     let points = 10 + streak * 5;
                     if (ball.fire) points *= 2;
@@ -707,6 +775,7 @@
                 // Missed - ball goes out of bounds
                 if (ball.y > canvas.height + 100 || ball.x > canvas.width + 100 || ball.x < -100) {
                     if (ball.isShooting) {
+                        totalShots++;
                         streak = 0;
                         playSound('miss');
                         ball.isShooting = false;
@@ -739,6 +808,22 @@
             
             // Floating scores
             drawFloatingScore();
+            
+            // Draw timer bar at top
+            const barW = canvas.width - 40;
+            const barX = 20;
+            const barY = 68;
+            const fill = gameTimeLeft / gameTime;
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            roundRect(ctx, barX, barY, barW, 6, 3);
+            ctx.fill();
+            const timerColor = gameTimeLeft <= 10 ? '#e63946' : (gameTimeLeft <= 20 ? '#f39c12' : '#00f2ff');
+            ctx.fillStyle = timerColor;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = timerColor;
+            roundRect(ctx, barX, barY, barW * fill, 6, 3);
+            ctx.fill();
+            ctx.shadowBlur = 0;
             
             // Particles
             for (let i=particles.length-1; i>=0; i--) {

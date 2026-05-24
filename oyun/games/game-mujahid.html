@@ -87,7 +87,7 @@
         </div>
     </div>
     <div id="combo-text"></div>
-    <div id="controls-hint">چاشقىنەك بىلەن ماڭگىلى بولىدۇ • قويۇپ بېرىپ ئېتىڭ • W ئالماشتۇرۇش</div>
+    <div id="controls-hint">چاشقىنەك بىلەن ماڭىدۇ • Space ئېتىدۇ • W قورال ئالماشتۇرۇش • G گرانات • R ئوقلاش</div>
     <div id="mobile-controls">
         <div id="joystick-area"><div id="joystick-knob"></div></div>
         <div id="fire-btn">🔥</div>
@@ -95,7 +95,7 @@
     <div id="overlay">
         <h1>⚔️ جەڭ مەيدانى مۇجاھىدى</h1>
         <p>دۈشمەنلەر ھۇجۇم قىلىۋاتىدۇ! ئۇرۇش مەيدانىدا ھەرىكەتلىنىپ، بارلىق دۈشمەنلەرنى يوقىتىڭ.</p>
-        <p class="hint">🖱️ چاشقىنەك بىلەن ماڭىدۇ • ئاپتوماتىك ئېتىدۇ • W كۇنۇپكىسى بىلەن قورال ئالماشتۇرىدۇ</p>
+        <p class="hint">🖱️ چاشقىنەك بىلەن ماڭىدۇ • Space باسىپ ئېتىدۇ • W قورال ئالماشتۇرۇش • G گرانات • R ئوقلاش</p>
         <div id="final-stats">
             <div class="stat-box"><div class="stat-val" id="final-score">0</div><div class="stat-label">ئەڭ يۇقىرى نومۇر</div></div>
             <div class="stat-box"><div class="stat-val" id="final-kills">0</div><div class="stat-label">ئۆلتۈرۈلگەن</div></div>
@@ -118,7 +118,9 @@
         let hp = 5, maxHp = 5, ammo = 30, maxAmmo = 30, weapon = 'auto';
         let shotsFired = 0, shotsHit = 0;
         let audioCtx = null;
-        let screenShake = 0;
+        let screenShake = 0, invincible = 0, wave = 1, waveKills = 0, killsPerWave = 10;
+        let totalKills = 0, waveDelay = 0;
+        let grenades = 0;
         
         // Player
         let player = { x: 0, y: 0, targetX: 0, targetY: 0, r: 16, speed: 2.5, lastShot: 0, angle: 0 };
@@ -128,7 +130,7 @@
         let enemies = [], bullets = [], particles = [], floatingTexts = [], pickups = [], explosions = [];
         
         // Input
-        let moveTarget = null;
+        let moveTarget = null, isFiring = false, mouseDown = false;
         let keyState = {};
         
         // Weapon system
@@ -339,7 +341,13 @@
         // === Input Handling ===
         canvas.addEventListener('mousedown', e => {
             if (!gameActive) return;
-            moveTarget = { x: e.clientX + camera.x, y: e.clientY + camera.y };
+            if (e.button === 0) {
+                moveTarget = { x: e.clientX + camera.x, y: e.clientY + camera.y };
+                mouseDown = true;
+            }
+        });
+        canvas.addEventListener('mouseup', e => {
+            if (e.button === 0) mouseDown = false;
         });
         canvas.addEventListener('mousemove', e => {
             if (!gameActive) return;
@@ -351,8 +359,14 @@
             keyState[e.key.toLowerCase()] = true;
             if (e.key.toLowerCase() === 'w' && gameActive) switchWeapon();
             if (e.key.toLowerCase() === 'r' && gameActive && !reloading && currentWeapon !== 'auto') startReload();
+            if (e.key.toLowerCase() === ' ' && gameActive) { e.preventDefault(); isFiring = true; }
+            if (e.key.toLowerCase() === 'g' && gameActive && grenades > 0) throwGrenade();
+            if (e.key.toLowerCase() === 'e' && gameActive && isFiring) { /* already handled */ }
         });
-        document.addEventListener('keyup', e => { keyState[e.key.toLowerCase()] = false; });
+        document.addEventListener('keyup', e => {
+            keyState[e.key.toLowerCase()] = false;
+            if (e.key.toLowerCase() === ' ') isFiring = false;
+        });
 
         // Mobile controls
         let joystickActive = false, joystickX = 0, joystickY = 0;
@@ -379,6 +393,24 @@
         let mobileFiring = false;
         fireBtn.addEventListener('touchstart', e => { e.preventDefault(); mobileFiring = true; }, {passive: false});
         fireBtn.addEventListener('touchend', e => { e.preventDefault(); mobileFiring = false; }, {passive: false});
+
+        // Throw grenade
+        function throwGrenade() {
+            if (grenades <= 0) return;
+            grenades--;
+            const gx = player.x + Math.cos(player.angle) * 30;
+            const gy = player.y + Math.sin(player.angle) * 30;
+            bullets.push({
+                x: gx, y: gy,
+                vx: Math.cos(player.angle) * 8,
+                vy: Math.sin(player.angle) * 8 - 2,
+                life: 40, type: 'grenade',
+                friendly: true, damage: 3,
+                trail: [], size: 6
+            });
+            playSound('shoot_heavy');
+            updateHUD();
+        }
 
         function updateJoystick(touch) {
             const rect = joystickArea.getBoundingClientRect();
@@ -634,6 +666,11 @@
         }
 
         function drawPlayer() {
+            // Blink when invincible
+            if (invincible > 0 && Math.floor(invincible / 4) % 2 === 0) {
+                ctx.globalAlpha = 0.4;
+            }
+            
             const px = player.x + camera.dx, py = player.y + camera.dy;
             
             ctx.save();
@@ -674,6 +711,7 @@
             }
             
             ctx.restore();
+            ctx.globalAlpha = 1;
         }
 
         function drawEnemy(e) {
@@ -740,29 +778,6 @@
             ctx.globalAlpha = 1;
         }
 
-        function drawBullet(b) {
-            const bx = b.x + camera.dx, by = b.y + camera.dy;
-            
-            // Trail
-            if (b.trail) {
-                b.trail.forEach((t, idx) => {
-                    const alpha = (b.trail.length - idx) / b.trail.length * 0.5;
-                    ctx.fillStyle = b.friendly ? `rgba(255,255,200,${alpha})` : `rgba(255,100,100,${alpha})`;
-                    ctx.beginPath();
-                    ctx.arc(t.x + camera.dx, t.y + camera.dy, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            }
-            
-            ctx.fillStyle = b.friendly ? '#ffd700' : '#ff4444';
-            ctx.shadowColor = b.friendly ? '#ffd700' : '#ff4444';
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(bx, by, b.size || 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        }
-
         function drawExplosion(e) {
             const ex = e.x + camera.dx, ey = e.y + camera.dy;
             const pct = e.radius / e.maxRadius;
@@ -797,6 +812,174 @@
             ctx.restore();
         }
 
+        // === Draw Bullet (with grenade handling) ===
+        function drawBullet(b) {
+            const bx = b.x + camera.dx, by = b.y + camera.dy;
+            
+            // Grenade special draw
+            if (b.type === 'grenade') {
+                ctx.save();
+                if (b.trail) {
+                    b.trail.forEach((t, idx) => {
+                        const a = (b.trail.length - idx) / b.trail.length * 0.4;
+                        ctx.fillStyle = `rgba(150,100,50,${a})`;
+                        ctx.beginPath();
+                        ctx.arc(t.x + camera.dx, t.y + camera.dy, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+                ctx.fillStyle = '#555';
+                ctx.shadowColor = '#e74c3c';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(bx, by, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(bx + 3, by - 4);
+                ctx.lineTo(bx + 8, by - 8);
+                ctx.stroke();
+                if (b.life < 15) {
+                    ctx.fillStyle = '#ff0';
+                    ctx.shadowColor = '#ff0';
+                    ctx.shadowBlur = 12;
+                    ctx.beginPath();
+                    ctx.arc(bx + 8, by - 8, 2 + Math.random() * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+                return;
+            }
+            
+            // Regular bullet trail
+            if (b.trail) {
+                b.trail.forEach((t, idx) => {
+                    const alpha = (b.trail.length - idx) / b.trail.length * 0.5;
+                    ctx.fillStyle = b.friendly ? `rgba(255,255,200,${alpha})` : `rgba(255,100,100,${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(t.x + camera.dx, t.y + camera.dy, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+            
+            ctx.fillStyle = b.friendly ? '#ffd700' : '#ff4444';
+            ctx.shadowColor = b.friendly ? '#ffd700' : '#ff4444';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(bx, by, b.size || 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        // === Minimap ===
+        function drawMinimap() {
+            const mapSize = 120;
+            const mapX = canvas.width - mapSize - 15;
+            const mapY = 15;
+            const worldSize = 2000;
+            const scale = mapSize / worldSize;
+            
+            // Background
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(mapX, mapY, mapSize, mapSize);
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(mapX, mapY, mapSize, mapSize);
+            
+            // World center dot
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.fillRect(mapX + mapSize/2 - 0.5, mapY, 1, mapSize);
+            ctx.fillRect(mapX, mapY + mapSize/2 - 0.5, mapSize, 1);
+            
+            // Obstacles (small gray rects)
+            obstacles.forEach(o => {
+                const mx = mapX + (o.x + 1000) * scale;
+                const my = mapY + (o.y + 1000) * scale;
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.fillRect(mx, my, Math.max(2, o.w * scale), Math.max(2, o.h * scale));
+            });
+            
+            // Pickups
+            pickups.forEach(p => {
+                const mx = mapX + (p.x + 1000) * scale;
+                const my = mapY + (p.y + 1000) * scale;
+                ctx.fillStyle = p.color || '#fff';
+                ctx.beginPath();
+                ctx.arc(mx, my, 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Enemies (red dots)
+            enemies.forEach(e => {
+                if (e.dead) return;
+                const mx = mapX + (e.x + 1000) * scale;
+                const my = mapY + (e.y + 1000) * scale;
+                ctx.fillStyle = '#ff4444';
+                ctx.beginPath();
+                ctx.arc(mx, my, Math.max(2, e.size * 0.3), 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Player (green triangle)
+            const pmx = mapX + (player.x + 1000) * scale;
+            const pmy = mapY + (player.y + 1000) * scale;
+            ctx.fillStyle = '#2ecc71';
+            ctx.save();
+            ctx.translate(pmx, pmy);
+            ctx.rotate(player.angle);
+            ctx.beginPath();
+            ctx.moveTo(5, 0);
+            ctx.lineTo(-3, -3);
+            ctx.lineTo(-3, 3);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+            
+            // Label
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.font = '8px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('خەرىتە', mapX + mapSize - 3, mapY + 10);
+        }
+
+        // === Reload Bar ===
+        function drawReloadBar() {
+            if (!reloading) return;
+            const barW = 120, barH = 8;
+            const bx = canvas.width / 2 - barW / 2;
+            const by = canvas.height - 40;
+            const weaponData = WEAPONS[currentWeapon];
+            const pct = 1 - (reloadTimer / weaponData.reloadTime);
+            
+            // Draw rounded rect manually for compatibility
+            function roundR(ctx, x, y, w, h, r) {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            roundR(ctx, bx, by, barW, barH, 4);
+            
+            ctx.fillStyle = '#f1c40f';
+            roundR(ctx, bx, by, barW * pct, barH, 4);
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = '11px Tajawal, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('قايتا ئوقلىنىۋاتىدۇ...', canvas.width / 2, by - 5);
+        }
+
         // === Main Game Loop ===
         function gameLoop() {
             if (!gameActive) return;
@@ -811,6 +994,34 @@
             const targetCY = player.y - canvas.height / 2;
             camera.x += (targetCX - camera.x) * 0.1;
             camera.y += (targetCY - camera.y) * 0.1;
+            
+            // Invincibility frames
+            if (invincible > 0) invincible--;
+            
+            // Wave system
+            if (waveKills >= killsPerWave && waveDelay <= 0) {
+                wave++;
+                waveKills = 0;
+                waveDelay = 120;
+                showComboText(`⚔️ دولقۇن ${wave}!`, '#f1c40f');
+                playSound('combo');
+                // Spawn boss enemy
+                const boss = {
+                    ...ENEMY_TYPES.commander,
+                    typeName: 'commander',
+                    x: player.x + Math.cos(Math.random() * Math.PI * 2) * 350,
+                    y: player.y + Math.sin(Math.random() * Math.PI * 2) * 350,
+                    hp: 5 + wave * 2,
+                    maxHp: 5 + wave * 2,
+                    speed: 0.6 + wave * 0.05,
+                    score: 100 + wave * 20,
+                    dead: false, deathTimer: 0, wobble: 0, walkCycle: 0, lastShot: 0
+                };
+                enemies.push(boss);
+                // Spawn backup
+                for (let i = 0; i < 2 + wave; i++) setTimeout(spawnEnemy, i * 200);
+            }
+            if (waveDelay > 0) waveDelay--;
             
             // Player movement (keyboard)
             let moveX = 0, moveY = 0;
@@ -861,6 +1072,9 @@
                 }
             }
             
+            // Fire check: Space key, mouse down, or mobile fire
+            const shouldFire = isFiring || mouseDown || mobileFiring;
+            
             // Auto-fire at nearest enemy
             const weaponData = WEAPONS[currentWeapon];
             let nearestEnemy = null, minDist = weaponData.range;
@@ -871,7 +1085,7 @@
                 if (d < minDist) { minDist = d; nearestEnemy = e; }
             }
             
-            if (nearestEnemy && !reloading && ammo > 0 && (mobileFiring || !joystickActive)) {
+            if (nearestEnemy && !reloading && ammo > 0 && shouldFire) {
                 // Check line of sight with obstacles
                 let canSee = true;
                 for (let o of obstacles) {
@@ -879,16 +1093,18 @@
                     const dy = nearestEnemy.y - player.y;
                     const dist = Math.hypot(dx, dy);
                     // Simple obstacle check
-                    const steps = Math.ceil(dist / 30);
-                    for (let s = 0; s < steps; s++) {
-                        const cx = player.x + (dx / steps) * s;
-                        const cy = player.y + (dy / steps) * s;
-                        if (cx > o.x && cx < o.x + o.w && cy > o.y && cy < o.y + o.h) {
-                            canSee = false;
-                            break;
+                    if (dist > 0) {
+                        const steps = Math.ceil(dist / 30);
+                        for (let s = 0; s < steps; s++) {
+                            const cx = player.x + (dx / steps) * s;
+                            const cy = player.y + (dy / steps) * s;
+                            if (cx > o.x && cx < o.x + o.w && cy > o.y && cy < o.y + o.h) {
+                                canSee = false;
+                                break;
+                            }
                         }
+                        if (!canSee) break;
                     }
-                    if (!canSee) break;
                 }
                 
                 if (canSee && now - player.lastShot > weaponData.fireRate) {
@@ -961,10 +1177,21 @@
             const targetCount = 3 + Math.floor(kills / 4);
             if (alive < targetCount && Math.random() < 0.02) spawnEnemy();
             
-            // Spawn pickups
-            if (pickups.length < 3 && Math.random() < 0.005) spawnPickup();
+            // Spawn pickups (including grenades)
+            if (pickups.length < 3 && Math.random() < 0.005) {
+                if (Math.random() < 0.15 && grenades < 3) {
+                    pickups.push({
+                        type: 'grenade', icon: '💣', color: '#e74c3c',
+                        x: player.x + Math.cos(Math.random() * Math.PI * 2) * (200 + Math.random() * 400),
+                        y: player.y + Math.sin(Math.random() * Math.PI * 2) * (200 + Math.random() * 400),
+                        bob: Math.random() * Math.PI * 2, life: 600
+                    });
+                } else {
+                    spawnPickup();
+                }
+            }
             
-            // Update bullets
+            // Update bullets (including grenades)
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const b = bullets[i];
                 b.x += b.vx;
@@ -974,6 +1201,40 @@
                 // Trail
                 b.trail.push({ x: b.x, y: b.y });
                 if (b.trail.length > 6) b.trail.shift();
+                
+                // Grenade — only physics and timer here (trail handled above)
+                if (b.type === 'grenade') {
+                    if (b.life <= 0) {
+                        createExplosion(b.x, b.y, 60);
+                        // Damage enemies in radius
+                        for (let e of enemies) {
+                            if (e.dead || !e.hp) continue;
+                            const gd = Math.hypot(e.x - b.x, e.y - b.y);
+                            if (gd < 80) {
+                                e.hp -= 3;
+                                burstParticles(e.x, e.y, e.color, 10, 4);
+                                if (e.hp <= 0) {
+                                    e.dead = true;
+                                    e.deathTimer = 20;
+                                    score += e.score;
+                                    kills++; totalKills++; waveKills++;
+                                    combo++;
+                                    if (combo > bestCombo) bestCombo = combo;
+                                    addFloatingText(e.x, e.y - 20, `+${e.score}`, '#f1c40f');
+                                    playSound('kill');
+                                }
+                            }
+                        }
+                        bullets.splice(i, 1);
+                        continue;
+                    }
+                    // Apply gravity (starting from vy=-2, it arcs up first then down)
+                    b.vy += 0.25;
+                    b.x += b.vx;
+                    b.y += b.vy;
+                    b.life--;
+                    continue;
+                }
                 
                 // Hit obstacles
                 for (let o of obstacles) {
@@ -1034,14 +1295,19 @@
                 }
                 
                 // Hit player (enemy bullets)
-                if (!b.friendly && b.life > 0) {
-                    if (Math.hypot(b.x - player.x, b.y - player.y) < player.r + 5) {
+                if (!b.friendly && b.life > 0 && invincible <= 0) {
+                    if (Math.hypot(b.x - player.x, b.y - player.y) < player.r + 8) {
                         b.life = 0;
                         hp--;
                         combo = 0;
+                        invincible = 45;
                         playSound('hurt');
-                        screenShake = 5;
-                        burstParticles(player.x, player.y, '#ff0000', 15, 4);
+                        screenShake = 8;
+                        burstParticles(player.x, player.y, '#ff0000', 20, 5);
+                        // Red flash
+                        document.body.style.transition = 'background 0s';
+                        document.body.style.background = 'rgba(255,0,0,0.15)';
+                        setTimeout(() => { document.body.style.transition = 'background 0.5s'; document.body.style.background = ''; }, 100);
                         updateHUD();
                         
                         if (hp <= 0) {
@@ -1091,12 +1357,16 @@
                 }
                 
                 // Collide with player
-                if (dist < player.r + e.size) {
+                if (dist < player.r + e.size && invincible <= 0) {
                     hp--;
                     combo = 0;
+                    invincible = 45;
                     playSound('hurt');
-                    screenShake = 5;
-                    burstParticles(player.x, player.y, '#ff0000', 15, 4);
+                    screenShake = 8;
+                    burstParticles(player.x, player.y, '#ff0000', 20, 5);
+                    document.body.style.transition = 'background 0s';
+                    document.body.style.background = 'rgba(255,0,0,0.15)';
+                    setTimeout(() => { document.body.style.transition = 'background 0.5s'; document.body.style.background = ''; }, 100);
                     
                     const pushAngle = Math.atan2(e.y - player.y, e.x - player.x);
                     player.x -= Math.cos(pushAngle) * 30;
@@ -1135,6 +1405,9 @@
                     } else if (p.type === 'weapon') {
                         switchWeapon();
                         showComboText('🔫 يېڭى قورال!', '#3498db');
+                    } else if (p.type === 'grenade') {
+                        grenades = Math.min(grenades + 2, 5);
+                        showComboText('💣 +2 گرانات!', '#e74c3c');
                     }
                     burstParticles(p.x, p.y, p.color, 10, 3);
                     pickups.splice(i, 1);
@@ -1247,6 +1520,21 @@
             ctx.shadowBlur = 0;
             
             ctx.restore();
+            
+            // Minimap
+            drawMinimap();
+            
+            // Reload bar
+            drawReloadBar();
+            
+            // HUD extras (wave, grenade count) drawn via canvas
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.font = '11px Tajawal, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`🌊 دولقۇن ${wave} | ${waveKills}/${killsPerWave}`, 15, canvas.height - 15);
+            if (grenades > 0) {
+                ctx.fillText(`💣 ${grenades}`, 15, canvas.height - 35);
+            }
         }
 
         // === Start Game ===
@@ -1261,6 +1549,7 @@
             ammo = 30; maxAmmo = 30;
             shotsFired = 0; shotsHit = 0;
             reloading = false;
+            invincible = 0; wave = 1; waveKills = 0; waveDelay = 0; grenades = 0; totalKills = 0;
             
             player.x = 0; player.y = 0;
             player.targetX = 0; player.targetY = 0;
