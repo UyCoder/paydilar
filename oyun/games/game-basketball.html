@@ -167,7 +167,7 @@
             resetGame();
             gameActive = true;
             resetRound();
-            if (typeof animateLoopStarted === 'undefined') { animateLoopStarted = true; animate(); }
+            if (!animateLoopStarted) { animateLoopStarted = true; animate(); }
         }
 
         function updateUI() {
@@ -523,8 +523,8 @@
                 ctx.shadowBlur = 0;
                 ctx.restore();
                 
-                // Check collision with ball (attract to hoop area)
-                if (Math.abs(pu.x - (hoop.x + hoop.w/2)) < 80 && Math.abs(pu.y - hoop.y) < 60 && pu.y > hoop.y) {
+                // Check collision with ball
+                if (ball.isShooting && Math.hypot(pu.x - ball.x, pu.y - ball.y) < ball.r + 20) {
                     score += 20;
                     showCombo(pu.type === 'magnet' ? '🧲 ماگنىت!' : (pu.type === 'slowmo' ? '⏱ ئاستا!' : '🔵 چوڭ توپ!'));
                     if (pu.type === 'magnet') effects.magnet = 5;
@@ -784,7 +784,8 @@
             updateEffectsBar();
         }
 
-        let animateLoopStarted = false;
+        let animateLoopStarted = true;
+        animate();
     </script>
 </body>
 </html>
