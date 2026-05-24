@@ -76,9 +76,13 @@
         let groundY = canvas.height - 80;
         let sling = {};
         let dove = { x:0, y:0, r:18, vx:0, vy:0, active:false, powerup:null };
+        let multiDoves = [];
         let blocks = [], particles = [], floatingTexts = [], bgBirds = [], clouds = [];
         let isDragging = false, dragX, dragY;
         let highScore = parseInt(localStorage.getItem('doveHighScore')) || 0;
+        let screenShake = 0, frameCount = 0, isDay = true, dayTimer = 0;
+        let enemyBirds = [], freedDoves = 0, starsEarned = 0;
+        let scoreMilestones = [50, 100, 150, 200, 300, 500];
         
         document.getElementById('high-score').textContent = highScore;
         
@@ -97,8 +101,10 @@
         }
         
         function spawnLevel() {
-            blocks = []; particles = []; floatingTexts = [];
+            blocks = []; particles = []; floatingTexts = []; enemyBirds = [];
+            multiDoves = []; confetti = [];
             arrowsLeft = 5 + level;
+            freedDoves = 0;
             groundY = canvas.height - 80;
             sling = { x: 120, y: groundY - 40 };
             dove.x = sling.x; dove.y = sling.y; dove.active = false; dove.powerup = null;
@@ -110,7 +116,7 @@
             const baseY = groundY;
             
             // Base platform
-            blocks.push({ x: baseX - 40, y: baseY - 20, w: 240, h: 20, type: 'stone', hp: 3, maxHp: 3, vx: 0, vy: 0 });
+            blocks.push({ x: baseX - 40, y: baseY - 20, w: 240, h: 20, type: 'stone', hp: Math.min(3+level,6), maxHp: Math.min(3+level,6), vx: 0, vy: 0 });
             
             // Left tower
             for(let i = 0; i < 3; i++) {
@@ -123,14 +129,20 @@
             // Top bridge
             blocks.push({ x: baseX + 10, y: baseY - 200, w: 180, h: 20, type: 'stone', hp: 2, maxHp: 2, vx: 0, vy: 0 });
             
-            // Cages with doves
+            // Cages with doves - sometimes a golden (boss) cage at higher levels
             const cages = [
                 { x: baseX + 45, y: baseY - 130 },
                 { x: baseX + 10, y: baseY - 70 },
                 { x: baseX + 140, y: baseY - 130 }
             ];
             cages.forEach((c, i) => {
-                blocks.push({ x: c.x, y: c.y, w: 55, h: 55, type: 'cage', hp: 1, maxHp: 1, vx: 0, vy: 0, freed: false, doveIdx: i });
+                const isBoss = level >= 3 && i === 0 && Math.random() < 0.4;
+                blocks.push({ 
+                    x: c.x, y: c.y, w: 55, h: 55, 
+                    type: 'cage', hp: isBoss ? 3 : 1, maxHp: isBoss ? 3 : 1, 
+                    vx: 0, vy: 0, freed: false, doveIdx: i,
+                    boss: isBoss
+                });
             });
             
             // Extra decorative blocks
@@ -163,6 +175,8 @@
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('game-over').style.display = 'none';
             score = 0; combo = 0; level = 1;
+            multiDoves = [];
+            confetti = [];
             document.getElementById('score').textContent = `قۇتقۇزۇلغان: 0`;
             document.getElementById('combo-text').textContent = '';
             gameActive = true;
@@ -234,8 +248,22 @@
             }
         }
         
-        function addFloatingText(x, y, text, color) {
-            floatingTexts.push({ x, y, text, color: color || '#ffffff', life: 30, maxLife: 30, vy: -2 });
+        let confetti = [];
+        function addConfetti(count) {
+            count = count || 30;
+            const colors = ['#ffb703','#e63946','#00f2ff','#10b981','#a855f7','#ec4899','#fbbf24'];
+            for(let i = 0; i < count; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width, y: -20,
+                    vx: (Math.random()-0.5)*6, vy: Math.random() * 5 + 2,
+                    life: 1, color: colors[Math.floor(Math.random()*colors.length)],
+                    size: 4 + Math.random()*8, rot: Math.random()*360, rv: (Math.random()-0.5)*15
+                });
+            }
+        }
+        
+        function addFloatingText(x, y, text, color, size) {
+            floatingTexts.push({ x, y, text, color: color || '#ffffff', life: 30, maxLife: 30, vy: -2, size: size || 24 });
         }
         
         function checkLevelComplete() {
@@ -247,14 +275,26 @@
                 score += bonus;
                 document.getElementById('score').textContent = `قۇتقۇزۇلغان: ${score}`;
                 addFloatingText(canvas.width/2, canvas.height/2, `✨ ${bonus} بونۇس!`, '#ffd700');
+                
+                // Calculate stars based on remaining arrows
+                const totalArrows = 5 + level;
+                const usedArrows = totalArrows - arrowsLeft;
+                const pct = 1 - (usedArrows / totalArrows);
+                starsEarned = pct > 0.75 ? 3 : (pct > 0.5 ? 2 : 1);
+                const starStr = '⭐'.repeat(starsEarned) + '☆'.repeat(3 - starsEarned);
+                addFloatingText(canvas.width/2, canvas.height/2 + 50, starStr, '#ffd700', 32);
+                
                 level++;
                 setTimeout(() => {
                     if(gameActive) spawnLevel();
                 }, 1500);
             } else if(arrowsLeft <= 0 && !dove.active) {
-                // Game over
+                // Game over - calculate stars from score
+                if(level > 1) starsEarned = score > level * 30 ? 3 : (score > level * 15 ? 2 : 1);
+                else starsEarned = 1;
                 gameActive = false;
-                document.getElementById('final-msg').textContent = `${score} كەپتەر قۇتقۇزدىڭىز! باسقۇچ ${level}`;
+                const starStr = '⭐'.repeat(starsEarned) + '☆'.repeat(3 - starsEarned);
+                document.getElementById('final-msg').innerHTML = `${score} كەپتەر قۇتقۇزدىڭىز!<br>باسقۇچ ${level}<br>${starStr}<br>ئەڭ يۇقىرى: ${Math.max(score, highScore)}`;
                 if(score > highScore) { highScore = score; localStorage.setItem('doveHighScore', highScore); }
                 document.getElementById('high-score').textContent = highScore;
                 document.getElementById('game-over').style.display = 'flex';
@@ -262,11 +302,26 @@
         }
         
         function drawBackground(time) {
+            // Day/night cycle
+            dayTimer++;
+            if(dayTimer > 900) { isDay = !isDay; dayTimer = 0; }
+            const sunAngle = Math.sin(dayTimer * 0.003) * 0.5 + 0.5;
+            
             // Sky gradient
+            let skyColor1, skyColor2, skyColor3;
+            if(isDay) {
+                skyColor1 = `hsl(210, 80%, ${50 + sunAngle * 30}%)`;
+                skyColor2 = `hsl(205, 70%, ${60 + sunAngle * 25}%)`;
+                skyColor3 = `hsl(140, 50%, ${70 + sunAngle * 20}%)`;
+            } else {
+                skyColor1 = '#0a0a2e';
+                skyColor2 = '#1a1a3e';
+                skyColor3 = '#1a2a1a';
+            }
             const skyGrad = ctx.createLinearGradient(0, 0, 0, groundY);
-            skyGrad.addColorStop(0, '#4facfe');
-            skyGrad.addColorStop(0.5, '#87CEEB');
-            skyGrad.addColorStop(1, '#b8e6b8');
+            skyGrad.addColorStop(0, skyColor1);
+            skyGrad.addColorStop(0.5, skyColor2);
+            skyGrad.addColorStop(1, skyColor3);
             ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, canvas.width, groundY);
             
@@ -286,14 +341,39 @@
                 ctx.fill();
             });
             
-            // Sun
-            ctx.fillStyle = '#fff3b0';
-            ctx.shadowBlur = 40;
-            ctx.shadowColor = '#fff3b0';
-            ctx.beginPath();
-            ctx.arc(canvas.width - 100, 60, 40, 0, Math.PI*2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            if(isDay) {
+                // Sun
+                ctx.fillStyle = '#fff3b0';
+                ctx.shadowBlur = 40;
+                ctx.shadowColor = '#fff3b0';
+                ctx.beginPath();
+                ctx.arc(canvas.width - 100, 60, 40, 0, Math.PI*2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else {
+                // Moon & stars
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                for(let i = 0; i < 60; i++) {
+                    const sx = (i * 137.5 + 50) % canvas.width;
+                    const sy = (i * 97.3 + 20) % (groundY * 0.6);
+                    const twinkle = 0.3 + Math.sin(time * 0.002 + i * 1.5) * 0.7;
+                    ctx.globalAlpha = twinkle * 0.8;
+                    ctx.fillRect(sx, sy, 1+(i%3), 1+(i%3));
+                }
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = 'rgba(200,200,180,0.1)';
+                ctx.beginPath();
+                ctx.arc(canvas.width - 80, 50, 35, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(220,220,200,0.8)';
+                ctx.beginPath();
+                ctx.arc(canvas.width - 80, 50, 22, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = skyColor1;
+                ctx.beginPath();
+                ctx.arc(canvas.width - 72, 44, 16, 0, Math.PI*2);
+                ctx.fill();
+            }
             
             // Background birds
             bgBirds.forEach(b => {
@@ -310,15 +390,18 @@
             });
             
             // Ground
+            const grassColor1 = isDay ? '#4caf50' : '#1a3a1a';
+            const grassColor2 = isDay ? '#388e3c' : '#0f2f0f';
+            const grassColor3 = isDay ? '#2e7d32' : '#0a1f0a';
             const grassGrad = ctx.createLinearGradient(0, groundY, 0, canvas.height);
-            grassGrad.addColorStop(0, '#4caf50');
-            grassGrad.addColorStop(0.1, '#388e3c');
-            grassGrad.addColorStop(1, '#2e7d32');
+            grassGrad.addColorStop(0, grassColor1);
+            grassGrad.addColorStop(0.1, grassColor2);
+            grassGrad.addColorStop(1, grassColor3);
             ctx.fillStyle = grassGrad;
             ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
             
             // Grass blades
-            ctx.strokeStyle = '#43a047';
+            ctx.strokeStyle = isDay ? '#43a047' : '#1a4a1a';
             ctx.lineWidth = 2;
             for(let i = 0; i < canvas.width; i += 8) {
                 const h = 5 + Math.sin(i * 0.3 + time * 0.001) * 3;
@@ -344,11 +427,47 @@
             ctx.stroke();
             ctx.setLineDash([]);
         }
+        function spawnEnemyBird() {
+            const side = Math.random() > 0.5 ? 1 : -1;
+            enemyBirds.push({
+                x: side > 0 ? -50 : canvas.width + 50,
+                y: 50 + Math.random() * (groundY - 200),
+                speed: 2 + Math.random() * 2 + level * 0.3,
+                size: 12 + Math.random() * 6,
+                vx: side * (2 + Math.random() * 2),
+                alive: true, color: '#4a3728'
+            });
+        }
         
         function animate() {
             if(!gameActive) return;
             requestAnimationFrame(animate);
             const time = Date.now();
+            frameCount++;
+            
+            // Score milestone check
+            for(let mi = 0; mi < scoreMilestones.length; mi++) {
+                if(score >= scoreMilestones[mi]) {
+                    addFloatingText(canvas.width/2, canvas.height/3, `🎉 ${scoreMilestones[mi]} نومۇر!`, '#ffd700', 36);
+                    addConfetti();
+                    scoreMilestones.splice(mi, 1);
+                    break;
+                }
+            }
+            
+            // Spawn enemy birds
+            if(frameCount % 120 === 0 && level >= 2) {
+                spawnEnemyBird();
+            }
+            
+            // Screen shake
+            if(screenShake > 0) screenShake *= 0.9;
+            if(screenShake < 0.5) screenShake = 0;
+            
+            ctx.save();
+            if(screenShake > 1) {
+                ctx.translate((Math.random()-0.5)*screenShake, (Math.random()-0.5)*screenShake);
+            }
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawBackground(time);
@@ -541,6 +660,119 @@
                 ctx.restore();
             }
             
+            // Multi doves
+            for(let mi = multiDoves.length - 1; mi >= 0; mi--) {
+                const md = multiDoves[mi];
+                if(!md.active) { multiDoves.splice(mi, 1); continue; }
+                md.vy += gravity * 0.8;
+                md.x += md.vx;
+                md.y += md.vy;
+                
+                // Collision with blocks (same as dove but smaller hitbox)
+                for(let bi = blocks.length - 1; bi >= 0; bi--) {
+                    const b = blocks[bi];
+                    if(b.type === 'powerup') continue;
+                    if(md.x + md.r > b.x && md.x - md.r < b.x + b.w && md.y + md.r > b.y && md.y - md.r < b.y + b.h) {
+                        if(b.type === 'cage' && !b.freed) {
+                            b.freed = true;
+                            b.vy = -5;
+                            score += 15;
+                            combo++;
+                            addFloatingText(b.x + b.w/2, b.y - 20, `+15 ${combo >= 3 ? '🔥' : '🐦'}`, '#8b5cf6');
+                            document.getElementById('score').textContent = `قۇتقۇزۇلغان: ${score}`;
+                            playSound('coin');
+                            addParticles(b.x + b.w/2, b.y + b.h/2, '#8b5cf6', 15, false);
+                            if(combo >= 3) playSound('combo');
+                            md.active = false;
+                            setTimeout(checkLevelComplete, 200);
+                            break;
+                        } else {
+                            b.hp--;
+                            b.vx += md.vx * 0.3;
+                            b.vy += md.vy * 0.3;
+                            playSound('hit');
+                            addParticles(md.x, md.y, '#94a3b8', 4, false);
+                            if(b.hp <= 0 && b.type !== 'cage') {
+                                addParticles(b.x + b.w/2, b.y + b.h/2, b.type === 'wood' ? '#d35400' : '#6b7280', 12, true);
+                                playSound('break');
+                                blocks.splice(bi, 1);
+                            }
+                            md.vx *= -0.4;
+                            md.vy *= -0.4;
+                        }
+                    }
+                }
+                
+                // OOB
+                if(md.y > canvas.height + 50 || md.x > canvas.width + 50 || md.x < -50) {
+                    md.active = false;
+                }
+                
+                // Draw multi dove (smaller purple dove)
+                if(md.active) {
+                    ctx.fillStyle = '#8b5cf6';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = 'rgba(139,92,246,0.5)';
+                    ctx.beginPath();
+                    ctx.arc(md.x, md.y, md.r, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#a78bfa';
+                    const wY = Math.sin(time * 0.025 + mi) * 4;
+                    ctx.beginPath();
+                    ctx.ellipse(md.x - 10, md.y - 2 + wY, 7, 4, -0.2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.ellipse(md.x + 10, md.y - 2 - wY, 7, 4, 0.2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.fillStyle = '#f1c40f';
+                    ctx.beginPath();
+                    ctx.moveTo(md.x + 13, md.y - 1);
+                    ctx.lineTo(md.x + 20, md.y);
+                    ctx.lineTo(md.x + 13, md.y + 1);
+                    ctx.fill();
+                }
+            }
+            
+            // Enemy birds
+            enemyBirds.forEach(eb => {
+                if(!eb.alive) return;
+                eb.x += eb.vx;
+                eb.y += Math.sin(frameCount * 0.05 + eb.x * 0.01) * 0.5;
+                // Draw hawk
+                ctx.fillStyle = eb.color;
+                ctx.beginPath();
+                ctx.arc(eb.x, eb.y, eb.size, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = '#2d1f0e';
+                ctx.beginPath();
+                ctx.moveTo(eb.x - eb.size - 8, eb.y - 2);
+                ctx.lineTo(eb.x - eb.size + 2, eb.y);
+                ctx.lineTo(eb.x - eb.size - 8, eb.y + 2);
+                ctx.fill();
+                ctx.fillStyle = '#f1c40f';
+                ctx.beginPath();
+                ctx.arc(eb.x - 3, eb.y - 3, 3, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(eb.x - 2, eb.y - 3, 1.5, 0, Math.PI*2);
+                ctx.fill();
+                // Check collision with dove
+                if(dove.active && Math.hypot(eb.x - dove.x, eb.y - dove.y) < eb.size + dove.r) {
+                    // Dove hit by enemy bird!
+                    playSound('hit');
+                    addParticles(dove.x, dove.y, '#ef4444', 15, true);
+                    screenShake = 8;
+                    dove.active = false;
+                    eb.alive = false;
+                    combo = 0;
+                    setTimeout(checkLevelComplete, 500);
+                }
+                if(eb.x < -100 || eb.x > canvas.width + 100) eb.alive = false;
+            });
+            enemyBirds = enemyBirds.filter(eb => eb.alive);
+            
             // Doves - main
             if(dove.active && arrowsLeft >= 0) {
                 dove.vy += gravity;
@@ -588,11 +820,16 @@
                                 for(let m = 0; m < 2; m++) {
                                     setTimeout(() => {
                                         if(gameActive) {
-                                            const mDove = { x: dove.x, y: dove.y, r: 12, vx: dove.vx + (Math.random()-0.5)*5, vy: dove.vy - 3, active: true, powerup: null };
-                                            // ... handle multi dove collision in main loop
+                                            multiDoves.push({
+                                                x: dove.x, y: dove.y, r: 14,
+                                                vx: dove.vx + (Math.random()-0.5)*5,
+                                                vy: dove.vy - 3 + (Math.random()-0.5)*2,
+                                                active: true, powerup: null
+                                            });
                                         }
                                     }, 200 + m * 100);
                                 }
+                                addFloatingText(dove.x, dove.y-30, '🐦+2 قوشۇمچە!', '#8b5cf6', 28);
                                 dove.powerup = null;
                             }
                         } else {
@@ -733,6 +970,22 @@
                 ctx.shadowBlur = 0;
             }
             ctx.globalAlpha = 1;
+            
+            // Confetti
+            for(let i = confetti.length - 1; i >= 0; i--) {
+                const c = confetti[i];
+                c.x += c.vx; c.y += c.vy; c.vy += 0.08; c.rot += c.rv;
+                ctx.save();
+                ctx.translate(c.x, c.y);
+                ctx.rotate(c.rot * Math.PI / 180);
+                ctx.fillStyle = c.color;
+                ctx.globalAlpha = c.life;
+                ctx.fillRect(-c.size/2, -c.size/4, c.size, c.size/2);
+                ctx.restore();
+                c.life -= 0.008;
+                if(c.life <= 0 || c.y > canvas.height + 20) confetti.splice(i, 1);
+            }
+            ctx.globalAlpha = 1;
         }
         
         // Init background birds
@@ -740,6 +993,12 @@
             bgBirds.push({ x: Math.random() * canvas.width, y: 40 + Math.random() * 80, speed: 0.3 + Math.random() * 0.5, idx: i });
         }
         generateClouds();
+        
+        // Save restore for ctx.save/restore
+        const origSave = ctx.save.bind(ctx);
+        const origRestore = ctx.restore.bind(ctx);
+        let saveCount = 0;
+        // Note: saved ctx not needed here, we use our own save/restore
     </script>
 </body>
 </html>
