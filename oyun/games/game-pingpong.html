@@ -6,36 +6,75 @@
     <title>🏓 پىڭپوڭ توپ: چاققانلىق سىنىقى</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background: #0b0c10; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #0b0c10; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; user-select: none; }
         canvas { display: block; }
         
-        #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .score-board { display: flex; justify-content: space-between; width: 80%; max-width: 400px; position: absolute; top: 50%; transform: translateY(-50%); opacity: 0.2; font-size: 15rem; font-weight: 900; z-index: -1; }
+        #ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .score-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 40px; z-index: -1; opacity: 0.15; }
+        .score-num { font-size: 20vw; font-weight: 900; }
         #score-ai { color: #ff0055; text-shadow: 0 0 50px #ff0055; }
         #score-player { color: #00f2ff; text-shadow: 0 0 50px #00f2ff; }
         
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 12, 16, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #00f2ff, #0066cc); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 900; margin-top: 30px; box-shadow: 0 10px 30px rgba(0, 242, 255, 0.4); }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #00f2ff; text-shadow: 0 0 20px rgba(0, 242, 255, 0.8); }
-        p { font-size: 1.4rem; max-width: 600px; text-align: center; line-height: 1.6; color: #c5c6c7; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid #00f2ff; color: #00f2ff; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; pointer-events: auto; }
+        .top-bar { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .top-bar .label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 2px; }
+        .top-bar .val { font-size: 1.8rem; font-weight: 900; }
+        .top-bar .left { text-align: left; }
+        .top-bar .right { text-align: right; }
+        .top-bar .left .val { color: #00f2ff; text-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        .top-bar .right .val { color: #ff0055; text-shadow: 0 0 20px rgba(255,0,85,0.5); }
+        .top-bar .center { text-align: center; }
+        .top-bar .center .val { color: #fbbf24; font-size: 1rem; }
         
-        .line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); border-style: dashed; z-index: -1; pointer-events: none; }
+        #combo-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #fbbf24; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(251,191,36,0.8); z-index: 50; }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,12,16,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        .overlay-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 3rem; text-align: center; max-width: 480px; width: 90%; animation: popIn 0.5s ease-out; }
+        @keyframes popIn { from{opacity:0;transform:scale(0.8)translateY(30px)} to{opacity:1;transform:scale(1)translateY(0)} }
+        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 10px; }
+        .overlay-box p { font-size: 1.2rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+        .final-stat { display: flex; justify-content: center; gap: 30px; margin: 1rem 0 1.5rem; }
+        .final-stat .item { text-align: center; }
+        .final-stat .item .v { font-size: 2rem; font-weight: 900; }
+        .final-stat .item .l { font-size: 0.8rem; color: #94a3b8; }
+        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #00f2ff, #0066cc); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 900; box-shadow: 0 10px 30px rgba(0,242,255,0.4); transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        #back-btn { position: fixed; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #00f2ff; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        .line-mid { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 10px, transparent 10px, transparent 20px); z-index: 0; pointer-events: none; }
+        
+        /* Touch paddle zone */
+        #touch-zone { position: absolute; bottom: 0; left: 0; width: 100%; height: 120px; z-index: 3; pointer-events: auto; }
+        
+        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 14px 40px; font-size: 1.4rem; } .score-num { font-size: 30vw; } }
     </style>
 </head>
 <body>
     <div id="ui">
         <div class="score-board">
-            <span id="score-ai">0</span>
-            <span id="score-player">0</span>
+            <span class="score-num" id="score-ai">0</span>
+            <span class="score-num" id="score-player">0</span>
         </div>
-        <div class="line"></div>
+        <div class="line-mid"></div>
+        <div class="top-bar">
+            <div class="left"><div class="label">كومپيۇتېر</div><div class="val" id="ai-score-top">0</div></div>
+            <div class="center"><div class="label">ئەڭ يۇقىرى</div><div class="val" id="top-score">0</div></div>
+            <div class="right"><div class="label">سىز</div><div class="val" id="player-score-top">0</div></div>
+        </div>
+        <div id="touch-zone"></div>
     </div>
+    <div id="combo-text">🔥 CHAMPION!</div>
     
     <div id="overlay">
-        <h1>🏓 پىڭپوڭ توپ</h1>
-        <p>تاختىنى سۈرۈپ توپنى قايتۇرۇڭ! <br> كىم ئاۋۋال 5 نومۇر ئالسا شۇ ئۇتىدۇ. <br> سىز كۆك، كومپيۇتېر قىزىل رەڭدە.</p>
-        <button class="btn" onclick="startGame()">ئويناش</button>
+        <div class="overlay-box">
+            <h1 id="title">🏓 پىڭپوڭ توپ</h1>
+            <p id="desc">تاختىنى سۈرۈپ توپنى قايتۇرۇڭ! <br> كىم ئاۋۋال 5 نومۇر ئالسا شۇ ئۇتىدۇ.</p>
+            <div class="final-stat" id="final-stats" style="display:none">
+                <div class="item"><div class="v" id="f-player">0</div><div class="l">سىز</div></div>
+                <div class="item"><div class="v" id="f-ai">0</div><div class="l">كومپيۇتېر</div></div>
+            </div>
+            <button class="btn" onclick="startGame()">ئويناش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
     
@@ -47,81 +86,84 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
-        let gameActive = false;
-        let audioCtx;
+        let gameActive = false, audioCtx, highScore = parseInt(localStorage.getItem('pingpong_high')||'0');
+        document.getElementById('top-score').innerText = highScore;
         
         const winningScore = 5;
-        let player = { x: 0, y: 0, width: 120, height: 15, color: '#00f2ff', score: 0 };
-        let ai = { x: 0, y: 0, width: 120, height: 15, color: '#ff0055', score: 0 };
-        let ball = { x: 0, y: 0, radius: 12, vx: 0, vy: 0, speed: 5, color: '#fff' };
+        let player = { x: 0, y: 0, w: 140, h: 16, score: 0 };
+        let ai = { x: 0, y: 0, w: 140, h: 16, score: 0 };
+        let ball = { x: 0, y: 0, r: 14, vx: 0, vy: 0, speed: 5 };
+        let particles = [], confettis = [], trail = [], comboCount = 0, rallyCount = 0;
         
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
         function playSound(type) {
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination);
-            let now = audioCtx.currentTime;
-            
-            if(type === 'hit') {
-                o.type = 'square'; o.frequency.setValueAtTime(600, now); o.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
-            } else if(type === 'wall') {
-                o.type = 'triangle'; o.frequency.setValueAtTime(300, now);
-                g.gain.setValueAtTime(0.05, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
-            } else if(type === 'score') {
-                o.type = 'sine'; o.frequency.setValueAtTime(400, now); o.frequency.linearRampToValueAtTime(800, now + 0.3);
-                g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0.01, now + 0.3);
-                o.start(now); o.stop(now + 0.3);
-            } else if(type === 'win') {
-                o.type = 'sine'; o.frequency.setValueAtTime(400, now); o.frequency.linearRampToValueAtTime(600, now+0.2); o.frequency.linearRampToValueAtTime(1000, now+0.4);
-                g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0, now + 0.5);
-                o.start(now); o.stop(now + 0.5);
-            } else if(type === 'lose') {
-                o.type = 'sawtooth'; o.frequency.setValueAtTime(300, now); o.frequency.linearRampToValueAtTime(100, now+0.5);
-                g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0, now + 0.5);
-                o.start(now); o.stop(now + 0.5);
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+                const t = audioCtx.currentTime;
+                if(type==='hit') { o.type='square'; o.frequency.setValueAtTime(500,t); o.frequency.exponentialRampToValueAtTime(800,t+0.08); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
+                else if(type==='wall') { o.type='triangle'; o.frequency.setValueAtTime(300,t); g.gain.setValueAtTime(0.04,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.08); }
+                else if(type==='score') { o.type='sine'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(800,t+0.3); g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.35); }
+                else if(type==='win') { o.type='sine'; o.frequency.setValueAtTime(523,t); o.frequency.setValueAtTime(659,t+0.12); o.frequency.setValueAtTime(784,t+0.24); o.frequency.setValueAtTime(1047,t+0.36); g.gain.setValueAtTime(0.15,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.5); }
+                else if(type==='lose') { o.type='sawtooth'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(100,t+0.4); g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.5); }
+                o.start(t); o.stop(t+0.5);
+            } catch(e) {}
+        }
+
+        function addParticles(x,y,color,count=12) {
+            for (let i=0; i<count; i++) {
+                particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-0.5)*6, life:1, color, size:2+Math.random()*4 });
+            }
+        }
+
+        function addConfetti(count=30) {
+            const colors = ['#00f2ff','#ff0055','#fbbf24','#3b82f6','#10b981','#a855f7'];
+            for (let i=0; i<count; i++) {
+                confettis.push({ x:Math.random()*canvas.width, y:-10, vx:(Math.random()-0.5)*3, vy:Math.random()*3+2, life:1, color:colors[Math.floor(Math.random()*colors.length)], size:4+Math.random()*6, rot:Math.random()*360, rv:(Math.random()-0.5)*10 });
             }
         }
 
         function resetBall() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.speed = 4; // Start very slow for kids
+            ball.x = canvas.width/2;
+            ball.y = canvas.height/2;
+            ball.speed = 4;
             let dir = Math.random() > 0.5 ? 1 : -1;
             ball.vy = dir * ball.speed;
             ball.vx = (Math.random() - 0.5) * 4;
+            trail = [];
         }
 
         function init() {
-            player.x = canvas.width / 2 - player.width / 2;
-            player.y = canvas.height - 50;
-            ai.x = canvas.width / 2 - ai.width / 2;
-            ai.y = 35;
+            player.x = canvas.width/2 - player.w/2;
+            player.y = canvas.height - 55;
+            ai.x = canvas.width/2 - ai.w/2;
+            ai.y = 40;
             resetBall();
+            particles = []; confettis = []; trail = []; comboCount = 0; rallyCount = 0;
         }
 
         function movePlayer(clientX) {
             if(!gameActive) return;
-            player.x = clientX - player.width / 2;
+            player.x = clientX - player.w/2;
             if(player.x < 0) player.x = 0;
-            if(player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+            if(player.x + player.w > canvas.width) player.x = canvas.width - player.w;
         }
 
         window.addEventListener('mousemove', e => movePlayer(e.clientX));
         window.addEventListener('touchmove', e => {
-            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-                e.preventDefault();
-                movePlayer(e.touches[0].clientX);
-            }
+            if(!e.target.closest('#touch-zone') && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') return;
+            e.preventDefault();
+            movePlayer(e.touches[0].clientX);
         }, {passive: false});
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 1000); }
 
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
-            player.score = 0;
-            ai.score = 0;
+            player.score = 0; ai.score = 0; rallyCount = 0; comboCount = 0;
+            document.getElementById('title').innerText = '🏓 پىڭپوڭ توپ';
+            document.getElementById('desc').innerHTML = 'تاختىنى سۈرۈپ توپنى قايتۇرۇڭ! <br> كىم ئاۋۋال 5 نومۇر ئالسا شۇ ئۇتىدۇ.';
+            document.getElementById('final-stats').style.display = 'none';
             updateScoreUI();
             init();
             gameActive = true;
@@ -131,126 +173,217 @@
         function updateScoreUI() {
             document.getElementById('score-player').innerText = player.score;
             document.getElementById('score-ai').innerText = ai.score;
+            document.getElementById('player-score-top').innerText = player.score;
+            document.getElementById('ai-score-top').innerText = ai.score;
         }
 
         function gameOver(playerWon) {
             gameActive = false;
             playSound(playerWon ? 'win' : 'lose');
+            if (playerWon) {
+                const total = player.score * 100 + rallyCount * 10;
+                if (total > highScore) { highScore = total; localStorage.setItem('pingpong_high', highScore.toString()); document.getElementById('top-score').innerText = highScore; }
+                addConfetti(80);
+            }
             document.getElementById('overlay').style.display = 'flex';
-            document.querySelector('#overlay h1').innerText = playerWon ? "🎉 سىز ئۇتتۇڭىز!" : "😔 كومپيۇتېر ئۇتتى!";
-            document.querySelector('#overlay p').innerText = `سىز: ${player.score} - كومپيۇتېر: ${ai.score}\nقايتا ئويناپ بېقىڭ!`;
+            document.getElementById('title').innerText = playerWon ? "🎉 سىز ئۇتتۇڭىز!" : "😔 كومپيۇتېر ئۇتتى!";
+            document.getElementById('desc').innerText = playerWon ? `ئىنتايىن چاققان! جەمئى ${player.score*100 + rallyCount*10} نومۇر!` : 'قايتا سىناپ بېقىڭ!';
+            document.getElementById('final-stats').style.display = 'flex';
+            document.getElementById('f-player').innerText = player.score;
+            document.getElementById('f-ai').innerText = ai.score;
         }
 
-        function drawRect(x, y, w, h, color) {
-            ctx.fillStyle = color;
-            ctx.shadowBlur = 20;
+        function drawNeonRect(x, y, w, h, color, blur=20) {
+            ctx.save();
+            ctx.shadowBlur = blur;
             ctx.shadowColor = color;
-            ctx.fillRect(x, y, w, h);
+            ctx.fillStyle = color;
+            const r = 8;
+            ctx.beginPath();
+            ctx.moveTo(x+r, y);
+            ctx.lineTo(x+w-r, y);
+            ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+            ctx.lineTo(x+w, y+h-r);
+            ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+            ctx.lineTo(x+r, y+h);
+            ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+            ctx.lineTo(x, y+r);
+            ctx.quadraticCurveTo(x, y, x+r, y);
+            ctx.closePath();
+            ctx.fill();
             ctx.shadowBlur = 0;
+            // Inner glow
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.fillRect(x+4, y+4, w-8, h-8);
+            ctx.restore();
         }
 
-        function drawCircle(x, y, r, color) {
-            ctx.fillStyle = color;
-            ctx.shadowBlur = 15;
+        function drawNeonCircle(x, y, r, color, blur=15) {
+            ctx.save();
+            ctx.shadowBlur = blur;
             ctx.shadowColor = color;
+            ctx.fillStyle = color;
             ctx.beginPath();
             ctx.arc(x, y, r, 0, Math.PI*2);
             ctx.fill();
             ctx.shadowBlur = 0;
+            // Core glow
+            const grad = ctx.createRadialGradient(x-3, y-3, 0, x, y, r);
+            grad.addColorStop(0, 'rgba(255,255,255,0.4)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(x, y, r*0.6, 0, Math.PI*2);
+            ctx.fill();
+            ctx.restore();
         }
 
         function animate() {
-            if(!gameActive) return;
+            if(!gameActive) {
+                // Still draw confetti even when game is over
+                if (confettis.length > 0) {
+                    ctx.fillStyle = 'rgba(11,12,16,0.3)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    for (let i=confettis.length-1; i>=0; i--) {
+                        const c = confettis[i];
+                        c.x += c.vx; c.y += c.vy; c.vy += 0.05; c.rot += c.rv;
+                        ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot * Math.PI/180);
+                        ctx.fillStyle = c.color; ctx.fillRect(-c.size/2, -c.size/4, c.size, c.size/2);
+                        ctx.restore();
+                        c.life -= 0.008;
+                        if (c.life <= 0 || c.y > canvas.height+20) confettis.splice(i, 1);
+                    }
+                }
+                requestAnimationFrame(animate);
+                return;
+            }
             requestAnimationFrame(animate);
             
-            // Clear screen with trail effect
-            ctx.fillStyle = 'rgba(11, 12, 16, 0.3)';
+            ctx.fillStyle = 'rgba(11, 12, 16, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Trail
+            trail.push({x:ball.x, y:ball.y});
+            if (trail.length > 8) trail.shift();
+            for (let i=0; i<trail.length; i++) {
+                const alpha = i / trail.length * 0.3;
+                ctx.beginPath();
+                ctx.arc(trail[i].x, trail[i].y, ball.r * (i/trail.length), 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                ctx.fill();
+            }
 
             // Move ball
             ball.x += ball.vx;
             ball.y += ball.vy;
 
-            // AI Movement - Make it easy (delayed and slow)
-            let aiCenter = ai.x + ai.width / 2;
-            let targetX = ball.x;
-            // AI only moves when ball is coming towards it
+            // AI - with some randomness for fun
+            let aiCenter = ai.x + ai.w/2;
             if(ball.vy < 0) {
-                if(aiCenter < targetX - 20) ai.x += 3.5;
-                else if(aiCenter > targetX + 20) ai.x -= 3.5;
+                const aiSpeed = 3.5 + (player.score * 0.2);
+                if(aiCenter < ball.x - 20) ai.x += aiSpeed;
+                else if(aiCenter > ball.x + 20) ai.x -= aiSpeed;
             }
+            // AI randomness - sometimes makes mistakes
+            if (Math.random() < 0.005 && ai.score < 4) ai.x += (Math.random()-0.5)*40;
             if(ai.x < 0) ai.x = 0;
-            if(ai.x + ai.width > canvas.width) ai.x = canvas.width - ai.width;
+            if(ai.x + ai.w > canvas.width) ai.x = canvas.width - ai.w;
 
-            // Wall Collision (Left & Right)
-            if(ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+            // Wall collisions
+            if(ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
                 ball.vx *= -1;
+                addParticles(ball.x, ball.y, '#00f2ff', 5);
                 playSound('wall');
             }
 
-            // Paddle Collision function
+            // Paddle collision
             function collision(b, p) {
-                p.top = p.y;
-                p.bottom = p.y + p.height;
-                p.left = p.x;
-                p.right = p.x + p.width;
-                
-                b.top = b.y - b.radius;
-                b.bottom = b.y + b.radius;
-                b.left = b.x - b.radius;
-                b.right = b.x + b.radius;
-                
-                return p.left < b.right && p.top < b.bottom && p.right > b.left && p.bottom > b.top;
+                const pTop = p.y, pBottom = p.y + p.h, pLeft = p.x, pRight = p.x + p.w;
+                const bTop = b.y - b.r, bBottom = b.y + b.r, bLeft = b.x - b.r, bRight = b.x + b.r;
+                return pLeft < bRight && pTop < bBottom && pRight > bLeft && pBottom > bTop;
             }
 
             // Hit Player
             if(collision(ball, player)) {
                 playSound('hit');
-                let collidePoint = (ball.x - (player.x + player.width/2)) / (player.width/2);
+                rallyCount++;
+                addParticles(ball.x, ball.y, '#00f2ff', 8);
+                let collidePoint = (ball.x - (player.x + player.w/2)) / (player.w/2);
                 let angleRad = (Math.PI/4) * collidePoint;
-                
-                let direction = -1; // up
-                ball.speed += 0.2; // gradually speed up
-                if(ball.speed > 10) ball.speed = 10;
-                
+                let direction = -1;
+                ball.speed += 0.2;
+                if(ball.speed > 12) ball.speed = 12;
                 ball.vx = ball.speed * Math.sin(angleRad);
                 ball.vy = direction * ball.speed * Math.cos(angleRad);
+                if (rallyCount > 0 && rallyCount % 5 === 0) showCombo(`🔥 ${rallyCount} قېتىم!`);
             }
 
             // Hit AI
             if(collision(ball, ai)) {
                 playSound('hit');
-                let collidePoint = (ball.x - (ai.x + ai.width/2)) / (ai.width/2);
+                addParticles(ball.x, ball.y, '#ff0055', 8);
+                let collidePoint = (ball.x - (ai.x + ai.w/2)) / (ai.w/2);
                 let angleRad = (Math.PI/4) * collidePoint;
-                
-                let direction = 1; // down
+                let direction = 1;
                 ball.speed += 0.2;
-                if(ball.speed > 10) ball.speed = 10;
-                
+                if(ball.speed > 12) ball.speed = 12;
                 ball.vx = ball.speed * Math.sin(angleRad);
                 ball.vy = direction * ball.speed * Math.cos(angleRad);
             }
 
             // Scoring
-            if(ball.y - ball.radius < 0) {
+            if(ball.y - ball.r < 0) {
                 player.score++;
                 playSound('score');
+                addParticles(ball.x, ball.y, '#00f2ff', 20);
                 updateScoreUI();
-                if(player.score >= winningScore) gameOver(true);
+                if(player.score >= winningScore) { gameOver(true); return; }
                 else resetBall();
-            } else if(ball.y + ball.radius > canvas.height) {
+            } else if(ball.y + ball.r > canvas.height) {
                 ai.score++;
                 playSound('score');
+                addParticles(ball.x, ball.y, '#ff0055', 20);
                 updateScoreUI();
-                if(ai.score >= winningScore) gameOver(false);
+                rallyCount = 0;
+                if(ai.score >= winningScore) { gameOver(false); return; }
                 else resetBall();
             }
 
-            // Draw Entities
-            drawRect(player.x, player.y, player.width, player.height, player.color);
-            drawRect(ai.x, ai.y, ai.width, ai.height, ai.color);
-            drawCircle(ball.x, ball.y, ball.radius, ball.color);
+            // Draw game elements
+            drawNeonRect(player.x, player.y, player.w, player.h, '#00f2ff');
+            drawNeonRect(ai.x, ai.y, ai.w, ai.h, '#ff0055');
+            
+            // Ball with glow
+            drawNeonCircle(ball.x, ball.y, ball.r, '#ffffff', 20);
+            
+            // Particles
+            for (let i=particles.length-1; i>=0; i--) {
+                const p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                p.life -= 0.03;
+                ctx.globalAlpha = Math.max(p.life, 0);
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                if(p.life <= 0) particles.splice(i, 1);
+            }
+            
+            // Confetti
+            for (let i=confettis.length-1; i>=0; i--) {
+                const c = confettis[i];
+                c.x += c.vx; c.y += c.vy; c.vy += 0.05; c.rot += c.rv;
+                ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.rot * Math.PI/180);
+                ctx.fillStyle = c.color; ctx.fillRect(-c.size/2, -c.size/4, c.size, c.size/2);
+                ctx.restore();
+                c.life -= 0.008;
+                if (c.life <= 0 || c.y > canvas.height+20) confettis.splice(i, 1);
+            }
         }
+        
+        init();
+        animate();
     </script>
 </body>
 </html>

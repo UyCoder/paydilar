@@ -4,81 +4,395 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🕌 مەسچىت نۇرى: چىراغ يېقىش</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #011627; font-family: 'Tajawal', sans-serif; color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #011627; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; user-select: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 15px #00d4ff; }
-        #score { font-size: 2.8rem; font-weight: 800; color: #f9c74f; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #00d4ff; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(1, 22, 39, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #00d4ff, #0066cc); color: white; border: none; border-radius: 60px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #f9c74f; }
-        p { font-size: 1.5rem; max-width: 700px; text-align: center; line-height: 1.8; }
-        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(255,255,255,0.1); border: 2px solid #00d4ff; color: white; border-radius: 20px; cursor: pointer; text-decoration: none; }
+        
+        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        .ui-box { background: rgba(1,22,39,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(0,212,255,0.3); padding: 8px 16px; border-radius: 12px; text-align: center; min-width: 100px; }
+        .ui-box .label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .ui-box .value { font-size: 1.6rem; font-weight: 800; color: #f9c74f; text-shadow: 0 0 15px rgba(249,199,79,0.3); }
+        #combo-indicator { font-size: 0.9rem; color: #00d4ff; display: none; margin-top: 4px; }
+        
+        #hint-text { position: absolute; bottom: 15%; left: 0; width: 100%; text-align: center; font-size: 1.2rem; color: rgba(255,255,255,0.3); pointer-events: none; z-index: 5; }
+        
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 30px #00d4ff, 0 0 60px rgba(0,212,255,0.5); z-index: 50; }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(1,22,39,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        .overlay-box { background: rgba(20,30,50,0.9); border: 1px solid rgba(0,212,255,0.2); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: popIn 0.5s ease-out; }
+        @keyframes popIn { from{opacity:0;transform:scale(0.8)translateY(20px)} to{opacity:1;transform:scale(1)translateY(0)} }
+        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 10px; color: #f9c74f; text-shadow: 0 0 20px rgba(249,199,79,0.3); }
+        .overlay-box p { font-size: 1.1rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+        .final-stats { display: flex; justify-content: center; gap: 25px; margin: 1rem 0 1.5rem; }
+        .final-stat { text-align: center; }
+        .final-stat .v { font-size: 2rem; font-weight: 800; color: #f9c74f; }
+        .final-stat .l { font-size: 0.8rem; color: #94a3b8; }
+        .btn { padding: 16px 50px; font-size: 1.5rem; background: linear-gradient(135deg, #00d4ff, #0066cc); color: white; border: none; border-radius: 60px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 700; box-shadow: 0 4px 20px rgba(0,212,255,0.4); transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        #back-btn { position: fixed; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 14px 36px; font-size: 1.2rem; } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">نۇرلار: 0</div></div>
+    <div id="ui">
+        <div class="ui-box">
+            <div class="label">نۇرلار</div>
+            <div class="value" id="score-val">0</div>
+            <div id="combo-indicator">✨ <span id="combo-count">0</span> قاتار</div>
+        </div>
+    </div>
+    <div id="hint-text">◈ چىراغلارنى چىكىڭ ◈</div>
     <div id="combo-text">نۇرلۇق بولدى!</div>
+    
     <div id="overlay">
-        <h1>🕌 مەسچىت نۇرى</h1>
-        <p>مەسچىتنى يورۇتۇڭ! <br> چىراغلارنى چىكىپ يىغىڭ. <br> "چوڭ چىراغ" 200 نومۇر بېرىدۇ. بەك ئاسان!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="overlay-box">
+            <h1 id="end-title">🕌 مەسچىت نۇرى</h1>
+            <p id="end-desc">مەسچىتنى يورۇتۇڭ! چىراغلارنى چىكىپ يىغىڭ.<br>🥇 ئالتۇن چىراغ 200 نومۇر، كۈمۈش چىراغ 50 نومۇر.</p>
+            <div class="final-stats" id="final-stats" style="display:none">
+                <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">نومۇر</div></div>
+                <div class="final-stat"><div class="v" id="f-lamps">0</div><div class="l">چىراغ</div></div>
+            </div>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, mosque, lamps = [];
-        let score = 0, gameActive = false, audioCtx;
+        let scene, camera, renderer, mosque, lamps = [], particles = [];
+        let score = 0, gameActive = false, lampCount = 0, comboCount = 0, comboTimer = 0, audioCtx;
+        let raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
+        let stars = [];
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSparkle(isBig) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(isBig ? 1200 : 800, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.5); }
-
-        function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0xffffff, 1));
-            const mGrp = new THREE.Group();
-            mGrp.add(new THREE.Mesh(new THREE.BoxGeometry(10, 5, 8), new THREE.MeshPhongMaterial({ color: 0xffffff })));
-            const dome = new THREE.Mesh(new THREE.SphereGeometry(3, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshPhongMaterial({ color: 0x00d4ff }));
-            dome.position.y = 2.5; mGrp.add(dome); scene.add(mGrp); mGrp.position.z = -15;
-            camera.position.set(0, 5, 15); camera.lookAt(0, 0, -10);
-            window.addEventListener('mousedown', onCollect);
-            window.addEventListener('touchstart', e => { onCollect(e.touches[0]); e.preventDefault(); }, { passive: false });
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        function playSound(type) {
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+                const t = audioCtx.currentTime;
+                if (type==='collect') { o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(900,t+0.12); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                else if (type==='gold') { o.type='triangle'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(900,t+0.1); o.frequency.setValueAtTime(1200,t+0.2); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
+                else if (type==='combo') { o.type='sine'; o.frequency.setValueAtTime(800,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.2); g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
+                else if (type==='miss') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(100,t+0.1); g.gain.setValueAtTime(0.04,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); }
+                o.start(t); o.stop(t+0.3);
+            } catch(e) {}
         }
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+        function addParticles(x,y,z,color,count=15) {
+            for (let i=0; i<count; i++) {
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.05+Math.random()*0.08, 3,3), new THREE.MeshBasicMaterial({color, transparent:true, opacity:1}));
+                p.position.set(x+(Math.random()-0.5)*0.4, y+(Math.random()-0.5)*0.4, z+(Math.random()-0.5)*0.4);
+                p.userData = {vx:(Math.random()-0.5)*0.15, vy:Math.random()*0.12+0.05, vz:(Math.random()-0.5)*0.15, life:1};
+                scene.add(p); particles.push(p);
+            }
+        }
+        function updateParticles() {
+            for (let i=particles.length-1; i>=0; i--) {
+                const p=particles[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz;
+                p.userData.vy-=0.003; p.userData.life-=0.025; p.material.opacity=Math.max(0,p.userData.life);
+                if (p.userData.life<=0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
+            }
+        }
+
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 900); }
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x011627);
+            scene.fog = new THREE.Fog(0x011627, 20, 50);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(renderer.domElement);
+
+            // Lights
+            const ambient = new THREE.AmbientLight(0x2244aa, 0.3);
+            scene.add(ambient);
+            
+            const dirLight = new THREE.DirectionalLight(0x4466ff, 0.5);
+            dirLight.position.set(0, 10, 5);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            const pointLight = new THREE.PointLight(0x00d4ff, 2, 20);
+            pointLight.position.set(0, 4, 0);
+            scene.add(pointLight);
+
+            // Stars background
+            for (let i=0; i<200; i++) {
+                const star = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.03+Math.random()*0.05, 2, 2),
+                    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.3+Math.random()*0.5})
+                );
+                star.position.set((Math.random()-0.5)*100, Math.random()*30+5, (Math.random()-0.5)*100-20);
+                scene.add(star);
+                stars.push({ mesh: star, speed: 0.01+Math.random()*0.02 });
+            }
+
+            // Build detailed Mosque
+            const mosqueGroup = new THREE.Group();
+            
+            // 1. Main building body
+            const bodyMat = new THREE.MeshPhongMaterial({ color: 0xffffff, roughness: 0.6 });
+            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 10), bodyMat);
+            mainBody.position.y = 2;
+            mainBody.castShadow = true;
+            mosqueGroup.add(mainBody);
+
+            // 2. Arched windows
+            const windowMat = new THREE.MeshPhongMaterial({ color: 0x1a3a5a, emissive: 0x00d4ff, emissiveIntensity: 0.15 });
+            for (let side of [-1, 1]) {
+                for (let i=-1; i<=1; i+=2) {
+                    const arch = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.1, 8, 12, Math.PI), windowMat);
+                    arch.position.set(i*3.5, 2.2, side*5.01);
+                    arch.rotation.x = Math.PI;
+                    mosqueGroup.add(arch);
+                    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 0.1), new THREE.MeshPhongMaterial({color: 0xffffff}));
+                    pillar.position.set(i*3.5, 1.6, side*5.01);
+                    mosqueGroup.add(pillar);
+                }
+            }
+
+            // 3. Dome
+            const domeMat = new THREE.MeshPhongMaterial({ color: 0x00d4ff, emissive: 0x0066aa, emissiveIntensity: 0.1, shininess: 100 });
+            const domeGeo = new THREE.SphereGeometry(3, 32, 16, 0, Math.PI*2, 0, Math.PI/2);
+            const dome = new THREE.Mesh(domeGeo, domeMat);
+            dome.position.y = 4;
+            dome.castShadow = true;
+            mosqueGroup.add(dome);
+
+            // Dome crescent
+            const crescentMat = new THREE.MeshPhongMaterial({ color: 0xffd700, emissive: 0xffd700, emissiveIntensity: 0.3 });
+            const crescent = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.06, 4, 8), crescentMat);
+            crescent.position.y = 5.5;
+            crescent.rotation.x = Math.PI/2;
+            mosqueGroup.add(crescent);
+
+            // 4. Minarets (4 corners)
+            const minMat = new THREE.MeshPhongMaterial({ color: 0xeeeeee });
+            const minPositions = [[-6, -4], [-6, 4], [6, -4], [6, 4]];
+            minPositions.forEach(([x, z]) => {
+                const min = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 5, 8), minMat);
+                min.position.set(x, 2.5, z);
+                min.castShadow = true;
+                mosqueGroup.add(min);
+                // Top cone
+                const top = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 6), crescentMat);
+                top.position.set(x, 5.25, z);
+                mosqueGroup.add(top);
+            });
+
+            // 5. Entrance arch (front)
+            const entArch = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.15, 8, 16, Math.PI), new THREE.MeshPhongMaterial({color: 0x00aaff}));
+            entArch.position.set(0, 1.5, 5.01);
+            entArch.rotation.x = Math.PI;
+            mosqueGroup.add(entArch);
+
+            // 6. Decorative lines
+            const lineMat = new THREE.MeshPhongMaterial({ color: 0x00aaff });
+            for (let i=-4; i<=4; i+=2) {
+                const line = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 10.2), lineMat);
+                line.position.set(i, 0.5, 0);
+                mosqueGroup.add(line);
+            }
+
+            // Position mosque
+            mosqueGroup.position.set(0, -1, -15);
+            mosque = mosqueGroup;
+            scene.add(mosque);
+
+            // Ground reflection
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(30, 30),
+                new THREE.MeshPhongMaterial({ color: 0x0a1a3a, transparent: true, opacity: 0.5 })
+            );
+            ground.rotation.x = -Math.PI/2;
+            ground.position.set(0, -0.5, -12);
+            scene.add(ground);
+
+            camera.position.set(0, 4, 12);
+            camera.lookAt(0, 2, -8);
+
+            // Click/touch handling
+            window.addEventListener('mousedown', e => {
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                onCollect(e);
+            });
+            window.addEventListener('touchstart', e => {
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                onCollect(e.touches[0]);
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth/window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
 
         function spawnLamp() {
-            const isBig = Math.random() < 0.2;
-            const lamp = new THREE.Mesh(new THREE.OctahedronGeometry(isBig ? 1.5 : 0.8, 0), new THREE.MeshPhongMaterial({ color: isBig ? 0xffffff : 0xf9c74f, emissive: isBig ? 0x00d4ff : 0xf9c74f }));
-            lamp.position.set((Math.random() - 0.5) * 18, (Math.random() * 8), -5 + Math.random() * 10);
-            lamp.userData = { isBig: isBig }; scene.add(lamp); lamps.push(lamp);
+            const isGold = Math.random() < 0.15;
+            const r = isGold ? 1.0 : 0.5;
+            const color = isGold ? 0xffd700 : 0xf9c74f;
+            const emissive = isGold ? 0xffd700 : 0xf9c74f;
+            
+            const lamp = new THREE.Group();
+            
+            // Main body
+            const lampMat = new THREE.MeshPhongMaterial({ 
+                color, emissive, emissiveIntensity: isGold ? 0.5 : 0.3,
+                transparent: true, opacity: 0.9
+            });
+            const body = new THREE.Mesh(new THREE.OctahedronGeometry(r, 0), lampMat);
+            lamp.add(body);
+            
+            // Glow ring
+            if (isGold) {
+                const ring = new THREE.Mesh(
+                    new THREE.RingGeometry(r*0.8, r*1.2, 16),
+                    new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.2, side: THREE.DoubleSide })
+                );
+                ring.rotation.x = Math.PI/2;
+                lamp.add(ring);
+            }
+            
+            // Light glow
+            const glow = new THREE.Mesh(
+                new THREE.SphereGeometry(r*1.5, 8, 8),
+                new THREE.MeshBasicMaterial({ color: emissive, transparent: true, opacity: 0.1 })
+            );
+            lamp.add(glow);
+
+            const x = (Math.random() - 0.5) * 14;
+            const y = 1 + Math.random() * 5;
+            const z = -5 - Math.random() * 12;
+            lamp.position.set(x, y, z);
+            lamp.userData = { isGold, baseY: y };
+            
+            scene.add(lamp);
+            lamps.push(lamp);
         }
 
         function onCollect(e) {
             if (!gameActive) return;
             initAudio();
-            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
-            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(lamps);
+            
+            const clientX = e.clientX || e.pageX || window.innerWidth/2;
+            const clientY = e.clientY || e.pageY || window.innerHeight/2;
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(lamps, true);
+
             if (intersects.length > 0) {
-                const l = intersects[0].object; score += l.userData.isBig ? 200 : 50; document.getElementById('score').innerText = `نۇرلار: ${score}`;
-                showCombo(l.userData.isBig ? "مۇبارەك!" : "نۇرلۇق بولدى!"); playSparkle(l.userData.isBig);
-                scene.remove(l); lamps = lamps.filter(item => item !== l);
+                // Find the parent group (lamp)
+                let hitObj = intersects[0].object;
+                while (hitObj.parent && !lamps.includes(hitObj)) {
+                    hitObj = hitObj.parent;
+                }
+                if (!lamps.includes(hitObj)) return;
+                
+                const isGold = hitObj.userData.isGold;
+                score += isGold ? 200 : 50;
+                lampCount++;
+                comboCount++;
+                comboTimer = 150;
+                updateUI();
+                
+                showCombo(isGold ? "🥇 ئالتۇن چىراغ!" : "✨ نۇرلۇق بولدى!");
+                playSound(isGold ? 'gold' : 'collect');
+                addParticles(hitObj.position.x, hitObj.position.y, hitObj.position.z, isGold ? 0xffd700 : 0x00d4ff, 20);
+                
+                if (comboCount > 0 && comboCount % 5 === 0) {
+                    showCombo(`🔥 ${comboCount} قاتار!`);
+                    playSound('combo');
+                    addParticles(hitObj.position.x, hitObj.position.y, hitObj.position.z, 0xffffff, 30);
+                }
+                
+                scene.remove(hitObj);
+                lamps = lamps.filter(l => l !== hitObj);
+            } else {
+                playSound('miss');
             }
         }
 
-        function startGame() {
-            document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; document.getElementById('score').innerText = `نۇرلار: 0`;
-            lamps.forEach(l => scene.remove(l)); lamps = [];
+        function updateUI() {
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('combo-count').innerText = comboCount;
+            document.getElementById('combo-indicator').style.display = comboCount >= 3 ? 'block' : 'none';
         }
 
-        function animate() { requestAnimationFrame(animate); if (gameActive) { if (Math.random() < 0.02) spawnLamp(); lamps.forEach(l => { l.rotation.y += 0.03; }); } renderer.render(scene, camera); }
+        function startGame() {
+            initAudio();
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('end-title').innerText = '🕌 مەسچىت نۇرى';
+            document.getElementById('end-desc').innerHTML = 'مەسچىتنى يورۇتۇڭ! چىراغلارنى چىكىپ يىغىڭ.<br>🥇 ئالتۇن چىراغ 200 نومۇر، كۈمۈش چىراغ 50 نومۇر.';
+            document.getElementById('final-stats').style.display = 'none';
+            score = 0; lampCount = 0; comboCount = 0; comboTimer = 0; gameActive = true;
+            lamps.forEach(l => scene.remove(l));
+            lamps = [];
+            particles.forEach(p => { scene.remove(p); p.geometry.dispose(); p.material.dispose(); });
+            particles = [];
+            updateUI();
+            // Initial lamps
+            for (let i=0; i<5; i++) spawnLamp();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (gameActive) {
+                // Spawn lamps
+                if (Math.random() < 0.03 && lamps.length < 15) spawnLamp();
+                
+                // Combo timer
+                if (comboTimer > 0) {
+                    comboTimer--;
+                    if (comboTimer === 0) { comboCount = 0; updateUI(); }
+                }
+                
+                // Animate lamps - float and rotate
+                lamps.forEach((l, i) => {
+                    l.rotation.y += 0.01 + (l.userData.isGold ? 0.02 : 0);
+                    l.rotation.x += 0.005;
+                    l.position.y = l.userData.baseY + Math.sin(Date.now()*0.002 + i) * 0.3;
+                });
+                
+                // Animate mosque - subtle float
+                mosque.position.y = -1 + Math.sin(Date.now()*0.001) * 0.05;
+                
+                // Stars twinkle
+                stars.forEach((s, i) => {
+                    s.mesh.material.opacity = 0.3 + Math.sin(Date.now()*0.002 + i) * 0.3;
+                });
+                
+                // Auto-disappear old lamps
+                for (let i = lamps.length-1; i>=0; i--) {
+                    if (lamps[i].userData.spawnTime === undefined) lamps[i].userData.spawnTime = Date.now();
+                    if (Date.now() - lamps[i].userData.spawnTime > 8000) {
+                        scene.remove(lamps[i]);
+                        lamps.splice(i, 1);
+                    }
+                }
+                
+                updateParticles();
+            } else {
+                updateParticles();
+                stars.forEach((s, i) => {
+                    s.mesh.material.opacity = 0.3 + Math.sin(Date.now()*0.002 + i) * 0.3;
+                });
+                mosque.position.y = -1 + Math.sin(Date.now()*0.001) * 0.05;
+            }
+            
+            renderer.render(scene, camera);
+        }
+
         init(); animate();
     </script>
 </body>
