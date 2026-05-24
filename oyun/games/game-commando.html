@@ -6,28 +6,62 @@
     <title>مىللىي ئارمىيە كوماندىرلىرى</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background: #2c3e50; overflow: hidden; font-family: 'Tajawal', sans-serif; touch-action: none; }
+        body { margin: 0; background: #1a1a1a; overflow: hidden; font-family: 'Tajawal', sans-serif; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 15px; left: 20px; right: 20px; display: flex; justify-content: space-between; color: white; font-size: 20px; font-weight: bold; pointer-events: none; z-index: 5; text-shadow: 2px 2px 0 #000; line-height: 1.5; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
-        h1 { font-size: 3.5rem; color: #f1c40f; margin: 0 0 20px 0; text-shadow: 2px 2px 0 #000; }
-        p { font-size: 1.5rem; max-width: 600px; line-height: 1.6; margin-bottom: 30px; }
-        .btn { padding: 15px 40px; font-size: 1.8rem; background: #27ae60; color: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #2ecc71; transition: transform 0.1s; }
-        .btn:active { transform: translateY(5px); box-shadow: none; }
-        .back-btn { position: absolute; top: 60px; right: 20px; color: white; text-decoration: none; font-size: 1.2rem; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; z-index: 5; }
-        #controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 5; pointer-events: none; }
-        .ctrl-btn { width: 80px; height: 80px; background: rgba(255,255,255,0.3); border-radius: 50%; border: 3px solid white; color: white; font-size: 30px; pointer-events: auto; touch-action: none; display: flex; justify-content: center; align-items: center; font-family: sans-serif; font-weight: bold;}
+        
+        /* Tactical UI */
+        #ui { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        .ui-box { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #stats-left { display: flex; flex-direction: column; gap: 5px; }
+        #distance-label { font-size: 1.8rem; font-weight: 800; color: #f1c40f; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        #high-score { font-size: 0.9rem; color: #aaa; margin-top: -5px; }
+        #lives { font-size: 1.8rem; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5)); }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(44, 62, 80, 0.7) 0%, rgba(0,0,0,0.9) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(10px); }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; padding: 40px; text-align: center; max-width: 85%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        
+        h1 { font-size: 3.5rem; color: #f1c40f; margin: 0 0 20px 0; background: linear-gradient(to bottom, #fff, #f1c40f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
+        p { font-size: 1.5rem; color: #eee; max-width: 600px; line-height: 1.6; margin-bottom: 30px; }
+        
+        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 20px; box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(39, 174, 96, 0.5); }
+        
+        .back-btn { position: absolute; bottom: 30px; left: 30px; color: white; text-decoration: none; font-size: 1.1rem; background: rgba(255,255,255,0.05); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 15px; z-index: 10; font-weight: 700; transition: all 0.3s; }
+        .back-btn:hover { background: rgba(255,255,255,0.15); }
+        
+        #controls { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; box-sizing: border-box; z-index: 10; pointer-events: none; }
+        .ctrl-btn { width: 90px; height: 90px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); color: white; font-size: 35px; pointer-events: auto; touch-action: none; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.1s; }
+        .ctrl-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+        
+        #combo-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 4.5rem; font-weight: 900; color: #f1c40f; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(241, 196, 15, 0.5); z-index: 50; white-space: nowrap; }
+
+        #active-effects { position: absolute; bottom: 140px; right: 40px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .effect-timer { background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); border-radius: 10px; padding: 8px 15px; border-left: 5px solid #fff; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="ui">
-        <div>داۋاملىشىش: <span id="distance">0</span>m</div>
-        <div>جان: <span id="lives">❤️❤️❤️❤️❤️</span></div>
+        <div id="stats-left" class="ui-box">
+            <div id="distance-label">مۇساپە: <span id="distance">0</span>m</div>
+            <div id="high-score">ئەڭ يۇقىرى: 0m</div>
+        </div>
+        <div id="lives-container" class="ui-box">
+            <div id="lives">❤️❤️❤️❤️❤️</div>
+        </div>
     </div>
+    <div id="active-effects"></div>
+    <div id="combo-text">ئالغا!</div>
     <div id="overlay">
-        <h1>مىللىي ئارمىيە كوماندىرلىرى</h1>
-        <p>تاجاۋۇزچىلارنىڭ توساقلىرىنى بۆسۈپ ئۆتۈپ، مىللىي ئارمىيەنىڭ باتۇرلۇقىنى كۆرسىتىڭ! ئېكراننىڭ ئوڭىنى بېسىپ سەكرەڭ، سولىنى بېسىپ ئوق ئېتىڭ.</p>
-        <button class="btn" onclick="startGame()">ھۇجۇمغا ئۆتۈش</button>
+        <div class="glass-panel">
+            <h1>مىللىي ئارمىيە كوماندىرلىرى</h1>
+            <p>تاجاۋۇزچىلارنىڭ توساقلىرىنى بۆسۈپ ئۆتۈپ، مىللىي ئارمىيەنىڭ باتۇرلۇقىنى كۆرسىتىڭ! ئوڭ تەرەپتە سەكرەڭ، سول تەرەپتە ئوق ئېتىڭ.</p>
+            <div id="final-stats" style="display:none; margin-bottom: 20px;">
+                <h2 style="font-size: 2.5rem; color: #f1c40f;">شەھىدلەر ئۆلمەيدۇ!</h2>
+                <div id="last-score" style="font-size: 2rem; color: white;">بېسىپ ئۆتكەن يول: 0m</div>
+            </div>
+            <button class="btn" onclick="startGame()">ھۇجۇمغا ئۆتۈش</button>
+        </div>
     </div>
     <a href="../index.html" class="back-btn">← قايتىش</a>
     
@@ -44,66 +78,132 @@
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            GROUND_Y = canvas.height - 100;
         }
         window.addEventListener('resize', resize);
-        resize();
 
-        let player, obstacles, bullets, distance, gameActive = false, speed = 1.5;
-        let GROUND_Y;
-        let audioCtx;
-        let lives = 5;
+        let player, obstacles, bullets, distance, gameActive = false, speed = 5;
+        let GROUND_Y, highScore = localStorage.getItem('commando_highscore') || 0;
+        let audioCtx, particles = [], powerups = [], parallaxLayers = [];
+        let lives = 5, effects = { shield: 0, rocket: 0 };
 
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        class ParallaxLayer {
+            constructor(color, speedFactor, height, yOffset = 0) {
+                this.color = color;
+                this.speedFactor = speedFactor;
+                this.height = height;
+                this.yOffset = yOffset;
+                this.x = 0;
+            }
+            draw() {
+                this.x -= speed * this.speedFactor;
+                if(this.x <= -canvas.width) this.x = 0;
+                ctx.fillStyle = this.color;
+                
+                for(let i=0; i<2; i++) {
+                    let posX = this.x + i * canvas.width;
+                    ctx.beginPath();
+                    ctx.moveTo(posX, GROUND_Y - this.yOffset);
+                    for(let j=0; j<=10; j++) {
+                        let step = canvas.width / 10;
+                        ctx.lineTo(posX + j * step, GROUND_Y - this.yOffset - (Math.sin(j + this.speedFactor * 10) * 20 + this.height));
+                    }
+                    ctx.lineTo(posX + canvas.width, GROUND_Y);
+                    ctx.lineTo(posX, GROUND_Y);
+                    ctx.fill();
+                }
+            }
         }
 
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
         function playSound(type) {
             if (!audioCtx) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
+            osc.connect(gain); gain.connect(audioCtx.destination);
             let now = audioCtx.currentTime;
             if(type === 'jump') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(300, now);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(300, now);
                 osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
                 osc.start(now); osc.stop(now + 0.2);
             } else if(type === 'shoot') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(800, now);
+                osc.type = 'square'; osc.frequency.setValueAtTime(800, now);
                 osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
                 osc.start(now); osc.stop(now + 0.1);
             } else if(type === 'boom') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(100, now);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now);
                 osc.frequency.exponentialRampToValueAtTime(20, now + 0.3);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                 osc.start(now); osc.stop(now + 0.3);
             }
         }
 
+        function createParticle(x, y, color) {
+            for(let i=0; i<8; i++) {
+                particles.push({
+                    x, y, color,
+                    vx: (Math.random()-0.5)*10,
+                    vy: (Math.random()-0.5)*10,
+                    life: 1.0
+                });
+            }
+        }
+
+        function drawPlayer() {
+            ctx.save();
+            ctx.translate(player.x, player.y - player.h);
+            ctx.globalAlpha = (player.invincible > 0 && Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1;
+            
+            if(effects.shield > 0) {
+                ctx.beginPath();
+                ctx.arc(player.w/2, player.h/2, 50, 0, Math.PI*2);
+                ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
+                ctx.lineWidth = 5;
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(0, 10, player.w, player.h - 10);
+            ctx.fillStyle = '#1a252f';
+            ctx.fillRect(5, 0, 30, 15);
+            ctx.fillStyle = '#ffdbac';
+            ctx.fillRect(8, 15, 24, 10);
+
+            let walk = Math.sin(Date.now() * 0.01) * 10;
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(5, player.h - 10, 12, 10 + (player.isJumping ? 0 : walk));
+            ctx.fillRect(23, player.h - 10, 12, 10 + (player.isJumping ? 0 : -walk));
+            ctx.fillStyle = '#333';
+            ctx.fillRect(25, 30, 30, 8);
+            ctx.restore();
+        }
+
         function init() {
-            GROUND_Y = canvas.height - 100;
-            player = { x: 100, y: GROUND_Y, w: 40, h: 60, vy: 0, gravity: 0.25, jumpPower: -8, isJumping: false, invincible: 0 };
-            obstacles = [];
-            bullets = [];
-            distance = 0;
-            speed = 1.5;
-            lives = 5;
+            resize();
+            player = { x: 100, y: GROUND_Y, w: 40, h: 60, vy: 0, gravity: 0.5, jumpPower: -15, isJumping: false, invincible: 0 };
+            obstacles = []; bullets = []; particles = []; powerups = [];
+            distance = 0; speed = 5; lives = 5;
+            effects = { shield: 0, rocket: 0 };
+            
+            parallaxLayers = [
+                new ParallaxLayer('#1a252f', 0.1, 100, 50),
+                new ParallaxLayer('#2c3e50', 0.3, 50, 20),
+                new ParallaxLayer('#27ae60', 0.6, 20, 0)
+            ];
+            
+            document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}m`;
             updateUI();
         }
 
-        document.getElementById('btn-jump').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); jump(); });
-        document.getElementById('btn-jump').addEventListener('mousedown', (e) => { e.preventDefault(); initAudio(); jump(); });
-        document.getElementById('btn-shoot').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); shoot(); });
-        document.getElementById('btn-shoot').addEventListener('mousedown', (e) => { e.preventDefault(); initAudio(); shoot(); });
+        const handleJump = (e) => { e.preventDefault(); initAudio(); jump(); };
+        const handleShoot = (e) => { e.preventDefault(); initAudio(); shoot(); };
+
+        document.getElementById('btn-jump').addEventListener('touchstart', handleJump);
+        document.getElementById('btn-jump').addEventListener('mousedown', handleJump);
+        document.getElementById('btn-shoot').addEventListener('touchstart', handleShoot);
+        document.getElementById('btn-shoot').addEventListener('mousedown', handleShoot);
 
         window.addEventListener('keydown', e => {
             initAudio();
@@ -121,7 +221,15 @@
 
         function shoot() {
             if(gameActive) {
-                bullets.push({x: player.x + player.w, y: player.y - player.h/2, speed: 20});
+                let isRocket = effects.rocket > 0;
+                bullets.push({
+                    x: player.x + player.w, 
+                    y: player.y - player.h/2, 
+                    speed: 15, 
+                    isRocket: isRocket,
+                    w: isRocket ? 40 : 20,
+                    h: isRocket ? 20 : 10
+                });
                 playSound('shoot');
             }
         }
@@ -129,6 +237,7 @@
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
+            document.getElementById('final-stats').style.display = 'none';
             init();
             gameActive = true;
             animate();
@@ -137,14 +246,30 @@
         function updateUI() {
             document.getElementById('distance').innerText = Math.floor(distance);
             document.getElementById('lives').innerText = '❤️'.repeat(Math.max(0, lives));
+            if(distance > highScore) {
+                highScore = Math.floor(distance);
+                localStorage.setItem('commando_highscore', highScore);
+                document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}m`;
+            }
+            
+            const container = document.getElementById('active-effects');
+            container.innerHTML = '';
+            if(effects.shield > 0) container.innerHTML += `<div class="effect-timer" style="border-left-color: #00d4ff">🛡️ قالقان (${Math.ceil(effects.shield/60)}s)</div>`;
+            if(effects.rocket > 0) container.innerHTML += `<div class="effect-timer" style="border-left-color: #f1c40f">🚀 راكېتا (${Math.ceil(effects.rocket/60)}s)</div>`;
+        }
+
+        function showCombo(txt) {
+            const el = document.getElementById('combo-text');
+            el.innerText = txt; el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 1000);
         }
 
         function gameOver() {
             gameActive = false;
             playSound('boom');
             document.getElementById('overlay').style.display = 'flex';
-            document.querySelector('#overlay h1').innerText = "شەھىدلەر ئۆلمەيدۇ!";
-            document.querySelector('#overlay p').innerText = `سىز ${Math.floor(distance)} مېتىر ئىلگىرىلىدىڭىز. مۇستەقىللىق يولىدا قايتا ئاتلىنىڭ!`;
+            document.getElementById('final-stats').style.display = 'block';
+            document.getElementById('last-score').innerText = `بېسىپ ئۆتكەن يول: ${Math.floor(distance)}m`;
         }
 
         function animate() {
@@ -152,15 +277,23 @@
             requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Ground
-            ctx.fillStyle = '#34495e';
+            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#2c3e50');
+            grad.addColorStop(1, '#000');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            parallaxLayers.forEach(l => l.draw());
+            ctx.fillStyle = '#1a252f';
             ctx.fillRect(0, GROUND_Y, canvas.width, canvas.height - GROUND_Y);
             
-            distance += speed * 0.01;
-            // No speed acceleration to keep it easy for 7yo
+            distance += speed * 0.05;
+            speed = 5 + (distance / 500);
             updateUI();
             
             if(player.invincible > 0) player.invincible--;
+            if(effects.shield > 0) effects.shield--;
+            if(effects.rocket > 0) effects.rocket--;
 
             player.vy += player.gravity;
             player.y += player.vy;
@@ -170,70 +303,89 @@
                 player.isJumping = false;
             }
 
-            // Draw player (Blue uniform)
-            ctx.globalAlpha = (player.invincible > 0 && Math.floor(Date.now() / 100) % 2 === 0) ? 0.3 : 1;
-            ctx.fillStyle = '#3498db';
-            ctx.fillRect(player.x, player.y - player.h, player.w, player.h);
-            ctx.fillStyle = '#f1c40f'; // golden emblem
-            ctx.fillRect(player.x+15, player.y - player.h + 15, 10, 10);
+            drawPlayer();
+
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy; p.life -= 0.02;
+                ctx.globalAlpha = p.life;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 4, 4);
+                if(p.life <= 0) particles.splice(i, 1);
+            }
             ctx.globalAlpha = 1;
 
-            // Bullets
-            ctx.fillStyle = '#f1c40f';
+            if(Math.random() < 0.005) {
+                let type = Math.random() > 0.5 ? 'shield' : 'rocket';
+                powerups.push({ x: canvas.width, y: GROUND_Y - 150, type, w: 30, h: 30 });
+            }
+            for(let i=powerups.length-1; i>=0; i--) {
+                let pu = powerups[i];
+                pu.x -= speed;
+                ctx.fillStyle = pu.type === 'shield' ? '#00d4ff' : '#f1c40f';
+                ctx.font = '24px serif';
+                ctx.fillText(pu.type === 'shield' ? '🛡️' : '🚀', pu.x, pu.y);
+                if(player.x + player.w > pu.x && player.x < pu.x + pu.w && player.y > pu.y && player.y - player.h < pu.y + pu.h) {
+                    effects[pu.type] = 600;
+                    showCombo(pu.type === 'shield' ? "قالقان!" : "راكېتا!");
+                    powerups.splice(i, 1);
+                }
+            }
+
             for(let i=bullets.length-1; i>=0; i--) {
                 let b = bullets[i];
                 b.x += b.speed;
-                ctx.fillRect(b.x, b.y - 5, 20, 10); // larger bullet
+                if(b.isRocket) {
+                    ctx.fillStyle = '#e67e22';
+                    ctx.fillRect(b.x, b.y - b.h/2, b.w, b.h);
+                    createParticle(b.x, b.y, '#f39c12');
+                } else {
+                    ctx.fillStyle = '#f1c40f';
+                    ctx.fillRect(b.x, b.y - b.h/2, b.w, b.h);
+                }
                 if(b.x > canvas.width) bullets.splice(i, 1);
             }
 
-            // Obstacles - very rare and tiny
-            if(Math.random() < 0.003) {
+            if(Math.random() < 0.02) {
+                let r = Math.random();
+                let type = r < 0.3 ? 'tank' : (r < 0.6 ? 'drone' : 'barricade');
                 obstacles.push({
                     x: canvas.width, 
-                    y: GROUND_Y, 
-                    w: 20, 
-                    h: 20,
-                    destructible: true,
-                    hit: false
+                    y: type === 'drone' ? GROUND_Y - 120 : GROUND_Y, 
+                    w: type === 'tank' ? 60 : 30, 
+                    h: type === 'tank' ? 40 : 30,
+                    type,
+                    hp: type === 'tank' ? 3 : 1
                 });
             }
 
             for(let i=obstacles.length-1; i>=0; i--) {
                 let obs = obstacles[i];
-                obs.x -= speed;
-                
-                ctx.fillStyle = obs.destructible ? '#e74c3c' : '#c0392b';
+                obs.x -= (obs.type === 'drone' ? speed * 1.5 : speed);
+                if(obs.type === 'tank') ctx.fillStyle = '#1e8449';
+                else if(obs.type === 'drone') ctx.fillStyle = '#7f8c8d';
+                else ctx.fillStyle = '#922b21';
                 ctx.fillRect(obs.x, obs.y - obs.h, obs.w, obs.h);
+                if(obs.type === 'tank') ctx.fillRect(obs.x - 10, obs.y - obs.h - 10, 30, 10);
 
-                // Collision with player
-                if(player.invincible <= 0 && !obs.hit && player.x + player.w > obs.x && player.x < obs.x + obs.w && player.y > obs.y - obs.h) {
-                    obs.hit = true;
-                    lives--;
-                    player.invincible = 100; // invincible for 100 frames
-                    playSound('boom');
-                    updateUI();
-                    
-                    // Flash red
-                    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    if(lives <= 0) gameOver();
-                }
-
-                // Collision with bullets
-                for(let j=bullets.length-1; j>=0; j--) {
-                    let b = bullets[j];
-                    if(obs.destructible && b.x + 20 > obs.x && b.x < obs.x + obs.w && b.y > obs.y - obs.h && b.y < obs.y) {
-                        playSound('boom');
-                        obstacles.splice(i, 1);
-                        bullets.splice(j, 1);
-                        distance += 10;
-                        break;
+                if(player.invincible <= 0 && player.x + player.w > obs.x && player.x < obs.x + obs.w && player.y > obs.y - obs.h && player.y - player.h < obs.y) {
+                    if(effects.shield > 0) {
+                        effects.shield = 0; showCombo("قالقان قوغدىدى!"); player.invincible = 60; obstacles.splice(i, 1);
+                    } else {
+                        lives--; player.invincible = 120; playSound('boom'); updateUI(); if(lives <= 0) gameOver();
                     }
                 }
 
-                if(obs.x < -obs.w) obstacles.splice(i, 1);
+                for(let j=bullets.length-1; j>=0; j--) {
+                    let b = bullets[j];
+                    if(b.x + b.w > obs.x && b.x < obs.x + obs.w && b.y > obs.y - obs.h && b.y < obs.y) {
+                        createParticle(obs.x + obs.w/2, obs.y - obs.h/2, '#e67e22');
+                        playSound('boom'); obs.hp -= (b.isRocket ? 3 : 1); bullets.splice(j, 1);
+                        if(obs.hp <= 0) { obstacles.splice(i, 1); distance += (obs.type === 'tank' ? 50 : 20); }
+                        break;
+                    }
+                }
+                if(obs.x < -100) obstacles.splice(i, 1);
             }
         }
     </script>
