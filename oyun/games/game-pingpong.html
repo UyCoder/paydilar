@@ -363,8 +363,9 @@
                 p.life -= 0.03;
                 ctx.globalAlpha = Math.max(p.life, 0);
                 ctx.fillStyle = p.color;
+                const radius = Math.max(0.01, p.size * p.life);
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
+                ctx.arc(p.x, p.y, radius, 0, Math.PI*2);
                 ctx.fill();
                 ctx.globalAlpha = 1;
                 if(p.life <= 0) particles.splice(i, 1);
