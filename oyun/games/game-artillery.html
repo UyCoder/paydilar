@@ -126,7 +126,9 @@
                     y -= Math.sin(x * 0.008) * 40 + Math.sin(x * 0.02) * 15 + Math.sin(x * 0.005) * 25;
                     y -= (1 - midDist) * 30; // valley
                 }
-                terrainPoints.push({ x, y: Math.min(y, groundY - 20) });
+                // Keep terrain level near cannon, allow hills further out
+                const terrainY = (x > 150) ? Math.max(y, groundY - 60) : groundY;
+                terrainPoints.push({ x, y: terrainY });
             }
         }
 
@@ -355,21 +357,24 @@
         const handleEnd = () => {
             if(!isDragging || !gameActive) return;
             isDragging = false;
-            const dx = dragStartX - dragEndX, dy = dragStartY - dragEndY;
+            const dx = dragEndX - dragStartX, dy = dragEndY - dragStartY;
             const power = Math.hypot(dx, dy);
             if(power < 10) return;
             
+            // Use barrel's clamped angle for shell direction
+            const rawAngle = Math.atan2(dy, dx);
+            const fireAngle = Math.max(-Math.PI/2, Math.min(-0.1, rawAngle));
+            
             shots++;
             const wpn = WEAPONS[currentWeapon];
-            const spd = power * 0.08;
+            const spd = Math.min(power * 0.08, 50);
             
             playSound('shoot');
             
             if(currentWeapon === 'cluster') {
                 // Fire multiple shells in spread
                 for(let i = 0; i < 5; i++) {
-                    const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.4;
-                    const s = Math.cos(angle) * dx + Math.sin(angle) * dy;
+                    const angle = fireAngle + (Math.random() - 0.5) * 0.4;
                     shells.push({
                         x: cannon.x, y: cannon.y,
                         vx: Math.cos(angle) * spd + wind * 0.5, vy: Math.sin(angle) * spd,
@@ -381,7 +386,8 @@
             } else {
                 shells.push({
                     x: cannon.x, y: cannon.y,
-                    vx: dx * 0.08 + wind * 0.3, vy: dy * 0.08,
+                    vx: Math.cos(fireAngle) * spd + wind * 0.3,
+                    vy: Math.sin(fireAngle) * spd,
                     active: true, weapon: currentWeapon,
                     trail: []
                 });
@@ -398,11 +404,17 @@
         function drawTrajectory() {
             if(!isDragging) return;
             const wpn = WEAPONS[currentWeapon];
-            const dx = dragStartX - dragEndX, dy = dragStartY - dragEndY;
-            const spd = Math.hypot(dx, dy) * 0.08;
+            const dx = dragEndX - dragStartX, dy = dragEndY - dragStartY;
+            const power = Math.hypot(dx, dy);
+            const spd = Math.min(power * 0.08, 50);
+            
+            // Match barrel's clamped angle
+            const rawAngle = Math.atan2(dy, dx);
+            const fireAngle = Math.max(-Math.PI/2, Math.min(-0.1, rawAngle));
             
             let tx = cannon.x, ty = cannon.y;
-            let tvx = dx * 0.08 + wind * 0.3, tvy = dy * 0.08;
+            let tvx = Math.cos(fireAngle) * spd + wind * 0.3;
+            let tvy = Math.sin(fireAngle) * spd;
             
             ctx.beginPath(); ctx.moveTo(tx, ty);
             for(let i = 0; i < 50; i++) {
@@ -458,9 +470,9 @@
             // Cannon barrel - aim toward drag direction
             let barrelAngle = cannon.angle;
             if(isDragging) {
-                barrelAngle = Math.atan2(dragStartY - dragEndY, dragStartX - dragEndX);
+                const rawAngle = Math.atan2(dragEndY - dragStartY, dragEndX - dragStartX);
+                barrelAngle = Math.max(-Math.PI/2, Math.min(-0.1, rawAngle));
             }
-            barrelAngle = Math.max(-Math.PI/2, Math.min(-0.1, barrelAngle));
             
             ctx.save();
             ctx.translate(cannon.x, cannon.y);
