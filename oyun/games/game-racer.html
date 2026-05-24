@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🚗 تېز يۈگۈر - Speed Runner</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#1a1a2e;font-family:sans-serif;touch-action:none}
+canvas{display:block}
+#ui{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;pointer-events:none;z-index:5;gap:8px}
+#ui > div{background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);padding:8px 18px;border-radius:14px;text-align:center;color:#fff;min-width:80px}
+#ui .l{font-size:0.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
+#ui .v{font-size:1.8rem;font-weight:900;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,0.3)}
+#ui .v.danger{color:#ff4444;animation:pulse 0.3s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px)}
+#overlay.hidden{display:none}
+.obox{background:linear-gradient(145deg,#1e1e3f,#2d1b0e);border:2px solid rgba(251,191,36,0.3);border-radius:30px;padding:2.5rem;text-align:center;max-width:500px;width:90%;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes popIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.obox h1{font-size:3.5rem;margin-bottom:8px;text-shadow:0 0 30px rgba(251,191,36,0.4)}
+.obox .title{font-size:2rem;font-weight:900;color:#fbbf24;margin:8px 0}
+.obox p{color:#94a3b8;font-size:1.1rem;line-height:1.6;margin:10px 0 20px}
+.btn{padding:16px 50px;font-size:1.4rem;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:900;box-shadow:0 8px 25px rgba(245,158,11,0.4);transition:transform 0.15s;margin:5px}
+.btn:active{transform:scale(0.92)}
+.btn2{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 8px 25px rgba(59,130,246,0.4)}
+.stats{display:flex;justify-content:center;gap:20px;margin:15px 0}
+.stats .s{text-align:center}
+.stats .s .val{font-size:2rem;font-weight:900;color:#fbbf24}
+.stats .s .lbl{font-size:0.8rem;color:#94a3b8}
+#back-btn{position:fixed;bottom:20px;left:20px;padding:10px 20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:12px;cursor:pointer;text-decoration:none;font-size:0.9rem;z-index:10;backdrop-filter:blur(8px)}
+</style>
+</head>
+<body>
+<div id="ui">
+<div><div class="l">نومۇر</div><div class="v" id="score">0</div></div>
+<div><div class="l">سۈرئەت</div><div class="v" id="speed">1</div></div>
+<div><div class="l">ياۋا</div><div class="v" id="lives">❤️❤️❤️</div></div>
+</div>
+<div id="overlay">
+<div class="obox">
+<h1>🏎️</h1>
+<div class="title">تېز يۈگۈر</div>
+<p>ماشىنىڭىزنى سولغا ياكى ئوڭغا يۆتكەپ يولدىكى توساقلاردىن ساقلىنىڭ! يۇلتۇزلارنى يىغىپ نومۇر يىغىڭ. سۈرئەت ئاشقانسېرى قىيىنلىشىدۇ!</p>
+<div id="final-stats" class="stats" style="display:none">
+<div class="s"><div class="val" id="f-score">0</div><div class="lbl">نومۇر</div></div>
+<div class="s"><div class="val" id="f-dist">0</div><div class="lbl">مۇساپە</div></div>
+</div>
+<button class="btn" onclick="startGame()">🏁 باشلاش</button>
+<p style="color:#64748b;font-size:0.8rem;margin-top:8px">← → كۇنۇپكا ياكى بارماق بىلەن باشقۇرۇڭ</p>
+</div>
+</div>
+<canvas id="c"></canvas>
+<a id="back-btn" href="../index.html">← كەينىگە</a>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+// State
+let gameActive=false,score=0,speed=1,lives=3,distance=0;
+let player={x:0,y:0,w:60,h:100};
+let obstacles=[],stars=[],particles=[],tilt=0,roadOffset=0;
+let keys={},touchX=null,frameCount=0;
+let audioCtx=null;
+
+function initAudio(){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function playTone(f,d,t,v){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+d)}catch(e){}}
+function playCollect(){playTone(880,0.12,'sine',0.12);setTimeout(()=>playTone(1100,0.12,'sine',0.1),80)}
+function playCrash(){playTone(150,0.3,'sawtooth',0.15)}
+
+// Controls
+document.addEventListener('keydown',e=>{keys[e.key]=true;if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!gameActive)startGame()}})
+document.addEventListener('keyup',e=>{keys[e.key]=false})
+c.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];touchX=t.clientX;if(!gameActive)startGame()},{passive:false})
+c.addEventListener('touchmove',e=>{e.preventDefault();touchX=e.touches[0].clientX},{passive:false})
+c.addEventListener('touchend',()=>{touchX=null})
+c.addEventListener('mousemove',e=>{if(gameActive)touchX=e.clientX})
+c.addEventListener('click',()=>{if(!gameActive)startGame()})
+
+function startGame(){
+initAudio();
+document.getElementById('overlay').classList.add('hidden');
+score=0;speed=1;lives=3;distance=0;
+player.x=c.width/2;player.y=c.height-150;
+obstacles=[];stars=[];particles=[];
+gameActive=true;
+document.getElementById('score').textContent='0';
+document.getElementById('speed').textContent='1';
+document.getElementById('lives').textContent='❤️❤️❤️';
+requestAnimationFrame(update);
+}
+
+function spawnObstacle(){
+const w=40+Math.random()*40;
+const h=40+Math.random()*40;
+const lane=Math.floor(Math.random()*3);
+const laneW=c.width*0.6;
+const laneStart=(c.width-laneW)/2;
+const x=laneStart+lane*(laneW/2)+laneW/4-w/2;
+const type=Math.random()<0.3?'rock':'car';
+const clr=type==='rock'?'#666':'#ff4444';
+obstacles.push({x,y:-h-20,w,h,type,clr,speed:3+speed*0.5});
+}
+
+function spawnStar(){
+const laneW=c.width*0.6;const laneStart=(c.width-laneW)/2;
+const x=laneStart+Math.random()*laneW;
+stars.push({x,y:-20,r:12+Math.random()*8,clr:['#fbbf24','#f59e0b','#10b981','#3b82f6','#a855f7'][Math.floor(Math.random()*5)],glow:0});
+}
+
+function update(){
+if(!gameActive)return;
+requestAnimationFrame(update);
+frameCount++;
+roadOffset=(roadOffset+speed*0.8)%40;
+
+// Player movement
+const laneW=c.width*0.6;
+const laneStart=(c.width-laneW)/2;
+if(touchX!==null){player.x=touchX}
+if(keys['ArrowLeft']||keys['a'])player.x-=7+speed*2;
+if(keys['ArrowRight']||keys['d'])player.x+=7+speed*2;
+player.x=Math.max(laneStart+player.w/2,Math.min(c.width-laneStart-player.w/2,player.x));
+
+// Spawn
+if(frameCount%Math.max(10,25-speed*2)===0)spawnObstacle();
+if(frameCount%8===0)spawnStar();
+
+// Update obstacles
+for(let i=obstacles.length-1;i>=0;i--){
+const o=obstacles[i];
+o.y+=o.speed+speed*0.3;
+if(o.y>c.height+50){obstacles.splice(i,1);continue}
+// Collision
+if(Math.abs(o.x+o.w/2-(player.x-player.w/2))<player.w/2+o.w/2-10&&
+Math.abs(o.y+o.h/2-(player.y-player.h/2))<player.h/2+o.h/2-10){
+playCrash();lives--;obstacles.splice(i,1);
+document.getElementById('lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);
+for(let j=0;j<20;j++)particles.push({x:player.x,y:player.y,vx:(Math.random()-0.5)*10,vy:(Math.random()-0.5)*10,life:1,clr:'#ff4444'});
+if(lives<=0){gameOver();return}
+}
+}
+
+// Update stars
+for(let i=stars.length-1;i>=0;i--){
+const s=stars[i];
+s.y+=2+speed*0.3;
+s.glow=Math.sin(frameCount*0.1)*0.3+0.7;
+if(s.y>c.height+20){stars.splice(i,1);continue}
+if(Math.abs(s.x-player.x)<player.w/2+s.r&&Math.abs(s.y-player.y)<player.h/2+s.r){
+playCollect();score+=100*speed;stars.splice(i,1);
+document.getElementById('score').textContent=score;
+for(let j=0;j<10;j++)particles.push({x:s.x,y:s.y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6-3,life:1,clr:s.clr});
+}
+}
+
+// Update particles
+for(let i=particles.length-1;i>=0;i--){
+const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.2;p.life-=0.02;
+if(p.life<=0)particles.splice(i,1);
+}
+
+// Speed increase
+speed=1+Math.floor(distance/500)*0.5;
+if(speed>8)speed=8;
+distance++;
+document.getElementById('speed').textContent=speed.toFixed(1);
+
+// DRAW
+ctx.clearRect(0,0,c.width,c.height);
+
+// Road
+const roadL=(c.width-laneW)/2;
+const roadR=c.width-roadL;
+// Grass
+ctx.fillStyle='#1a5c1a';
+ctx.fillRect(0,0,c.width,c.height);
+// Road
+ctx.fillStyle='#3a3a3a';
+ctx.fillRect(roadL,0,laneW,c.height);
+// Road edges
+ctx.fillStyle='#fbbf24';
+ctx.fillRect(roadL,0,4,c.height);
+ctx.fillRect(roadR-4,0,4,c.height);
+// Dashed line
+ctx.strokeStyle='rgba(255,255,255,0.3)';
+ctx.lineWidth=4;
+ctx.setLineDash([30,20]);
+ctx.beginPath();
+for(let y=-roadOffset;y<c.height+40;y+=50){
+ctx.moveTo(c.width/2,y);ctx.lineTo(c.width/2,y+30);
+}
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Draw player (car)
+ctx.save();
+ctx.translate(player.x,player.y);
+ctx.shadowColor='#fbbf24';ctx.shadowBlur=20;
+// Car body
+const grd=ctx.createLinearGradient(-player.w/2,-player.h/2,player.w/2,player.h/2);
+grd.addColorStop(0,'#3b82f6');grd.addColorStop(0.5,'#60a5fa');grd.addColorStop(1,'#2563eb');
+ctx.fillStyle=grd;
+ctx.beginPath();
+ctx.moveTo(-player.w/2+10,-player.h/2);
+ctx.quadraticCurveTo(0,-player.h/2-10,player.w/2-10,-player.h/2);
+ctx.lineTo(player.w/2-5,player.h/2-15);
+ctx.quadraticCurveTo(player.w/2,player.h/2-5,player.w/2-10,player.h/2);
+ctx.lineTo(-player.w/2+10,player.h/2);
+ctx.quadraticCurveTo(-player.w/2,player.h/2-5,-player.w/2+5,player.h/2-15);
+ctx.closePath();ctx.fill();
+// Windshield
+ctx.fillStyle='rgba(255,255,255,0.3)';
+ctx.fillRect(-player.w/2+8,-player.h/2+15,player.w-16,20);
+// Wheels
+ctx.fillStyle='#1a1a2e';
+ctx.fillRect(-player.w/2-5,player.h/2-20,8,25);
+ctx.fillRect(player.w/2-3,player.h/2-20,8,25);
+ctx.fillRect(-player.w/2-5,-player.h/2+5,8,20);
+ctx.fillRect(player.w/2-3,-player.h/2+5,8,20);
+ctx.restore();
+
+// Draw obstacles
+for(const o of obstacles){
+ctx.save();ctx.translate(o.x+o.w/2,o.y+o.h/2);
+if(o.type==='rock'){
+ctx.shadowColor='#000';ctx.shadowBlur=10;
+ctx.fillStyle='#666';ctx.beginPath();
+ctx.moveTo(-o.w/2,0);ctx.lineTo(-o.w/3,-o.h/2);ctx.lineTo(o.w/3,-o.h/2);ctx.lineTo(o.w/2,0);ctx.lineTo(o.w/3,o.h/2);ctx.lineTo(-o.w/3,o.h/2);
+ctx.closePath();ctx.fill();
+ctx.fillStyle='#555';ctx.beginPath();ctx.arc(-o.w/6,-o.h/6,o.w/8,0,Math.PI*2);ctx.fill();
+}else{
+ctx.shadowColor='#ff4444';ctx.shadowBlur=15;
+ctx.fillStyle='#e74c3c';
+ctx.beginPath();ctx.ellipse(0,0,o.w/2,o.h/2,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#c0392b';
+ctx.beginPath();ctx.ellipse(0,2,o.w/3,o.h/3,0,0,Math.PI*2);ctx.fill();
+}
+ctx.restore();
+}
+
+// Draw stars
+for(const s of stars){
+ctx.save();ctx.translate(s.x,s.y);
+ctx.shadowColor=s.clr;ctx.shadowBlur=20*s.glow;
+ctx.fillStyle=s.clr;
+ctx.beginPath();
+for(let i=0;i<5;i++){
+const a=i*Math.PI*2/5-Math.PI/2;
+const r=i%2===0?s.r:s.r*0.4;
+i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+}
+ctx.closePath();ctx.fill();
+ctx.restore();
+}
+
+// Draw particles
+for(const p of particles){
+ctx.globalAlpha=p.life;
+ctx.fillStyle=p.clr;
+ctx.fillRect(p.x-2,p.y-2,4,4);
+}
+ctx.globalAlpha=1;
+}
+
+function gameOver(){
+gameActive=false;
+document.getElementById('overlay').classList.remove('hidden');
+document.querySelector('.obox .title').textContent='💥 ئويۇن تۈگدى!';
+document.querySelector('.obox p').textContent=`سىز ${distance} مۇساپە يۈگۈردىڭىز! قايتا سىناڭ!`;
+document.getElementById('final-stats').style.display='flex';
+document.getElementById('f-score').textContent=score;
+document.getElementById('f-dist').textContent=distance;
+document.querySelector('.btn').textContent='🔄 قايتا باشلاش';
+}
+</script>
+</body>
+</html>

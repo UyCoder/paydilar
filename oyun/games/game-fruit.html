@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🍉 مېۋە كەس - Fruit Slice</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#0a0a1a;font-family:sans-serif;touch-action:none;user-select:none}
+canvas{display:block}
+#ui{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;pointer-events:none;z-index:5;gap:8px}
+#ui>div{background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);padding:8px 18px;border-radius:14px;text-align:center;color:#fff;min-width:70px}
+#ui .l{font-size:0.7rem;color:#94a3b8}
+#ui .v{font-size:1.6rem;font-weight:900;color:#fbbf24}
+#ui .v.combo{color:#ff4444;text-shadow:0 0 30px #ff444488;animation:blink 0.2s}
+@keyframes blink{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px)}
+#overlay.hidden{display:none}
+.obox{background:linear-gradient(145deg,#1e1e3f,#2d1b0e);border:2px solid rgba(251,191,36,0.3);border-radius:30px;padding:2.5rem;text-align:center;max-width:500px;width:90%;animation:popIn 0.5s}
+@keyframes popIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.obox h1{font-size:3rem;margin-bottom:5px}
+.obox .title{font-size:2rem;font-weight:900;color:#fbbf24;margin:8px 0}
+.obox p{color:#94a3b8;font-size:1.1rem;line-height:1.6;margin:10px 0 20px}
+.btn{padding:16px 50px;font-size:1.4rem;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:900;box-shadow:0 8px 25px rgba(245,158,11,0.4);transition:transform 0.15s}
+.btn:active{transform:scale(0.92)}
+.btn-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 8px 25px rgba(139,92,246,0.4)}
+.stats{display:flex;justify-content:center;gap:20px;margin:15px 0}
+.stats .s{text-align:center}
+.stats .s .val{font-size:2rem;font-weight:900;color:#fbbf24}
+.stats .s .lbl{font-size:0.8rem;color:#94a3b8}
+#combo-popup{position:fixed;pointer-events:none;z-index:50;font-size:3rem;font-weight:900;color:#ff4444;text-shadow:0 0 30px #ff4444;animation:comboAnim 0.8s ease-out forwards}
+@keyframes comboAnim{0%{opacity:1;transform:translateY(0) scale(0.5)}50%{transform:translateY(-30px) scale(1.3)}100%{opacity:0;transform:translateY(-80px) scale(1)}}
+#back-btn{position:fixed;bottom:20px;left:20px;padding:10px 20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:12px;cursor:pointer;text-decoration:none;font-size:0.9rem;z-index:10;backdrop-filter:blur(8px)}
+</style>
+</head>
+<body>
+<div id="ui">
+<div><div class="l">نومۇر</div><div class="v" id="score">0</div></div>
+<div><div class="l">كومبو</div><div class="v" id="combo">×0</div></div>
+<div><div class="l">تىرىك</div><div class="v" id="lives">❤️❤️❤️</div></div>
+</div>
+<div id="overlay">
+<div class="obox">
+<h1>🍉🗡️</h1>
+<div class="title">مېۋە كەس</div>
+<p>ئاسمانغا ئۆرلىگەن مېۋىلەرنى بارماق ياكى مائۇس بىلەن سىزىپ كېسىڭ! بومبىدىن ساقلىنىڭ! قاتار كەسكەنسېرى كومبو كۆپىيىدۇ!</p>
+<div id="final-stats" class="stats" style="display:none">
+<div class="s"><div class="val" id="f-score">0</div><div class="lbl">نومۇر</div></div>
+<div class="s"><div class="val" id="f-sliced">0</div><div class="lbl">كەسىلگەن</div></div>
+<div class="s"><div class="val" id="f-best">0</div><div class="lbl">ئەڭ ياخشى</div></div>
+</div>
+<button class="btn btn-purple" onclick="startGame()">⚔️ باشلاش</button>
+<p style="color:#64748b;font-size:0.8rem;margin-top:8px">بارماق ياكى مائۇسنى سىزىڭ!</p>
+</div>
+</div>
+<canvas id="c"></canvas>
+<a id="back-btn" href="../index.html">← كەينىگە</a>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+let gameActive=false,score=0,comboCount=0,lives=3,slicedCount=0,bestScore=0;
+let fruits=[],slices=[],particles=[],juice=[];
+let isSwipping=false,swipePoints=[],swipeTimer=0;
+let spawnTimer=0,audioCtx=null;
+try{bestScore=parseInt(localStorage.getItem('fruitBest'))||0}catch(e){}
+
+function initAudio(){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function playTone(f,d,t,v){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+d)}catch(e){}}
+function playSlice(){playTone(1000,0.1,'sine',0.1);}
+function playCombo(){playTone(1500,0.08,'sine',0.12);}
+function playBomb(){playTone(100,0.3,'sawtooth',0.18);}
+function playMiss(){playTone(300,0.1,'square',0.05);}
+
+const FRUIT_TYPES=[
+{emoji:'🍎',color:'#e74c3c',points:10,radius:25,weight:1},
+{emoji:'🍊',color:'#f39c12',points:15,radius:28,weight:1.2},
+{emoji:'🍋',color:'#f1c40f',points:12,radius:22,weight:0.8},
+{emoji:'🍉',color:'#2ecc71',points:30,radius:35,weight:1.5,rare:true},
+{emoji:'🍇',color:'#9b59b6',points:20,radius:20,weight:0.7},
+{emoji:'🍑',color:'#ff9999',points:18,radius:26,weight:1},
+{emoji:'🥝',color:'#27ae60',points:15,radius:22,weight:0.9},
+{emoji:'🍓',color:'#e74c3c',points:25,radius:18,weight:0.6,rare:true},
+];
+
+// Mouse/Touch swipe
+c.addEventListener('mousedown',e=>{if(!gameActive)return;isSwipping=true;swipePoints=[{x:e.clientX,y:e.clientY}];swipeTimer=Date.now()})
+c.addEventListener('mousemove',e=>{if(isSwipping){swipePoints.push({x:e.clientX,y:e.clientY});if(swipePoints.length>8)swipePoints.shift()}})
+c.addEventListener('mouseup',()=>{if(isSwipping){isSwipping=false;checkSwipe()}})
+c.addEventListener('touchstart',e=>{if(!gameActive)return;if(e.target.tagName==='BUTTON'||e.target.tagName==='A')return;isSwipping=true;swipePoints=[{x:e.touches[0].clientX,y:e.touches[0].clientY}];swipeTimer=Date.now()},{passive:true})
+c.addEventListener('touchmove',e=>{if(isSwipping){swipePoints.push({x:e.touches[0].clientX,y:e.touches[0].clientY});if(swipePoints.length>8)swipePoints.shift()}},{passive:true})
+c.addEventListener('touchend',()=>{if(isSwipping){isSwipping=false;checkSwipe()}})
+
+function checkSwipe(){
+if(swipePoints.length<3)return;
+const dt=Date.now()-swipeTimer;
+if(dt>500)return;
+let hitAny=false;
+for(let i=fruits.length-1;i>=0;i--){
+const f=fruits[i];
+if(f.sliced||f.bomb)continue;
+for(const p of swipePoints){
+if(Math.hypot(p.x-f.x,p.y-f.y)<f.radius){
+hitAny=true;
+sliceFruit(i);
+break;
+}
+}
+}
+if(!hitAny&&comboCount>1){comboCount=0;updateUI()}
+}
+
+function sliceFruit(idx){
+const f=fruits[idx];
+if(f.bomb){
+playBomb();lives--;comboCount=0;
+spawnParticles(f.x,f.y,'#ff4444',30);
+spawnJuice(f.x,f.y,'#ff4444',20);
+fruits.splice(idx,1);
+document.getElementById('lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);
+if(lives<=0)endGame();
+updateUI();
+return;
+}
+playSlice();
+const pts=f.points*(1+comboCount*0.2);
+score+=Math.floor(pts);
+slicedCount++;comboCount++;
+spawnParticles(f.x,f.y,f.color,12);
+spawnJuice(f.x,f.y,f.color,8);
+// Juice splash
+for(let j=0;j<4;j++){
+const a=Math.random()*Math.PI*2;
+const sp=2+Math.random()*3;
+particles.push({x:f.x,y:f.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,life:1,color:f.color,radius:3+Math.random()*4});
+}
+fruits.splice(idx,1);
+if(comboCount>1)playCombo();
+updateUI();
+// Combo popup
+if(comboCount>=3)showComboPopup(comboCount);
+}
+
+function showComboPopup(c){
+const el=document.createElement('div');el.id='combo-popup';
+el.textContent=`🔥 ${c}× كومبو!`;
+el.style.left='50%';el.style.top='40%';el.style.transform='translate(-50%,-50%)';
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),900);
+}
+
+function spawnParticles(x,y,color,count){
+for(let i=0;i<count;i++){
+const a=Math.random()*Math.PI*2;
+const sp=3+Math.random()*6;
+particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,color,radius:2+Math.random()*4});
+}
+}
+
+function spawnJuice(x,y,color,count){
+for(let i=0;i<count;i++){
+const a=Math.random()*Math.PI*2;
+const sp=1+Math.random()*3;
+juice.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,life:1,color,radius:3+Math.random()*5,shape:Math.random()<0.5?'circle':'drop'});
+}
+}
+
+function startGame(){
+initAudio();
+document.getElementById('overlay').classList.add('hidden');
+score=0;comboCount=0;lives=3;slicedCount=0;
+fruits=[];slices=[];particles=[];juice=[];
+spawnTimer=0;gameActive=true;
+updateUI();
+document.getElementById('lives').textContent='❤️❤️❤️';
+requestAnimationFrame(update);
+}
+
+function spawnFruit(){
+const isBomb=Math.random()<0.12&&fruits.length>0;
+const type=isBomb?{emoji:'💣',color:'#2c3e50',points:0,radius:22,bomb:true}:
+FRUIT_TYPES[Math.floor(Math.random()*FRUIT_TYPES.length)];
+const x=100+Math.random()*(c.width-200);
+const vy=-(8+Math.random()*6);
+const vx=(Math.random()-0.5)*4;
+const rot=Math.random()*Math.PI*2;
+fruits.push({x,y:c.height+50,...type,vx,vy,rot,rotV:(Math.random()-0.5)*0.2,sliced:false,scale:1});
+}
+
+function update(){
+if(!gameActive)return;
+requestAnimationFrame(update);
+spawnTimer++;
+if(spawnTimer%Math.max(15,40-comboCount*2)===0&&fruits.length<12)spawnFruit();
+
+for(let i=fruits.length-1;i>=0;i--){
+const f=fruits[i];
+f.x+=f.vx;f.y+=f.vy;f.vy+=0.35;f.rot+=f.rotV;
+if(f.y>c.height+60){fruits.splice(i,1);continue}
+// Skip bombs for miss check
+if(!f.bomb&&!f.sliced&&f.y>c.height+20){comboCount=0;updateUI()}
+}
+
+for(let i=particles.length-1;i>=0;i--){
+const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.2;p.life-=0.02;
+if(p.life<=0)particles.splice(i,1);
+}
+
+for(let i=juice.length-1;i>=0;i--){
+const j=juice[i];j.x+=j.vx;j.y+=j.vy;j.vy+=0.3;j.life-=0.03;
+if(j.life<=0)juice.splice(i,1);
+}
+
+// Draw
+ctx.clearRect(0,0,c.width,c.height);
+const bg=ctx.createRadialGradient(c.width/2,c.height/2,100,c.width/2,c.height/2,c.width*0.7);
+bg.addColorStop(0,'#1e1b4b');bg.addColorStop(1,'#020617');
+ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);
+
+// Slices (swipe trail)
+if(isSwipping&&swipePoints.length>1){
+ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=4;ctx.lineCap='round';
+ctx.beginPath();
+for(let i=0;i<swipePoints.length;i++){
+const p=swipePoints[i];i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);
+}
+ctx.stroke();
+ctx.shadowColor='rgba(255,255,255,0.3)';ctx.shadowBlur=20;
+ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=10;
+ctx.beginPath();
+for(let i=0;i<swipePoints.length;i++){
+const p=swipePoints[i];i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);
+}
+ctx.stroke();ctx.shadowBlur=0;
+}
+
+// Fruits
+for(const f of fruits){
+ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rot);
+if(f.bomb){
+ctx.shadowColor='#ff4444';ctx.shadowBlur=30;
+ctx.fillStyle='#2c3e50';
+ctx.beginPath();ctx.arc(0,0,f.radius,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#e74c3c';
+ctx.font='22px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.fillText('💣',0,2);
+ctx.shadowBlur=0;
+}else{
+ctx.shadowColor=f.color;ctx.shadowBlur=25;
+ctx.fillStyle=f.color;
+ctx.beginPath();ctx.arc(0,0,f.radius,0,Math.PI*2);ctx.fill();
+ctx.shadowBlur=0;
+ctx.font=`${f.radius*1.3}px sans-serif`;
+ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.fillText(f.emoji,0,2);
+}
+ctx.restore();
+}
+
+// Juice splats
+for(const j of juice){
+ctx.globalAlpha=j.life;
+ctx.fillStyle=j.color;
+if(j.shape==='drop'){
+ctx.beginPath();ctx.ellipse(j.x,j.y,j.radius,j.radius*1.5,j.vy*0.1,0,Math.PI*2);
+ctx.fill();
+}else{
+ctx.beginPath();ctx.arc(j.x,j.y,j.radius*j.life,0,Math.PI*2);ctx.fill();
+}
+}
+ctx.globalAlpha=1;
+
+// Particles
+for(const p of particles){
+ctx.globalAlpha=p.life;
+ctx.fillStyle=p.color;
+ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fill();
+}
+ctx.globalAlpha=1;
+}
+
+function updateUI(){
+document.getElementById('score').textContent=score;
+const ce=document.getElementById('combo');
+ce.textContent=`×${comboCount}`;
+ce.className='v'+(comboCount>=3?' combo':'');
+}
+
+function endGame(){
+gameActive=false;
+try{if(score>bestScore){bestScore=score;localStorage.setItem('fruitBest',bestScore)}}catch(e){}
+document.getElementById('overlay').classList.remove('hidden');
+document.querySelector('.obox .title').textContent='🏆 مۇبارەك!';
+document.querySelector('.obox p').textContent=`سىز ${slicedCount} مېۋە كەستىڭىز!`;
+document.getElementById('final-stats').style.display='flex';
+document.getElementById('f-score').textContent=score;
+document.getElementById('f-sliced').textContent=slicedCount;
+document.getElementById('f-best').textContent=bestScore;
+document.querySelector('.btn').textContent='🔄 قايتا باشلاش';
+}
+</script>
+</body>
+</html>

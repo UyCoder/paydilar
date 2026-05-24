@@ -1,36 +1,118 @@
 <!DOCTYPE html>
-<html lang="ug" dir="rtl">
+<html lang="ug">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بىلىك بالىلار ئويۇنلىرى</title>
+    <title>🎮 بىلىك بالىلار ئويۇنلىرى - Game Hub</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated Background -->
     <div class="background-animation"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+
     <div class="container">
+        <!-- Header -->
         <header>
             <div class="logo-box">
                 <i class="fas fa-gem glow-icon"></i>
             </div>
-            <h1>بىلىك بالىلار ئويۇنلىرى</h1>
-            <p>تارىخ، مەرىپەت ۋە ئەقىل-پاراسەت دۇنياسىغا خۇش كەلدىڭىز! مىللىتىمىزنىڭ ئۈمىدى سىلەر.</p>
+            <h1>🎮 بىلىك بالىلار ئويۇنلىرى</h1>
+            <p>🏆 <strong>30+ قىزىقارلىق ئويۇن!</strong> تارىخ، مەرىپەت، ۋە ئەقىل-پاراسەت دۇنياسىغا خۇش كەلدىڭىز! ھەممە ئويۇنلار بىپۇل ۋە كۆڭۈل ئېچىش ئۈچۈن!</p>
         </header>
 
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 ئويۇن ئىزدەش... (مەسىلەن: تارىخ، 3D، تەنھەرىكەت)" oninput="filterGames()">
+        </div>
+
+        <!-- Category Filter -->
+        <div class="featured-bar" id="categoryBar">
+            <button class="category-chip active" onclick="filterByCategory('all')" data-cat="all">🌟 ھەممىسى</button>
+            <button class="category-chip" onclick="filterByCategory('action')" data-cat="action">⚡ ھەرىكەتلىك</button>
+            <button class="category-chip" onclick="filterByCategory('arcade')" data-cat="arcade">🎮 ئاركادا</button>
+            <button class="category-chip" onclick="filterByCategory('puzzle')" data-cat="puzzle">🧩 باشقاتۇرما</button>
+            <button class="category-chip" onclick="filterByCategory('learning')" data-cat="learning">📚 ئۆگىنىش</button>
+            <button class="category-chip" onclick="filterByCategory('sport')" data-cat="sport">⚽ تەنھەرىكەت</button>
+        </div>
+
         <main>
+            <div class="section-title">
+                <span class="bar"></span>
+                <span id="sectionLabel">🌟 بارلىق ئويۇنلار</span>
+                <span style="color:#64748b;font-size:0.8rem;font-weight:400;" id="gameCount"></span>
+            </div>
             <div class="game-grid" id="gameGrid">
-                <!-- Games will be injected here via JS to allow easy expansion without touching HTML -->
+                <!-- Games injected via JS -->
             </div>
         </main>
 
         <footer>
             <div class="footer-content">
                 <i class="fas fa-book-open footer-logo"></i>
-                <p>بىلىك تەتقىقات مەركىزى تەرىپىدىن ياسالدى</p>
+                <span>بىلىك تەتقىقات مەركىزى تەرىپىدىن ياسالدى ❤️</span>
+                <span style="font-size:0.85rem;color:#64748b;">| 30+ ئويۇن | ھەممىسى بىپۇل</span>
             </div>
         </footer>
     </div>
+
     <script src="js/app.js"></script>
+    <script>
+        // Filter & search functions
+        function filterByCategory(cat) {
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[data-cat="${cat}"]`).classList.add('active');
+            window._activeCategory = cat;
+            document.getElementById('searchInput').value = '';
+            renderFilteredGames();
+        }
+
+        function filterGames() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            window._searchQuery = query;
+            renderFilteredGames();
+        }
+
+        function renderFilteredGames() {
+            const cat = window._activeCategory || 'all';
+            const query = (window._searchQuery || '').toLowerCase();
+
+            const grid = document.getElementById('gameGrid');
+            const cards = grid.querySelectorAll('.game-card');
+
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const tags = (card.dataset.tags || '').toLowerCase();
+                const title = (card.dataset.title || '').toLowerCase();
+                const desc = (card.dataset.desc || '').toLowerCase();
+                const category = card.dataset.category || '';
+
+                const matchCat = cat === 'all' || category === cat;
+                const matchSearch = !query ||
+                    title.includes(query) ||
+                    tags.includes(query) ||
+                    desc.includes(query);
+
+                if (matchCat && matchSearch) {
+                    card.style.display = '';
+                    card.style.animation = 'none';
+                    card.offsetHeight; // reflow
+                    card.style.animation = 'cardAppear 0.4s ease-out backwards';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('gameCount').textContent = `(${visibleCount} ئويۇن)`;
+            const label = cat === 'all' ? '🌟 بارلىق ئويۇنلار' :
+                document.querySelector(`[data-cat="${cat}"]`).textContent;
+            document.getElementById('sectionLabel').textContent = label;
+        }
+    </script>
 </body>
 </html>
