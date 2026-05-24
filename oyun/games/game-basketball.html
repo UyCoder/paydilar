@@ -69,165 +69,199 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
-        let gameActive = false, score = 0, audioCtx;
-        const gravity = 0.5;
+        let gameActive = false, score = 0, highScore = localStorage.getItem('basketball_highscore') || 0;
+        let audioCtx, streak = 0, particles = [];
+        const gravity = 0.45;
         
-        let ball = { x: 0, y: 0, r: 25, vx: 0, vy: 0, isShooting: false, isDragging: false, startX: 0, startY: 0 };
-        let hoop = { x: 0, y: 0, w: 100, h: 10 };
-        
+        let ball = { x: 0, y: 0, r: 25, vx: 0, vy: 0, isShooting: false, isDragging: false, startX: 0, startY: 0, fire: false };
+        let hoop = { x: 0, y: 0, w: 100, h: 12, targetY: 0, dir: 1, speed: 2 };
+        let effects = { magnet: 0 };
+
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSound(type) {
+        function playSound(f, d, type = 'sine') {
             if (!audioCtx) return;
             const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
             o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
-            if(type === 'swish') {
-                o.type = 'sine'; o.frequency.setValueAtTime(600, now); o.frequency.exponentialRampToValueAtTime(1000, now + 0.3);
-                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                o.start(now); o.stop(now + 0.3);
-            } else if(type === 'bounce') {
-                o.type = 'triangle'; o.frequency.setValueAtTime(200, now); g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
+            o.type = type; o.frequency.setValueAtTime(f, now); o.frequency.exponentialRampToValueAtTime(f/2, now + d);
+            g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + d);
+            o.start(now); o.stop(now + d);
+        }
+
+        function createExplosion(x, y, color) {
+            for(let i=0; i<15; i++) {
+                particles.push({ x, y, vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8, life: 1, color });
             }
         }
 
         function resetRound() {
-            ball.x = 100;
-            ball.y = canvas.height - 100;
+            ball.x = 150;
+            ball.y = canvas.height - 150;
             ball.vx = 0; ball.vy = 0;
             ball.isShooting = false;
+            ball.fire = streak >= 3;
             
-            hoop.x = canvas.width - 150 - Math.random() * 100;
-            hoop.y = canvas.height / 2 - Math.random() * 100;
+            hoop.x = canvas.width - 200 - Math.random() * 100;
+            hoop.y = canvas.height / 3 + Math.random() * 150;
+            hoop.targetY = hoop.y;
+            
+            if(effects.magnet > 0) effects.magnet--;
+            updateUI();
         }
 
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
-            score = 0; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+            document.getElementById('final-stats').style.display = 'none';
+            score = 0; streak = 0; effects.magnet = 0;
             gameActive = true;
             resetRound();
             animate();
         }
 
+        function updateUI() {
+            document.getElementById('score-label').innerText = `نومۇر: ${score}`;
+            document.getElementById('streak-count').innerText = `X${streak}`;
+            document.getElementById('streak-count').style.color = streak >= 3 ? '#ffb703' : '#e63946';
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem('basketball_highscore', highScore);
+                document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}`;
+            }
+            const cont = document.getElementById('active-effects');
+            cont.innerHTML = '';
+            if(effects.magnet > 0) cont.innerHTML += `<div class="effect-timer">🧲 ماگنىت (${effects.magnet})</div>`;
+        }
+
+        function showCombo(txt) {
+            const el = document.getElementById('combo-text');
+            el.innerText = txt; el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 1000);
+        }
+
         let dragEndX = 0, dragEndY = 0;
+        const handleStart = (x, y) => {
+            if(!gameActive || ball.isShooting) return;
+            if(Math.hypot(ball.x - x, ball.y - y) < 150) {
+                ball.isDragging = true; ball.startX = x; ball.startY = y; dragEndX = x; dragEndY = y;
+            }
+        };
+        const handleMove = (x, y) => { if(ball.isDragging) { dragEndX = x; dragEndY = y; } };
+        const handleEnd = () => {
+            if(ball.isDragging) {
+                ball.isDragging = false; ball.isShooting = true;
+                ball.vx = (ball.startX - dragEndX) * 0.12;
+                ball.vy = (ball.startY - dragEndY) * 0.12;
+                playSound(300, 0.2);
+            }
+        };
 
         window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
         window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
         window.addEventListener('mouseup', handleEnd);
-        
-        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
+        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
         window.addEventListener('touchmove', e => { if(ball.isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
-        window.addEventListener('touchend', handleEnd);
+        window.addEventListener('touchend', e => { e.preventDefault(); handleEnd(); });
 
-        function handleStart(x, y) {
-            if(!gameActive || ball.isShooting) return;
-            let dist = Math.hypot(ball.x - x, ball.y - y);
-            if(dist < 100) { // generous touch area
-                ball.isDragging = true;
-                ball.startX = x; ball.startY = y;
-                dragEndX = x; dragEndY = y;
+        function drawStadium() {
+            // Court Floor
+            ctx.fillStyle = '#023e8a'; ctx.fillRect(0, canvas.height-100, canvas.width, 100);
+            // Crowd silhouettes
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            for(let i=0; i<canvas.width; i+=40) {
+                ctx.beginPath(); ctx.arc(i, canvas.height-100, 20, Math.PI, 0); ctx.fill();
             }
-        }
-
-        function handleMove(x, y) {
-            if(ball.isDragging) { dragEndX = x; dragEndY = y; }
-        }
-
-        function handleEnd() {
-            if(ball.isDragging) {
-                ball.isDragging = false;
-                ball.isShooting = true;
-                let dx = ball.startX - dragEndX;
-                let dy = ball.startY - dragEndY;
-                ball.vx = dx * 0.15;
-                ball.vy = dy * 0.15;
-                playSound('bounce');
-            }
-        }
-
-        function drawTrajectory() {
-            let dx = ball.startX - dragEndX;
-            let dy = ball.startY - dragEndY;
-            let tx = ball.x, ty = ball.y;
-            let tvx = dx * 0.15, tvy = dy * 0.15;
-            
-            ctx.beginPath();
-            ctx.moveTo(tx, ty);
-            for(let i=0; i<30; i++) {
-                tx += tvx; ty += tvy; tvy += gravity;
-                if(i % 2 === 0) { ctx.lineTo(tx, ty); }
-                else { ctx.moveTo(tx, ty); }
-            }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.lineWidth = 3;
-            ctx.stroke();
+            // Lights
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            ctx.beginPath(); ctx.moveTo(100,0); ctx.lineTo(0,200); ctx.lineTo(300,200); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(canvas.width-100,0); ctx.lineTo(canvas.width,200); ctx.lineTo(canvas.width-300,200); ctx.fill();
         }
 
         function animate() {
             if(!gameActive) return;
             requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawStadium();
 
-            // Draw Court/Background
-            ctx.fillStyle = '#0077b6';
-            ctx.fillRect(0, canvas.height - 75, canvas.width, 75); // floor
+            // Moving Hoop logic
+            if(score >= 50) {
+                hoop.y += hoop.speed * hoop.dir;
+                if(hoop.y > canvas.height - 300 || hoop.y < 100) hoop.dir *= -1;
+            }
 
-            // Draw Hoop pole
-            ctx.fillStyle = '#ccc';
-            ctx.fillRect(hoop.x + hoop.w - 10, hoop.y, 10, canvas.height - hoop.y - 75);
-            // Draw Backboard
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(hoop.x + hoop.w, hoop.y - 50, 10, 100);
-            // Draw Hoop rim
-            ctx.fillStyle = '#e63946';
-            ctx.fillRect(hoop.x, hoop.y, hoop.w, hoop.h);
-            
-            // Draw Net
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(hoop.x, hoop.y+hoop.h); ctx.lineTo(hoop.x+20, hoop.y+hoop.h+40);
-            ctx.moveTo(hoop.x+hoop.w, hoop.y+hoop.h); ctx.lineTo(hoop.x+hoop.w-20, hoop.y+hoop.h+40);
-            ctx.stroke();
+            // Draw Hoop
+            ctx.fillStyle = '#ccc'; ctx.fillRect(hoop.x + hoop.w - 10, hoop.y, 10, canvas.height - hoop.y - 100); // Pole
+            ctx.fillStyle = '#fff'; ctx.fillRect(hoop.x + hoop.w, hoop.y - 60, 15, 120); // Backboard
+            ctx.fillStyle = '#e63946'; ctx.fillRect(hoop.x, hoop.y, hoop.w, hoop.h); // Rim
+            // Net
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath();
+            ctx.moveTo(hoop.x, hoop.y+hoop.h); ctx.lineTo(hoop.x+15, hoop.y+hoop.h+45);
+            ctx.moveTo(hoop.x+hoop.w, hoop.y+hoop.h); ctx.lineTo(hoop.x+hoop.w-15, hoop.y+hoop.h+45); ctx.stroke();
 
             // Ball Physics
             if(ball.isShooting) {
-                ball.vy += gravity;
-                ball.x += ball.vx;
-                ball.y += ball.vy;
+                // Magnet powerup
+                if(effects.magnet > 0 && Math.hypot(ball.x - (hoop.x + hoop.w/2), ball.y - hoop.y) < 150) {
+                    ball.vx += ((hoop.x + hoop.w/2) - ball.x) * 0.05;
+                    ball.vy += (hoop.y - ball.y) * 0.05;
+                }
+                
+                ball.vy += gravity; ball.x += ball.vx; ball.y += ball.vy;
 
-                // Collision with rim
+                // Fire Particles
+                if(ball.fire) createExplosion(ball.x, ball.y, '#ffb703');
+
+                // Hit Rim
                 if(ball.vy > 0 && ball.x > hoop.x && ball.x < hoop.x + hoop.w && ball.y + ball.r > hoop.y && ball.y - ball.r < hoop.y + hoop.h) {
-                    playSound('swish');
-                    score += 10;
-                    document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                    playSound(800, 0.3, 'sine');
+                    let points = 10 + streak * 5;
+                    if(ball.fire) points *= 2;
+                    score += points; streak++;
+                    if(streak % 5 === 0) { effects.magnet = 3; showCombo("🧲 ماگنىت!"); }
+                    if(streak === 3) showCombo("🔥 ئوتلۇق توپ!");
+                    createExplosion(ball.x, ball.y, '#fff');
                     ball.isShooting = false;
                     setTimeout(resetRound, 500);
                 }
 
-                // Missed / Out of bounds
-                if(ball.y > canvas.height || ball.x > canvas.width) {
-                    ball.isShooting = false;
+                // Missed
+                if(ball.y > canvas.height + 100 || ball.x > canvas.width + 100 || ball.x < -100) {
+                    streak = 0; ball.isShooting = false;
                     setTimeout(resetRound, 500);
                 }
             }
 
-            if(ball.isDragging) drawTrajectory();
+            if(ball.isDragging) {
+                let tx = ball.x, ty = ball.y, tvx = (ball.startX - dragEndX) * 0.12, tvy = (ball.startY - dragEndY) * 0.12;
+                ctx.beginPath(); ctx.moveTo(tx, ty);
+                for(let i=0; i<40; i++) {
+                    tx += tvx; ty += tvy; tvy += gravity;
+                    if(i % 3 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
+                }
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; ctx.lineWidth = 3; ctx.stroke();
+            }
 
             // Draw Ball
-            ctx.fillStyle = '#f4a261'; // Basketball orange
-            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
-            // Lines
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(ball.x-ball.r, ball.y); ctx.lineTo(ball.x+ball.r, ball.y); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(ball.x, ball.y-ball.r); ctx.lineTo(ball.x, ball.y+ball.r); ctx.stroke();
-            
-            // East Turkistan flag star (small decor on ball)
-            ctx.fillStyle = '#fff';
-            ctx.font = '20px Arial';
-            ctx.fillText('⭐', ball.x - 10, ball.y + 7);
+            ctx.save(); ctx.translate(ball.x, ball.y);
+            ctx.fillStyle = ball.fire ? '#fb8500' : '#f4a261';
+            ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke();
+            // Ball lines
+            ctx.beginPath(); ctx.moveTo(-ball.r, 0); ctx.lineTo(ball.r, 0); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, -ball.r); ctx.lineTo(0, ball.r); ctx.stroke();
+            ctx.restore();
+
+            // Particles
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.03;
+                ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
+                ctx.fillRect(p.x, p.y, 4, 4);
+                if(p.life <= 0) particles.splice(i, 1);
+            }
+            ctx.globalAlpha = 1;
         }
     </script>
+</body>
+</html>
+
 </body>
 </html>
