@@ -4,91 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🐺 كۆك بۆرەنىڭ تەۋەككۈلچىلىكى</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #87ceeb; font-family: 'Tajawal', sans-serif; color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #1a1a2e; font-family: 'Segoe UI', sans-serif; color: white; user-select: none; -webkit-user-select: none; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
-        #lives { font-size: 1.5rem; color: #ff4444; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 20px #ff5722; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #f44336, #ff5722); color: white; border: none; border-radius: 50px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #f44336; color: #b71c1c; border-radius: 15px; cursor: pointer; text-decoration: none; }
+        
+        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        .ui-left, .ui-right { display: flex; flex-direction: column; gap: 8px; }
+        #score { font-size: 2.2rem; font-weight: 800; color: #ffeb3b; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #lives { font-size: 1.5rem; color: #ff4757; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #shield-indicator { font-size: 1.2rem; color: #3b82f6; text-shadow: 0 0 10px rgba(59,130,246,0.5); display: none; }
+        
+        #combo-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(255,235,59,0.8), 0 4px 15px rgba(0,0,0,0.5); z-index: 50; }
+        
+        #pause-btn { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 20; pointer-events: auto; }
+        #btn-pause { background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1rem; padding: 8px 18px; border-radius: 12px; cursor: pointer; font-family: inherit; }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
+        .overlay-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; }
+        .overlay-box h1 { font-size: 3rem; margin-bottom: 10px; }
+        .overlay-box p { font-size: 1.2rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+        .btn { padding: 14px 50px; font-size: 1.5rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(59,130,246,0.4); transition: transform 0.2s; font-family: inherit; }
+        .btn:active { transform: scale(0.95); }
+        
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        /* Touch controls */
+        #touch-controls { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 30; pointer-events: none; display: none; }
+        .touch-row { display: flex; justify-content: space-between; padding: 16px 20px 30px; }
+        .touch-btn { width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); background: rgba(15,23,42,0.5); backdrop-filter: blur(8px); color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); -webkit-tap-highlight-color: transparent; }
+        .touch-btn:active { transform: scale(0.85); background: rgba(59,130,246,0.4); border-color: #60a5fa; }
+        .touch-btn.jump { background: rgba(16,185,129,0.3); border-color: rgba(16,185,129,0.5); width: 85px; height: 85px; font-size: 2rem; }
+        .touch-btn.jump:active { background: rgba(16,185,129,0.6); }
+        
+        @media (pointer: coarse) { #touch-controls { display: block; } #pause-btn { display: none; } }
+        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2.2rem; } .btn { padding: 12px 36px; font-size: 1.2rem; } #score { font-size: 1.6rem; } #lives { font-size: 1.2rem; } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">مۇساپە: 0m</div><div id="lives">❤️❤️❤️❤️❤️</div></div>
-    <div id="combo-text">چاققان!</div>
+    <div id="ui">
+        <div class="ui-left">
+            <div id="score">🏃 0m</div>
+            <div id="shield-indicator">🛡 قورغاش</div>
+        </div>
+        <div class="ui-right"><div id="lives">❤️❤️❤️❤️❤️</div></div>
+    </div>
+    <div id="combo-text">🚀 چاققان!</div>
+    <div id="pause-btn"><button id="btn-pause"><i class="fas fa-pause"></i> توختىتىش</button></div>
+    
+    <div id="touch-controls">
+        <div class="touch-row">
+            <div><button class="touch-btn" data-action="left"><i class="fas fa-chevron-right"></i></button></div>
+            <div><button class="touch-btn jump" data-action="jump"><i class="fas fa-arrow-up"></i></button></div>
+            <div><button class="touch-btn" data-action="right"><i class="fas fa-chevron-left"></i></button></div>
+        </div>
+    </div>
+    
     <div id="overlay">
-        <h1>🐺 كۆك بۆرە</h1>
-        <p>تاشلاردىن ساقلىنىڭ! يۇلتۇزنى تۇتسىڭىز قوغدىنىشقا ئىرىشىسىز. <br> ئېكراننىڭ سول ياكى ئوڭ تەرىپىنى چىكىڭ. بەك ئاسان!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="overlay-box">
+            <h1>🐺 كۆك بۆرە</h1>
+            <p>تاشلاردىن ساقلىنىڭ! ⭐ يۇلتۇزنى تۇتسىڭىز قوغدىنىشقا ئىرىشىسىز.<br>كۇنۇپكىلار: ← → يۆتكىلىش، ↑ سەكرەش</p>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
         let scene, camera, renderer, wolf, obstacles = [];
-        let score = 0, lives = 5, gameActive = false, speed = 0.3, invTime = 0, audioCtx;
-
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playJump() { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(400, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
-
+        let score = 0, lives = 5, gameActive = false, speed = 0.3, invTime = 0, hasShield = false, combo = 0;
+        let currentLane = 1, targetX = 0, lanes = [-4, 0, 4];
+        let particles = [], trees = [], spawnTimer = 0, legPhase = 0;
+        let audioCtx;
+        
+        // === Sound ===
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        function playSound(type) {
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); g.gain.value = 0.08;
+                const t = audioCtx.currentTime;
+                if (type === 'jump') { o.type='sine'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(600,t+0.12); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); }
+                else if (type === 'hit') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(50,t+0.15); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                else if (type === 'collect') { o.type='sine'; o.frequency.setValueAtTime(660,t); o.frequency.exponentialRampToValueAtTime(1320,t+0.15); g.gain.exponentialRampToValueAtTime(0.001,t+0.18); }
+                else if (type === 'shield') { o.type='sine'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.3); g.gain.exponentialRampToValueAtTime(0.001,t+0.35); }
+                else { o.type='sine'; o.frequency.setValueAtTime(800,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.1); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
+                o.start(t); o.stop(t+0.35);
+            } catch(e) {}
+        }
+        
+        // === Particle ===
+        function addParticles(x, y, z, color, count=10) {
+            for (let i=0; i<count; i++) {
+                const geo = new THREE.SphereGeometry(0.08+Math.random()*0.1, 4, 4);
+                const mat = new THREE.MeshBasicMaterial({ color, transparent:true, opacity:1 });
+                const p = new THREE.Mesh(geo, mat);
+                p.position.set(x+(Math.random()-0.5)*0.5, y+(Math.random()-0.5)*0.5, z+(Math.random()-0.5)*0.5);
+                p.userData = { vx:(Math.random()-0.5)*0.2, vy:Math.random()*0.15, vz:(Math.random()-0.5)*0.2, life:1 };
+                scene.add(p); particles.push(p);
+            }
+        }
+        
+        function updateParticles() {
+            for (let i=particles.length-1; i>=0; i--) {
+                const p = particles[i];
+                p.position.x += p.userData.vx; p.position.y += p.userData.vy; p.position.z += p.userData.vz;
+                p.userData.vy -= 0.005; p.userData.life -= 0.025;
+                p.material.opacity = p.userData.life;
+                if (p.userData.life <= 0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
+            }
+        }
+        
+        // === Tree ===
+        function makeTree(x, z) {
+            const g = new THREE.Group();
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.25, 1.2, 5), new THREE.MeshStandardMaterial({color:0x5c3a1e}));
+            trunk.position.y = 0.6; g.add(trunk);
+            const leafMat = new THREE.MeshStandardMaterial({color:0x2d7a1e});
+            for (let i=0; i<3; i++) {
+                const l = new THREE.Mesh(new THREE.ConeGeometry(1.0-i*0.2, 0.6, 6), leafMat);
+                l.position.y = 1.2 + i*0.5; g.add(l);
+            }
+            g.position.set(x, 0, z); return g;
+        }
+        
         function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            new THREE.TextureLoader().load('pics/wolf_runner_bg.png', (t) => scene.background = t);
-            scene.add(new THREE.AmbientLight(0xffffff, 1));
-
-            wolf = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 2), new THREE.MeshPhongMaterial({ color: 0x4a90e2 }));
-            scene.add(wolf); wolf.position.y = 0.5; camera.position.set(0, 5, 10); camera.lookAt(0, 1, -5);
-
-            const move = dir => { if (gameActive) { if (dir === 'L' && wolf.position.x > -5) wolf.position.x -= 3; if (dir === 'R' && wolf.position.x < 5) wolf.position.x += 3; playJump(); } };
-            window.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') move('L'); if (e.key === 'ArrowRight') move('R'); });
-            window.addEventListener('touchstart', e => { const x = e.touches[0].clientX / window.innerWidth; move(x < 0.5 ? 'L' : 'R'); e.preventDefault(); }, { passive: false });
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x1a1a2e); scene.fog = new THREE.Fog(0x1a1a2e, 30, 100);
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+            renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; document.body.appendChild(renderer.domElement);
+            
+            scene.add(new THREE.AmbientLight(0x404060, 0.5));
+            const dl = new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(10,20,10); dl.castShadow = true; scene.add(dl);
+            
+            // Ground
+            const ground = new THREE.Mesh(new THREE.PlaneGeometry(100,200), new THREE.MeshStandardMaterial({color:0x2d4a2e, roughness:0.9}));
+            ground.rotation.x = -Math.PI/2; ground.position.z = -80; ground.receiveShadow = true; scene.add(ground);
+            
+            // Road
+            for (let i=0; i<3; i++) {
+                const road = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 200), new THREE.MeshBasicMaterial({color:0x4a6a4a, transparent:true, opacity:0.3}));
+                road.rotation.x = -Math.PI/2; road.position.set(lanes[i], 0.01, -80); scene.add(road);
+            }
+            
+            // Trees
+            for (let i=0; i<16; i++) {
+                const side = i<8 ? -1 : 1;
+                const tree = makeTree(side*(6+Math.random()*3), -80+Math.random()*160);
+                scene.add(tree); trees.push(tree);
+            }
+            
+            // Wolf
+            wolf = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 1.5), new THREE.MeshStandardMaterial({color:0x4a90e2}));
+            body.position.y = 0.3; body.castShadow = true; wolf.add(body);
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 6, 6), new THREE.MeshStandardMaterial({color:0x5aa0f0}));
+            head.position.set(0, 0.7, -0.8); wolf.add(head);
+            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.15, 4), new THREE.MeshBasicMaterial({color:0x222222}));
+            nose.position.set(0, 0.6, -1.05); nose.rotation.x = 0.3; wolf.add(nose);
+            const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.06, 4, 4), new THREE.MeshBasicMaterial({color:0xffffff}));
+            eyeL.position.set(-0.15, 0.8, -0.9); wolf.add(eyeL);
+            const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.06, 4, 4), new THREE.MeshBasicMaterial({color:0xffffff}));
+            eyeR.position.set(0.15, 0.8, -0.9); wolf.add(eyeR);
+            // Ears
+            for (let s of [-1,1]) { const e = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 3), new THREE.MeshStandardMaterial({color:0x4a90e2})); e.position.set(s*0.2, 0.95, -0.75); wolf.add(e); }
+            // Tail
+            const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 0.3, 4), new THREE.MeshStandardMaterial({color:0x4a90e2}));
+            tail.position.set(0, 0.4, 0.85); tail.rotation.x = 0.5; wolf.add(tail);
+            // Legs
+            const legMat = new THREE.MeshStandardMaterial({color:0x3a70b0});
+            for (let s of [-1,1]) for (let f of [-1,1]) {
+                const leg = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.3, 0.1), legMat);
+                leg.position.set(s*0.25, 0.15, f*0.5); leg.userData.isLeg = true; leg.userData.side = f; wolf.add(leg);
+            }
+            wolf.position.y = 0; scene.add(wolf);
+            camera.position.set(0, 5, 10); camera.lookAt(0, 0.5, -5);
+            
+            // Controls
+            document.addEventListener('keydown', e => {
+                if (!gameActive) return;
+                if (e.key === 'ArrowLeft' && currentLane > 0) { currentLane--; if (combo===0) playSound('jump'); }
+                if (e.key === 'ArrowRight' && currentLane < 2) { currentLane++; if (combo===0) playSound('jump'); }
+                if (e.key === 'ArrowUp' || e.key === ' ') { wolf.position.y = 1.2; setTimeout(() => wolf.position.y=0, 300); }
+            });
+            
+            // Touch buttons
+            document.querySelectorAll('.touch-btn').forEach(btn => {
+                btn.addEventListener('touchstart', e => { e.preventDefault(); e.stopPropagation();
+                    const a = btn.dataset.action;
+                    if (a === 'left' && currentLane > 0) { currentLane--; playSound('jump'); }
+                    else if (a === 'right' && currentLane < 2) { currentLane++; playSound('jump'); }
+                    else if (a === 'jump') { wolf.position.y = 1.2; setTimeout(() => wolf.position.y=0, 300); playSound('jump'); }
+                });
+            });
+            
+            // Swipe
+            let sx=0; document.addEventListener('touchstart', e=>{if(e.target.closest('.touch-btn'))return;sx=e.touches[0].clientX;});
+            document.addEventListener('touchend', e=>{
+                if(e.target.closest('.touch-btn'))return; if(!gameActive)return;
+                const dx=e.changedTouches[0].clientX-sx;
+                if(Math.abs(dx)>30) { if(dx>0 && currentLane<2) currentLane++; else if(dx<0 && currentLane>0) currentLane--; playSound('jump'); }
+            });
+            
+            window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight);});
         }
-
+        
         function spawnObstacle() {
+            const lane = Math.floor(Math.random()*3);
             const isStar = Math.random() < 0.2;
-            const geo = isStar ? new THREE.TorusKnotGeometry(0.7, 0.2, 64, 8) : new THREE.DodecahedronGeometry(1.2, 0);
-            const obj = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: isStar ? 0xffeb3b : 0x795548 }));
-            const lanes = [-3, 0, 3]; obj.position.set(lanes[Math.floor(Math.random() * 3)], 0.5, -120);
-            obj.userData = { isStar: isStar }; scene.add(obj); obstacles.push(obj);
+            const geo = isStar ? new THREE.OctahedronGeometry(0.6) : new THREE.BoxGeometry(0.9, 0.9, 0.9);
+            const mat = new THREE.MeshStandardMaterial({ color: isStar ? 0xffeb3b : 0x795548, emissive: isStar ? 0xffeb3b : 0, emissiveIntensity: isStar ? 0.3 : 0 });
+            const obj = new THREE.Mesh(geo, mat);
+            obj.position.set(lanes[lane], isStar ? 0.6 : 0.5, -60);
+            obj.userData = { isStar, lane };
+            obj.castShadow = true; scene.add(obj); obstacles.push(obj);
         }
-
+        
         function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
-
+        
         function startGame() {
             initAudio(); document.getElementById('overlay').style.display = 'none';
-            score = 0; lives = 5; speed = 0.35; invTime = 0; gameActive = true; updateUI();
-            obstacles.forEach(o => scene.remove(o)); obstacles = []; wolf.position.x = 0;
+            score = 0; lives = 5; speed = 0.35; invTime = 0; hasShield = false; combo = 0; gameActive = true; currentLane = 1; spawnTimer = 0;
+            document.getElementById('shield-indicator').style.display = 'none';
+            obstacles.forEach(o => { scene.remove(o); o.geometry.dispose(); o.material.dispose(); });
+            obstacles = []; wolf.position.x = 0; updateUI();
         }
-
-        function updateUI() { document.getElementById('score').innerText = `مۇساپە: ${Math.floor(score)}m`; document.getElementById('lives').innerText = '❤️'.repeat(lives); }
-
+        
+        function updateUI() { document.getElementById('score').innerText = `🏃 ${Math.floor(score)}m`; document.getElementById('lives').innerText = '❤️'.repeat(Math.max(0,lives)); }
+        
         function animate() {
             requestAnimationFrame(animate);
+            
             if (gameActive) {
-                score += speed; if (invTime > 0) invTime--; updateUI();
-                if (Math.random() < 0.015) spawnObstacle();
-                wolf.material.opacity = (invTime > 0 && Math.floor(Date.now()/100)%2 === 0) ? 0.3 : 1;
-                wolf.material.transparent = true;
-
-                for (let i = obstacles.length - 1; i >= 0; i--) {
+                score += speed * 0.5; updateUI();
+                if (invTime > 0) invTime--; if (hasShield) document.getElementById('shield-indicator').style.display = 'block';
+                else document.getElementById('shield-indicator').style.display = 'none';
+                
+                // Wolf animation
+                targetX += (lanes[currentLane] - targetX) * 0.15;
+                wolf.position.x = targetX;
+                const t = Date.now()*0.015;
+                wolf.children.forEach(c => { if (c.userData && c.userData.isLeg) c.rotation.x = Math.sin(t + (c.userData.side===1?0:Math.PI))*0.4; });
+                if (wolf.position.y > 0.05) wolf.position.y *= 0.95; else wolf.position.y = 0;
+                wolf.rotation.y = Math.sin(t*0.5)*0.05;
+                
+                // Spawn
+                spawnTimer++; if (spawnTimer > 50) { spawnObstacle(); spawnTimer=0; }
+                
+                // Move obstacles & trees
+                for (let i=obstacles.length-1; i>=0; i--) {
                     const o = obstacles[i]; o.position.z += speed;
-                    if (o.position.distanceTo(wolf.position) < 2.2) {
-                        if (o.userData.isStar) { invTime = 400; showCombo("كۆكرەك كەر!"); scene.remove(o); obstacles.splice(i, 1); beep(800, 0.2); }
-                        else if (invTime <= 0) { lives--; updateUI(); beep(200, 0.3, 'sawtooth'); scene.remove(o); obstacles.splice(i, 1); if (lives <= 0) { gameActive = false; document.getElementById('overlay').style.display = 'flex'; } }
-                        else { scene.remove(o); obstacles.splice(i, 1); showCombo("تاشنى چاقتىڭ!"); }
-                        continue;
+                    if (o.userData.isStar) o.rotation.y += 0.05; o.rotation.x += 0.02;
+                    
+                    const dz = o.position.z;
+                    if (dz > -1.5 && dz < 1.5 && o.userData.lane === currentLane) {
+                        if (o.userData.isStar) {
+                            hasShield = true; invTime = 400;
+                            addParticles(o.position.x, o.position.y, o.position.z, 0xffeb3b, 15);
+                            showCombo("🛡 قوغدىنىش!"); playSound('shield');
+                            scene.remove(o); obstacles.splice(i,1); continue;
+                        } else if (hasShield) {
+                            hasShield = false;
+                            addParticles(o.position.x, o.position.y, o.position.z, 0x3b82f6, 20);
+                            showCombo("💥 قورغاش سۇندى!"); playSound('shield');
+                            scene.remove(o); obstacles.splice(i,1); continue;
+                        } else if (invTime <= 0) {
+                            lives--;
+                            addParticles(o.position.x, o.position.y, o.position.z, 0xff4444, 12);
+                            playSound('hit'); combo = 0;
+                            scene.remove(o); obstacles.splice(i,1); updateUI();
+                            if (lives <= 0) { gameActive = false; document.getElementById('overlay').style.display = 'flex'; }
+                            continue;
+                        } else {
+                            addParticles(o.position.x, o.position.y, o.position.z, 0x888888, 8);
+                            scene.remove(o); obstacles.splice(i,1); continue;
+                        }
                     }
-                    if (o.position.z > 15) { scene.remove(o); obstacles.splice(i, 1); }
+                    if (o.position.z > 10) { scene.remove(o); o.geometry.dispose(); o.material.dispose(); obstacles.splice(i,1); }
                 }
+                
+                // Trees scroll
+                for (const tree of trees) { tree.position.z += speed; if (tree.position.z > 15) { tree.position.z = -80 - Math.random()*40; } }
+                
+                // Dust particles
+                if (Math.random()<0.3) addParticles(wolf.position.x+(Math.random()-0.5)*0.3, 0.05, 2, 0x8B7355, 2);
+                
+                updateParticles();
+                
+                // Combo
+                combo++;
+                if (combo > 0 && combo % 100 === 0) showCombo(`🔥 ${Math.floor(combo/100)} قاتار!`);
+            } else {
+                updateParticles();
             }
+            
             renderer.render(scene, camera);
         }
         init(); animate();

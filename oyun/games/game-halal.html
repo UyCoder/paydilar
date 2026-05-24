@@ -4,80 +4,244 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🥟 ھالال خەزىنە: مەززىلىك تائاملار</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #fdf0d5; font-family: 'Tajawal', sans-serif; color: #669bbc; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #fef3c7; font-family: 'Segoe UI', sans-serif; user-select: none; -webkit-user-select: none; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #780000; }
-        #lives { font-size: 1.5rem; color: #ff4444; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #780000; display: none; pointer-events: none; text-shadow: 0 0 20px #ffffff; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(253, 240, 213, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #780000, #c1121f); color: white; border: none; border-radius: 60px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #780000; }
-        p { font-size: 1.5rem; max-width: 700px; text-align: center; line-height: 1.8; }
-        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(102, 155, 188, 0.2); border: 2px solid #669bbc; color: #003049; border-radius: 20px; cursor: pointer; text-decoration: none; }
+        
+        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        .ui-left, .ui-right { display: flex; flex-direction: column; gap: 6px; }
+        #score { font-size: 2rem; font-weight: 800; color: #780000; text-shadow: 0 2px 10px rgba(255,255,255,0.5); }
+        #combo-indicator { font-size: 1.1rem; color: #d97706; display: none; }
+        #lives { font-size: 1.2rem; color: #ef4444; }
+        #combo-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #780000; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(255,255,255,0.8); z-index: 50; }
+        
+        #basket-pointer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 60px; height: 40px; border-bottom: 4px solid #c1121f; border-left: 4px solid transparent; border-right: 4px solid transparent; pointer-events: none; z-index: 5; opacity: 0.4; }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(120,0,0,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
+        .overlay-box { background: rgba(30,15,15,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from{opacity:0;transform:scale(0.9)translateY(20px)} to{opacity:1;transform:scale(1)translateY(0)} }
+        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 10px; color: #fbbf24; }
+        .overlay-box p { font-size: 1.1rem; color: #d4a574; line-height: 1.6; margin-bottom: 1.5rem; }
+        .btn { padding: 12px 40px; font-size: 1.3rem; background: linear-gradient(135deg, #c1121f, #780000); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(193,18,31,0.4); transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn.gold { background: linear-gradient(135deg, #d97706, #92400e); box-shadow: 0 4px 15px rgba(217,119,6,0.4); }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #780000; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 12px 36px; font-size: 1.2rem; } #score { font-size: 1.5rem; } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div><div id="lives">❤️❤️❤️❤️❤️</div></div>
+    <div id="basket-pointer"></div>
+    <div id="ui">
+        <div class="ui-left">
+            <div id="score">🥟 نومۇر: 0</div>
+            <div id="combo-indicator">🔥 قاتار: <span id="combo-count">0</span></div>
+        </div>
+        <div class="ui-right"><div id="lives">❤️❤️❤️❤️❤️</div></div>
+    </div>
     <div id="combo-text">مەززىلىك!</div>
     <div id="overlay">
-        <h1>🥟 ھالال خەزىنە</h1>
-        <p>تائاملارنى يىغىڭ! <br> "ئالتۇن سامسا" 200 نومۇر بېرىدۇ. <br> سېۋەتنى سۆرەپ تۇتۇڭ. بەك ئاسان!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="overlay-box">
+            <h1>🥟 ھالال خەزىنە</h1>
+            <p>تائاملارنى سېۋەتكە يىغىڭ!<br>🥇 ئالتۇن سامسا 200 نومۇر بېرىدۇ.<br>بارمىقىڭىزنى سۆرەپ سېۋەتنى يۆتكەڭ.</p>
+            <button class="btn gold" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, basket, items = [];
-        let score = 0, lives = 5, gameActive = false, audioCtx;
+        let scene, camera, renderer, basket, items = [], particles = [];
+        let score = 0, lives = 5, gameActive = false, combo = 0, streakTimer = 0;
+        let basketX = 0, targetX = 0;
+        let audioCtx;
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playCollect(isGolden) { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(isGolden ? 800 : 500, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        function playSound(type) {
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); g.gain.value = 0.08;
+                const t = audioCtx.currentTime;
+                if (type==='collect') { o.type='sine'; o.frequency.setValueAtTime(500,t); o.frequency.exponentialRampToValueAtTime(800,t+0.12); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                else if (type==='gold') { o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(900,t+0.1); o.frequency.setValueAtTime(1200,t+0.2); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
+                else if (type==='miss') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(100,t+0.15); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                o.start(t); o.stop(t+0.25);
+            } catch(e) {}
+        }
+
+        function addParticles(x,y,color,count=10) {
+            for (let i=0; i<count; i++) {
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.06+Math.random()*0.08, 3,3), new THREE.MeshBasicMaterial({color, transparent:true, opacity:1}));
+                p.position.set(x+(Math.random()-0.5)*0.3, y+(Math.random()-0.5)*0.3, (Math.random()-0.5)*0.3);
+                p.userData = {vx:(Math.random()-0.5)*0.2, vy:Math.random()*0.15, vz:(Math.random()-0.5)*0.1, life:1};
+                scene.add(p); particles.push(p);
+            }
+        }
+        function updateParticles() {
+            for (let i=particles.length-1; i>=0; i--) {
+                const p=particles[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz;
+                p.userData.vy-=0.005; p.userData.life-=0.03; p.material.opacity=Math.max(0,p.userData.life);
+                if (p.userData.life<=0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
+            }
+        }
+
+        function createFood(type, isGolden) {
+            const color = isGolden ? 0xffd700 : (type === 'naan' ? 0xe9c46a : 0xf4a261);
+            const em = isGolden ? 0xffd700 : 0;
+            const mat = new THREE.MeshStandardMaterial({ color, emissive: em, emissiveIntensity: isGolden ? 0.3 : 0 });
+            let mesh;
+            if (type === 'naan') {
+                mesh = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.15, 8, 16), mat);
+                mesh.rotation.x = Math.PI/2;
+            } else if (type === 'samsa') {
+                mesh = new THREE.Mesh(new THREE.ConeGeometry(0.5, 0.7, 6), mat);
+                mesh.position.y = 0.35;
+            } else if (type === 'kebab') {
+                const g = new THREE.Group();
+                const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.8, 4), new THREE.MeshStandardMaterial({color:0x8d6e63}));
+                stick.position.y = 0.4; g.add(stick);
+                const meat = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), mat);
+                meat.position.set(0, 0.5, 0); g.add(meat);
+                const meat2 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 6, 6), mat);
+                meat2.position.set(0, 0.7, 0); g.add(meat2);
+                return { group: g, isGolden };
+            } else {
+                mesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), mat);
+            }
+            return { mesh, isGolden };
+        }
 
         function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0xffffff, 1));
-            basket = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 4), new THREE.MeshPhongMaterial({ color: 0x669bbc })); // Huge basket
-            scene.add(basket); basket.position.y = -5; camera.position.z = 12;
-            const handleMove = x => { if (gameActive) basket.position.x = (x / window.innerWidth - 0.5) * 22; };
-            window.addEventListener('mousemove', e => handleMove(e.clientX));
-            window.addEventListener('touchmove', e => { handleMove(e.touches[0].clientX); e.preventDefault(); }, { passive: false });
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0xfef3c7);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+            renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; document.body.appendChild(renderer.domElement);
+            camera.position.set(0, 6, 12); camera.lookAt(0, 0, 0);
+            
+            scene.add(new THREE.AmbientLight(0xffeedd, 0.6));
+            const dl = new THREE.DirectionalLight(0xffffdd, 0.8); dl.position.set(5,15,5); dl.castShadow = true; scene.add(dl);
+            
+            // Table/cloth
+            const cloth = new THREE.Mesh(new THREE.PlaneGeometry(20, 12), new THREE.MeshStandardMaterial({color:0x1a3a2a, roughness:0.9}));
+            cloth.rotation.x = -Math.PI/2; cloth.position.set(0, -4.5, -2); scene.add(cloth);
+            
+            // Border decoration
+            const border = new THREE.Mesh(new THREE.PlaneGeometry(20, 0.3), new THREE.MeshBasicMaterial({color:0xd4a574, transparent:true, opacity:0.3}));
+            border.rotation.x = -Math.PI/2; border.position.set(0, -4.48, -8); scene.add(border);
+            
+            // Basket
+            basket = new THREE.Group();
+            const basketMat = new THREE.MeshStandardMaterial({color:0x669bbc, roughness:0.5});
+            const base = new THREE.Mesh(new THREE.BoxGeometry(4, 0.4, 2.5), basketMat);
+            base.position.y = 0.2; base.castShadow = true; basket.add(base);
+            const rim = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.1, 2.7), new THREE.MeshStandardMaterial({color:0x457b9d}));
+            rim.position.y = 0.45; basket.add(rim);
+            // Handle
+            const handle = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.06, 4, 12, Math.PI), new THREE.MeshStandardMaterial({color:0x457b9d}));
+            handle.position.set(0, 0.7, 0); handle.rotation.x = Math.PI/2; basket.add(handle);
+            
+            basket.position.y = -4.2;
+            scene.add(basket);
+            
+            // Controls
+            document.addEventListener('mousemove', e => { if (gameActive) targetX = (e.clientX / window.innerWidth - 0.5) * 16; });
+            document.addEventListener('touchmove', e => { if (gameActive) { targetX = (e.touches[0].clientX / window.innerWidth - 0.5) * 16; e.preventDefault(); } }, {passive:false});
+            window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight);});
         }
 
         function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
 
         function spawnItem() {
-            const isGolden = Math.random() < 0.2; const types = [{ color: 0xe9c46a, name: 'naan' }, { color: 0xe76f51, name: 'samsa' }];
-            const t = types[Math.floor(Math.random() * types.length)];
-            const item = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 16), new THREE.MeshPhongMaterial({ color: isGolden ? 0xffd700 : t.color }));
-            item.position.set((Math.random() - 0.5) * 18, 10, 0); item.userData = { isGolden: isGolden }; scene.add(item); items.push(item);
+            const types = ['naan', 'samsa', 'kebab'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const isGolden = Math.random() < 0.15;
+            const food = createFood(type, isGolden);
+            const obj = food.mesh || food.group;
+            obj.position.set((Math.random() - 0.5) * 14, 8 + Math.random() * 3, (Math.random() - 0.5) * 2);
+            obj.userData = { isGolden, type };
+            scene.add(obj); items.push(obj);
         }
 
         function startGame() {
             initAudio(); document.getElementById('overlay').style.display = 'none';
-            score = 0; lives = 5; gameActive = true; updateUI();
-            items.forEach(i => scene.remove(i)); items = [];
+            score = 0; lives = 5; combo = 0; streakTimer = 0; gameActive = true;
+            updateUI();
+            items.forEach(i => { scene.remove(i); if (i.geometry) i.geometry.dispose(); if (i.material) i.material.dispose(); }); items = [];
+            particles.forEach(p => { scene.remove(p); p.geometry.dispose(); p.material.dispose(); }); particles = [];
         }
 
-        function updateUI() { document.getElementById('score').innerText = `ئۇتۇق: ${score}`; document.getElementById('lives').innerText = '❤️'.repeat(lives); }
+        function updateUI() { 
+            document.getElementById('score').innerText = `🥟 نومۇر: ${score}`; 
+            document.getElementById('lives').innerText = '❤️'.repeat(Math.max(0,lives));
+            document.getElementById('combo-count').innerText = combo;
+            document.getElementById('combo-indicator').style.display = combo >= 3 ? 'block' : 'none';
+        }
 
         function animate() {
             requestAnimationFrame(animate);
+            
             if (gameActive) {
-                if (Math.random() < 0.025) spawnItem();
+                // Smooth basket movement
+                basketX += (targetX - basketX) * 0.1;
+                basket.position.x = basketX;
+                basket.position.y = -4.2 + Math.sin(Date.now() * 0.003) * 0.05;
+                
+                // Spawn items
+                if (Math.random() < 0.02 + score/10000) spawnItem();
+                
+                // Combo timer
+                if (streakTimer > 0) streakTimer--;
+                if (streakTimer === 0 && combo > 0) { combo = 0; updateUI(); }
+                
                 for (let i = items.length - 1; i >= 0; i--) {
-                    const item = items[i]; item.position.y -= 0.08 + (score / 5000);
-                    if (item.position.y < -4.5 && item.position.y > -6.5 && Math.abs(item.position.x - basket.position.x) < 3.5) {
-                        score += item.userData.isGolden ? 200 : 50; updateUI(); showCombo(item.userData.isGolden ? "بەك مەززىلىك!" : "مەززىلىك!");
-                        playCollect(item.userData.isGolden); scene.remove(item); items.splice(i, 1);
-                    } else if (item.position.y < -10) { scene.remove(item); items.splice(i, 1); }
+                    const item = items[i];
+                    item.position.y -= 0.06 - score/3000;
+                    item.rotation.y += 0.03;
+                    if (item.userData.type === 'samsa') item.rotation.x += 0.02;
+                    
+                    // Check caught
+                    if (item.position.y < -3.8 && item.position.y > -4.6 && 
+                        Math.abs(item.position.x - basket.position.x) < 2.8 &&
+                        Math.abs(item.position.z) < 1.5) {
+                        
+                        const pts = item.userData.isGolden ? 200 : 50;
+                        score += pts;
+                        combo++;
+                        streakTimer = 120;
+                        updateUI();
+                        showCombo(item.userData.isGolden ? '🥇 ئالتۇن!' : '🍽 مەززىلىك!');
+                        playSound(item.userData.isGolden ? 'gold' : 'collect');
+                        addParticles(item.position.x, item.position.y, item.userData.isGolden ? 0xffd700 : 0xf4a261, 15);
+                        scene.remove(item);
+                        if (item.isMesh !== false && item.geometry) { item.geometry.dispose(); item.material.dispose(); }
+                        items.splice(i, 1);
+                        continue;
+                    }
+                    
+                    // Missed
+                    if (item.position.y < -6) {
+                        lives--;
+                        playSound('miss');
+                        scene.remove(item);
+                        if (item.isMesh !== false && item.geometry) { item.geometry.dispose(); item.material.dispose(); }
+                        items.splice(i, 1);
+                        updateUI();
+                        if (lives <= 0) { 
+                            gameActive = false; 
+                            document.getElementById('overlay').style.display = 'flex';
+                            document.getElementById('overlay').querySelector('h1').innerText = '🥟 ئويۇن تۈگىدى';
+                            document.getElementById('overlay').querySelector('p').innerHTML = `${score} نومۇر يىغدىڭىز!<br>🔥 ${combo} قاتار ئەڭ يۇقىرى`;
+                        }
+                        continue;
+                    }
                 }
+                
+                updateParticles();
+            } else {
+                updateParticles();
             }
+            
             renderer.render(scene, camera);
         }
         init(); animate();

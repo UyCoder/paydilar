@@ -7,86 +7,429 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #f4a261; font-family: 'Tajawal', sans-serif; color: white; }
+        body { margin: 0; overflow: hidden; background: #f4a261; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px #e76f51; }
-        #score { font-size: 2.8rem; font-weight: 800; color: #e76f51; }
-        #lives { font-size: 1.5rem; color: #ff4444; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #e76f51; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(244, 162, 97, 0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 2rem; background: linear-gradient(135deg, #e76f51, #264653); color: white; border: none; border-radius: 60px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #264653; }
-        p { font-size: 1.5rem; max-width: 700px; text-align: center; line-height: 1.8; }
-        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 12px 35px; background: rgba(38, 70, 83, 0.1); border: 2px solid #264653; color: #264653; border-radius: 20px; cursor: pointer; text-decoration: none; }
+        
+        /* UI Containers */
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; z-index: 10; }
+        #score-container { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); padding: 10px 25px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px 0 rgba(135, 78, 31, 0.3); }
+        #score { font-size: 2.2rem; font-weight: 800; color: #ffeb3b; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        #high-score { font-size: 1rem; color: #ffe0b2; margin-top: -5px; }
+        #lives { font-size: 1.8rem; margin-top: 10px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+        
+        /* Fever Mode UI */
+        #fever-bar-container { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 200px; height: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 2px solid #fff; display: none; overflow: hidden; }
+        #fever-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ffeb3b, #f44336); transition: width 0.3s; }
+        
+        #combo-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 4.5rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 30px #e76f51; z-index: 50; white-space: nowrap; }
+        
+        /* Overlay Panel */
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(244, 162, 97, 0.6) 0%, rgba(38, 70, 83, 0.9) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
+        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 45px; text-align: center; max-width: 85%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        
+        .btn { padding: 20px 70px; font-size: 2.2rem; background: linear-gradient(135deg, #e76f51, #e9c46a); color: white; border: none; border-radius: 60px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 35px; box-shadow: 0 10px 30px rgba(231, 111, 81, 0.4); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(231, 111, 81, 0.6); }
+        
+        h1 { font-size: 4.5rem; margin: 0 0 20px 0; background: linear-gradient(to bottom, #fff, #e9c46a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
+        p { font-size: 1.6rem; color: #ffecb3; line-height: 1.6; margin-bottom: 25px; }
+        
+        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 14px 35px; background: rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 25px; cursor: pointer; text-decoration: none; font-weight: 700; transition: all 0.3s; z-index: 10; }
+        
+        #active-effects { position: absolute; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .effect-timer { background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); border-radius: 15px; padding: 8px 20px; border-left: 6px solid #fff; font-weight: bold; display: flex; align-items: center; gap: 12px; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Knowledge Scroll Pop-up */
+        #knowledge-popup { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); background: rgba(255, 248, 225, 0.95); color: #5d4037; padding: 25px; border-radius: 20px; border: 5px solid #ffa000; width: 80%; max-width: 400px; text-align: center; display: none; z-index: 150; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        #knowledge-popup h3 { margin: 0 0 10px 0; color: #e65100; font-size: 1.8rem; }
+        #knowledge-popup p { color: #3e2723; font-size: 1.3rem; margin: 0; }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">مۇساپە: 0m</div><div id="lives">❤️❤️❤️❤️❤️</div></div>
-    <div id="combo-text">داۋاملاشتۇرۇڭ!</div>
+    <div id="ui">
+        <div id="score-container">
+            <div id="score">مۇساپە: 0m</div>
+            <div id="high-score">ئەڭ ئۇزۇن: 0m</div>
+        </div>
+        <div id="lives">❤️❤️❤️❤️❤️</div>
+    </div>
+    <div id="fever-bar-container"><div id="fever-bar"></div></div>
+    <div id="active-effects"></div>
+    <div id="knowledge-popup">
+        <h3>📜 بىلىم غەزىنىسى</h3>
+        <p id="knowledge-text"></p>
+    </div>
+    <div id="combo-text">ئالغا!</div>
     <div id="overlay">
-        <h1>🐫 قۇتلۇق كارۋان</h1>
-        <p>تۆگىنى باشقۇرۇڭ! <br> "سۇ" يىغىپ قوغدىنىشقا ئىرىشىڭ. <br> ئېكراننىڭ سول ياكى ئوڭ تەرىپىنى چىكىڭ. بەك ئاسان!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="glass-panel">
+            <h1>🐫 قۇتلۇق كارۋان</h1>
+            <p>كارۋاننى باشلاپ قۇملۇقتىن ئۆتۈڭ! <br> سۇ يىغىپ قوغدىنىشقا ئىرىشىڭ. <br> سۈرۈپ باشقۇرۇڭ. بەك ئاسان!</p>
+            <div id="final-stats" style="display:none; margin-bottom: 25px;">
+                <h2 style="font-size: 2.8rem; color: #ffeb3b;">سەپەر ئاخىرلاشتى!</h2>
+                <div id="last-score" style="font-size: 2.2rem;">بېسىپ ئۆتكەن يول: 0m</div>
+            </div>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, camel, obstacles = [];
-        let score = 0, lives = 5, gameActive = false, speed = 0.3, invTime = 0, audioCtx;
+        let scene, camera, renderer, camel, sandFloor, light;
+        let obstacles = [], items = [], particles = [], dunes = [];
+        let score = 0, highScore = localStorage.getItem('camel_highscore') || 0, lives = 5, gameActive = false, audioCtx;
+        let targetX = 0, currentLane = 2, lanes = [-8, -4, 0, 4, 8];
+        let speed = 0.4, time = 0, dayCycle = 0; // 0 to 1 cycle
+        
+        let effects = { water: 0, fever: 0 };
+        let feverCount = 0;
+        let lastTouchX = 0;
+
+        const knowledgeFacts = [
+            "تۆگە قۇملۇق كېمىسى دەپ ئاتىلىدۇ.",
+            "تۆگە بىر قېتىمدا 100 لىتىردىن ئارتۇق سۇ ئىچەلەيدۇ.",
+            "يىپەك يولى قەدىمكى دۇنيادىكى ئەڭ چوڭ سودا يولى.",
+            "تۆگىنىڭ لوكىسىدا سۇ ئەمەس، بەلكى ماي زاپاسلىنىدۇ.",
+            "قۇملۇقتا كۈندۈزى بەك ئىسسىق، كېچىسى بەك سوغۇق بولىدۇ."
+        ];
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playStep() { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
-
-        function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0xffffff, 1));
-            camel = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 2.5), new THREE.MeshPhongMaterial({ color: 0xbc6c25 }));
-            scene.add(camel); camel.position.y = 0.6; camera.position.set(0, 6, 12); camera.lookAt(0, 1, -5);
-            const move = dir => { if (gameActive) { if (dir === 'L' && camel.position.x > -8) camel.position.x -= 4; if (dir === 'R' && camel.position.x < 8) camel.position.x += 4; playStep(); } };
-            window.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') move('L'); if (e.key === 'ArrowRight') move('R'); });
-            window.addEventListener('touchstart', e => { const x = e.touches[0].clientX / window.innerWidth; move(x < 0.5 ? 'L' : 'R'); e.preventDefault(); }, { passive: false });
+        function playSound(f, d, type = 'sine') { 
+            if(!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
+            o.type = type; o.frequency.setValueAtTime(f, audioCtx.currentTime); 
+            g.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); 
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); 
         }
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+        function createCamel() {
+            const group = new THREE.Group();
+            const bodyMat = new THREE.MeshPhongMaterial({ color: 0xbc6c25 });
+            
+            // Body
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 3), bodyMat);
+            body.position.y = 1.5;
+            group.add(body);
 
-        function spawnObstacle() {
-            const isOasis = Math.random() < 0.25;
-            const obj = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5, 0), new THREE.MeshPhongMaterial({ color: isOasis ? 0x00d4ff : 0x264653 }));
-            const lanes = [-8, -4, 0, 4, 8]; obj.position.set(lanes[Math.floor(Math.random() * 5)], 1, -120);
-            obj.userData = { isOasis: isOasis }; scene.add(obj); obstacles.push(obj);
+            // Humps
+            const hump1 = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 4), bodyMat);
+            hump1.position.set(0, 2.2, 0.5);
+            group.add(hump1);
+            const hump2 = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 4), bodyMat);
+            hump2.position.set(0, 2.2, -0.5);
+            group.add(hump2);
+
+            // Neck & Head
+            const neck = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.5, 0.6), bodyMat);
+            neck.position.set(0, 2.5, 1.8);
+            neck.rotation.x = -Math.PI / 4;
+            group.add(neck);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 1.2), bodyMat);
+            head.position.set(0, 3.2, 2.3);
+            group.add(head);
+
+            // Legs
+            const legGeo = new THREE.BoxGeometry(0.3, 1.5, 0.3);
+            for(let i=0; i<4; i++) {
+                const leg = new THREE.Mesh(legGeo, bodyMat);
+                leg.position.set(i<2 ? 0.5 : -0.5, 0.75, i%2===0 ? 1 : -1);
+                leg.name = `leg${i}`;
+                group.add(leg);
+            }
+
+            return group;
+        }
+
+        function createDesert() {
+            const geo = new THREE.PlaneGeometry(100, 200);
+            const mat = new THREE.MeshPhongMaterial({ color: 0xe9c46a, flatShading: true });
+            const floor = new THREE.Mesh(geo, mat);
+            floor.rotation.x = -Math.PI / 2;
+            return floor;
+        }
+
+        function createDune(x, z) {
+            const geo = new THREE.SphereGeometry(10, 8, 8);
+            geo.scale(2, 0.5, 1);
+            const mat = new THREE.MeshPhongMaterial({ color: 0xd9b35a });
+            const dune = new THREE.Mesh(geo, mat);
+            dune.position.set(x, -2, z);
+            scene.add(dune);
+            dunes.push(dune);
+        }
+
+        function createParticle(pos, color) {
+            const geo = new THREE.SphereGeometry(0.1, 4, 4);
+            const mat = new THREE.MeshBasicMaterial({ color: color });
+            const p = new THREE.Mesh(geo, mat);
+            p.position.copy(pos);
+            p.userData = { vel: new THREE.Vector3((Math.random()-0.5)*0.1, Math.random()*0.1, 0.1), life: 1.0 };
+            scene.add(p);
+            particles.push(p);
+        }
+
+        function init() {
+            scene = new THREE.Scene(); 
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+            
+            scene.fog = new THREE.Fog(0xf4a261, 20, 150);
+            light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 10, 5);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+            camel = createCamel(); scene.add(camel);
+            sandFloor = createDesert(); scene.add(sandFloor);
+            
+            for(let i=0; i<10; i++) createDune((Math.random()-0.5)*100, -i*20);
+
+            camera.position.set(0, 8, 15);
+            camera.lookAt(0, 2, 0);
+
+            document.getElementById('high-score').innerText = `ئەڭ ئۇزۇن: ${highScore}m`;
+
+            // Controls
+            const move = dir => {
+                if(!gameActive) return;
+                if(dir === 'L' && currentLane > 0) currentLane--;
+                if(dir === 'R' && currentLane < 4) currentLane++;
+                targetX = lanes[currentLane];
+                playSound(150, 0.1, 'triangle');
+            };
+
+            window.addEventListener('keydown', e => {
+                if(e.key === 'ArrowLeft') move('L');
+                if(e.key === 'ArrowRight') move('R');
+            });
+
+            window.addEventListener('touchstart', e => {
+                lastTouchX = e.touches[0].clientX;
+            }, {passive: false});
+
+            window.addEventListener('touchmove', e => {
+                if(!gameActive) return;
+                const dx = e.touches[0].clientX - lastTouchX;
+                if(Math.abs(dx) > 30) {
+                    move(dx > 0 ? 'R' : 'L');
+                    lastTouchX = e.touches[0].clientX;
+                }
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function spawnObject() {
+            const r = Math.random();
+            let obj, type;
+            
+            if (r < 0.15) { // Water
+                obj = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.2), new THREE.MeshPhongMaterial({ color: 0x00d4ff, emissive: 0x0044ff }));
+                type = 'water';
+            } else if (r < 0.25) { // Date (Food)
+                obj = new THREE.Mesh(new THREE.SphereGeometry(0.6), new THREE.MeshPhongMaterial({ color: 0x5d4037 }));
+                type = 'date';
+            } else if (r < 0.3) { // Knowledge Scroll
+                obj = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1, 8), new THREE.MeshPhongMaterial({ color: 0xfff8e1, emissive: 0xffa000 }));
+                obj.rotation.z = Math.PI / 2;
+                type = 'scroll';
+            } else if (r < 0.5) { // Scorpion (Fast Obstacle)
+                obj = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.5, 1.2), new THREE.MeshPhongMaterial({ color: 0x264653 }));
+                type = 'scorpion';
+            } else { // Rock/Cactus
+                obj = new THREE.Mesh(new THREE.DodecahedronGeometry(1.5), new THREE.MeshPhongMaterial({ color: 0x8d6e63 }));
+                type = 'rock';
+            }
+
+            const laneIdx = Math.floor(Math.random() * 5);
+            obj.position.set(lanes[laneIdx], 1, -120);
+            obj.userData = { type: type, lane: laneIdx };
+            scene.add(obj);
+            if(['water', 'date', 'scroll'].includes(type)) items.push(obj);
+            else obstacles.push(obj);
+        }
+
+        function showCombo(txt) { 
+            const el = document.getElementById('combo-text'); 
+            el.innerText = txt; el.style.display = 'block'; 
+            setTimeout(() => el.style.display = 'none', 1000); 
+        }
+
+        function showKnowledge() {
+            const popup = document.getElementById('knowledge-popup');
+            const text = document.getElementById('knowledge-text');
+            text.innerText = knowledgeFacts[Math.floor(Math.random() * knowledgeFacts.length)];
+            popup.style.display = 'block';
+            gameActive = false;
+            setTimeout(() => { popup.style.display = 'none'; gameActive = true; }, 3000);
+        }
+
+        function updateEffectsUI() {
+            const container = document.getElementById('active-effects');
+            container.innerHTML = '';
+            if(effects.water > 0) {
+                const div = document.createElement('div');
+                div.className = 'effect-timer';
+                div.style.borderLeftColor = '#00d4ff';
+                div.innerHTML = `<span>💧 سۇ (قوغدىنىش)</span> <small>${Math.ceil(effects.water/60)}s</small>`;
+                container.appendChild(div);
+            }
+            if(effects.fever > 0) {
+                const div = document.createElement('div');
+                div.className = 'effect-timer';
+                div.style.borderLeftColor = '#ffeb3b';
+                div.innerHTML = `<span>⚡ تېزلىك</span> <small>${Math.ceil(effects.fever/60)}s</small>`;
+                container.appendChild(div);
+            }
         }
 
         function startGame() {
-            initAudio(); document.getElementById('overlay').style.display = 'none';
-            score = 0; lives = 5; speed = 0.35; invTime = 0; gameActive = true; updateUI();
-            obstacles.forEach(o => scene.remove(o)); obstacles = []; camel.position.x = 0;
+            initAudio(); 
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('final-stats').style.display = 'none';
+            score = 0; lives = 5; gameActive = true; speed = 0.4;
+            feverCount = 0; effects = { water: 0, fever: 0 };
+            currentLane = 2; targetX = 0; camel.position.x = 0;
+            updateUI();
+            obstacles.concat(items, particles).forEach(o => scene.remove(o));
+            obstacles = []; items = []; particles = [];
         }
 
-        function updateUI() { document.getElementById('score').innerText = `مۇساپە: ${Math.floor(score)}m`; document.getElementById('lives').innerText = '❤️'.repeat(lives); }
+        function updateUI() { 
+            document.getElementById('score').innerText = `مۇساپە: ${Math.floor(score)}m`; 
+            document.getElementById('lives').innerText = '❤️'.repeat(lives); 
+            if (score > highScore) {
+                highScore = Math.floor(score);
+                localStorage.setItem('camel_highscore', highScore);
+                document.getElementById('high-score').innerText = `ئەڭ ئۇزۇن: ${highScore}m`;
+            }
+            const fBar = document.getElementById('fever-bar');
+            const fCont = document.getElementById('fever-bar-container');
+            fBar.style.width = `${(feverCount / 5) * 100}%`;
+            fCont.style.display = feverCount > 0 ? 'block' : 'none';
+        }
+
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('final-stats').style.display = 'block';
+            document.getElementById('last-score').innerText = `بېسىپ ئۆتكەن يول: ${Math.floor(score)}m`;
+            playSound(100, 0.5, 'square');
+        }
 
         function animate() {
             requestAnimationFrame(animate);
             if (gameActive) {
-                score += speed; if (invTime > 0) invTime--; updateUI();
-                if (Math.random() < 0.015) spawnObstacle();
-                camel.material.opacity = (invTime > 0 && Math.floor(Date.now()/100)%2 === 0) ? 0.3 : 1;
-                camel.material.transparent = true;
-                for (let i = obstacles.length - 1; i >= 0; i--) {
-                    const o = obstacles[i]; o.position.z += speed;
-                    if (o.position.distanceTo(camel.position) < 2.5) {
-                        if (o.userData.isOasis) { invTime = 400; showCombo("سۇ ئىچتىڭىز!"); scene.remove(o); obstacles.splice(i, 1); beep(800, 0.2); }
-                        else if (invTime <= 0) { lives--; updateUI(); beep(200, 0.3, 'sawtooth'); scene.remove(o); obstacles.splice(i, 1); if (lives <= 0) { gameActive = false; document.getElementById('overlay').style.display = 'flex'; } }
-                        else { scene.remove(o); obstacles.splice(i, 1); showCombo("كارۋان ئالغا!"); }
-                        continue;
+                score += speed;
+                time += 0.01;
+                
+                // Day/Night Cycle
+                dayCycle = (Math.sin(time * 0.1) + 1) / 2;
+                const skyColor = new THREE.Color(0xf4a261).lerp(new THREE.Color(0x264653), 1 - dayCycle);
+                scene.background = skyColor;
+                scene.fog.color = skyColor;
+                light.intensity = dayCycle;
+
+                // Spawning
+                if (Math.random() < 0.02) spawnObject();
+                
+                // Speed & Difficulty
+                let currentSpeed = (speed + (score / 5000)) * (effects.fever > 0 ? 2 : 1);
+
+                // Camel Animation & Movement
+                camel.position.x += (targetX - camel.position.x) * 0.15;
+                for(let i=0; i<4; i++) {
+                    const leg = camel.getObjectByName(`leg${i}`);
+                    leg.rotation.x = Math.sin(time * 10 + (i%2===0 ? 0 : Math.PI)) * 0.5;
+                }
+                camel.position.y = 0.6 + Math.abs(Math.sin(time * 10)) * 0.2;
+
+                // Environment
+                dunes.forEach(d => {
+                    d.position.z += currentSpeed * 0.5;
+                    if(d.position.z > 20) d.position.z = -180;
+                });
+
+                // Update Effects
+                if(effects.water > 0) effects.water--;
+                if(effects.fever > 0) effects.fever--;
+                updateEffectsUI();
+                updateUI();
+
+                // Object Management
+                const manage = (arr, callback) => {
+                    for (let i = arr.length - 1; i >= 0; i--) {
+                        const o = arr[i]; o.position.z += (o.userData.type === 'scorpion' ? currentSpeed * 1.5 : currentSpeed);
+                        if(callback(o, i)) { scene.remove(o); arr.splice(i, 1); }
+                        else if(o.position.z > 20) { scene.remove(o); arr.splice(i, 1); }
                     }
-                    if (o.position.z > 15) { scene.remove(o); obstacles.splice(i, 1); }
+                };
+
+                manage(items, (o) => {
+                    o.rotation.y += 0.05;
+                    if (o.position.distanceTo(camel.position) < 2.5) {
+                        if(o.userData.type === 'water') {
+                            effects.water = 600;
+                            showCombo("سۇ ئىچتىڭىز!");
+                            playSound(800, 0.2);
+                        } else if(o.userData.type === 'date') {
+                            score += 100;
+                            feverCount++;
+                            if(feverCount >= 5) {
+                                effects.fever = 400;
+                                feverCount = 0;
+                                showCombo("چاقماق تېزلىك!");
+                                playSound(1200, 0.3);
+                            }
+                            playSound(600, 0.1);
+                        } else if(o.userData.type === 'scroll') {
+                            showKnowledge();
+                            playSound(1000, 0.2);
+                        }
+                        for(let j=0; j<5; j++) createParticle(o.position, 0xffffff);
+                        return true;
+                    }
+                });
+
+                manage(obstacles, (o) => {
+                    o.rotation.x += 0.02;
+                    if (o.position.distanceTo(camel.position) < 2.2) {
+                        if(effects.water > 0 || effects.fever > 0) {
+                            showCombo("ئۆتۈپ كەتتىڭىز!");
+                            playSound(400, 0.1);
+                        } else {
+                            lives--; updateUI(); playSound(150, 0.3, 'sawtooth');
+                            if (lives <= 0) gameOver();
+                            else showCombo("دىققەت!");
+                        }
+                        for(let j=0; j<10; j++) createParticle(o.position, 0x264653);
+                        return true;
+                    }
+                });
+
+                // Particles
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.position.add(p.userData.vel);
+                    p.userData.life -= 0.02;
+                    p.scale.setScalar(p.userData.life);
+                    if(p.userData.life <= 0) { scene.remove(p); particles.splice(i, 1); }
                 }
             }
             renderer.render(scene, camera);
         }
         init(); animate();
     </script>
+</body>
+</html>
+
 </body>
 </html>

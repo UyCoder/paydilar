@@ -4,261 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🏹 ئوقيا ئېتىش: نىشاننى كۆزلە</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #2d6a4f; font-family: 'Tajawal', sans-serif; color: white; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #1a3a2a; font-family: 'Segoe UI', sans-serif; color: white; user-select: none; -webkit-user-select: none; cursor: crosshair; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 20px rgba(255,235,59,0.8); z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #ffeb3b, #fbc02d); color: #1b5e20; border: none; border-radius: 50px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #ffeb3b; color: #1b5e20; border-radius: 15px; cursor: pointer; text-decoration: none; }
+        
+        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        #score { font-size: 2.2rem; font-weight: 800; color: #ffeb3b; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 900; color: #ffeb3b; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(255,235,59,0.8); z-index: 50; }
+        
+        #crosshair { position: fixed; pointer-events: none; z-index: 5; width: 30px; height: 30px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+        .ch-ring { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(255,255,255,0.6); border-radius: 50%; }
+        .ch-dot { position: absolute; width: 4px; height: 4px; background: #ff4757; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
+        .overlay-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from{opacity:0;transform:scale(0.9)translateY(20px)} to{opacity:1;transform:scale(1)translateY(0)} }
+        .overlay-box h1 { font-size: 3rem; margin-bottom: 10px; color: #ffeb3b; }
+        .overlay-box p { font-size: 1.2rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+        .btn { padding: 14px 50px; font-size: 1.5rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(245,158,11,0.4); transition: transform 0.2s; font-family: inherit; }
+        .btn:active { transform: scale(0.95); }
+        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 12px 36px; font-size: 1.2rem; } #score { font-size: 1.6rem; } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
-    <div id="combo-text">ئورۇنلۇق!</div>
+    <div id="crosshair"><div class="ch-ring"></div><div class="ch-dot"></div></div>
+    <div id="ui"><div id="score">🏹 نومۇر: 0</div></div>
+    <div id="combo-text">مەرگەن!</div>
     <div id="overlay">
-        <h1>🏹 ئوقيا ئېتىش</h1>
-        <p>نىشانلارنى كۆزلەپ چىكىڭ! <br> "ئالتۇن نىشان" 200 نومۇر بېرىدۇ. <br> نىشانلار بەك چوڭ ۋە ئاسان.</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="overlay-box">
+            <h1>🏹 ئوقيا ئېتىش</h1>
+            <p>نىشانلارنى كۆزلەپ چىكىڭ!<br>🥇 ئالتۇن نىشان 200 نومۇر<br>نشانىڭىزنىڭ ئۈستىگە چىكىڭ</p>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, targets = [], arrows = [];
-        let score = 0, gameActive = false, audioCtx;
-        const clock = new THREE.Clock();
+        let scene, camera, renderer, targets = [], arrows = [], particles = [];
+        let score = 0, gameActive = false, spawnTimer = 0, streak = 0;
+        let bowGroup, bowString;
+        let audioCtx, mouse = new THREE.Vector2(), raycaster = new THREE.Raycaster();
 
-        function initAudio() { 
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        function playSound(type) {
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); g.gain.value = 0.06;
+                const t = audioCtx.currentTime;
+                if (type==='shoot') { o.type='sawtooth'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(100,t+0.1); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                else if (type==='hit') { o.type='square'; o.frequency.setValueAtTime(800,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.08); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
+                else if (type==='gold') { o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(900,t+0.1); o.frequency.setValueAtTime(1200,t+0.2); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
+                o.start(t); o.stop(t+0.25);
+            } catch(e) {}
         }
 
-        function playShoot() { 
-            if (!audioCtx) return; 
-            const o = audioCtx.createOscillator(); 
-            const g = audioCtx.createGain(); 
-            o.type = 'sawtooth'; 
-            o.frequency.setValueAtTime(400, audioCtx.currentTime); 
-            o.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1); 
-            g.gain.setValueAtTime(0.1, audioCtx.currentTime); 
-            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
-            o.connect(g); g.connect(audioCtx.destination); 
-            o.start(); o.stop(audioCtx.currentTime + 0.2); 
+        function addParticles(x,y,z,color,count=8) {
+            for (let i=0; i<count; i++) {
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.06+Math.random()*0.08, 3,3), new THREE.MeshBasicMaterial({color, transparent:true, opacity:1}));
+                p.position.set(x+(Math.random()-0.5)*0.3, y+(Math.random()-0.5)*0.3, z+(Math.random()-0.5)*0.3);
+                p.userData = {vx:(Math.random()-0.5)*0.15, vy:Math.random()*0.12, vz:(Math.random()-0.5)*0.15, life:1};
+                scene.add(p); particles.push(p);
+            }
         }
-
-        function playHit() {
-            if (!audioCtx) return; 
-            const o = audioCtx.createOscillator(); 
-            const g = audioCtx.createGain(); 
-            o.type = 'square'; 
-            o.frequency.setValueAtTime(800, audioCtx.currentTime); 
-            o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); 
-            g.gain.setValueAtTime(0.1, audioCtx.currentTime); 
-            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); 
-            o.connect(g); g.connect(audioCtx.destination); 
-            o.start(); o.stop(audioCtx.currentTime + 0.1);
+        function updateParticles() {
+            for (let i=particles.length-1; i>=0; i--) {
+                const p=particles[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz;
+                p.userData.vy-=0.005; p.userData.life-=0.03; p.material.opacity=Math.max(0,p.userData.life);
+                if (p.userData.life<=0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
+            }
         }
 
         function init() {
-            scene = new THREE.Scene(); 
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); 
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
-            document.body.appendChild(renderer.domElement);
-            new THREE.TextureLoader().load('pics/archery_bg.png', (t) => scene.background = t);
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x1a3a2a); scene.fog = new THREE.Fog(0x1a3a2a, 30, 80);
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+            renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; document.body.appendChild(renderer.domElement);
+            camera.position.set(0, 2, 8); camera.lookAt(0, 1, -10);
             
-            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambient); 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(5, 10, 5);
-            dirLight.castShadow = true;
-            scene.add(dirLight);
-
-            camera.position.z = 10;
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const dl = new THREE.DirectionalLight(0xffffff, 0.8); dl.position.set(5,15,10); dl.castShadow = true; scene.add(dl);
             
-            window.addEventListener('mousedown', shoot);
-            window.addEventListener('touchstart', e => { 
-                if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-                    shoot(e.touches[0]); e.preventDefault(); 
-                }
-            }, { passive: false });
+            // Ground
+            const gnd = new THREE.Mesh(new THREE.PlaneGeometry(60,80), new THREE.MeshStandardMaterial({color:0x2d5a3a, roughness:0.9}));
+            gnd.rotation.x = -Math.PI/2; gnd.position.set(0, -0.5, -20); gnd.receiveShadow = true; scene.add(gnd);
+            
+            // Bow at bottom center
+            bowGroup = new THREE.Group();
+            const bowMat = new THREE.MeshStandardMaterial({color:0x8d6e63});
+            const bowArc = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.08, 8, 20, Math.PI), bowMat);
+            bowArc.rotation.x = Math.PI/2; bowArc.rotation.z = Math.PI; bowGroup.add(bowArc);
+            const bowHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.4, 6), bowMat);
+            bowHandle.position.y = 0.2; bowHandle.rotation.z = Math.PI/2; bowGroup.add(bowHandle);
+            bowGroup.position.set(0, -1.5, 3); scene.add(bowGroup);
+            
+            window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight);});
         }
 
-        function createBeautifulTarget(isGolden) {
-            const group = new THREE.Group();
-            
-            // Rings
-            const colors = isGolden ? [0xffeb3b, 0xfbc02d, 0xffeb3b, 0xfbc02d] : [0xffffff, 0x000000, 0x2196f3, 0xf44336, 0xffeb3b];
-            const sizeStep = 2 / colors.length;
-            
-            for(let i=0; i<colors.length; i++) {
-                const r = 2 - (i * sizeStep);
-                const geo = new THREE.CylinderGeometry(r, r, 0.1, 32);
-                const mat = new THREE.MeshPhongMaterial({ color: colors[i] });
-                const mesh = new THREE.Mesh(geo, mat);
-                mesh.position.y = i * 0.02; // stack slightly to avoid z-fighting
-                mesh.castShadow = true;
-                group.add(mesh);
+        function createTarget(isGolden) {
+            const g = new THREE.Group();
+            const colors = isGolden ? [0xffeb3b, 0xfbc02d, 0xffeb3b, 0xfbc02d, 0xff8f00] : [0xffffff, 0x000000, 0x2196f3, 0xf44336, 0xffeb3b];
+            for (let i=0; i<colors.length; i++) {
+                const r = 2 - i*0.35;
+                const m = new THREE.Mesh(new THREE.CircleGeometry(r, 24), new THREE.MeshStandardMaterial({color:colors[i], side:THREE.DoubleSide}));
+                m.position.y = i*0.015; g.add(m);
             }
-            
-            // Stand
-            const standGeo = new THREE.CylinderGeometry(0.1, 0.1, 3);
-            const standMat = new THREE.MeshPhongMaterial({color: 0x5d4037});
-            const stand = new THREE.Mesh(standGeo, standMat);
-            stand.rotation.z = Math.PI / 2;
-            stand.position.y = -0.5;
-            stand.position.z = -1.5;
-            group.add(stand);
+            const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.5, 4), new THREE.MeshStandardMaterial({color:0x5d4037}));
+            stand.position.set(0, -1.25, -0.5); g.add(stand);
+            if (isGolden) {
+                const glow = new THREE.Mesh(new THREE.RingGeometry(0.1, 2.2, 24), new THREE.MeshBasicMaterial({color:0xffeb3b, transparent:true, opacity:0.1, side:THREE.DoubleSide}));
+                glow.position.y = 0.01; g.add(glow);
+            }
+            return g;
+        }
 
-            return group;
+        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 900); }
+
+        function createArrow() {
+            const g = new THREE.Group();
+            g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.5, 4), new THREE.MeshStandardMaterial({color:0x8d6e63})));
+            const tip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 4), new THREE.MeshStandardMaterial({color:0xcccccc, metalness:0.5}));
+            tip.position.z = -0.8; tip.rotation.x = Math.PI/2; g.add(tip);
+            for (let s of [-1,1]) {
+                const f = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.05), new THREE.MeshStandardMaterial({color:0xff4444}));
+                f.position.set(s*0.08, 0, 0.7); g.add(f);
+            }
+            return g;
         }
 
         function spawnTarget() {
-            const isGolden = Math.random() < 0.25;
-            const target = createBeautifulTarget(isGolden);
-            target.rotation.x = Math.PI / 2; 
-            target.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 6, -15);
-            target.userData = { isGolden: isGolden, speed: (Math.random() - 0.5) * 0.05, hit: false };
-            scene.add(target); 
-            targets.push(target);
-        }
-
-        function showCombo(txt) { 
-            const el = document.getElementById('combo-text'); 
-            el.innerText = txt; 
-            el.style.display = 'block'; 
-            setTimeout(() => el.style.display = 'none', 800); 
-        }
-
-        function createArrow() {
-            const group = new THREE.Group();
-            // Shaft
-            const shaftGeo = new THREE.CylinderGeometry(0.05, 0.05, 2);
-            const shaftMat = new THREE.MeshPhongMaterial({color: 0x8d6e63});
-            const shaft = new THREE.Mesh(shaftGeo, shaftMat);
-            shaft.rotation.x = Math.PI / 2;
-            group.add(shaft);
-            // Tip
-            const tipGeo = new THREE.ConeGeometry(0.1, 0.3);
-            const tipMat = new THREE.MeshPhongMaterial({color: 0x95a5a6});
-            const tip = new THREE.Mesh(tipGeo, tipMat);
-            tip.position.z = -1;
-            tip.rotation.x = -Math.PI / 2;
-            group.add(tip);
-            // Feathers
-            const featherGeo = new THREE.BoxGeometry(0.3, 0.3, 0.05);
-            const featherMat = new THREE.MeshPhongMaterial({color: 0xffffff});
-            const f1 = new THREE.Mesh(featherGeo, featherMat);
-            f1.position.z = 0.9;
-            group.add(f1);
-
-            return group;
+            const isGolden = Math.random() < 0.2;
+            const t = createTarget(isGolden);
+            t.position.set((Math.random()-0.5)*10, 1+Math.random()*3, -15-Math.random()*10);
+            t.rotation.x = Math.PI/2 * (Math.random()*0.5 + 0.75);
+            t.userData = { isGolden, speed:(Math.random()-0.5)*0.03, hit:false, appearTime:Date.now() };
+            t.scale.setScalar(0.8 + Math.random()*0.4);
+            scene.add(t); targets.push(t);
         }
 
         function shoot(e) {
             if (!gameActive) return;
-            initAudio(); playShoot();
+            initAudio(); playSound('shoot');
             
-            const mouse = new THREE.Vector2();
-            if(e.clientX !== undefined) {
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            }
-
-            const raycaster = new THREE.Raycaster(); 
-            raycaster.setFromCamera(mouse, camera);
-
-            // Create arrow
+            const cx = e.clientX || (e.touches && e.touches[0].clientX) || window.innerWidth/2;
+            const cy = e.clientY || (e.touches && e.touches[0].clientY) || window.innerHeight/2;
+            mouse.x = (cx / window.innerWidth) * 2 - 1;
+            mouse.y = -(cy / window.innerHeight) * 2 + 1;
+            
             const arrow = createArrow();
-            arrow.position.copy(camera.position);
-            arrow.position.y -= 1; // start slightly below camera
-            
-            // Arrow direction
+            arrow.position.copy(camera.position); arrow.position.y -= 1;
+            raycaster.setFromCamera(mouse, camera);
             const dir = raycaster.ray.direction.clone();
             arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,-1), dir);
+            arrow.userData = { velocity: dir.multiplyScalar(50), active: true };
+            scene.add(arrow); arrows.push(arrow);
             
-            arrow.userData = { velocity: dir.multiplyScalar(40), active: true };
-            scene.add(arrow);
-            arrows.push(arrow);
+            // Bow animation
+            bowGroup.rotation.z = 0.2; setTimeout(() => bowGroup.rotation.z = 0, 200);
         }
 
         function startGame() {
-            initAudio(); 
-            document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; 
-            document.getElementById('score').innerText = `ئۇتۇق: 0`;
-            targets.forEach(t => scene.remove(t)); targets = [];
-            arrows.forEach(a => scene.remove(a)); arrows = [];
-            for(let i=0; i<4; i++) spawnTarget();
+            initAudio(); document.getElementById('overlay').style.display = 'none';
+            score = 0; gameActive = true; streak = 0; spawnTimer = 0; 
+            document.getElementById('score').innerText = '🏹 نومۇر: 0';
+            targets.forEach(t=>scene.remove(t)); targets=[];
+            arrows.forEach(a=>{scene.remove(a); a.geometry.dispose(); a.material.dispose();}); arrows=[];
+            for(let i=0; i<5; i++) spawnTarget();
+            
+            window.addEventListener('mousedown', shoot);
+            window.addEventListener('touchstart', e => { if(!e.target.closest('.btn') && !e.target.closest('#back-btn') && e.target.tagName !== 'A') { shoot(e); e.preventDefault(); } }, {passive:false});
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            const dt = clock.getDelta();
-
+            
             if (gameActive) {
-                if (targets.length < 4) spawnTarget();
+                spawnTimer++; if (spawnTimer > 120) { if (targets.length < 8) spawnTarget(); spawnTimer=0; }
                 
                 // Move targets
-                targets.forEach(t => { 
-                    if(!t.userData.hit) {
-                        t.position.x += t.userData.speed; 
-                        if (Math.abs(t.position.x) > 10) t.userData.speed *= -1; 
+                targets.forEach(t => {
+                    if (!t.userData.hit) {
+                        t.position.x += t.userData.speed;
+                        t.position.y += Math.sin(Date.now()*0.001 + t.position.x)*0.002;
+                        if (Math.abs(t.position.x) > 8) t.userData.speed *= -1;
                     } else {
-                        t.position.y -= 10 * dt; // fall down after hit
+                        t.position.y -= 5 * 0.016;
                     }
                 });
-
-                // Clean up fallen targets
-                for(let i=targets.length-1; i>=0; i--) {
-                    if(targets[i].position.y < -10) {
-                        scene.remove(targets[i]);
-                        targets.splice(i, 1);
-                    }
+                for (let i=targets.length-1; i>=0; i--) {
+                    if (targets[i].position.y < -10) { scene.remove(targets[i]); targets.splice(i,1); }
                 }
-
+                
                 // Move arrows
-                for(let i=arrows.length-1; i>=0; i--) {
-                    let a = arrows[i];
-                    if(!a.userData.active) continue;
-
-                    a.position.addScaledVector(a.userData.velocity, dt);
-
-                    // Check collision
-                    const arrowBox = new THREE.Box3().setFromObject(a);
-                    for(let j=0; j<targets.length; j++) {
-                        let t = targets[j];
-                        if(t.userData.hit) continue;
-                        
-                        const targetBox = new THREE.Box3().setFromObject(t);
-                        if(arrowBox.intersectsBox(targetBox)) {
-                            // HIT!
-                            playHit();
-                            score += t.userData.isGolden ? 200 : 50; 
-                            document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
-                            showCombo(t.userData.isGolden ? "مەرگەن!" : "ئورۇنلۇق!");
-                            
-                            t.userData.hit = true;
-                            a.userData.active = false;
-                            scene.remove(a);
-                            arrows.splice(i, 1);
-                            break;
+                for (let i=arrows.length-1; i>=0; i--) {
+                    const a = arrows[i]; if (!a.userData.active) continue;
+                    a.position.addScaledVector(a.userData.velocity, 0.016);
+                    const aBox = new THREE.Box3().setFromObject(a);
+                    for (let j=0; j<targets.length; j++) {
+                        const t = targets[j]; if (t.userData.hit) continue;
+                        if (aBox.intersectsBox(new THREE.Box3().setFromObject(t))) {
+                            playSound(t.userData.isGolden ? 'gold' : 'hit');
+                            score += t.userData.isGolden ? 200 : 50;
+                            streak++;
+                            document.getElementById('score').innerText = `🏹 نومۇر: ${score}`;
+                            showCombo(t.userData.isGolden ? '🥇 مەرگەن!' : '🎯 ئورۇنلۇق!');
+                            addParticles(t.position.x, t.position.y, t.position.z, t.userData.isGolden ? 0xffeb3b : 0xf44336, 20);
+                            t.userData.hit = true; a.userData.active = false;
+                            scene.remove(a); arrows.splice(i,1); break;
                         }
                     }
-
-                    // Remove if too far
-                    if(a && a.position.z < -50) {
-                        scene.remove(a);
-                        arrows.splice(i, 1);
-                    }
+                    if (a && a.position.z < -50) { scene.remove(a); arrows.splice(i,1); }
                 }
-            }
+                
+                if (streak >= 3 && streak % 3 === 0) showCombo(`🔥 ${streak} قاتار!`);
+                
+                updateParticles();
+            } else { updateParticles(); }
+            
+            // Bow float
+            bowGroup.position.y = -1.5 + Math.sin(Date.now()*0.003)*0.1;
+            
             renderer.render(scene, camera);
         }
         init(); animate();
