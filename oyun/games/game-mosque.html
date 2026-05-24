@@ -1,399 +1,809 @@
 <!DOCTYPE html>
-<html lang="ug" dir="rtl">
+<html lang="ug">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🕌 مەسچىت نۇرى: چىراغ يېقىش</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { overflow: hidden; background: #011627; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; user-select: none; }
-        canvas { display: block; }
-        
-        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
-        .ui-box { background: rgba(1,22,39,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(0,212,255,0.3); padding: 8px 16px; border-radius: 12px; text-align: center; min-width: 100px; }
-        .ui-box .label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .ui-box .value { font-size: 1.6rem; font-weight: 800; color: #f9c74f; text-shadow: 0 0 15px rgba(249,199,79,0.3); }
-        #combo-indicator { font-size: 0.9rem; color: #00d4ff; display: none; margin-top: 4px; }
-        
-        #hint-text { position: absolute; bottom: 15%; left: 0; width: 100%; text-align: center; font-size: 1.2rem; color: rgba(255,255,255,0.3); pointer-events: none; z-index: 5; }
-        
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 30px #00d4ff, 0 0 60px rgba(0,212,255,0.5); z-index: 50; }
-        
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(1,22,39,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .overlay-box { background: rgba(20,30,50,0.9); border: 1px solid rgba(0,212,255,0.2); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: popIn 0.5s ease-out; }
-        @keyframes popIn { from{opacity:0;transform:scale(0.8)translateY(20px)} to{opacity:1;transform:scale(1)translateY(0)} }
-        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 10px; color: #f9c74f; text-shadow: 0 0 20px rgba(249,199,79,0.3); }
-        .overlay-box p { font-size: 1.1rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
-        .final-stats { display: flex; justify-content: center; gap: 25px; margin: 1rem 0 1.5rem; }
-        .final-stat { text-align: center; }
-        .final-stat .v { font-size: 2rem; font-weight: 800; color: #f9c74f; }
-        .final-stat .l { font-size: 0.8rem; color: #94a3b8; }
-        .btn { padding: 16px 50px; font-size: 1.5rem; background: linear-gradient(135deg, #00d4ff, #0066cc); color: white; border: none; border-radius: 60px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 700; box-shadow: 0 4px 20px rgba(0,212,255,0.4); transition: transform 0.2s; }
-        .btn:active { transform: scale(0.95); }
-        #back-btn { position: fixed; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
-        
-        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 14px 36px; font-size: 1.2rem; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مەسچىت ئەسلىمىسى - Mosque Memory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Amiri', serif;
+    background: #0a0a1a;
+    color: #e8d5b0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ---- Background ---- */
+.bg-stars {
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(1px 1px at 10% 20%, #fff5, transparent),
+        radial-gradient(1px 1px at 30% 60%, #fff4, transparent),
+        radial-gradient(2px 2px at 50% 10%, #fff6, transparent),
+        radial-gradient(1px 1px at 70% 40%, #fff3, transparent),
+        radial-gradient(2px 2px at 85% 70%, #fff5, transparent),
+        radial-gradient(1px 1px at 20% 80%, #fff4, transparent),
+        radial-gradient(2px 2px at 45% 90%, #fff3, transparent),
+        radial-gradient(1px 1px at 95% 15%, #fff5, transparent),
+        radial-gradient(1.5px 1.5px at 60% 5%, #fff4, transparent),
+        radial-gradient(1px 1px at 5% 50%, #fff3, transparent),
+        radial-gradient(2px 2px at 40% 35%, #fff6, transparent),
+        radial-gradient(1px 1px at 80% 85%, #fff4, transparent);
+    background-size: 200px 200px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ---- Wrapper ---- */
+.game-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 820px;
+    padding: 20px;
+}
+
+/* ---- Title Screen ---- */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+.screen.active { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-60px); opacity: 0; } }
+
+.title-logo {
+    font-size: 3.5em;
+    margin-bottom: 5px;
+    text-shadow: 0 0 40px #f0c06088, 0 0 80px #f0a03044;
+    animation: pulse 2s ease-in-out infinite;
+}
+.title-mosque {
+    font-size: 5em;
+    margin: 10px 0;
+    filter: drop-shadow(0 0 20px #f0c06066);
+}
+.title-text {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #f0d080;
+    text-shadow: 0 0 20px #f0a03055;
+    margin-bottom: 5px;
+}
+.title-sub {
+    font-size: 1em;
+    color: #a09070;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+/* ---- Buttons ---- */
+.btn {
+    font-family: 'Amiri', serif;
+    padding: 12px 40px;
+    font-size: 1.2em;
+    border: 2px solid #c8a050;
+    background: linear-gradient(135deg, #1a1a2e 0%, #2a1a0e 100%);
+    color: #f0d080;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 6px;
+    min-width: 160px;
+    position: relative;
+    overflow: hidden;
+}
+.btn:hover {
+    background: linear-gradient(135deg, #2a2a4e 0%, #3a2a1e 100%);
+    border-color: #f0d080;
+    box-shadow: 0 0 30px #f0a03044;
+    transform: translateY(-2px);
+}
+.btn:active { transform: translateY(0); }
+.btn-sm { padding: 8px 24px; font-size: 1em; min-width: 100px; }
+.btn-gold {
+    background: linear-gradient(135deg, #8a6a20 0%, #c8a040 100%);
+    color: #1a0a00;
+    border-color: #f0d080;
+    font-weight: 700;
+}
+.btn-gold:hover {
+    background: linear-gradient(135deg, #a08030 0%, #e8c060 100%);
+    box-shadow: 0 0 40px #f0a03066;
+}
+
+.diff-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 15px 0; }
+
+/* ---- Game Board ---- */
+#game-screen {
+    padding: 10px 0;
+}
+
+.stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #12122a88, #1a0e0888);
+    border: 1px solid #c8a05033;
+    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.1em;
+}
+.stat-icon { font-size: 1.3em; }
+.stat-value { color: #f0d080; font-weight: 700; min-width: 30px; display: inline-block; }
+.stat-value.danger { color: #ff6040; animation: pulse 0.5s ease-in-out infinite; }
+.stat-label { color: #908060; font-size: 0.85em; }
+
+/* Combo display */
+.combo-display {
+    font-size: 1em;
+    color: #f0d080;
+    min-width: 60px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+.combo-display.active { color: #ffd040; text-shadow: 0 0 20px #ffa03088; }
+.combo-display.fire { color: #ff6040; text-shadow: 0 0 30px #ff400088; animation: pulse 0.3s ease; }
+
+/* ---- Card Grid ---- */
+.card-grid {
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 700px;
+    perspective: 1000px;
+}
+.card-grid.easy { grid-template-columns: repeat(4, 1fr); }
+.card-grid.medium { grid-template-columns: repeat(4, 1fr); }
+.card-grid.hard { grid-template-columns: repeat(6, 1fr); }
+
+/* ---- Card ---- */
+.card {
+    aspect-ratio: 1;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border-radius: 12px;
+}
+.card.flipped { transform: rotateY(180deg); }
+.card.matched { transform: rotateY(180deg); }
+.card.matched .card-front {
+    box-shadow: 0 0 20px #f0c06066, 0 0 40px #f0a03033;
+    border-color: #f0d080;
+}
+.card.matched .card-back {
+    box-shadow: 0 0 20px #f0c06066, 0 0 40px #f0a03033;
+}
+.card.disabled { pointer-events: none; }
+
+.card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    border: 2px solid #c8a05055;
+    transition: all 0.3s ease;
+}
+
+.card-back {
+    background: linear-gradient(145deg, #1a1a3e 0%, #2a1a0e 100%);
+    z-index: 2;
+}
+.card-back::before {
+    content: '☪';
+    font-size: 1.8em;
+    opacity: 0.6;
+}
+.card-back-pattern {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid #c8a05022;
+    border-radius: 8px;
+    background: repeating-conic-gradient(#c8a05011 0% 25%, transparent 0% 50%) 0 0 / 20px 20px;
+}
+
+.card-front {
+    background: linear-gradient(145deg, #0e0e1a 0%, #1a0e08 100%);
+    transform: rotateY(180deg);
+    border-color: #c8a05044;
+}
+
+.card:hover:not(.flipped):not(.matched) .card-back {
+    border-color: #f0d08088;
+    box-shadow: 0 0 20px #f0a03033;
+}
+
+/* ---- Mosque Progress ---- */
+.mosque-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 12px 0;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #12122a44, #1a0e0844);
+    border: 1px solid #c8a05022;
+}
+.mosque-progress .icon {
+    font-size: 1.5em;
+    opacity: 0.15;
+    transition: all 0.5s ease;
+    filter: grayscale(1);
+}
+.mosque-progress .icon.lit {
+    opacity: 1;
+    filter: grayscale(0);
+    text-shadow: 0 0 20px #f0c06088, 0 0 40px #f0a03044;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ---- Complete Screen ---- */
+#complete-screen .final-score { font-size: 3em; color: #f0d080; margin: 10px 0; }
+#complete-screen .final-stars { font-size: 2.5em; margin: 10px 0; }
+#complete-screen .final-stat {
+    font-size: 1em;
+    color: #b0a080;
+    margin: 3px 0;
+}
+.star-icon {
+    display: inline-block;
+    opacity: 0.2;
+    transition: all 0.5s ease;
+    filter: grayscale(1);
+}
+.star-icon.got {
+    opacity: 1;
+    filter: grayscale(0);
+    text-shadow: 0 0 30px #f0d060;
+    animation: pulse 1s ease-in-out infinite;
+}
+.best-score {
+    font-size: 0.9em;
+    color: #c8a050;
+    margin-top: 10px;
+}
+.new-record {
+    color: #ffd040;
+    animation: pulse 0.5s ease-in-out infinite;
+    font-weight: 700;
+}
+
+/* ---- Effects ---- */
+.match-burst {
+    position: fixed;
+    pointer-events: none;
+    font-size: 2em;
+    animation: floatUp 0.8s ease-out forwards;
+    z-index: 100;
+}
+.wrong-flash {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at center, #ff202033, transparent);
+    pointer-events: none;
+    z-index: 50;
+    animation: fadeIn 0.2s ease-out reverse;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .game-wrapper { padding: 10px; }
+    .title-mosque { font-size: 3.5em; }
+    .title-text { font-size: 1.6em; }
+    .title-logo { font-size: 2.5em; }
+    .card-face { font-size: 1.8em; }
+    .card-grid { gap: 6px; }
+    .stats-bar { font-size: 0.85em; padding: 8px 10px; }
+    .btn { padding: 10px 24px; font-size: 1em; min-width: 120px; }
+    .diff-buttons { gap: 6px; }
+}
+
+/* ---- Audio Toggle ---- */
+.audio-toggle {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #c8a05044;
+    background: #0a0a1acc;
+    color: #e8d5b0;
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 200;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.audio-toggle:hover {
+    border-color: #f0d080;
+    background: #1a1a3ecc;
+}
+</style>
 </head>
 <body>
-    <div id="ui">
-        <div class="ui-box">
-            <div class="label">نۇرلار</div>
-            <div class="value" id="score-val">0</div>
-            <div id="combo-indicator">✨ <span id="combo-count">0</span> قاتار</div>
+
+<div class="bg-stars"></div>
+
+<button class="audio-toggle" id="audioToggle" title="ئاۋاز">🔊</button>
+
+<div class="game-wrapper">
+
+    <!-- Title Screen -->
+    <div class="screen active" id="title-screen">
+        <div class="title-logo">🏮</div>
+        <div class="title-mosque">🕌</div>
+        <div class="title-text">مەسچىت ئەسلىمىسى</div>
+        <div class="title-sub">— ماس كەلگەن كارتىلارنى تېپىڭ —</div>
+        <div style="margin:10px 0 5px;color:#908060;font-size:0.9em;">قىيىنلىق دەرىجىسىنى تاللاڭ:</div>
+        <div class="diff-buttons">
+            <button class="btn btn-sm" onclick="startGame('easy')">🌙 ئاسان (4×3)</button>
+            <button class="btn btn-sm btn-gold" onclick="startGame('medium')">⭐ ئوتتۇرا (4×4)</button>
+            <button class="btn btn-sm" onclick="startGame('hard')">🔥 قىيىن (6×4)</button>
         </div>
+        <div id="hs-display" style="margin-top:15px;font-size:0.9em;color:#c8a05088;"></div>
     </div>
-    <div id="hint-text">◈ چىراغلارنى چىكىڭ ◈</div>
-    <div id="combo-text">نۇرلۇق بولدى!</div>
-    
-    <div id="overlay">
-        <div class="overlay-box">
-            <h1 id="end-title">🕌 مەسچىت نۇرى</h1>
-            <p id="end-desc">مەسچىتنى يورۇتۇڭ! چىراغلارنى چىكىپ يىغىڭ.<br>🥇 ئالتۇن چىراغ 200 نومۇر، كۈمۈش چىراغ 50 نومۇر.</p>
-            <div class="final-stats" id="final-stats" style="display:none">
-                <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">نومۇر</div></div>
-                <div class="final-stat"><div class="v" id="f-lamps">0</div><div class="l">چىراغ</div></div>
+
+    <!-- Game Screen -->
+    <div class="screen" id="game-screen">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-icon">⏱️</span>
+                <span class="stat-value" id="timer-display">0</span>
+                <span class="stat-label">س</span>
             </div>
-            <button class="btn" onclick="startGame()">باشلاش</button>
+            <div class="stat-item">
+                <span class="stat-icon">👆</span>
+                <span class="stat-value" id="flip-display">0</span>
+                <span class="stat-label">قېتىم</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">✅</span>
+                <span class="stat-value" id="match-display">0</span>
+                <span class="stat-label">/ <span id="total-pairs">0</span></span>
+            </div>
+            <div class="combo-display" id="combo-display">🔥 ×<span id="combo-count">0</span></div>
+        </div>
+
+        <div class="card-grid" id="card-grid"></div>
+
+        <div class="mosque-progress" id="mosque-progress"></div>
+    </div>
+
+    <!-- Complete Screen -->
+    <div class="screen" id="complete-screen">
+        <div style="font-size:3em;margin:10px 0;" id="result-icon">🎉</div>
+        <div class="final-stars" id="final-stars">⭐⭐⭐</div>
+        <div class="final-score" id="final-score">0</div>
+        <div style="font-size:1.1em;color:#b0a080;">نومۇر</div>
+        <div class="final-stat">👆 <span id="final-flips">0</span> قېتىم ئايلاندى</div>
+        <div class="final-stat">⏱️ <span id="final-time">0</span> سېكۇنت</div>
+        <div class="best-score" id="best-score"></div>
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+            <button class="btn btn-sm" onclick="showTitle()">🏠 باش بەت</button>
+            <button class="btn btn-sm btn-gold" onclick="restartGame()">🔄 قايتا</button>
         </div>
     </div>
-    <a id="back-btn" href="../index.html">← كەينىگە</a>
 
-    <script>
-        let scene, camera, renderer, mosque, lamps = [], particles = [];
-        let score = 0, gameActive = false, lampCount = 0, comboCount = 0, comboTimer = 0, audioCtx;
-        let raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
-        let stars = [];
+</div>
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
-        function playSound(type) {
-            if (!audioCtx) return; try {
-                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
-                const t = audioCtx.currentTime;
-                if (type==='collect') { o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(900,t+0.12); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
-                else if (type==='gold') { o.type='triangle'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(900,t+0.1); o.frequency.setValueAtTime(1200,t+0.2); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
-                else if (type==='combo') { o.type='sine'; o.frequency.setValueAtTime(800,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.2); g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
-                else if (type==='miss') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(100,t+0.1); g.gain.setValueAtTime(0.04,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12); }
-                o.start(t); o.stop(t+0.3);
-            } catch(e) {}
-        }
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+let gameState = 'title'; // 'title' | 'playing' | 'complete'
+let difficulty = 'easy';
+let cards = [];
+let flippedCards = [];
+let matchedPairs = 0;
+let totalPairs = 0;
+let flipCount = 0;
+let comboCount = 0;
+let score = 0;
+let timer = 0;
+let timerInterval = null;
+let isProcessing = false;
+let canFlip = true;
+let gameId = 0;
 
-        function addParticles(x,y,z,color,count=15) {
-            for (let i=0; i<count; i++) {
-                const p = new THREE.Mesh(new THREE.SphereGeometry(0.05+Math.random()*0.08, 3,3), new THREE.MeshBasicMaterial({color, transparent:true, opacity:1}));
-                p.position.set(x+(Math.random()-0.5)*0.4, y+(Math.random()-0.5)*0.4, z+(Math.random()-0.5)*0.4);
-                p.userData = {vx:(Math.random()-0.5)*0.15, vy:Math.random()*0.12+0.05, vz:(Math.random()-0.5)*0.15, life:1};
-                scene.add(p); particles.push(p);
+// Audio
+let audioCtx = null;
+let soundEnabled = true;
+
+// Settings per difficulty
+const DIFF = {
+    easy:   { cols:4, rows:3, pairs:6, totalCards:12, time:120, label:'ئاسان', icon:'🌙' },
+    medium: { cols:4, rows:4, pairs:8, totalCards:16, time:150, label:'ئوتتۇرا', icon:'⭐' },
+    hard:   { cols:6, rows:4, pairs:12, totalCards:24, time:200, label:'قىيىن', icon:'🔥' }
+};
+
+// Card icons (Islamic themed)
+const ICONS = [
+    { icon:'🌙', name:'ئاي' },
+    { icon:'⭐', name:'يۇلتۇز' },
+    { icon:'🕌', name:'مەسچىت' },
+    { icon:'🏮', name:'فانۇس' },
+    { icon:'☪', name:'ئاي-يۇلتۇز' },
+    { icon:'📖', name:'قۇرئان' },
+    { icon:'💎', name:'ئالماس' },
+    { icon:'🌺', name:'گۈل' },
+    { icon:'🔮', name:'چىراغ' },
+    { icon:'🕋', name:'كەئبە' },
+    { icon:'💧', name:'زەمزەم' },
+    { icon:'🌿', name:'زەيتۇن' },
+    { icon:'✨', name:'نۇر' },
+    { icon:'🍃', name:'ياقۇت' },
+    { icon:'🔱', name:'تەسبىھ' },
+    { icon:'🏺', name:'سۇپا' },
+    { icon:'🌟', name:'سىر' },
+    { icon:'🍊', name:'خورما' }
+];
+
+
+// ============================================================
+//  HIGH SCORE (localStorage)
+// ============================================================
+function getHighScores() {
+    try { return JSON.parse(localStorage.getItem('mosqueMemoryHS')) || {}; }
+    catch { return {}; }
+}
+function setHighScore(diff, s) {
+    const hs = getHighScores();
+    if (!hs[diff] || s > hs[diff]) { hs[diff] = s; localStorage.setItem('mosqueMemoryHS', JSON.stringify(hs)); return true; }
+    return false;
+}
+function displayHighScores() {
+    const hs = getHighScores();
+    let html = '';
+    for (const d of ['easy','medium','hard']) {
+        if (hs[d]) html += `${DIFF[d].icon} ${DIFF[d].label}: ${hs[d]} &nbsp; `;
+    }
+    document.getElementById('hs-display').innerHTML = html || '';
+}
+
+// ============================================================
+//  AUDIO
+// ============================================================
+function initAudio() {
+    if (audioCtx) return;
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+}
+function playTone(freq, duration, type='sine', vol=0.15) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = vol;
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+}
+function playFlip() { playTone(600, 0.1, 'sine', 0.1); }
+function playMatch() { playTone(880, 0.15, 'sine', 0.15); setTimeout(() => playTone(1100, 0.2, 'sine', 0.12), 100); }
+function playWrong() { playTone(300, 0.15, 'square', 0.08); }
+function playWin() {
+    [0,100,200,300,400].forEach((d, i) => setTimeout(() => playTone([880,1100,1320,1100,880][i], 0.25, 'sine', 0.12), d));
+}
+function playCombo() { playTone(1320, 0.1, 'sine', 0.15); }
+
+// ============================================================
+//  CARD SHUFFLE (Fisher-Yates)
+// ============================================================
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ============================================================
+//  GAME LOGIC
+// ============================================================
+function startGame(diff) {
+    initAudio();
+    difficulty = diff;
+    const cfg = DIFF[diff];
+    totalPairs = cfg.pairs;
+    matchedPairs = 0;
+    flipCount = 0;
+    comboCount = 0;
+    score = 0;
+    flippedCards = [];
+    isProcessing = false;
+    canFlip = true;
+    timer = cfg.time;
+    gameId++;
+
+    // Generate cards
+    const selectedIcons = shuffle([...ICONS]).slice(0, totalPairs);
+    cards = [];
+    selectedIcons.forEach((ic, idx) => {
+        cards.push({ id: idx*2, icon: ic.icon, name: ic.name, pairId: idx, matched: false });
+        cards.push({ id: idx*2+1, icon: ic.icon, name: ic.name, pairId: idx, matched: false });
+    });
+    shuffle(cards);
+
+    gameState = 'playing';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('game-screen').classList.add('active');
+
+    renderBoard();
+
+    // Timer
+    if (timerInterval) clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timer--;
+        updateTimerDisplay();
+        if (timer <= 0) { endGame(false); }
+    }, 1000);
+
+    audioToggle.textContent = soundEnabled ? '🔊' : '🔇';
+}
+
+function renderBoard() {
+    const cfg = DIFF[difficulty];
+    const grid = document.getElementById('card-grid');
+    grid.className = 'card-grid ' + difficulty;
+    grid.innerHTML = '';
+
+    cards.forEach((card, idx) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.dataset.index = idx;
+        div.innerHTML = `
+            <div class="card-face card-back">
+                <div class="card-back-pattern"></div>
+            </div>
+            <div class="card-face card-front">${card.icon}</div>
+        `;
+        div.addEventListener('click', () => onCardClick(idx));
+        grid.appendChild(div);
+    });
+
+    // Mosque progress
+    renderMosqueProgress();
+
+    // Update stats
+    document.getElementById('flip-display').textContent = '0';
+    document.getElementById('match-display').textContent = '0';
+    document.getElementById('total-pairs').textContent = totalPairs;
+    updateComboDisplay();
+}
+
+function renderMosqueProgress() {
+    const container = document.getElementById('mosque-progress');
+    container.innerHTML = '';
+    for (let i = 0; i < totalPairs; i++) {
+        const span = document.createElement('span');
+        span.className = 'icon';
+        span.textContent = '🏮';
+        if (i < matchedPairs) span.classList.add('lit');
+        container.appendChild(span);
+    }
+}
+
+function onCardClick(index) {
+    if (!canFlip || isProcessing || gameState !== 'playing') return;
+    const card = cards[index];
+    if (card.matched) return;
+    const el = document.querySelector(`.card[data-index="${index}"]`);
+    if (el.classList.contains('flipped')) return;
+
+    // Flip card
+    el.classList.add('flipped');
+    flippedCards.push(index);
+    flipCount++;
+    document.getElementById('flip-display').textContent = flipCount;
+    playFlip();
+
+    if (flippedCards.length === 2) {
+        isProcessing = true;
+        checkMatch();
+    }
+}
+
+function checkMatch() {
+    const idxA = flippedCards[0];
+    const idxB = flippedCards[1];
+    const cardA = cards[idxA];
+    const cardB = cards[idxB];
+
+    const currentGameId = gameId;
+
+    if (cardA.pairId === cardB.pairId) {
+        // Match!
+        setTimeout(() => {
+            if (gameId !== currentGameId) return;
+            cardA.matched = true;
+            cardB.matched = true;
+            matchedPairs++;
+            comboCount++;
+            updateComboDisplay();
+
+            // Score: base 100 * combo multiplier
+            const comboMult = Math.min(comboCount, 5);
+            const matchScore = 100 * comboMult;
+            score += matchScore;
+
+            const elA = document.querySelector(`.card[data-index="${idxA}"]`);
+            const elB = document.querySelector(`.card[data-index="${idxB}"]`);
+            if (elA) elA.classList.add('matched');
+            if (elB) elB.classList.add('matched');
+
+            document.getElementById('match-display').textContent = matchedPairs;
+            renderMosqueProgress();
+
+            if (elB) createBurst(elB);
+
+            playMatch();
+            if (comboCount >= 2) playCombo();
+
+            flippedCards = [];
+            isProcessing = false;
+
+            if (matchedPairs === totalPairs) {
+                setTimeout(() => endGame(true), 600);
             }
-        }
-        function updateParticles() {
-            for (let i=particles.length-1; i>=0; i--) {
-                const p=particles[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz;
-                p.userData.vy-=0.003; p.userData.life-=0.025; p.material.opacity=Math.max(0,p.userData.life);
-                if (p.userData.life<=0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
-            }
-        }
+        }, 400);
+    } else {
+        // Wrong
+        setTimeout(() => {
+            if (gameId !== currentGameId) return;
+            comboCount = 0;
+            updateComboDisplay();
+            playWrong();
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 900); }
+            // Wrong flash
+            const flash = document.createElement('div');
+            flash.className = 'wrong-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 300);
 
-        function init() {
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x011627);
-            scene.fog = new THREE.Fog(0x011627, 20, 50);
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            document.body.appendChild(renderer.domElement);
+            const elA = document.querySelector(`.card[data-index="${idxA}"]`);
+            const elB = document.querySelector(`.card[data-index="${idxB}"]`);
+            if (elA) elA.classList.remove('flipped');
+            if (elB) elB.classList.remove('flipped');
 
-            // Lights
-            const ambient = new THREE.AmbientLight(0x2244aa, 0.3);
-            scene.add(ambient);
-            
-            const dirLight = new THREE.DirectionalLight(0x4466ff, 0.5);
-            dirLight.position.set(0, 10, 5);
-            dirLight.castShadow = true;
-            scene.add(dirLight);
+            flippedCards = [];
+            isProcessing = false;
+        }, 700);
+    }
+}
 
-            const pointLight = new THREE.PointLight(0x00d4ff, 2, 20);
-            pointLight.position.set(0, 4, 0);
-            scene.add(pointLight);
+function createBurst(refEl) {
+    const burst = document.createElement('div');
+    burst.className = 'match-burst';
+    burst.textContent = '✨';
+    const rect = refEl.getBoundingClientRect();
+    burst.style.left = (rect.left + rect.width/2 - 15) + 'px';
+    burst.style.top = (rect.top + rect.height/2 - 15) + 'px';
+    document.body.appendChild(burst);
+    setTimeout(() => burst.remove(), 900);
+}
 
-            // Stars background
-            for (let i=0; i<200; i++) {
-                const star = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.03+Math.random()*0.05, 2, 2),
-                    new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.3+Math.random()*0.5})
-                );
-                star.position.set((Math.random()-0.5)*100, Math.random()*30+5, (Math.random()-0.5)*100-20);
-                scene.add(star);
-                stars.push({ mesh: star, speed: 0.01+Math.random()*0.02 });
-            }
+function updateComboDisplay() {
+    const el = document.getElementById('combo-display');
+    const countEl = document.getElementById('combo-count');
+    countEl.textContent = comboCount;
+    el.className = 'combo-display';
+    if (comboCount >= 2) el.classList.add('active');
+    if (comboCount >= 4) el.classList.add('fire');
+}
 
-            // Build detailed Mosque
-            const mosqueGroup = new THREE.Group();
-            
-            // 1. Main building body
-            const bodyMat = new THREE.MeshPhongMaterial({ color: 0xffffff, roughness: 0.6 });
-            const mainBody = new THREE.Mesh(new THREE.BoxGeometry(12, 4, 10), bodyMat);
-            mainBody.position.y = 2;
-            mainBody.castShadow = true;
-            mosqueGroup.add(mainBody);
+function updateTimerDisplay() {
+    const el = document.getElementById('timer-display');
+    el.textContent = timer;
+    el.className = 'stat-value' + (timer <= 10 ? ' danger' : '');
+}
 
-            // 2. Arched windows
-            const windowMat = new THREE.MeshPhongMaterial({ color: 0x1a3a5a, emissive: 0x00d4ff, emissiveIntensity: 0.15 });
-            for (let side of [-1, 1]) {
-                for (let i=-1; i<=1; i+=2) {
-                    const arch = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.1, 8, 12, Math.PI), windowMat);
-                    arch.position.set(i*3.5, 2.2, side*5.01);
-                    arch.rotation.x = Math.PI;
-                    mosqueGroup.add(arch);
-                    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.2, 0.1), new THREE.MeshPhongMaterial({color: 0xffffff}));
-                    pillar.position.set(i*3.5, 1.6, side*5.01);
-                    mosqueGroup.add(pillar);
-                }
-            }
+function endGame(won) {
+    if (timerInterval) clearInterval(timerInterval);
+    gameState = 'complete';
+    canFlip = false;
 
-            // 3. Dome
-            const domeMat = new THREE.MeshPhongMaterial({ color: 0x00d4ff, emissive: 0x0066aa, emissiveIntensity: 0.1, shininess: 100 });
-            const domeGeo = new THREE.SphereGeometry(3, 32, 16, 0, Math.PI*2, 0, Math.PI/2);
-            const dome = new THREE.Mesh(domeGeo, domeMat);
-            dome.position.y = 4;
-            dome.castShadow = true;
-            mosqueGroup.add(dome);
+    if (won) playWin();
 
-            // Dome crescent
-            const crescentMat = new THREE.MeshPhongMaterial({ color: 0xffd700, emissive: 0xffd700, emissiveIntensity: 0.3 });
-            const crescent = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.06, 4, 8), crescentMat);
-            crescent.position.y = 5.5;
-            crescent.rotation.x = Math.PI/2;
-            mosqueGroup.add(crescent);
+    // Calculate stars
+    const cfg = DIFF[difficulty];
+    const efficiency = Math.max(0, 1 - (flipCount - totalPairs) / (totalPairs * 3));
+    let stars = 1;
+    if (efficiency > 0.5) stars = 2;
+    if (efficiency > 0.75) stars = 3;
+    if (difficulty === 'hard') stars = Math.min(3, stars + 1); // bonus star for hard
 
-            // 4. Minarets (4 corners)
-            const minMat = new THREE.MeshPhongMaterial({ color: 0xeeeeee });
-            const minPositions = [[-6, -4], [-6, 4], [6, -4], [6, 4]];
-            minPositions.forEach(([x, z]) => {
-                const min = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 5, 8), minMat);
-                min.position.set(x, 2.5, z);
-                min.castShadow = true;
-                mosqueGroup.add(min);
-                // Top cone
-                const top = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 6), crescentMat);
-                top.position.set(x, 5.25, z);
-                mosqueGroup.add(top);
-            });
+    // Time bonus
+    const timeUsed = cfg.time - timer;
+    const timeEfficiency = Math.max(0, 1 - timeUsed / cfg.time);
+    if (timeEfficiency > 0.5 && stars < 3) stars = Math.min(3, stars + 1);
 
-            // 5. Entrance arch (front)
-            const entArch = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.15, 8, 16, Math.PI), new THREE.MeshPhongMaterial({color: 0x00aaff}));
-            entArch.position.set(0, 1.5, 5.01);
-            entArch.rotation.x = Math.PI;
-            mosqueGroup.add(entArch);
+    // Final score
+    const finalScore = score + (won ? 500 * stars : 0);
+    score = finalScore;
 
-            // 6. Decorative lines
-            const lineMat = new THREE.MeshPhongMaterial({ color: 0x00aaff });
-            for (let i=-4; i<=4; i+=2) {
-                const line = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 10.2), lineMat);
-                line.position.set(i, 0.5, 0);
-                mosqueGroup.add(line);
-            }
+    const isNewRecord = setHighScore(difficulty, finalScore);
 
-            // Position mosque
-            mosqueGroup.position.set(0, -1, -15);
-            mosque = mosqueGroup;
-            scene.add(mosque);
+    // Show complete screen
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('complete-screen').classList.add('active');
 
-            // Ground reflection
-            const ground = new THREE.Mesh(
-                new THREE.PlaneGeometry(30, 30),
-                new THREE.MeshPhongMaterial({ color: 0x0a1a3a, transparent: true, opacity: 0.5 })
-            );
-            ground.rotation.x = -Math.PI/2;
-            ground.position.set(0, -0.5, -12);
-            scene.add(ground);
+    document.getElementById('result-icon').textContent = won ? '🎉' : '⏰';
+    document.getElementById('final-stars').innerHTML = won
+        ? Array.from({length:3}, (_,i) => `<span class="star-icon${i<stars?' got':''}">⭐</span>`).join('')
+        : '💔';
+    document.getElementById('final-score').textContent = finalScore;
+    document.getElementById('final-flips').textContent = flipCount;
+    document.getElementById('final-time').textContent = timeUsed;
 
-            camera.position.set(0, 4, 12);
-            camera.lookAt(0, 2, -8);
+    const bestEl = document.getElementById('best-score');
+    const hs = getHighScores();
+    bestEl.innerHTML = hs[difficulty]
+        ? (isNewRecord
+            ? `<span class="new-record">🏆 يېڭى رېكورد! ${hs[difficulty]} نومۇر</span>`
+            : `🏆 ئەڭ يۇقىرى: ${hs[difficulty]}`)
+        : `🏆 ${finalScore} نومۇر (يېڭى)`;
+}
 
-            // Click/touch handling
-            window.addEventListener('mousedown', e => {
-                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-                onCollect(e);
-            });
-            window.addEventListener('touchstart', e => {
-                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
-                onCollect(e.touches[0]);
-                e.preventDefault();
-            }, { passive: false });
+function showTitle() {
+    if (timerInterval) clearInterval(timerInterval);
+    gameState = 'title';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('title-screen').classList.add('active');
+    displayHighScores();
+}
 
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth/window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
+function restartGame() {
+    startGame(difficulty);
+}
 
-        function spawnLamp() {
-            const isGold = Math.random() < 0.15;
-            const r = isGold ? 1.0 : 0.5;
-            const color = isGold ? 0xffd700 : 0xf9c74f;
-            const emissive = isGold ? 0xffd700 : 0xf9c74f;
-            
-            const lamp = new THREE.Group();
-            
-            // Main body
-            const lampMat = new THREE.MeshPhongMaterial({ 
-                color, emissive, emissiveIntensity: isGold ? 0.5 : 0.3,
-                transparent: true, opacity: 0.9
-            });
-            const body = new THREE.Mesh(new THREE.OctahedronGeometry(r, 0), lampMat);
-            lamp.add(body);
-            
-            // Glow ring
-            if (isGold) {
-                const ring = new THREE.Mesh(
-                    new THREE.RingGeometry(r*0.8, r*1.2, 16),
-                    new THREE.MeshBasicMaterial({ color: 0xffd700, transparent: true, opacity: 0.2, side: THREE.DoubleSide })
-                );
-                ring.rotation.x = Math.PI/2;
-                lamp.add(ring);
-            }
-            
-            // Light glow
-            const glow = new THREE.Mesh(
-                new THREE.SphereGeometry(r*1.5, 8, 8),
-                new THREE.MeshBasicMaterial({ color: emissive, transparent: true, opacity: 0.1 })
-            );
-            lamp.add(glow);
+// ============================================================
+//  AUDIO TOGGLE
+// ============================================================
+document.getElementById('audioToggle').addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    document.getElementById('audioToggle').textContent = soundEnabled ? '🔊' : '🔇';
+    if (soundEnabled) initAudio();
+});
 
-            const x = (Math.random() - 0.5) * 14;
-            const y = 1 + Math.random() * 5;
-            const z = -5 - Math.random() * 12;
-            lamp.position.set(x, y, z);
-            lamp.userData = { isGold, baseY: y };
-            
-            scene.add(lamp);
-            lamps.push(lamp);
-        }
-
-        function onCollect(e) {
-            if (!gameActive) return;
-            initAudio();
-            
-            const clientX = e.clientX || e.pageX || window.innerWidth/2;
-            const clientY = e.clientY || e.pageY || window.innerHeight/2;
-            mouse.x = (clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-            
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(lamps, true);
-
-            if (intersects.length > 0) {
-                // Find the parent group (lamp)
-                let hitObj = intersects[0].object;
-                while (hitObj.parent && !lamps.includes(hitObj)) {
-                    hitObj = hitObj.parent;
-                }
-                if (!lamps.includes(hitObj)) return;
-                
-                const isGold = hitObj.userData.isGold;
-                score += isGold ? 200 : 50;
-                lampCount++;
-                comboCount++;
-                comboTimer = 150;
-                updateUI();
-                
-                showCombo(isGold ? "🥇 ئالتۇن چىراغ!" : "✨ نۇرلۇق بولدى!");
-                playSound(isGold ? 'gold' : 'collect');
-                addParticles(hitObj.position.x, hitObj.position.y, hitObj.position.z, isGold ? 0xffd700 : 0x00d4ff, 20);
-                
-                if (comboCount > 0 && comboCount % 5 === 0) {
-                    showCombo(`🔥 ${comboCount} قاتار!`);
-                    playSound('combo');
-                    addParticles(hitObj.position.x, hitObj.position.y, hitObj.position.z, 0xffffff, 30);
-                }
-                
-                scene.remove(hitObj);
-                lamps = lamps.filter(l => l !== hitObj);
-            } else {
-                playSound('miss');
-            }
-        }
-
-        function updateUI() {
-            document.getElementById('score-val').innerText = score;
-            document.getElementById('combo-count').innerText = comboCount;
-            document.getElementById('combo-indicator').style.display = comboCount >= 3 ? 'block' : 'none';
-        }
-
-        function startGame() {
-            initAudio();
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('end-title').innerText = '🕌 مەسچىت نۇرى';
-            document.getElementById('end-desc').innerHTML = 'مەسچىتنى يورۇتۇڭ! چىراغلارنى چىكىپ يىغىڭ.<br>🥇 ئالتۇن چىراغ 200 نومۇر، كۈمۈش چىراغ 50 نومۇر.';
-            document.getElementById('final-stats').style.display = 'none';
-            score = 0; lampCount = 0; comboCount = 0; comboTimer = 0; gameActive = true;
-            lamps.forEach(l => scene.remove(l));
-            lamps = [];
-            particles.forEach(p => { scene.remove(p); p.geometry.dispose(); p.material.dispose(); });
-            particles = [];
-            updateUI();
-            // Initial lamps
-            for (let i=0; i<5; i++) spawnLamp();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            if (gameActive) {
-                // Spawn lamps
-                if (Math.random() < 0.03 && lamps.length < 15) spawnLamp();
-                
-                // Combo timer
-                if (comboTimer > 0) {
-                    comboTimer--;
-                    if (comboTimer === 0) { comboCount = 0; updateUI(); }
-                }
-                
-                // Animate lamps - float and rotate
-                lamps.forEach((l, i) => {
-                    l.rotation.y += 0.01 + (l.userData.isGold ? 0.02 : 0);
-                    l.rotation.x += 0.005;
-                    l.position.y = l.userData.baseY + Math.sin(Date.now()*0.002 + i) * 0.3;
-                });
-                
-                // Animate mosque - subtle float
-                mosque.position.y = -1 + Math.sin(Date.now()*0.001) * 0.05;
-                
-                // Stars twinkle
-                stars.forEach((s, i) => {
-                    s.mesh.material.opacity = 0.3 + Math.sin(Date.now()*0.002 + i) * 0.3;
-                });
-                
-                // Auto-disappear old lamps
-                for (let i = lamps.length-1; i>=0; i--) {
-                    if (lamps[i].userData.spawnTime === undefined) lamps[i].userData.spawnTime = Date.now();
-                    if (Date.now() - lamps[i].userData.spawnTime > 8000) {
-                        scene.remove(lamps[i]);
-                        lamps.splice(i, 1);
-                    }
-                }
-                
-                updateParticles();
-            } else {
-                updateParticles();
-                stars.forEach((s, i) => {
-                    s.mesh.material.opacity = 0.3 + Math.sin(Date.now()*0.002 + i) * 0.3;
-                });
-                mosque.position.y = -1 + Math.sin(Date.now()*0.001) * 0.05;
-            }
-            
-            renderer.render(scene, camera);
-        }
-
-        init(); animate();
-    </script>
+// ============================================================
+//  INIT
+// ============================================================
+displayHighScores();
+</script>
 </body>
 </html>

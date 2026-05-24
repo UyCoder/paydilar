@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ug">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>⭐ يۇلتۇز تۇت - Star Catch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#0a0a2e;font-family:sans-serif;touch-action:none}
+canvas{display:block}
+#ui{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;pointer-events:none;z-index:5;gap:8px}
+#ui>div{background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);padding:8px 18px;border-radius:14px;text-align:center;color:#fff;min-width:70px}
+#ui .l{font-size:0.7rem;color:#94a3b8}
+#ui .v{font-size:1.8rem;font-weight:900;color:#fbbf24}
+#ui .v.heat{color:#ff4444;text-shadow:0 0 20px #ff444488}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(10px)}
+#overlay.hidden{display:none}
+.obox{background:linear-gradient(145deg,#1a1a3e,#0d0d2b);border:2px solid rgba(147,51,234,0.3);border-radius:30px;padding:2.5rem;text-align:center;max-width:500px;width:90%;animation:popIn 0.5s}
+@keyframes popIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.obox h1{font-size:3rem;margin-bottom:5px}
+.obox .title{font-size:2rem;font-weight:900;color:#a855f7;margin:8px 0;text-shadow:0 0 20px rgba(168,85,247,0.3)}
+.obox p{color:#94a3b8;font-size:1.1rem;line-height:1.6;margin:10px 0 20px}
+.btn{padding:16px 50px;font-size:1.4rem;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:900;box-shadow:0 8px 25px rgba(139,92,246,0.4);transition:transform 0.15s}
+.btn:active{transform:scale(0.92)}
+.btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 8px 25px rgba(245,158,11,0.4)}
+.stats{display:flex;justify-content:center;gap:20px;margin:15px 0}
+.stats .s{text-align:center}
+.stats .s .val{font-size:2rem;font-weight:900;color:#fbbf24}
+.stats .s .lbl{font-size:0.8rem;color:#94a3b8}
+#back-btn{position:fixed;bottom:20px;left:20px;padding:10px 20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:12px;cursor:pointer;text-decoration:none;font-size:0.9rem;z-index:10;backdrop-filter:blur(8px)}
+</style>
+</head>
+<body>
+<div id="ui">
+<div><div class="l">نومۇر</div><div class="v" id="score">0</div></div>
+<div><div class="l">باسقۇچ</div><div class="v" id="level">1</div></div>
+<div><div class="l">تۇت. %</div><div class="v" id="caught">0%</div></div>
+</div>
+<div id="overlay">
+<div class="obox">
+<h1>⭐🌙</h1>
+<div class="title">يۇلتۇز تۇت</div>
+<p>سېۋەتنى سولغا ياكى ئوڭغا يۆتكەپ ئاسماندىن چۈشۈۋاتقان يۇلتۇزلارنى تۇتۇڭ! ئالتۇن يۇلتۇز كۆپ نومۇر! بومبىدىن ساقلىنىڭ!</p>
+<div id="final-stats" class="stats" style="display:none">
+<div class="s"><div class="val" id="f-score">0</div><div class="lbl">نومۇر</div></div>
+<div class="s"><div class="val" id="f-level">1</div><div class="lbl">باسقۇچ</div></div>
+<div class="s"><div class="val" id="f-best">0</div><div class="lbl">ئەڭ ياخشى</div></div>
+</div>
+<button class="btn" onclick="startGame()">🌟 باشلاش</button>
+<p style="color:#64748b;font-size:0.8rem;margin-top:8px">← → كۇنۇپكا ياكى بارماق بىلەن باشقۇرۇڭ</p>
+</div>
+</div>
+<canvas id="c"></canvas>
+<a id="back-btn" href="../index.html">← كەينىگە</a>
+<script>
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+let gameActive=false,score=0,level=1,caught=0,total=0,catchPct=0;
+let bsk={x:0,y:0,w:120,h:40};
+let items=[],sparkles=[],comboCount=0,dropTimer=0;
+let keys={},touchX=null,frame=0,bestScore=0,insideMisses=0;
+let audioCtx=null;
+try{bestScore=parseInt(localStorage.getItem('catchBest'))||0}catch(e){}
+
+function initAudio(){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function playTone(f,d,t,v){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+d)}catch(e){}}
+function playCatch(){playTone(800,0.1,'sine',0.1);setTimeout(()=>playTone(1200,0.12,'sine',0.08),80)}
+function playGoldCatch(){playTone(1000,0.12,'sine',0.12);setTimeout(()=>playTone(1500,0.15,'sine',0.1),100)}
+function playBomb(){playTone(150,0.3,'sawtooth',0.15)}
+function playLevelUp(){[0,100,200].forEach((d,i)=>setTimeout(()=>playTone([660,880,1100][i],0.2,'sine',0.1),d))}
+
+const ITEM_TYPES=[
+{emoji:'⭐',points:10,color:'#fbbf24',radius:16,weight:1},
+{emoji:'🌟',points:25,color:'#f59e0b',radius:18,weight:0.7,rare:true},
+{emoji:'💎',points:50,color:'#10b981',radius:14,weight:0.5,rare:true},
+{emoji:'🔮',points:15,color:'#a855f7',radius:15,weight:0.8},
+{emoji:'💫',points:20,color:'#3b82f6',radius:13,weight:0.6,rare:true},
+{emoji:'💣',points:-1,color:'#e74c3c',radius:18,weight:0.3,bomb:true},
+];
+
+document.addEventListener('keydown',e=>{keys[e.key]=true})
+document.addEventListener('keyup',e=>{keys[e.key]=false})
+c.addEventListener('touchmove',e=>{if(gameActive){e.preventDefault();touchX=e.touches[0].clientX}},{passive:false})
+c.addEventListener('mousemove',e=>{if(gameActive)touchX=e.clientX})
+c.addEventListener('click',()=>{if(!gameActive)startGame()})
+
+function startGame(){
+initAudio();
+document.getElementById('overlay').classList.add('hidden');
+score=0;level=1;caught=0;total=0;insideMisses=0;
+items=[];sparkles=[];comboCount=0;dropTimer=0;
+bsk.x=c.width/2;bsk.y=c.height-80;
+gameActive=true;updateUI();
+requestAnimationFrame(update);
+}
+
+function dropItem(){
+const isBomb=Math.random()<0.1+level*0.01;
+const available=ITEM_TYPES.filter(t=>isBomb?t.bomb:!t.bomb);
+const weighted=[];
+for(const t of available){
+const count=Math.round((t.weight||1)*10);
+for(let i=0;i<count;i++)weighted.push(t);
+}
+const type=weighted[Math.floor(Math.random()*weighted.length)];
+const x=40+Math.random()*(c.width-80);
+const speed=1.5+level*0.3+Math.random()*0.5;
+const wobble=(Math.random()-0.5)*2;
+items.push({x,y:-20,...type,vy:speed,vx:wobble*0.3,rot:0,rotV:(Math.random()-0.5)*0.1,glow:0});
+}
+
+function catchItem(idx){
+const item=items[idx];
+if(item.bomb){
+playBomb();comboCount=0;insideMisses++;
+spawnSparkles(item.x,item.y,'#ff4444',20);
+items.splice(idx,1);
+updateUI();
+return;
+}
+const isGold=item.points>=25;
+isGold?playGoldCatch():playCatch();
+score+=item.points*(1+comboCount*0.1);
+caught++;total++;comboCount++;
+spawnSparkles(item.x,item.y,item.color,8);
+items.splice(idx,1);
+updateUI();
+// Level check
+if(score>=level*200){level++;playLevelUp();document.getElementById('level').textContent=level}
+}
+
+function spawnSparkles(x,y,color,count){
+for(let i=0;i<count;i++){
+const a=Math.random()*Math.PI*2;
+const sp=2+Math.random()*5;
+sparkles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,color,radius:2+Math.random()*4});
+}
+}
+
+function updateUI(){
+document.getElementById('score').textContent=Math.floor(score);
+total=Math.max(caught,total);
+catchPct=total>0?Math.round(caught/total*100):0;
+const ce=document.getElementById('caught');
+ce.textContent=catchPct+'%';
+ce.className='v'+(catchPct<30?' heat':'');
+}
+
+function update(){
+if(!gameActive)return;
+requestAnimationFrame(update);
+frame++;
+
+// Basket movement
+if(keys['ArrowLeft']||keys['a'])bsk.x-=7+level;
+if(keys['ArrowRight']||keys['d'])bsk.x+=7+level;
+if(touchX!==null){
+const diff=touchX-bsk.x;
+if(Math.abs(diff)>5)bsk.x+=Math.sign(diff)*Math.min(Math.abs(diff)*0.15,8+level);
+}
+bsk.x=Math.max(bsk.w/2,Math.min(c.width-bsk.w/2,bsk.x));
+
+// Drop items
+dropTimer++;
+const interval=Math.max(15,50-level*2);
+if(dropTimer%interval===0)dropItem();
+
+// Update items
+for(let i=items.length-1;i>=0;i--){
+const item=items[i];
+item.x+=item.vx+Math.sin(frame*0.02+item.x*0.01)*0.3;
+item.y+=item.vy;
+item.rot+=item.rotV;
+item.glow=Math.sin(frame*0.1+item.x)*0.3+0.7;
+// Catch check
+if(item.y+item.radius>bsk.y-bsk.h/2&&
+item.y-item.radius<bsk.y+bsk.h/2&&
+Math.abs(item.x-bsk.x)<bsk.w/2+item.radius-5){
+catchItem(i);continue;
+}
+if(item.y>c.height+30){
+if(!item.bomb){comboCount=0;insideMisses++;updateUI()}
+items.splice(i,1);
+}
+}
+
+// Sparkles
+for(let i=sparkles.length-1;i>=0;i--){
+const p=sparkles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.08;p.life-=0.02;
+if(p.life<=0)sparkles.splice(i,1);
+}
+
+// Game over check
+if(insideMisses>=5){endGame();return}
+
+// DRAW
+ctx.clearRect(0,0,c.width,c.height);
+
+// Night sky background
+const bg=ctx.createRadialGradient(c.width/2,c.height-100,50,c.width/2,c.height/2,c.width);
+bg.addColorStop(0,'#1a1a3e');bg.addColorStop(0.5,'#0f0f2e');bg.addColorStop(1,'#050515');
+ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);
+
+// Stars in background
+for(let i=0;i<50;i++){
+const sx=(i*137.5+i*i*5.3)%c.width;
+const sy=(i*97.3+i*i*3.7)%c.height;
+const size=0.5+(i*i%10)*0.2;
+ctx.fillStyle=`rgba(255,255,255,${0.2+Math.sin(frame*0.02+i)*0.1})`;
+ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();
+}
+
+// Crescent moon
+ctx.save();
+ctx.translate(c.width-80,60);
+ctx.fillStyle='#fbbf24';
+ctx.shadowColor='#fbbf24';ctx.shadowBlur=40;
+ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#0a0a2e';
+ctx.beginPath();ctx.arc(10,-8,25,0,Math.PI*2);ctx.fill();
+ctx.shadowBlur=0;
+ctx.restore();
+
+// Falling items
+for(const item of items){
+ctx.save();ctx.translate(item.x,item.y);
+const r=item.radius;
+if(item.bomb){
+ctx.shadowColor='#ff4444';ctx.shadowBlur=30*item.glow;
+// Bomb body
+ctx.fillStyle='#2c3e50';
+ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
+// Fuse
+ctx.strokeStyle='#8b4513';ctx.lineWidth=3;
+ctx.beginPath();ctx.moveTo(0,-r);ctx.quadraticCurveTo(5,-r-10,10,-r-15);
+ctx.stroke();
+// Spark
+ctx.fillStyle='#ff6600';ctx.shadowColor='#ff6600';ctx.shadowBlur=15;
+ctx.beginPath();ctx.arc(10,-r-15,3+Math.sin(frame*0.3)*2,0,Math.PI*2);ctx.fill();
+ctx.shadowBlur=0;
+ctx.font='12px sans-serif';ctx.textAlign='center';
+ctx.fillStyle='#fff';ctx.fillText('💣',0,4);
+}else{
+ctx.shadowColor=item.color;ctx.shadowBlur=25*item.glow;
+// Glow ring
+const grd=ctx.createRadialGradient(0,0,0,0,r+5,r+15);
+grd.addColorStop(0,item.color+'44');grd.addColorStop(1,'transparent');
+ctx.fillStyle=grd;
+ctx.beginPath();ctx.arc(0,0,r+15,0,Math.PI*2);ctx.fill();
+// Core
+ctx.fillStyle=item.color;
+ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
+// Emoji
+ctx.shadowBlur=0;
+ctx.font=`${r*1.2}px sans-serif`;
+ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.fillText(item.emoji,0,2);
+}
+ctx.restore();
+}
+
+// Basket
+ctx.save();ctx.translate(bsk.x,bsk.y);
+ctx.shadowColor='#a855f7';ctx.shadowBlur=20;
+// Basket body
+const bgrd=ctx.createLinearGradient(-bsk.w/2,-bsk.h/2,bsk.w/2,bsk.h/2);
+bgrd.addColorStop(0,'#8b5cf6');bgrd.addColorStop(1,'#6d28d9');
+ctx.fillStyle=bgrd;
+ctx.beginPath();
+ctx.moveTo(-bsk.w/2+10,-bsk.h/2);
+ctx.lineTo(bsk.w/2-10,-bsk.h/2);
+ctx.lineTo(bsk.w/2+5,bsk.h/2);
+ctx.lineTo(-bsk.w/2-5,bsk.h/2);
+ctx.closePath();ctx.fill();
+// Weave pattern
+ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;
+for(let i=0;i<5;i++){
+const yy=-bsk.h/2+i*(bsk.h/5);
+ctx.beginPath();ctx.moveTo(-bsk.w/2+5+i*3,yy+(i%2)*5);
+ctx.lineTo(bsk.w/2-5-i*3,yy+(i%2)*5);
+ctx.stroke();
+}
+// Glow rim
+ctx.strokeStyle='rgba(168,85,247,0.5)';ctx.lineWidth=2;
+ctx.beginPath();ctx.moveTo(-bsk.w/2+5,-bsk.h/2);ctx.lineTo(bsk.w/2-5,-bsk.h/2);
+ctx.stroke();
+ctx.shadowBlur=0;
+ctx.restore();
+
+// Sparkles
+for(const p of sparkles){
+ctx.globalAlpha=p.life;
+ctx.fillStyle=p.color;
+ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fill();
+}
+ctx.globalAlpha=1;
+}
+
+function endGame(){
+gameActive=false;
+try{if(Math.floor(score)>bestScore){bestScore=Math.floor(score);localStorage.setItem('catchBest',bestScore)}}catch(e){}
+document.getElementById('overlay').classList.remove('hidden');
+document.querySelector('.obox .title').textContent='🌟 ئويۇن تۈگدى!';
+document.querySelector('.obox p').textContent=`باسقۇچ ${level} گە يەتتىڭىز! ${caught} يۇلتۇز تۇتتىڭىز!`;
+document.getElementById('final-stats').style.display='flex';
+document.getElementById('f-score').textContent=Math.floor(score);
+document.getElementById('f-level').textContent=level;
+document.getElementById('f-best').textContent=bestScore;
+document.querySelector('.btn').textContent='🔄 قايتا باشلاش';
+}
+</script>
+</body>
+</html>
