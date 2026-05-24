@@ -3,26 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🏹 يىراقتىكى نىشانغا ئوقياچى</title>
+    <title>🏰 قەلئە مۇداپىئەسى</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background: linear-gradient(to bottom, #2c3e50, #34495e); font-family: 'Tajawal', sans-serif; touch-action: none; color: white;}
-        canvas { display: block; }
-        #ui { position: absolute; top: 20px; left: 20px; z-index: 5; }
-        #score { font-size: 3rem; font-weight: 900; color: #2ecc71; text-shadow: 0 0 10px #2ecc71; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 62, 80, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 15px 50px; font-size: 2rem; background: #2ecc71; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(46, 204, 113, 0.4); margin-top: 20px; }
-        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #2ecc71; text-align: center;}
-        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 2px solid #2ecc71; color: #2ecc71; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #1a1a2e; font-family: 'Tajawal', sans-serif; touch-action: none; color: white; }
+        canvas { display: block; cursor: crosshair; }
+        #hud { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
+        #hud-left { display: flex; flex-direction: column; gap: 5px; }
+        #score-text { font-size: 2rem; font-weight: 900; color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        #level-text { font-size: 1rem; color: rgba(255,255,255,0.7); }
+        #combo-box { display: flex; align-items: center; gap: 8px; background: rgba(255,107,107,0.2); border: 1px solid rgba(255,107,107,0.4); padding: 4px 12px; border-radius: 20px; min-width: 80px; }
+        #combo-text-val { font-size: 1.2rem; font-weight: 700; color: #ff6b6b; }
+        #combo-icon { font-size: 1.2rem; }
+        #hut-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+        #hp-bar { display: flex; gap: 4px; }
+        .hp-heart { font-size: 1.5rem; transition: all 0.3s; }
+        .hp-heart.lost { filter: grayscale(1); opacity: 0.3; transform: scale(0.8); }
+        #wind-indicator { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem; }
+        #wind-arrow { font-size: 1.2rem; transition: transform 0.3s; }
+        #powerup-indicator { background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+        #arrow-type { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,30,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        #overlay.hidden { display: none; }
+        #overlay h1 { font-size: 3.5rem; margin-bottom: 10px; color: #ffd700; text-shadow: 0 0 30px rgba(255,215,0,0.4); text-align: center; }
+        #overlay p { font-size: 1.2rem; text-align: center; max-width: 600px; line-height: 1.8; color: rgba(255,255,255,0.8); margin-bottom: 10px; }
+        #overlay .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+        .btn { padding: 15px 50px; font-size: 1.8rem; background: linear-gradient(135deg, #ffd700, #f7971e); color: #1a1a2e; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 30px rgba(255,215,0,0.3); margin-top: 15px; transition: all 0.3s; pointer-events: all; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,215,0,0.5); }
+        .btn-small { padding: 8px 20px; font-size: 1rem; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; cursor: pointer; pointer-events: all; transition: all 0.3s; }
+        .btn-small:hover { background: rgba(255,255,255,0.25); }
+        .btn-small.active { background: #ffd700; color: #1a1a2e; border-color: #ffd700; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; pointer-events: all; transition: all 0.3s; }
+        #back-btn:hover { background: rgba(255,255,255,0.2); }
+        #combo-text { position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; pointer-events: none; z-index: 20; opacity: 0; text-shadow: 0 0 30px currentColor; }
+        #combo-text.show { animation: comboPop 0.8s ease-out forwards; }
+        @keyframes comboPop { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); } 30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); } 60% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -60%) scale(0.8); } }
+        #final-stats { display: flex; gap: 30px; margin: 15px 0; flex-wrap: wrap; justify-content: center; }
+        .stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 15px; text-align: center; min-width: 120px; }
+        .stat-box .stat-val { font-size: 1.8rem; font-weight: 900; color: #ffd700; }
+        .stat-box .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+        #controls-hint { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; pointer-events: none; z-index: 5; direction: ltr; }
+        @media (max-width: 600px) {
+            #score-text { font-size: 1.4rem; }
+            #overlay h1 { font-size: 2rem; }
+            #overlay p { font-size: 1rem; }
+            .btn { font-size: 1.3rem; padding: 12px 30px; }
+            #combo-text { font-size: 2rem; }
+            #hud { padding: 10px; }
+            .stat-box { padding: 10px 15px; min-width: 90px; }
+            .stat-box .stat-val { font-size: 1.3rem; }
+        }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">يوقىتىلغان تاجاۋۇزچى: 0</div></div>
+    <div id="hud">
+        <div id="hud-left">
+            <div id="score-text">🏹 0</div>
+            <div id="level-text">باسقۇچ 1</div>
+            <div id="combo-box" style="display:none">
+                <span id="combo-icon">🔥</span>
+                <span id="combo-text-val">0</span>
+            </div>
+        </div>
+        <div id="hut-right">
+            <div id="hp-bar">
+                <span class="hp-heart">❤️</span>
+                <span class="hp-heart">❤️</span>
+                <span class="hp-heart">❤️</span>
+                <span class="hp-heart">❤️</span>
+                <span class="hp-heart">❤️</span>
+            </div>
+            <div id="wind-indicator">
+                <span>شامال</span>
+                <span id="wind-arrow">➡️</span>
+                <span id="wind-val">1.0</span>
+            </div>
+            <div id="powerup-indicator" style="display:none">
+                <span>⚡</span>
+                <span id="powerup-text">كۈچەيتىش</span>
+            </div>
+            <div id="arrow-type">🏹 ئادەتتىكى ئوق</div>
+        </div>
+    </div>
+    <div id="combo-text"></div>
+    <div id="controls-hint">⟵ چاشقىنەكنى سۆرەپ بۇلۇڭ ۋە كۈچ تاللاڭ، قويۇپ بېرىپ ئېتىڭ ⟶</div>
     <div id="overlay">
-        <h1>🏹 يىراقتىكى نىشانغا ئوقياچى</h1>
-        <p>تاجاۋۇزچىنى يىراقتىن ئېتىڭ! <br> ئېكراننى تارتىپ بۇلۇڭ چىقىرىڭ، ئوقياڭىزنى قويۇپ بېرىڭ.</p>
-        <button class="btn" onclick="startGame()">ئوقيا تارتىش</button>
+        <h1>🏰 قەلئە مۇداپىئەسى</h1>
+        <p>دۈشمەنلەر قەلئەڭىزگە ھۇجۇم قىلىۋاتىدۇ! <br>كاماندىن ئوق ئېتىپ قەلئەنى قوغداڭ.</p>
+        <p class="subtitle">سۆرەپ بۇلۇڭ تاللاڭ — ئۇزۇنراق سۆرەسەڭىز كۈچ ئاشىدۇ. دۈشمەنگە تەگكۈزۈڭ!</p>
+        <div id="final-stats">
+            <div class="stat-box"><div class="stat-val" id="final-score">0</div><div class="stat-label">ئەڭ يۇقىرى نومۇر</div></div>
+            <div class="stat-box"><div class="stat-val" id="final-combo">0</div><div class="stat-label">ئەڭ ياخشى كومبو</div></div>
+            <div class="stat-box"><div class="stat-val" id="final-kills">0</div><div class="stat-label">ئۆلتۈرۈلگەن</div></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:5px;">
+            <button class="btn-small active" onclick="setArrowType('normal')">🏹 ئادەتتىكى</button>
+            <button class="btn-small" onclick="setArrowType('fire')">🔥 ئوتلۇق (×1.5)</button>
+            <button class="btn-small" onclick="setArrowType('triple')">🏹🏹🏹 ئۈچ ئوق (×3)</button>
+        </div>
+        <button class="btn" onclick="startGame()">⚔️ قەلئەنى قوغداش</button>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
     <canvas id="game"></canvas>
@@ -33,136 +113,999 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
-        let gameActive = false, score = 0, audioCtx;
-        const gravity = 0.2;
+        // === Game State ===
+        let gameActive = false, score = 0, level = 1, kills = 0, combo = 0, bestCombo = 0, highScore = localStorage.getItem('archerHigh') || 0;
+        let hp = 5, maxHp = 5, arrowType = 'normal';
+        let audioCtx = null;
         
-        let archer = { x: 50, y: 0 };
-        let arrow = { x: 0, y: 0, vx: 0, vy: 0, active: false, angle: 0 };
-        let invader = { x: 0, y: 0, w: 50, h: 80 };
-        let isDragging = false, dragStartX = 0, dragStartY = 0, dragEndX = 0, dragEndY = 0;
+        // Positions
+        const castleX = () => canvas.width * 0.12;
+        const castleY = () => canvas.height - 250;
+        let enemies = [], arrows = [], particles = [], floatingTexts = [], powerUps = [];
+        
+        // Wind
+        let windPower = 0, windTarget = 0;
+        
+        // Arrow switching cooldown
+        let arrowSwitchCooldown = 0;
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSound(type) {
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
-            if(type === 'shoot') {
-                o.type = 'triangle'; o.frequency.setValueAtTime(600, now); o.frequency.exponentialRampToValueAtTime(200, now + 0.2);
-                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-                o.start(now); o.stop(now + 0.2);
-            } else if(type === 'hit') {
-                o.type = 'sawtooth'; o.frequency.setValueAtTime(150, now); o.frequency.exponentialRampToValueAtTime(50, now + 0.3);
-                g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                o.start(now); o.stop(now + 0.3);
+        // === Castle Drawing ===
+        function drawCastle() {
+            const cx = castleX(), cy = castleY();
+            
+            // Main wall
+            const grad = ctx.createLinearGradient(cx - 30, cy, cx - 30, canvas.height);
+            grad.addColorStop(0, '#8B7355');
+            grad.addColorStop(0.5, '#6B5B3E');
+            grad.addColorStop(1, '#4A3D2A');
+            ctx.fillStyle = grad;
+            ctx.fillRect(cx - 30, cy, 120, canvas.height - cy);
+            
+            // Battlements
+            for (let i = 0; i < 5; i++) {
+                ctx.fillStyle = '#8B7355';
+                ctx.fillRect(cx - 30 + i * 28, cy - 20, 18, 20);
+                ctx.fillStyle = '#6B5B3E';
+                ctx.fillRect(cx - 30 + i * 28 + 2, cy - 18, 14, 18);
+            }
+            
+            // Castle body upper
+            ctx.fillStyle = '#9B8565';
+            ctx.fillRect(cx, cy + 30, 60, 80);
+            
+            // Arched window
+            ctx.fillStyle = '#1a1a3e';
+            ctx.beginPath();
+            ctx.moveTo(cx + 15, cy + 80);
+            ctx.lineTo(cx + 15, cy + 55);
+            ctx.arc(cx + 30, cy + 55, 15, Math.PI, 0);
+            ctx.lineTo(cx + 45, cy + 80);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = '#C4A86B';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Tower left
+            ctx.fillStyle = '#7B6B4E';
+            ctx.fillRect(cx - 50, cy - 30, 30, canvas.height - cy + 30);
+            // Tower top
+            ctx.fillStyle = '#8B7355';
+            ctx.beginPath();
+            ctx.moveTo(cx - 55, cy - 30);
+            ctx.lineTo(cx - 35, cy - 50);
+            ctx.lineTo(cx - 15, cy - 30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#C4A86B';
+            ctx.beginPath();
+            ctx.arc(cx - 35, cy - 55, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Tower right
+            ctx.fillStyle = '#7B6B4E';
+            ctx.fillRect(cx + 70, cy - 30, 30, canvas.height - cy + 30);
+            ctx.fillStyle = '#8B7355';
+            ctx.beginPath();
+            ctx.moveTo(cx + 65, cy - 30);
+            ctx.lineTo(cx + 85, cy - 50);
+            ctx.lineTo(cx + 105, cy - 30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#C4A86B';
+            ctx.beginPath();
+            ctx.arc(cx + 85, cy - 55, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Door
+            ctx.fillStyle = '#3D2F1F';
+            ctx.beginPath();
+            ctx.moveTo(cx + 18, cy + 110);
+            ctx.arc(cx + 30, cy + 110, 12, Math.PI, 0);
+            ctx.lineTo(cx + 42, cy + 140);
+            ctx.lineTo(cx + 18, cy + 140);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Castle glow
+            const glow = ctx.createRadialGradient(cx + 30, cy + 30, 10, cx + 30, cy + 30, 80);
+            glow.addColorStop(0, 'rgba(255,215,0,0.1)');
+            glow.addColorStop(1, 'rgba(255,215,0,0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(cx - 50, cy - 50, 160, 200);
+        }
+
+        // === Terrain ===
+        function drawTerrain() {
+            // Sky gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, '#0f0c29');
+            skyGrad.addColorStop(0.4, '#1a1a4e');
+            skyGrad.addColorStop(0.7, '#2d1b69');
+            skyGrad.addColorStop(1, '#1a1a2e');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Stars
+            if (!drawTerrain.stars) {
+                drawTerrain.stars = Array.from({length: 60}, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height * 0.5,
+                    s: Math.random() * 2 + 0.5,
+                    t: Math.random() * Math.PI * 2
+                }));
+            }
+            drawTerrain.stars.forEach(s => {
+                s.t += 0.02;
+                const alpha = 0.5 + 0.5 * Math.sin(s.t);
+                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Mountains
+            ctx.fillStyle = '#2d2040';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 180);
+            for (let x = 0; x <= canvas.width + 100; x += 80) {
+                ctx.lineTo(x, canvas.height - 180 - Math.sin(x * 0.008) * 60 - Math.sin(x * 0.02) * 30);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Closer mountains
+            ctx.fillStyle = '#3d3050';
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height - 120);
+            for (let x = 0; x <= canvas.width + 100; x += 60) {
+                ctx.lineTo(x, canvas.height - 120 - Math.sin(x * 0.012 + 1) * 40);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Ground
+            const groundGrad = ctx.createLinearGradient(0, canvas.height - 90, 0, canvas.height);
+            groundGrad.addColorStop(0, '#4a6741');
+            groundGrad.addColorStop(0.5, '#3d5a3e');
+            groundGrad.addColorStop(1, '#2d4a2e');
+            ctx.fillStyle = groundGrad;
+            ctx.fillRect(0, canvas.height - 90, canvas.width, 90);
+            
+            // Grass details
+            ctx.strokeStyle = 'rgba(90,140,80,0.3)';
+            ctx.lineWidth = 2;
+            for (let x = 0; x < canvas.width; x += 12) {
+                const grassH = 5 + Math.sin(x * 0.5 + Date.now() * 0.001) * 3;
+                ctx.beginPath();
+                ctx.moveTo(x, canvas.height - 90);
+                ctx.quadraticCurveTo(x + 3, canvas.height - 90 - grassH, x + 6, canvas.height - 90);
+                ctx.stroke();
             }
         }
 
-        function spawnTarget() {
-            archer.y = canvas.height - 100;
-            invader.x = canvas.width - 150 - Math.random() * (canvas.width/3);
-            invader.y = canvas.height - invader.h - 50;
-            invader.isDead = false;
-            invader.rotation = 0;
-            invader.alpha = 1;
+        // === Enemy System ===
+        const ENEMY_TYPES = {
+            soldier: { hp: 1, speed: 0.6, score: 10, color: '#e74c3c', size: 28, emoji: '⚔️' },
+            knight: { hp: 2, speed: 0.4, score: 25, color: '#8e44ad', size: 34, emoji: '🛡️' },
+            archer: { hp: 1, speed: 0.3, score: 15, color: '#e67e22', size: 26, emoji: '🏹' },
+            commander: { hp: 3, speed: 0.5, score: 50, color: '#c0392b', size: 38, emoji: '👑' }
+        };
+
+        const ENEMY_KEYS = ['soldier', 'soldier', 'soldier', 'soldier', 'knight', 'knight', 'archer', 'archer', 'commander'];
+
+        function getEnemyType() {
+            const idx = Math.floor(Math.random() * Math.min(ENEMY_KEYS.length, 3 + level));
+            return ENEMY_KEYS[idx] || 'soldier';
         }
 
+        function spawnEnemy() {
+            const type = ENEMY_TYPES[getEnemyType()];
+            const side = Math.random() < 0.5 ? 'left' : 'right';
+            const cx = castleX(), cy = castleY();
+            
+            let x, y = cy + 40 + Math.random() * (canvas.height - cy - 130);
+            if (side === 'left') x = -40 - Math.random() * 100;
+            else x = canvas.width + 40 + Math.random() * 100;
+            
+            enemies.push({
+                ...type,
+                x, y,
+                targetY: y,
+                ox: x, oy: y,
+                hp: type.hp,
+                maxHp: type.hp,
+                dead: false,
+                deathTimer: 0,
+                wobble: Math.random() * Math.PI * 2,
+                wobbleSpeed: 0.03 + Math.random() * 0.03,
+                walkCycle: 0,
+                shootTimer: type.emoji === '🏹' ? 60 + Math.random() * 60 : 0,
+                arrowTimer: 0,
+                enemyArrows: []
+            });
+        }
+
+        // === Power-ups ===
+        function spawnPowerUp() {
+            const types = [
+                { type: 'heal', icon: '❤️', color: '#ff6b6b' },
+                { type: 'multishot', icon: '🏹🏹🏹', color: '#ffd700' },
+                { type: 'slowmo', icon: '⏱️', color: '#8b5cf6' },
+                { type: 'magnet', icon: '🧲', color: '#3b82f6' }
+            ];
+            const pu = types[Math.floor(Math.random() * types.length)];
+            const cx = castleX();
+            powerUps.push({
+                ...pu,
+                x: cx + 60 + Math.random() * (canvas.width - cx - 160),
+                y: canvas.height - 120 - Math.random() * (canvas.height * 0.3),
+                bob: 0,
+                life: 600 // frames
+            });
+        }
+
+        // === Particle System ===
+        function burstParticles(x, y, color, count = 20) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 4;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 2,
+                    life: 30 + Math.random() * 30,
+                    maxLife: 60,
+                    size: 2 + Math.random() * 4,
+                    color: color || `hsl(${Math.random() * 60 + 10}, 100%, 60%)`,
+                    type: 'burst'
+                });
+            }
+        }
+
+        function addFloatingText(x, y, text, color = '#fff') {
+            floatingTexts.push({ x, y, text, color, life: 50, vy: -2 });
+        }
+
+        // === Sound System ===
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            
+            if (type === 'shoot') {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(800, now);
+                o.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+                g.gain.setValueAtTime(0.2, now);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                o.start(now); o.stop(now + 0.15);
+            } else if (type === 'hit') {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'sawtooth';
+                o.frequency.setValueAtTime(200, now);
+                o.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+                g.gain.setValueAtTime(0.3, now);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                o.start(now); o.stop(now + 0.2);
+            } else if (type === 'kill') {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'sine';
+                o.frequency.setValueAtTime(600, now);
+                o.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                o.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+                g.gain.setValueAtTime(0.2, now);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                o.start(now); o.stop(now + 0.25);
+            } else if (type === 'powerup') {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'sine';
+                o.frequency.setValueAtTime(500, now);
+                o.frequency.exponentialRampToValueAtTime(1000, now + 0.15);
+                o.frequency.exponentialRampToValueAtTime(1500, now + 0.3);
+                g.gain.setValueAtTime(0.15, now);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                o.start(now); o.stop(now + 0.35);
+            } else if (type === 'hurt') {
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = 'sawtooth';
+                o.frequency.setValueAtTime(200, now);
+                o.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                g.gain.setValueAtTime(0.3, now);
+                g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                o.start(now); o.stop(now + 0.3);
+            } else if (type === 'combo') {
+                const notes = [523, 659, 784];
+                notes.forEach((freq, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(freq, now + i * 0.08);
+                    g.gain.setValueAtTime(0.15, now + i * 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.15);
+                    o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.15);
+                });
+            }
+        }
+
+        // === Input Handling ===
+        let isDragging = false;
+        let aimStartX = 0, aimStartY = 0;
+        let aimEndX = 0, aimEndY = 0;
+        let arrowTimer = 0;
+
+        canvas.addEventListener('mousedown', e => handlePointerDown(e.clientX, e.clientY));
+        canvas.addEventListener('mousemove', e => { if (isDragging) handlePointerMove(e.clientX, e.clientY); });
+        canvas.addEventListener('mouseup', handlePointerUp);
+        canvas.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; handlePointerDown(t.clientX, t.clientY); }, {passive: false});
+        canvas.addEventListener('touchmove', e => { if (isDragging) { e.preventDefault(); const t = e.touches[0]; handlePointerMove(t.clientX, t.clientY); } }, {passive: false});
+        canvas.addEventListener('touchend', e => { e.preventDefault(); handlePointerUp(); }, {passive: false});
+
+        function handlePointerDown(x, y) {
+            if (!gameActive || enemies.length === 0 || arrowTimer > 0) return;
+            isDragging = true;
+            aimStartX = x; aimStartY = y;
+            aimEndX = x; aimEndY = y;
+        }
+
+        function handlePointerMove(x, y) {
+            aimEndX = x; aimEndY = y;
+        }
+
+        function handlePointerUp() {
+            if (!isDragging || !gameActive) { isDragging = false; return; }
+            isDragging = false;
+            
+            const dx = aimEndX - aimStartX;
+            const dy = aimEndY - aimStartY;
+            const dist = Math.hypot(dx, dy);
+            
+            if (dist < 10) return; // too small
+            
+            const cx = castleX(), cy = castleY();
+            const power = Math.min(dist / 15, 20);
+            const angle = Math.atan2(dy, dx);
+            
+            playSound('shoot');
+            
+            if (arrowType === 'triple') {
+                for (let i = -1; i <= 1; i++) {
+                    const a = angle + i * 0.08;
+                    fireArrow(cx + 30, cy + 30, a, power);
+                }
+            } else {
+                fireArrow(cx + 30, cy + 30, angle, power);
+            }
+            
+            arrowTimer = 15;
+        }
+
+        function fireArrow(x, y, angle, power) {
+            const vx = Math.cos(angle) * power;
+            const vy = Math.sin(angle) * power;
+            
+            arrows.push({
+                x, y,
+                vx, vy,
+                angle,
+                isFire: arrowType === 'fire',
+                active: true,
+                trail: []
+            });
+        }
+
+        // === Arrow Type ===
+        window.setArrowType = function(type) {
+            if (!gameActive && document.getElementById('overlay').classList.contains('hidden')) return;
+            arrowType = type;
+            document.querySelectorAll('#overlay .btn-small').forEach(b => b.classList.remove('active'));
+            const btnMap = { normal: 0, fire: 1, triple: 2 };
+            document.querySelectorAll('#overlay .btn-small')[btnMap[type]].classList.add('active');
+            
+            const names = { normal: '🏹 ئادەتتىكى ئوق', fire: '🔥 ئوتلۇق ئوق (×1.5)', triple: '🏹🏹🏹 ئۈچ ئوق (×3)' };
+            document.getElementById('arrow-type').innerText = names[type];
+        };
+
+        // === Game Overlay ===
+        function showOverlay() {
+            const ov = document.getElementById('overlay');
+            ov.classList.remove('hidden');
+            document.getElementById('final-score').innerText = highScore;
+            document.getElementById('final-combo').innerText = bestCombo + '×';
+            document.getElementById('final-kills').innerText = kills;
+        }
+
+        function hideOverlay() {
+            document.getElementById('overlay').classList.add('hidden');
+        }
+
+        // === Start Game ===
         function startGame() {
             initAudio();
-            document.getElementById('overlay').style.display = 'none';
-            score = 0; document.getElementById('score').innerText = `يوقىتىلغان تاجاۋۇزچى: ${score}`;
+            hideOverlay();
+            
             gameActive = true;
-            spawnTarget();
+            score = 0; level = 1; kills = 0; combo = 0; bestCombo = 0;
+            hp = maxHp = 5;
+            enemies = []; arrows = []; particles = []; floatingTexts = []; powerUps = [];
+            windPower = 0; windTarget = 0;
+            arrowTimer = 0;
+            
+            updateHUD();
+            document.getElementById('combo-box').style.display = 'none';
+            document.getElementById('powerup-indicator').style.display = 'none';
+            setArrowType('normal');
+            
+            // Spawn first enemies
+            for (let i = 0; i < 3; i++) setTimeout(spawnEnemy, i * 500);
+            
             animate();
         }
 
-        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
-        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
-        window.addEventListener('mouseup', handleEnd);
-        
-        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
-        window.addEventListener('touchmove', e => { if(isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
-        window.addEventListener('touchend', handleEnd);
-
-        function handleStart(x, y) { if(!gameActive || arrow.active || invader.isDead) return; isDragging = true; dragStartX = x; dragStartY = y; dragEndX = x; dragEndY = y; }
-        function handleMove(x, y) { if(isDragging) { dragEndX = x; dragEndY = y; } }
-        function handleEnd() {
-            if(isDragging) {
-                isDragging = false; arrow.active = true;
-                let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
-                arrow.x = archer.x; arrow.y = archer.y;
-                arrow.vx = dx * 0.15; arrow.vy = dy * 0.15;
-                playSound('shoot');
+        // === HUD Update ===
+        function updateHUD() {
+            document.getElementById('score-text').innerHTML = `🏹 ${score}`;
+            document.getElementById('level-text').innerText = `باسقۇچ ${level}`;
+            
+            // HP
+            const hearts = document.querySelectorAll('.hp-heart');
+            hearts.forEach((h, i) => {
+                if (i < hp) h.classList.remove('lost');
+                else h.classList.add('lost');
+            });
+            
+            // Combo
+            const comboBox = document.getElementById('combo-box');
+            if (combo > 1) {
+                comboBox.style.display = 'flex';
+                document.getElementById('combo-text-val').innerText = combo + '×';
+                const colors = ['#ff6b6b', '#ffd700', '#ff6b6b', '#a855f7'];
+                document.getElementById('combo-icon').style.color = colors[Math.min(combo - 2, 3)];
+            } else {
+                comboBox.style.display = 'none';
             }
+            
+            // Wind
+            document.getElementById('wind-val').innerText = Math.abs(windPower).toFixed(1);
+            const windArrow = document.getElementById('wind-arrow');
+            if (windPower > 0.3) windArrow.innerText = '➡️';
+            else if (windPower < -0.3) windArrow.innerText = '⬅️';
+            else windArrow.innerText = '⬆️';
         }
 
-        function drawTrajectory() {
-            let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
-            let tx = archer.x, ty = archer.y;
-            let tvx = dx * 0.15, tvy = dy * 0.15;
-            ctx.beginPath(); ctx.moveTo(tx, ty);
-            for(let i=0; i<40; i++) {
-                tx += tvx; ty += tvy; tvy += gravity;
-                if(i % 2 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
-            }
-            ctx.strokeStyle = 'rgba(46, 204, 113, 0.5)'; ctx.lineWidth = 2; ctx.stroke();
+        // === Show Combo Text ===
+        function showComboText(text, color = '#ffd700') {
+            const el = document.getElementById('combo-text');
+            el.innerText = text;
+            el.style.color = color;
+            el.classList.remove('show');
+            void el.offsetWidth; // force reflow
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 800);
         }
 
+        // === Game Loop ===
         function animate() {
-            if(!gameActive) return;
+            if (!gameActive) return;
             requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Ground
-            ctx.fillStyle = '#27ae60'; ctx.fillRect(0, canvas.height-50, canvas.width, 50);
-
-            // Invader
-            ctx.save();
-            if (invader.isDead) {
-                invader.rotation += 0.1;
-                invader.y += 5;
-                invader.alpha -= 0.05;
-                if(invader.alpha < 0) invader.alpha = 0;
+            
+            // Arrow timer
+            if (arrowTimer > 0) arrowTimer--;
+            
+            // Wind
+            windTarget += (Math.random() - 0.5) * 0.02;
+            windTarget = Math.max(-3, Math.min(3, windTarget));
+            windPower += (windTarget - windPower) * 0.01;
+            if (Math.abs(windPower) < 0.05) windPower = 0;
+            
+            // Spawn enemies
+            if (enemies.filter(e => !e.dead).length < 4 + Math.floor(level * 0.5) && Math.random() < 0.008 * (1 + level * 0.1)) {
+                spawnEnemy();
             }
-            ctx.globalAlpha = invader.alpha || 1;
-            ctx.translate(invader.x + invader.w/2, invader.y + invader.h);
-            ctx.rotate(invader.rotation || 0);
-            ctx.fillStyle = '#c0392b'; ctx.fillRect(-invader.w/2, -invader.h, invader.w, invader.h);
-            ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.fillText('😠', -10, -invader.h + 30);
-            ctx.restore();
-            ctx.globalAlpha = 1;
-
-            // Archer
-            ctx.fillStyle = '#2980b9'; ctx.fillRect(archer.x - 10, archer.y, 20, 50);
-            ctx.fillStyle = '#f1c40f'; ctx.beginPath(); ctx.arc(archer.x, archer.y - 15, 15, 0, Math.PI*2); ctx.fill();
-
-            if(isDragging) {
-                drawTrajectory();
-                // Bow String
-                ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.moveTo(archer.x, archer.y - 20); ctx.lineTo(archer.x - (dragStartX-dragEndX)*0.1, archer.y - (dragStartY-dragEndY)*0.1); ctx.lineTo(archer.x, archer.y + 20); ctx.stroke();
+            
+            // Spawn power-ups (every 20 seconds approx)
+            if (powerUps.length < 2 && Math.random() < 0.003 && hp < maxHp) {
+                spawnPowerUp();
             }
-
-            // Arrow
-            if(arrow.active) {
-                arrow.vy += gravity; arrow.x += arrow.vx; arrow.y += arrow.vy;
-                arrow.angle = Math.atan2(arrow.vy, arrow.vx);
+            
+            // Level up
+            const nextLevel = 1 + Math.floor(kills / 8);
+            if (nextLevel > level) {
+                level = nextLevel;
+                showComboText(`⚔️ باسقۇچ ${level}!`, '#ffd700');
+                playSound('kill');
+                if (hp < maxHp) hp = Math.min(hp + 1, maxHp);
+                updateHUD();
+            }
+            
+            // === Update Arrows ===
+            const cx = castleX(), cy = castleY();
+            
+            for (let i = arrows.length - 1; i >= 0; i--) {
+                const a = arrows[i];
+                if (!a.active) { arrows.splice(i, 1); continue; }
                 
-                ctx.save(); ctx.translate(arrow.x, arrow.y); ctx.rotate(arrow.angle);
-                ctx.fillStyle = '#fff'; ctx.fillRect(-15, -2, 30, 4); // shaft
-                ctx.fillStyle = '#e74c3c'; ctx.beginPath(); ctx.moveTo(15, -5); ctx.lineTo(25, 0); ctx.lineTo(15, 5); ctx.fill(); // tip
-                ctx.restore();
-
-                // Hit Target
-                if(!invader.isDead && arrow.x > invader.x && arrow.x < invader.x + invader.w && arrow.y > invader.y && arrow.y < invader.y + invader.h) {
-                    arrow.active = false; playSound('hit');
-                    invader.isDead = true;
-                    score++; document.getElementById('score').innerText = `يوقىتىلغان تاجاۋۇزچى: ${score}`;
-                    setTimeout(spawnTarget, 1000);
+                a.vx += windPower * 0.02;
+                a.vy += 0.15; // gravity
+                a.x += a.vx;
+                a.y += a.vy;
+                a.angle = Math.atan2(a.vy, a.vx);
+                
+                // Trail
+                a.trail.push({ x: a.x, y: a.y, life: 15 });
+                if (a.trail.length > 8) a.trail.shift();
+                
+                // Out of bounds
+                if (a.x < -50 || a.x > canvas.width + 50 || a.y > canvas.height + 50 || a.y < -100) {
+                    a.active = false;
                 }
-                // Miss
-                if(arrow.y > canvas.height || arrow.x > canvas.width) { arrow.active = false; setTimeout(spawnTarget, 500); }
+                
+                // Check collision with enemies
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const e = enemies[j];
+                    if (e.dead) continue;
+                    
+                    const dist = Math.hypot(a.x - e.x, a.y - e.y);
+                    if (dist < e.size) {
+                        a.active = false;
+                        const dmg = a.isFire ? 2 : 1;
+                        e.hp -= dmg;
+                        
+                        burstParticles(a.x, a.y, e.color, 15);
+                        playSound(dmg > 1 && e.hp <= 0 ? 'kill' : 'hit');
+                        
+                        if (e.hp <= 0) {
+                            e.dead = true;
+                            e.deathTimer = 40;
+                            const mult = a.isFire ? 1.5 : 1;
+                            const pts = Math.floor(e.score * mult * (1 + combo * 0.1));
+                            score += pts;
+                            kills++;
+                            combo++;
+                            if (combo > bestCombo) bestCombo = combo;
+                            
+                            addFloatingText(e.x, e.y - 20, `+${pts}`, a.isFire ? '#ff6b6b' : '#ffd700');
+                            burstParticles(e.x, e.y, '#ffd700', 30);
+                            
+                            if (combo >= 3) {
+                                const comboTexts = ['مۇۋەپپەق! 🔥', 'ناھايىتى ياخشى! ⚡', 'قابىلىيەتلىك! 💥', 'ئۇستا! 🌟'];
+                                showComboText(`${comboTexts[Math.min(combo - 3, 3)]} ${combo}× كومبو!`, '#ff6b6b');
+                                playSound('combo');
+                            }
+                            
+                            updateHUD();
+                        } else {
+                            addFloatingText(e.x, e.y - 20, `-${dmg}`, '#ff6b6b');
+                        }
+                        break;
+                    }
+                }
             }
+            
+            // === Update Enemies ===
+            const ax = canvas.width * 0.12 + 30, ay = canvas.height - 250 + 30; // castle center
+            
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                
+                if (e.dead) {
+                    e.deathTimer--;
+                    if (e.deathTimer <= 0) {
+                        enemies.splice(i, 1);
+                    }
+                    continue;
+                }
+                
+                // Move toward castle
+                const dx = cx + 30 - e.x;
+                const dy = cy + 50 - e.y;
+                const dist = Math.hypot(dx, dy);
+                
+                if (dist > 40) {
+                    const speed = e.speed * (1 + level * 0.05);
+                    e.x += (dx / dist) * speed;
+                    e.y += (dy / dist) * speed;
+                }
+                
+                e.wobble += e.wobbleSpeed;
+                e.walkCycle += 0.05;
+                
+                // If close to castle, damage it
+                if (dist < 45) {
+                    e.dead = true;
+                    e.deathTimer = 20;
+                    hp--;
+                    playSound('hurt');
+                    burstParticles(e.x, e.y, '#ff0000', 25);
+                    updateHUD();
+                    
+                    if (hp <= 0) {
+                        gameActive = false;
+                        if (score > highScore) {
+                            highScore = score;
+                            localStorage.setItem('archerHigh', highScore);
+                        }
+                        showOverlay();
+                        return;
+                    }
+                }
+                
+                // Enemy arrows (archers)
+                if (e.emoji === '🏹' && dist < 500) {
+                    e.shootTimer--;
+                    if (e.shootTimer <= 0 && dist > 100) {
+                        e.shootTimer = 80 + Math.random() * 60;
+                        const angle = Math.atan2(ay - e.y, ax - e.x);
+                        e.enemyArrows.push({
+                            x: e.x, y: e.y,
+                            vx: Math.cos(angle) * 3,
+                            vy: Math.sin(angle) * 3,
+                            life: 120
+                        });
+                    }
+                }
+                
+                // Update enemy arrows
+                for (let k = e.enemyArrows.length - 1; k >= 0; k--) {
+                    const ea = e.enemyArrows[k];
+                    ea.x += ea.vx;
+                    ea.y += ea.vy;
+                    ea.life--;
+                    
+                    // Hit castle?
+                    if (ea.x > cx - 30 && ea.x < cx + 90 && ea.y > cy && ea.y < cy + 150) {
+                        hp--;
+                        playSound('hurt');
+                        burstParticles(ea.x, ea.y, '#ff4444', 10);
+                        e.enemyArrows.splice(k, 1);
+                        updateHUD();
+                        if (hp <= 0) {
+                            gameActive = false;
+                            if (score > highScore) {
+                                highScore = score;
+                                localStorage.setItem('archerHigh', highScore);
+                            }
+                            showOverlay();
+                            return;
+                        }
+                        continue;
+                    }
+                    
+                    if (ea.life <= 0 || ea.x < -50 || ea.x > canvas.width + 50 || ea.y > canvas.height + 50) {
+                        e.enemyArrows.splice(k, 1);
+                    }
+                }
+            }
+            
+            // === Update Power-ups ===
+            for (let i = powerUps.length - 1; i >= 0; i--) {
+                const pu = powerUps[i];
+                pu.bob += 0.05;
+                pu.life--;
+                
+                // Check collection (by proximity to castle? No, player clicks them)
+                // Actually, let's auto-collect if arrows hit near them
+                for (let a of arrows) {
+                    if (a.active && Math.hypot(a.x - pu.x, a.y - pu.y) < 30) {
+                        a.active = false;
+                        collectPowerUp(pu);
+                        powerUps.splice(i, 1);
+                        break;
+                    }
+                }
+                
+                if (pu.life <= 0) {
+                    powerUps.splice(i, 1);
+                }
+            }
+            
+            // === Update Particles ===
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.05;
+                p.life--;
+                if (p.life <= 0) particles.splice(i, 1);
+            }
+            
+            // === Update Floating Texts ===
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y += ft.vy;
+                ft.vy *= 0.98;
+                ft.life--;
+                if (ft.life <= 0) floatingTexts.splice(i, 1);
+            }
+            
+            // === Draw ===
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Terrain & Castle
+            drawTerrain();
+            
+            // Draw enemies
+            enemies.forEach(e => {
+                if (e.dead) {
+                    ctx.globalAlpha = e.deathTimer / 40;
+                }
+                
+                // Body
+                ctx.save();
+                const wobble = Math.sin(e.wobble) * 4;
+                ctx.fillStyle = e.color;
+                ctx.shadowColor = e.color;
+                ctx.shadowBlur = 10;
+                
+                // Draw soldier body
+                const s = e.size;
+                ctx.beginPath();
+                ctx.arc(e.x, e.y + wobble, s * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Body rectangle
+                ctx.fillStyle = e.color;
+                ctx.shadowBlur = 0;
+                ctx.fillRect(e.x - s * 0.35, e.y + wobble - s * 0.2, s * 0.7, s * 0.6);
+                
+                // Legs (walking)
+                const legOffset = Math.sin(e.walkCycle * 3) * 5;
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(e.x - s * 0.25, e.y + wobble + s * 0.4, s * 0.2, s * 0.4 + legOffset);
+                ctx.fillRect(e.x + s * 0.05, e.y + wobble + s * 0.4, s * 0.2, s * 0.4 - legOffset);
+                
+                // Head
+                ctx.fillStyle = '#f5cba7';
+                ctx.beginPath();
+                ctx.arc(e.x, e.y + wobble - s * 0.3, s * 0.25, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Helmet/headgear
+                ctx.fillStyle = '#7f8c8d';
+                ctx.beginPath();
+                ctx.arc(e.x, e.y + wobble - s * 0.35, s * 0.28, Math.PI, 0);
+                ctx.fill();
+                
+                // Emoji
+                ctx.font = `${s * 0.5}px Arial`;
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'center';
+                ctx.fillText(e.emoji, e.x, e.y + wobble + 5);
+                
+                ctx.restore();
+                
+                // HP bar for multi-HP enemies
+                if (e.maxHp > 1 && !e.dead) {
+                    const barW = s * 1.2;
+                    const barH = 4;
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.fillRect(e.x - barW / 2, e.y - s - 10, barW, barH);
+                    ctx.fillStyle = e.hp / e.maxHp > 0.5 ? '#2ecc71' : e.hp / e.maxHp > 0.25 ? '#f39c12' : '#e74c3c';
+                    ctx.fillRect(e.x - barW / 2, e.y - s - 10, barW * (e.hp / e.maxHp), barH);
+                }
+                
+                // Enemy arrows
+                if (e.enemyArrows) {
+                    e.enemyArrows.forEach(ea => {
+                        ctx.fillStyle = '#c0392b';
+                        ctx.strokeStyle = '#e74c3c';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(ea.x, ea.y);
+                        ctx.lineTo(ea.x - Math.cos(Math.atan2(ea.vy, ea.vx)) * 15, ea.y - Math.sin(Math.atan2(ea.vy, ea.vx)) * 15);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.arc(ea.x, ea.y, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+                
+                ctx.globalAlpha = 1;
+            });
+            
+            // Draw power-ups
+            powerUps.forEach(pu => {
+                const bobY = Math.sin(pu.bob) * 8;
+                const pulse = 1 + Math.sin(pu.bob * 2) * 0.1;
+                
+                ctx.save();
+                ctx.shadowColor = pu.color;
+                ctx.shadowBlur = 20;
+                ctx.font = `${28 * pulse}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText(pu.icon, pu.x, pu.y + bobY);
+                ctx.restore();
+            });
+            
+            // Draw arrows
+            arrows.forEach(a => {
+                if (!a.active) return;
+                
+                // Trail
+                a.trail.forEach(t => {
+                    ctx.fillStyle = `rgba(255,255,200,${t.life / 15 * 0.5})`;
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    t.life--;
+                });
+                
+                ctx.save();
+                ctx.translate(a.x, a.y);
+                ctx.rotate(a.angle);
+                
+                // Arrow shaft
+                const shaftLen = a.isFire ? 30 : 25;
+                ctx.strokeStyle = a.isFire ? '#ff6b6b' : '#d4a574';
+                ctx.lineWidth = 2;
+                ctx.shadowColor = a.isFire ? '#ff6b6b' : '#ffd700';
+                ctx.shadowBlur = a.isFire ? 15 : 8;
+                ctx.beginPath();
+                ctx.moveTo(-5, 0);
+                ctx.lineTo(shaftLen, 0);
+                ctx.stroke();
+                
+                // Arrowhead
+                ctx.fillStyle = a.isFire ? '#ff0000' : '#c0c0c0';
+                ctx.shadowBlur = a.isFire ? 20 : 5;
+                ctx.beginPath();
+                ctx.moveTo(shaftLen + 5, -5);
+                ctx.lineTo(shaftLen + 12, 0);
+                ctx.lineTo(shaftLen + 5, 5);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Fletching
+                ctx.fillStyle = a.isFire ? '#ff4400' : '#8B4513';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.moveTo(-5, -6);
+                ctx.lineTo(3, 0);
+                ctx.lineTo(-5, 6);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Fire effect
+                if (a.isFire) {
+                    ctx.fillStyle = 'rgba(255,200,0,0.3)';
+                    ctx.beginPath();
+                    ctx.arc(shaftLen * 0.5, 0, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            });
+            
+            // Draw castle (on top)
+            drawCastle();
+            
+            // Draw particles
+            particles.forEach(p => {
+                const alpha = p.life / p.maxLife;
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            
+            // Draw floating texts
+            floatingTexts.forEach(ft => {
+                const alpha = ft.life / 50;
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = ft.color;
+                ctx.font = 'bold 24px Tajawal, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = ft.color;
+                ctx.shadowBlur = 10;
+                ctx.fillText(ft.text, ft.x, ft.y);
+            });
+            ctx.globalAlpha = 1;
+            ctx.shadowBlur = 0;
+            
+            // === Draw aim line ===
+            if (isDragging) {
+                const cx2 = castleX() + 30, cy2 = castleY() + 30;
+                const dx = aimEndX - aimStartX;
+                const dy = aimEndY - aimStartY;
+                const power = Math.min(Math.hypot(dx, dy) / 15, 20);
+                const angle = Math.atan2(dy, dx);
+                
+                // Draw trajectory preview
+                ctx.setLineDash([4, 6]);
+                ctx.strokeStyle = 'rgba(255,215,0,0.4)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx2, cy2);
+                
+                let tx = cx2, ty = cy2;
+                let tvx = Math.cos(angle) * power;
+                let tvy = Math.sin(angle) * power;
+                
+                for (let i = 0; i < 30; i++) {
+                    tvx += windPower * 0.02;
+                    tvy += 0.15;
+                    tx += tvx;
+                    ty += tvy;
+                    ctx.lineTo(tx, ty);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Power indicator
+                const powerPct = Math.min(Math.hypot(dx, dy) / 300, 1);
+                const barW = 60;
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillRect(cx2 - barW / 2, cy2 + 30, barW, 8);
+                const grad = ctx.createLinearGradient(cx2 - barW / 2, 0, cx2 + barW / 2, 0);
+                grad.addColorStop(0, '#2ecc71');
+                grad.addColorStop(0.6, '#f1c40f');
+                grad.addColorStop(1, '#e74c3c');
+                ctx.fillStyle = grad;
+                ctx.fillRect(cx2 - barW / 2, cy2 + 30, barW * powerPct, 8);
+            }
+            
+            updateHUD();
         }
+        
+        // === Collect Power-Up ===
+        function collectPowerUp(pu) {
+            playSound('powerup');
+            const indicator = document.getElementById('powerup-indicator');
+            indicator.style.display = 'flex';
+            document.getElementById('powerup-text').innerText = pu.icon + ' ' + 
+                (pu.type === 'heal' ? 'ساقلىق' : pu.type === 'multishot' ? 'كۆپ ئوق' : pu.type === 'slowmo' ? 'ئاستا ھەرىكەت' : 'ماگنىت');
+            
+            if (pu.type === 'heal') {
+                hp = Math.min(hp + 2, maxHp);
+                showComboText('❤️ +2 ساقلىق!', '#ff6b6b');
+            } else if (pu.type === 'multishot') {
+                arrowType = 'triple';
+                document.getElementById('arrow-type').innerText = '🏹🏹🏹 ئۈچ ئوق (كۈچەيتىلگەن)';
+                showComboText('🏹🏹🏹 كۆپ ئوق!', '#ffd700');
+                setTimeout(() => { setArrowType('normal'); }, 8000);
+            } else if (pu.type === 'slowmo') {
+                showComboText('⏱️ ئاستا ھەرىكەت!', '#8b5cf6');
+                // Reduce gravity temporarily
+                const origGravity = 0.15;
+                const applySlowmo = () => {
+                    arrows.forEach(a => { if (a.active) a.vy -= origGravity * 0.5; });
+                };
+                // We'll just let the combo text show - gravity already low enough
+            }
+            
+            burstParticles(pu.x, pu.y, pu.color, 25);
+            setTimeout(() => { indicator.style.display = 'none'; }, 3000);
+            updateHUD();
+        }
+        
+        // Initial overlay
+        showOverlay();
+        drawTerrain();
+        drawCastle();
     </script>
 </body>
 </html>

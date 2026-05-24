@@ -6,166 +6,748 @@
     <title>🐪 قۇملۇقتىكى ساياھەتچى</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background: #e67e22; font-family: 'Tajawal', sans-serif; touch-action: none; color: #fff;}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #e67e22; font-family: 'Tajawal', sans-serif; touch-action: none; color: #fff; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; left: 20px; z-index: 5; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
-        #score { font-size: 3rem; font-weight: 900; color: #fff; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(211, 84, 0, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 15px 50px; font-size: 2rem; background: #f1c40f; color: #d35400; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 10px 20px rgba(241, 196, 15, 0.4); margin-top: 20px; }
-        h1 { font-size: 3.5rem; margin-bottom: 10px; color: #f1c40f; text-align: center; }
-        p { font-size: 1.5rem; text-align: center; max-width: 600px; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.2); border: 2px solid #fff; color: #fff; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
+        #ui { position: absolute; top: 0; left: 0; right: 0; padding: 15px 20px; z-index: 5; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; }
+        #score { font-size: 2rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        #hud-right { text-align: left; }
+        #energy-text { font-size: 1.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        #combo-text { font-size: 1.2rem; font-weight: 900; color: #ffd700; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        #time-display { font-size: 1rem; opacity: 0.8; margin-top: 5px; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(211,84,0,0.95), rgba(230,126,34,0.95)); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
+        #game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(5px); }
+        .btn { padding: 15px 50px; font-size: 2rem; background: linear-gradient(135deg, #f1c40f, #e67e22); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; font-family: inherit; box-shadow: 0 10px 30px rgba(241,196,15,0.4); margin-top: 20px; transition: transform 0.1s; pointer-events: auto; }
+        .btn:active { transform: scale(0.95); }
+        h1 { font-size: 3rem; text-shadow: 3px 3px 0 rgba(0,0,0,0.2); }
+        .subtitle { font-size: 1.2rem; color: rgba(255,255,255,0.8); margin: 10px 0; text-align: center; max-width: 500px; line-height: 1.6; }
+        #back-btn { position: absolute; bottom: 20px; right: 20px; padding: 12px 24px; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; backdrop-filter: blur(5px); }
+        #overlay-stats { font-size: 1.3rem; color: rgba(255,255,255,0.8); margin: 10px 0; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">خەزىنە: 0</div></div>
+    <div id="ui">
+        <div id="score">💎 خەزىنە: 0</div>
+        <div id="hud-right">
+            <div id="energy-text">🔋 100%</div>
+            <div id="combo-text"></div>
+            <div id="time-display">☀️ كۈندۈز</div>
+        </div>
+    </div>
     <div id="overlay">
         <h1>🐪 قۇملۇقتىكى ساياھەتچى</h1>
-        <p>ئېكراننى چېكىپ ساياھەتچىنى ماڭدۇرۇڭ. <br> كەڭ تەكلىماكاننى كېزىپ قەدىمكى خەزىنىلەرنى تېپىڭ!</p>
-        <button class="btn" onclick="startGame()">سەپەرگە چىقىش</button>
+        <p class="subtitle">ئېكراننى چېكىپ تۆگەنى ماڭدۇرۇڭ. قەدىمكى خەزىنىلەرنى تېپىڭ، چايان ۋە بوراندىن ساقلىنىڭ!</p>
+        <button class="btn" onclick="startGame()">سەپەرگە چىقىش 🚀</button>
+        <div id="overlay-stats">ئەڭ يۇقىرى: <span id="high-score">0</span></div>
+    </div>
+    <div id="game-over">
+        <h1>🏜️ سەپەر تامام!</h1>
+        <p class="subtitle" id="final-msg"></p>
+        <button class="btn" onclick="startGame()">قايتا سەپەر</button>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
     <canvas id="game"></canvas>
-
     <script>
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
-
-        let gameActive = false, score = 0, audioCtx;
         
-        let player = { x: 0, y: 0, targetX: 0, targetY: 0, speed: 4, r: 20 };
-        let camera = { x: 0, y: 0 };
-        let treasures = [];
-        let mapSize = 3000;
-
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSound(type) {
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
-            if(type === 'coin') {
-                o.type = 'sine'; o.frequency.setValueAtTime(800, now); o.frequency.linearRampToValueAtTime(1200, now + 0.1);
-                g.gain.setValueAtTime(0.2, now); g.gain.linearRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
-            }
+        let audioCtx = null;
+        function initAudio() { if(!audioCtx) audioCtx = new(window.AudioContext||window.webkitAudioContext)(); }
+        function playSound(t) {
+            if(!audioCtx) return;
+            const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination); const n=audioCtx.currentTime;
+            if(t==='coin'){o.type='sine';o.frequency.setValueAtTime(800,n);o.frequency.linearRampToValueAtTime(1200,n+0.1);g.gain.setValueAtTime(0.2,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.15);o.start(n);o.stop(n+0.15);}
+            else if(t==='gem'){o.type='sine';o.frequency.setValueAtTime(600,n);o.frequency.linearRampToValueAtTime(1400,n+0.2);g.gain.setValueAtTime(0.2,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.2);o.start(n);o.stop(n+0.2);}
+            else if(t==='hit'){o.type='square';o.frequency.setValueAtTime(100,n);g.gain.setValueAtTime(0.15,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.1);o.start(n);o.stop(n+0.1);}
+            else if(t==='combo'){o.type='sine';o.frequency.setValueAtTime(659,n);o.frequency.setValueAtTime(880,n+0.1);o.frequency.setValueAtTime(1047,n+0.2);g.gain.setValueAtTime(0.2,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.3);o.start(n);o.stop(n+0.3);}
+            else if(t==='heal'){o.type='triangle';o.frequency.setValueAtTime(400,n);o.frequency.linearRampToValueAtTime(800,n+0.3);g.gain.setValueAtTime(0.2,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.3);o.start(n);o.stop(n+0.3);}
+            else if(t==='danger'){o.type='square';o.frequency.setValueAtTime(200,n);g.gain.setValueAtTime(0.2,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.15);o.start(n);o.stop(n+0.15);}
         }
-
-        function spawnTreasures() {
-            treasures = [];
-            for(let i=0; i<100; i++) {
+        
+        let gameActive = false, score = 0, combo = 0, bestCombo = 0, highScore = parseInt(localStorage.getItem('desertHighScore')) || 0;
+        let energy = 100, maxEnergy = 100;
+        let timeOfDay = 0; // 0=day -> 1=night -> 2=day
+        let camera = { x: 0, y: 0 };
+        let mapSize = 4000;
+        let player = { x: 0, y: 0, targetX: 0, targetY: 0, speed: 3, r: 22, legAnim: 0, isMoving: false, dir: 0 };
+        let treasures = [], hazards = [], oases = [], palmTrees = [], sandStorms = [], particles = [], floatingTexts = [];
+        let stormActive = false, stormTimer = 0;
+        const treasureTypes = [
+            { name: 'تەڭگە', icon: '🪙', color: '#fbbf24', score: 1, size: 12 },
+            { name: 'ياقۇت', icon: '💎', color: '#ef4444', score: 3, size: 14 },
+            { name: 'زۇم رەت', icon: '🔮', color: '#8b5cf6', score: 5, size: 16 },
+            { name: 'تاج', icon: '👑', color: '#fbbf24', score: 8, size: 18 }
+        ];
+        
+        document.getElementById('high-score').textContent = highScore;
+        
+        function generateWorld() {
+            treasures = []; hazards = []; oases = []; palmTrees = []; sandStorms = [];
+            
+            // Generate treasures
+            for(let i = 0; i < 80; i++) {
+                const type = treasureTypes[Math.floor(Math.random() * treasureTypes.length)];
                 treasures.push({
                     x: (Math.random() - 0.5) * mapSize,
                     y: (Math.random() - 0.5) * mapSize,
-                    r: 15,
-                    collected: false
+                    type: type,
+                    collected: false,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // Generate hazards - scorpions
+            for(let i = 0; i < 15; i++) {
+                hazards.push({
+                    x: (Math.random() - 0.5) * mapSize,
+                    y: (Math.random() - 0.5) * mapSize,
+                    type: 'scorpion',
+                    r: 12, speed: 1 + Math.random() * 0.5,
+                    alertRange: 150 + Math.random() * 50,
+                    active: false, dir: Math.random() * Math.PI * 2,
+                    wanderTimer: Math.random() * 200
+                });
+            }
+            
+            // Oases for healing
+            for(let i = 0; i < 5; i++) {
+                oases.push({
+                    x: (Math.random() - 0.5) * mapSize * 0.7,
+                    y: (Math.random() - 0.5) * mapSize * 0.7,
+                    r: 60
+                });
+            }
+            
+            // Palm trees
+            for(let i = 0; i < 30; i++) {
+                palmTrees.push({
+                    x: (Math.random() - 0.5) * mapSize,
+                    y: (Math.random() - 0.5) * mapSize,
+                    sway: Math.random() * Math.PI * 2,
+                    height: 60 + Math.random() * 40
                 });
             }
         }
-
+        
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
-            score = 0; document.getElementById('score').innerText = `خەزىنە: 0`;
+            document.getElementById('game-over').style.display = 'none';
+            score = 0; combo = 0; bestCombo = 0; energy = 100; timeOfDay = 0;
+            document.getElementById('score').textContent = '💎 خەزىنە: 0';
+            document.getElementById('energy-text').textContent = '🔋 100%';
+            document.getElementById('combo-text').textContent = '';
             gameActive = true;
             player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0;
-            spawnTreasures();
+            generateWorld();
             animate();
         }
-
+        
+        // Input
         window.addEventListener('mousedown', e => setTarget(e.clientX, e.clientY));
-        window.addEventListener('touchstart', e => { 
-            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { 
-                e.preventDefault(); setTarget(e.touches[0].clientX, e.touches[0].clientY); 
-            } 
-        }, {passive: false});
-        window.addEventListener('touchmove', e => { 
-            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { 
-                e.preventDefault(); setTarget(e.touches[0].clientX, e.touches[0].clientY); 
-            } 
-        }, {passive: false});
-
+        window.addEventListener('touchstart', e => { if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='A'){e.preventDefault();setTarget(e.touches[0].clientX,e.touches[0].clientY)} }, {passive:false});
+        window.addEventListener('touchmove', e => { if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='A'){e.preventDefault();setTarget(e.touches[0].clientX,e.touches[0].clientY)} }, {passive:false});
+        
         function setTarget(cx, cy) {
             if(!gameActive) return;
             player.targetX = cx + camera.x;
             player.targetY = cy + camera.y;
         }
-
+        
+        function drawCamel(x, y, dir, legPhase, size) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(dir > 0 ? -1 : 1, 1);
+            
+            const s = size || 1;
+            
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.beginPath();
+            ctx.ellipse(0, 20 * s, 18 * s, 5 * s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Legs
+            const legOff = Math.sin(legPhase) * 6 * s;
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(-12 * s, 5 * s, 5 * s, 20 * s + legOff);
+            ctx.fillRect(7 * s, 5 * s, 5 * s, 20 * s - legOff);
+            ctx.fillRect(-10 * s, 5 * s, 5 * s, 20 * s - legOff);
+            ctx.fillRect(8 * s, 5 * s, 5 * s, 20 * s + legOff);
+            
+            // Body
+            ctx.fillStyle = '#D4A574';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 20 * s, 14 * s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Hump
+            ctx.fillStyle = '#C4956A';
+            ctx.beginPath();
+            ctx.ellipse(2 * s, -10 * s, 10 * s, 9 * s, 0, Math.PI, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#B8875E';
+            ctx.beginPath();
+            ctx.ellipse(2 * s, -10 * s, 8 * s, 7 * s, 0, Math.PI, Math.PI * 2);
+            ctx.fill();
+            
+            // Neck
+            ctx.fillStyle = '#D4A574';
+            ctx.fillRect(16 * s, -8 * s, 6 * s, 12 * s);
+            
+            // Head
+            ctx.fillStyle = '#D4A574';
+            ctx.beginPath();
+            ctx.ellipse(22 * s, -12 * s, 8 * s, 6 * s, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eye
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.arc(25 * s, -13 * s, 2 * s, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Mouth
+            ctx.strokeStyle = '#8B7355';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(28 * s, -9 * s);
+            ctx.lineTo(32 * s, -8 * s);
+            ctx.stroke();
+            
+            // Ears
+            ctx.fillStyle = '#C4956A';
+            ctx.beginPath();
+            ctx.ellipse(18 * s, -16 * s, 3 * s, 5 * s, -0.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Saddle
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(-8 * s, -6 * s, 18 * s, 5 * s);
+            ctx.fillStyle = '#D2691E';
+            ctx.fillRect(-6 * s, -5 * s, 14 * s, 3 * s);
+            
+            // Tail
+            ctx.strokeStyle = '#8B7355';
+            ctx.lineWidth = 2 * s;
+            ctx.beginPath();
+            ctx.moveTo(-18 * s, -2 * s);
+            ctx.lineTo(-24 * s, -5 * s + Math.sin(legPhase * 0.5) * 3 * s);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        function drawScorpion(ctx2, x, y, angle, size) {
+            ctx2.save();
+            ctx2.translate(x, y);
+            ctx2.rotate(angle);
+            
+            const s = size || 1;
+            
+            // Body
+            ctx2.fillStyle = '#dc2626';
+            ctx2.beginPath();
+            ctx2.ellipse(0, 0, 8 * s, 5 * s, 0, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            // Abdomen
+            ctx2.fillStyle = '#991b1b';
+            ctx2.beginPath();
+            ctx2.ellipse(8 * s, 0, 6 * s, 4 * s, 0, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            // Tail
+            ctx2.strokeStyle = '#dc2626';
+            ctx2.lineWidth = 2 * s;
+            ctx2.beginPath();
+            ctx2.moveTo(14 * s, 0);
+            ctx2.quadraticCurveTo(20 * s, -8 * s, 16 * s, -12 * s);
+            ctx2.stroke();
+            
+            // Stinger
+            ctx2.fillStyle = '#ef4444';
+            ctx2.beginPath();
+            ctx2.arc(16 * s, -12 * s, 2.5 * s, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            // Legs
+            ctx2.strokeStyle = '#b91c1c';
+            ctx2.lineWidth = 1.5 * s;
+            for(let i = 0; i < 4; i++) {
+                const lx = -3 * s + i * 3 * s;
+                ctx2.beginPath();
+                ctx2.moveTo(lx, -4 * s);
+                ctx2.lineTo(lx - 5 * s, -8 * s - i * 2 * s);
+                ctx2.stroke();
+                ctx2.beginPath();
+                ctx2.moveTo(lx, 4 * s);
+                ctx2.lineTo(lx - 5 * s, 8 * s + i * 2 * s);
+                ctx2.stroke();
+            }
+            
+            // Pincers
+            ctx2.strokeStyle = '#b91c1c';
+            ctx2.lineWidth = 2 * s;
+            ctx2.beginPath();
+            ctx2.moveTo(-6 * s, -3 * s);
+            ctx2.lineTo(-12 * s, -6 * s);
+            ctx2.stroke();
+            ctx2.beginPath();
+            ctx2.moveTo(-6 * s, 3 * s);
+            ctx2.lineTo(-12 * s, 6 * s);
+            ctx2.stroke();
+            
+            // Eyes
+            ctx2.fillStyle = '#fff';
+            ctx2.beginPath();
+            ctx2.arc(-4 * s, -2 * s, 1.5 * s, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.beginPath();
+            ctx2.arc(-4 * s, 2 * s, 1.5 * s, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.restore();
+        }
+        
+        function drawPalmTree(ctx2, x, y, height, sway) {
+            ctx2.save();
+            ctx2.translate(x, y);
+            
+            // Trunk
+            ctx2.strokeStyle = '#8B7355';
+            ctx2.lineWidth = 6;
+            ctx2.beginPath();
+            ctx2.moveTo(0, 0);
+            ctx2.quadraticCurveTo(Math.sin(sway) * 10, -height/2, Math.sin(sway * 0.7) * 15, -height);
+            ctx2.stroke();
+            
+            // Fronds
+            const topX = Math.sin(sway * 0.7) * 15;
+            const topY = -height;
+            ctx2.fillStyle = '#22c55e';
+            for(let i = 0; i < 5; i++) {
+                const a = i * Math.PI * 2 / 5 + sway;
+                ctx2.beginPath();
+                ctx2.moveTo(topX, topY);
+                ctx2.quadraticCurveTo(
+                    topX + Math.cos(a) * 25, topY + Math.sin(a) * 25 - 10,
+                    topX + Math.cos(a) * 40, topY + Math.sin(a) * 20 - 5
+                );
+                ctx2.quadraticCurveTo(
+                    topX + Math.cos(a + 0.3) * 20, topY + Math.sin(a + 0.3) * 10,
+                    topX, topY
+                );
+                ctx2.fill();
+            }
+            
+            // Coconuts
+            ctx2.fillStyle = '#78350f';
+            ctx2.beginPath();
+            ctx2.arc(topX - 5, topY + 5, 4, 0, Math.PI * 2);
+            ctx2.fill();
+            ctx2.beginPath();
+            ctx2.arc(topX + 5, topY + 3, 4, 0, Math.PI * 2);
+            ctx2.fill();
+            
+            ctx2.restore();
+        }
+        
+        function drawBackground(time) {
+            const dayFactor = (Math.sin(time * 0.0001) + 1) / 2; // 0=night, 1=day
+            timeOfDay = dayFactor;
+            
+            // Sky
+            let skyColor1, skyColor2, groundColor;
+            if(dayFactor > 0.5) {
+                skyColor1 = `rgb(${Math.floor(135 * dayFactor)}, ${Math.floor(180 * dayFactor)}, ${Math.floor(235 * dayFactor)})`;
+                skyColor2 = `rgb(${Math.floor(200 * dayFactor)}, ${Math.floor(150 * dayFactor)}, ${Math.floor(80 * dayFactor)})`;
+                groundColor = `rgb(${Math.floor(200 * dayFactor)}, ${Math.floor(150 * dayFactor)}, ${Math.floor(80 * dayFactor)})`;
+            } else {
+                const n = 1 - dayFactor;
+                skyColor1 = `rgb(${Math.floor(10 + 30 * (1-n))}, ${Math.floor(10 + 30 * (1-n))}, ${Math.floor(40 + 60 * (1-n))})`;
+                skyColor2 = `rgb(${Math.floor(5 + 20 * (1-n))}, ${Math.floor(5 + 20 * (1-n))}, ${Math.floor(20 + 40 * (1-n))})`;
+                groundColor = `rgb(${Math.floor(60 + 80 * (1-n))}, ${Math.floor(40 + 60 * (1-n))}, ${Math.floor(20 + 30 * (1-n))})`;
+            }
+            
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, skyColor1);
+            skyGrad.addColorStop(0.6, skyColor2);
+            skyGrad.addColorStop(1, groundColor);
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Sun/Moon
+            const sunX = canvas.width * 0.8;
+            const sunY = canvas.height * (0.2 + 0.6 * (1 - dayFactor));
+            if(dayFactor > 0.3) {
+                ctx.fillStyle = `rgba(255, 243, 176, ${dayFactor})`;
+                ctx.shadowBlur = 60;
+                ctx.shadowColor = `rgba(255, 243, 176, ${dayFactor * 0.5})`;
+                ctx.beginPath();
+                ctx.arc(sunX, sunY, 35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else {
+                ctx.fillStyle = `rgba(200, 200, 200, ${1 - dayFactor})`;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = 'rgba(200,200,200,0.3)';
+                ctx.beginPath();
+                ctx.arc(sunX, sunY, 25, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            
+            // Stars at night
+            if(dayFactor < 0.5) {
+                const alpha = (0.5 - dayFactor) * 2;
+                for(let i = 0; i < 50; i++) {
+                    const sx = (i * 137.5) % canvas.width;
+                    const sy = (i * 97.3 + 50) % (canvas.height * 0.6);
+                    const sa = alpha * (0.3 + Math.sin(time * 0.001 + i) * 0.3);
+                    ctx.fillStyle = `rgba(255,255,255,${sa})`;
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, 1 + Math.sin(time * 0.002 + i) * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            document.getElementById('time-display').textContent = dayFactor > 0.5 ? '☀️ كۈندۈز' : '🌙 كېچە';
+        }
+        
         function animate() {
             if(!gameActive) return;
             requestAnimationFrame(animate);
-
+            const time = Date.now();
+            
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackground(time);
+            
+            ctx.save();
+            ctx.translate(-camera.x, -camera.y);
+            
+            // Draw sand dunes using terrain noise
+            for(let d = 0; d < 8; d++) {
+                const dx = ((d * 500 + 250) % mapSize) - mapSize/2;
+                const dy = ((d * 371 + 100) % mapSize) - mapSize/2;
+                ctx.fillStyle = `rgba(200, 150, 80, ${0.05 + Math.sin(time * 0.0003 + d) * 0.02})`;
+                ctx.beginPath();
+                ctx.ellipse(dx, dy, 200 + Math.sin(d) * 100, 50 + Math.sin(d * 2) * 20, Math.sin(d * 0.5) * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Draw terrain grid (visible when zoomed out)
+            ctx.strokeStyle = 'rgba(200, 150, 80, 0.08)';
+            ctx.lineWidth = 1;
+            const startX = Math.floor(camera.x / 80) * 80;
+            const startY = Math.floor(camera.y / 80) * 80;
+            for(let x = startX; x < camera.x + canvas.width + 80; x += 80) {
+                ctx.beginPath();
+                ctx.moveTo(x, camera.y);
+                ctx.lineTo(x, camera.y + canvas.height);
+                ctx.stroke();
+            }
+            for(let y = startY; y < camera.y + canvas.height + 80; y += 80) {
+                ctx.beginPath();
+                ctx.moveTo(camera.x, y);
+                ctx.lineTo(camera.x + canvas.width, y);
+                ctx.stroke();
+            }
+            
             // Move player
             let dx = player.targetX - player.x;
             let dy = player.targetY - player.y;
             let dist = Math.hypot(dx, dy);
-            if(dist > player.speed) {
+            player.isMoving = dist > player.speed;
+            if(player.isMoving) {
                 player.x += (dx / dist) * player.speed;
                 player.y += (dy / dist) * player.speed;
-            } else {
-                player.x = player.targetX;
-                player.y = player.targetY;
-            }
-
-            // Camera follow
-            camera.x += (player.x - canvas.width/2 - camera.x) * 0.1;
-            camera.y += (player.y - canvas.height/2 - camera.y) * 0.1;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(-camera.x, -camera.y);
-
-            // Draw Desert Grid / Pattern
-            ctx.strokeStyle = '#d35400';
-            ctx.lineWidth = 2;
-            let startCol = Math.floor(camera.x / 100) * 100;
-            let startRow = Math.floor(camera.y / 100) * 100;
-            ctx.beginPath();
-            for(let x = startCol; x < camera.x + canvas.width + 100; x+=100) {
-                ctx.moveTo(x, camera.y); ctx.lineTo(x, camera.y + canvas.height);
-            }
-            for(let y = startRow; y < camera.y + canvas.height + 100; y+=100) {
-                ctx.moveTo(camera.x, y); ctx.lineTo(camera.x + canvas.width, y);
-            }
-            ctx.globalAlpha = 0.2;
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-
-            // Draw Treasures
-            for(let i=0; i<treasures.length; i++) {
-                let t = treasures[i];
-                if(t.collected) continue;
-
-                // Culling
-                if(t.x < camera.x - 50 || t.x > camera.x + canvas.width + 50 || t.y < camera.y - 50 || t.y > camera.y + canvas.height + 50) continue;
-
-                ctx.fillStyle = '#f1c40f';
-                ctx.beginPath(); ctx.arc(t.x, t.y, t.r, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#fff'; ctx.font = '15px Arial'; ctx.fillText('💎', t.x - 8, t.y + 5);
-
-                // Collision
-                if(Math.hypot(player.x - t.x, player.y - t.y) < player.r + t.r) {
-                    t.collected = true;
-                    score++; document.getElementById('score').innerText = `خەزىنە: ${score}`;
-                    playSound('coin');
+                player.legAnim += 0.15;
+                player.dir = dx;
+                // Sand trail
+                if(Math.random() < 0.2) {
+                    particles.push({
+                        x: player.x - (dx/dist) * 15 + (Math.random()-0.5)*10,
+                        y: player.y + 15 + (Math.random()-0.5)*5,
+                        vx: (Math.random()-0.5)*0.5 - (dx/dist)*1,
+                        vy: -Math.random() * 1,
+                        life: 20 + Math.random() * 10,
+                        maxLife: 30,
+                        color: '#d4a574',
+                        size: 2 + Math.random() * 2
+                    });
                 }
             }
-
-            // Draw Player
-            ctx.fillStyle = '#2980b9'; // Blue shirt
-            ctx.beginPath(); ctx.arc(player.x, player.y, player.r, 0, Math.PI*2); ctx.fill();
-            // Direction indicator
-            if(dist > 0) {
-                ctx.save();
-                ctx.translate(player.x, player.y);
-                ctx.rotate(Math.atan2(dy, dx));
-                ctx.fillStyle = '#f39c12';
-                ctx.beginPath(); ctx.moveTo(player.r, -5); ctx.lineTo(player.r + 10, 0); ctx.lineTo(player.r, 5); ctx.fill();
-                ctx.restore();
+            
+            // Camera follow (smooth)
+            camera.x += (player.x - canvas.width/2 - camera.x) * 0.08;
+            camera.y += (player.y - canvas.height/2 - camera.y) * 0.08;
+            
+            // Energy drain while moving
+            if(player.isMoving) {
+                energy = Math.max(0, energy - 0.02);
+                document.getElementById('energy-text').textContent = `🔋 ${Math.floor(energy)}%`;
+                if(energy <= 0) {
+                    gameActive = false;
+                    document.getElementById('final-msg').textContent = `${score} خەزىنە توپلىدىڭىز! ھاڧسىز قالدىڭىز...`;
+                    if(score > highScore) { highScore = score; localStorage.setItem('desertHighScore', highScore); }
+                    document.getElementById('high-score').textContent = highScore;
+                    document.getElementById('game-over').style.display = 'flex';
+                    ctx.restore(); ctx.restore(); return;
+                }
+            } else {
+                energy = Math.min(maxEnergy, energy + 0.01);
+                document.getElementById('energy-text').textContent = `🔋 ${Math.floor(energy)}%`;
             }
-
+            
+            // Sand storm timer
+            if(stormActive) {
+                stormTimer--;
+                if(stormTimer <= 0) stormActive = false;
+                // Storm particles
+                for(let i = 0; i < 3; i++) {
+                    particles.push({
+                        x: camera.x + Math.random() * canvas.width,
+                        y: camera.y + Math.random() * canvas.height,
+                        vx: -5 - Math.random() * 5,
+                        vy: (Math.random() - 0.5) * 2,
+                        life: 20 + Math.random() * 20,
+                        maxLife: 40,
+                        color: '#d4a574',
+                        size: 3 + Math.random() * 5
+                    });
+                }
+                // Energy drain in storm
+                energy = Math.max(0, energy - 0.05);
+                document.getElementById('energy-text').textContent = `🔋 ${Math.floor(energy)}%`;
+            } else {
+                // Random storm start
+                if(Math.random() < 0.0005) {
+                    stormActive = true;
+                    stormTimer = 300 + Math.random() * 200;
+                    playSound('danger');
+                }
+            }
+            
+            // Draw oases
+            oases.forEach(o => {
+                // Water
+                const waveOff = Math.sin(time * 0.002 + o.x * 0.01) * 3;
+                ctx.fillStyle = `rgba(52, 152, 219, ${0.3 + Math.sin(time * 0.003) * 0.1})`;
+                ctx.beginPath();
+                ctx.ellipse(o.x, o.y + waveOff, o.r, o.r * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = `rgba(41, 128, 185, 0.2)`;
+                ctx.beginPath();
+                ctx.ellipse(o.x, o.y + waveOff, o.r * 0.6, o.r * 0.2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Healing
+                if(Math.hypot(player.x - o.x, player.y - o.y) < o.r + 20) {
+                    energy = Math.min(maxEnergy, energy + 0.3);
+                    document.getElementById('energy-text').textContent = `🔋 ${Math.floor(energy)}%`;
+                    // Sparkle
+                    if(Math.random() < 0.1) {
+                        particles.push({
+                            x: o.x + (Math.random()-0.5)*40,
+                            y: o.y + (Math.random()-0.5)*10 - 10,
+                            vx: 0, vy: -1 - Math.random(),
+                            life: 20, maxLife: 20,
+                            color: '#4fc3f7', size: 3
+                        });
+                    }
+                }
+            });
+            
+            // Draw palm trees
+            palmTrees.forEach(t => {
+                if(t.x < camera.x - 100 || t.x > camera.x + canvas.width + 100 || t.y < camera.y - 100 || t.y > camera.y + canvas.height + 100) return;
+                drawPalmTree(ctx, t.x, t.y, t.height, t.sway + time * 0.001);
+            });
+            
+            // Draw treasures
+            treasures.forEach(t => {
+                if(t.collected) return;
+                if(t.x < camera.x - 50 || t.x > camera.x + canvas.width + 50 || t.y < camera.y - 50 || t.y > camera.y + canvas.height + 50) return;
+                
+                t.pulse += 0.05;
+                const bob = Math.sin(t.pulse) * 3;
+                
+                ctx.save();
+                ctx.translate(t.x, t.y + bob);
+                
+                // Glow
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = t.type.color;
+                
+                ctx.fillStyle = t.type.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, t.type.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                
+                ctx.fillStyle = '#fff';
+                ctx.font = `${t.type.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(t.type.icon, 0, 0);
+                
+                ctx.restore();
+                
+                // Collection
+                if(Math.hypot(player.x - t.x, player.y - t.y) < 25) {
+                    t.collected = true;
+                    score += t.type.score;
+                    combo++;
+                    if(combo > bestCombo) bestCombo = combo;
+                    if(combo >= 3) playSound('combo');
+                    else if(t.type.score >= 5) playSound('gem');
+                    else playSound('coin');
+                    
+                    const comboText = combo >= 3 ? ` 🔥${combo}×` : '';
+                    addFloatingText(t.x, t.y - 20, `+${t.type.score}${comboText}`, t.type.color);
+                    document.getElementById('score').textContent = `💎 خەزىنە: ${score}`;
+                    if(combo >= 3) document.getElementById('combo-text').textContent = `🔥 ${combo}× كومبو!`;
+                    else document.getElementById('combo-text').textContent = '';
+                    
+                    // Particles
+                    for(let i = 0; i < 10; i++) {
+                        particles.push({
+                            x: t.x, y: t.y, vx: (Math.random()-0.5)*4, vy: (Math.random()-0.5)*4 - 2,
+                            life: 20 + Math.random() * 10, maxLife: 30,
+                            color: t.type.color, size: 3
+                        });
+                    }
+                }
+            });
+            
+            // Draw hazards (scorpions)
+            hazards.forEach(h => {
+                if(h.x < camera.x - 100 || h.x > camera.x + canvas.width + 100 || h.y < camera.y - 100 || h.y > camera.y + canvas.height + 100) return;
+                
+                // AI: wander or chase player
+                const distToPlayer = Math.hypot(player.x - h.x, player.y - h.y);
+                if(distToPlayer < h.alertRange) {
+                    h.active = true;
+                    // Chase player
+                    const angle = Math.atan2(player.y - h.y, player.x - h.x);
+                    h.x += Math.cos(angle) * h.speed;
+                    h.y += Math.sin(angle) * h.speed;
+                    h.dir = angle;
+                } else {
+                    h.active = false;
+                    h.wanderTimer--;
+                    if(h.wanderTimer <= 0) {
+                        h.dir = Math.random() * Math.PI * 2;
+                        h.wanderTimer = 100 + Math.random() * 100;
+                    }
+                    h.x += Math.cos(h.dir) * h.speed * 0.3;
+                    h.y += Math.sin(h.dir) * h.speed * 0.3;
+                }
+                
+                // Keep in bounds
+                h.x = Math.max(-mapSize/2, Math.min(mapSize/2, h.x));
+                h.y = Math.max(-mapSize/2, Math.min(mapSize/2, h.y));
+                
+                // Draw
+                drawScorpion(ctx, h.x, h.y, h.dir, h.active ? 1.2 : 0.8);
+                
+                // Alert indicator when chasing
+                if(h.active) {
+                    ctx.fillStyle = `rgba(239,68,68,${0.3 + Math.sin(time*0.01)*0.2})`;
+                    ctx.beginPath();
+                    ctx.arc(h.x, h.y, h.r + 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // Damage player on contact
+                if(distToPlayer < 25) {
+                    energy = Math.max(0, energy - 15);
+                    document.getElementById('energy-text').textContent = `🔋 ${Math.floor(energy)}%`;
+                    playSound('danger');
+                    addFloatingText(player.x, player.y - 30, '💥 -15%!', '#ef4444');
+                    // Push player back
+                    const pushAngle = Math.atan2(player.y - h.y, player.x - h.x);
+                    player.x += Math.cos(pushAngle) * 30;
+                    player.y += Math.sin(pushAngle) * 30;
+                    player.targetX = player.x;
+                    player.targetY = player.y;
+                    
+                    if(energy <= 0) {
+                        gameActive = false;
+                        document.getElementById('final-msg').textContent = `${score} خەزىنە توپلىدىڭىز! چايان زەخمىلىدى...`;
+                        if(score > highScore) { highScore = score; localStorage.setItem('desertHighScore', highScore); }
+                        document.getElementById('high-score').textContent = highScore;
+                        document.getElementById('game-over').style.display = 'flex';
+                        ctx.restore(); ctx.restore(); return;
+                    }
+                }
+            });
+            
+            // Draw player (camel)
+            drawCamel(player.x, player.y, player.dir, player.legAnim, 1);
+            
+            // Particles
+            for(let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                if(p.life <= 0) { particles.splice(i, 1); continue; }
+                const alpha = p.life / p.maxLife;
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = alpha * 0.6;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            
+            // Floating texts
+            for(let i = floatingTexts.length - 1; i >= 0; i--) {
+                const f = floatingTexts[i];
+                f.y += f.vy; f.vy *= 0.95; f.life--;
+                if(f.life <= 0) { floatingTexts.splice(i, 1); continue; }
+                ctx.fillStyle = f.color;
+                ctx.globalAlpha = f.life / f.maxLife;
+                ctx.font = 'bold 20px Tajawal, Arial';
+                ctx.textAlign = 'center';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.fillText(f.text, f.x, f.y);
+                ctx.shadowBlur = 0;
+            }
+            ctx.globalAlpha = 1;
+            
+            // Storm overlay
+            if(stormActive) {
+                ctx.fillStyle = `rgba(212, 165, 116, ${0.05 + Math.random() * 0.05})`;
+                ctx.fillRect(camera.x - 50, camera.y - 50, canvas.width + 100, canvas.height + 100);
+            }
+            
             ctx.restore();
+            
+            // HUD energy bar
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(10, canvas.height - 30, 200, 20);
+            const ePct = energy / maxEnergy;
+            ctx.fillStyle = ePct > 0.5 ? '#22c55e' : ePct > 0.25 ? '#fbbf24' : '#ef4444';
+            ctx.fillRect(12, canvas.height - 28, 196 * ePct, 16);
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`🔋 ${Math.floor(energy)}%`, 110, canvas.height - 15);
+            
+            ctx.restore();
+        }
+        
+        function addFloatingText(x, y, text, color) {
+            floatingTexts.push({ x, y, text, color: color || '#ffffff', life: 30, maxLife: 30, vy: -2 });
         }
     </script>
 </body>
