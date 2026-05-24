@@ -4,107 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🧩 خەزىنە ئىزدەش: تەپەككۇر تاشلىرى</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { margin: 0; background: linear-gradient(135deg, #1e3c72, #2a5298); font-family: 'Tajawal', sans-serif; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; }
-        #score { font-size: 2.5rem; font-weight: 800; color: #ffeb3b; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 60, 114, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 15px 50px; font-size: 2rem; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 30px; box-shadow: 0 10px 20px rgba(230, 126, 34, 0.4); transition: transform 0.2s; }
-        .btn:hover { transform: scale(1.05); }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; text-shadow: 0 4px 10px rgba(0,0,0,0.5); text-align: center; }
-        p { font-size: 1.5rem; max-width: 600px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.2); border: 2px solid white; color: white; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 10; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(135deg, #0f172a, #1e3a5f); font-family: 'Segoe UI', sans-serif; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; padding: 10px; }
         
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; perspective: 1000px; padding: 20px; max-width: 800px; width: 100%; }
-        @media (max-width: 600px) { .grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
+        #ui { display: flex; justify-content: space-between; width: 100%; max-width: 800px; padding: 10px 5px; margin-bottom: 8px; }
+        .ui-item { background: rgba(30,41,59,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 12px; text-align: center; }
+        .ui-item .label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .ui-item .value { font-size: 1.6rem; font-weight: 800; color: #fbbf24; }
         
-        .card { width: 100%; aspect-ratio: 3/4; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: pointer; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        h1 { text-align: center; font-size: 2.5rem; margin-bottom: 5px; color: #fbbf24; text-shadow: 0 0 20px rgba(251,191,36,0.3); }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; perspective: 1200px; max-width: 650px; width: 100%; padding: 5px; }
+        @media (max-width: 500px) { .grid { gap: 6px; } .ui-item .value { font-size: 1.2rem; } }
+        
+        .card { aspect-ratio: 3/4; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1); cursor: pointer; border-radius: 14px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         .card.flipped { transform: rotateY(180deg); }
-        .card.matched { opacity: 0.8; transform: rotateY(180deg) scale(0.95); }
+        .card.matched { transform: rotateY(180deg) scale(0.92); pointer-events: none; }
+        .card.matched .face.back { animation: matchGlow 0.6s ease-out; }
+        @keyframes matchGlow { 0% { box-shadow: 0 0 0 rgba(251,191,36,0); } 50% { box-shadow: 0 0 30px rgba(251,191,36,0.6); } 100% { box-shadow: 0 0 0 rgba(251,191,36,0); } }
         
-        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; text-align: center; padding: 10px; box-sizing: border-box; box-shadow: inset 0 0 20px rgba(255,255,255,0.2); }
-        .front { background: linear-gradient(135deg, #00c6ff, #0072ff); transform: rotateY(0deg); border: 2px solid rgba(255,255,255,0.5); }
-        .front::after { content: '?'; font-size: 4rem; color: rgba(255,255,255,0.5); }
+        .face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; font-weight: bold; text-align: center; padding: 10px; box-sizing: border-box; }
+        @media (max-width: 500px) { .face { font-size: 2rem; } }
         
-        .back { background: linear-gradient(135deg, #f1c40f, #e67e22); transform: rotateY(180deg); color: #2c3e50; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); border: 2px solid #f39c12; }
+        .front { background: linear-gradient(145deg, #1e40af, #3b82f6); transform: rotateY(0deg); border: 2px solid rgba(255,255,255,0.2); box-shadow: inset 0 0 30px rgba(59,130,246,0.2); }
+        .front::after { content: '⭐'; font-size: 3rem; opacity: 0.4; }
+        
+        .back { background: linear-gradient(145deg, #f59e0b, #d97706); transform: rotateY(180deg); border: 2px solid #fbbf24; font-size: 2.5rem; flex-direction: column; gap: 4px; }
+        .back .emoji { font-size: 2.5rem; }
+        .back .text { font-size: 0.8rem; color: #1a3a2a; font-weight: 700; }
+        @media (max-width: 500px) { .back .emoji { font-size: 1.8rem; } .back .text { font-size: 0.6rem; } }
+        
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
+        .overlay-box { background: rgba(30,41,59,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: popIn 0.5s ease-out; }
+        @keyframes popIn { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 8px; color: #fbbf24; }
+        .overlay-box p { font-size: 1.1rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
+        .final-stats { display: flex; justify-content: center; gap: 25px; margin: 1rem 0 1.5rem; }
+        .final-stat { text-align: center; }
+        .final-stat .v { font-size: 2rem; font-weight: 800; color: #fbbf24; }
+        .final-stat .l { font-size: 0.8rem; color: #94a3b8; }
+        .btn { padding: 12px 40px; font-size: 1.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(245,158,11,0.4); transition: transform 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        #back-btn { position: fixed; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
+        
+        /* Confetti */
+        .confetti { position: fixed; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 200; animation: confettiFall linear forwards; }
+        @keyframes confettiFall { 0% { opacity:1; transform:translateY(-10px) rotate(0deg); } 100% { opacity:0; transform:translateY(100vh) rotate(720deg); } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <h1>🧩 خەزىنە ئىزدەش</h1>
+    <div id="ui">
+        <div class="ui-item"><div class="label">نومۇر</div><div class="value" id="score">0</div></div>
+        <div class="ui-item"><div class="label">ھەرىكەت</div><div class="value" id="moves">0</div></div>
+        <div class="ui-item"><div class="label">جۈپ</div><div class="value" id="pairs">0/6</div></div>
+    </div>
     
     <div class="grid" id="game-board"></div>
 
     <div id="overlay">
-        <h1>🧩 خەزىنە ئىزدەش</h1>
-        <p>ئوخشاش شەھەر ئىسىملىرىنى تېپىپ جۈپلەڭ. <br> خەزىنە تاشلىرىنى ئۆرۈپ، بىلىمىڭىزنى سىناپ بېقىڭ!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="overlay-box">
+            <h1 id="end-title">🧩 خەزىنە ئىزدەش</h1>
+            <p id="end-desc">ئوخشاش شەھەر ئىسىملىرىنى تېپىپ جۈپلەڭ.<br>ئاستا ۋە ئەستايىدىل بولۇڭ!</p>
+            <div class="final-stats" id="final-stats" style="display:none">
+                <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">نومۇر</div></div>
+                <div class="final-stat"><div class="v" id="f-moves">0</div><div class="l">ھەرىكەت</div></div>
+            </div>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        const cities = ["قەشقەر", "خوتەن", "ئاقسۇ", "تۇرپان", "قۇمۇل", "غۇلجا"];
-        let cards = [];
-        let flippedCards = [];
-        let score = 0;
-        let matchedCount = 0;
-        let lockBoard = false;
-        let audioCtx;
+        const cityData = [
+            { emoji: '🏛️', name: 'قەشقەر' }, { emoji: '🏜️', name: 'خوتەن' }, { emoji: '🌳', name: 'ئاقسۇ' },
+            { emoji: '🍇', name: 'تۇرپان' }, { emoji: '🐫', name: 'قۇمۇل' }, { emoji: '⛰️', name: 'غۇلجا' },
+            { emoji: '🕌', name: 'كاشغەر' }, { emoji: '🌄', name: 'نىيە' }
+        ];
+        let cards = [], flippedCards = [], score = 0, moves = 0, matchedCount = 0;
+        let lockBoard = false, gameActive = false;
+        let audioCtx, boardSize = 6, gridEl;
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
         function playSound(type) {
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.type = 'sine';
-            let now = audioCtx.currentTime;
-            if(type === 'flip') {
-                o.frequency.setValueAtTime(300, now);
-                o.frequency.exponentialRampToValueAtTime(500, now + 0.1);
-                g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            } else if(type === 'match') {
-                o.type = 'triangle';
-                o.frequency.setValueAtTime(600, now);
-                o.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
-                g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            } else if(type === 'wrong') {
-                o.type = 'sawtooth';
-                o.frequency.setValueAtTime(200, now);
-                o.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-                g.gain.setValueAtTime(0.1, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            }
-            o.connect(g); g.connect(audioCtx.destination);
-            o.start(now); o.stop(now + 0.3);
+            if (!audioCtx) return; try {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
+                const t = audioCtx.currentTime;
+                if (type==='flip') { o.type='sine'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(500,t+0.08); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
+                else if (type==='match') { o.type='triangle'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.15); g.gain.setValueAtTime(0.12,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.2); }
+                else if (type==='wrong') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(100,t+0.15); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
+                else if (type==='win') { o.type='sine'; o.frequency.setValueAtTime(523,t); o.frequency.setValueAtTime(659,t+0.12); o.frequency.setValueAtTime(784,t+0.24); o.frequency.setValueAtTime(1047,t+0.36); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.45); }
+                o.start(t); o.stop(t+0.45);
+            } catch(e) {}
         }
 
         function createBoard() {
-            const board = document.getElementById('game-board');
-            board.innerHTML = '';
-            cards = [...cities, ...cities].sort(() => Math.random() - 0.5);
+            gridEl = document.getElementById('game-board');
+            gridEl.innerHTML = '';
+            const selected = cityData.slice(0, boardSize);
+            cards = [...selected, ...selected].sort(() => Math.random() - 0.5);
+            matchedCount = 0;
             
-            cards.forEach((city, index) => {
+            cards.forEach((data, index) => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.dataset.city = city;
+                card.dataset.index = index;
+                card.dataset.emoji = data.emoji;
+                card.dataset.name = data.name;
                 
                 card.innerHTML = `
                     <div class="face front"></div>
-                    <div class="face back">${city}</div>
+                    <div class="face back"><div class="emoji">${data.emoji}</div><div class="text">${data.name}</div></div>
                 `;
-                
                 card.addEventListener('click', () => flipCard(card));
-                board.appendChild(card);
+                gridEl.appendChild(card);
             });
         }
 
         function flipCard(card) {
-            if (lockBoard) return;
-            if (card === flippedCards[0] || card.classList.contains('matched')) return;
-
-            initAudio();
-            playSound('flip');
+            if (lockBoard || !gameActive) return;
+            if (card === flippedCards[0] || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            initAudio(); playSound('flip');
             card.classList.add('flipped');
             flippedCards.push(card);
+            moves++; document.getElementById('moves').innerText = moves;
 
             if (flippedCards.length === 2) {
                 checkForMatch();
@@ -113,44 +138,89 @@
 
         function checkForMatch() {
             lockBoard = true;
-            let isMatch = flippedCards[0].dataset.city === flippedCards[1].dataset.city;
+            const isMatch = flippedCards[0].dataset.name === flippedCards[1].dataset.name;
 
             if (isMatch) {
                 setTimeout(() => {
                     playSound('match');
                     flippedCards[0].classList.add('matched');
                     flippedCards[1].classList.add('matched');
-                    score += 100;
-                    matchedCount += 2;
-                    document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
+                    matchedCount += 2; score += 100 + Math.max(0, 50 - moves);
+                    document.getElementById('score').innerText = score;
+                    document.getElementById('pairs').innerText = `${matchedCount/2}/${boardSize}`;
+                    showConfetti(flippedCards[0]);
                     resetBoard();
                     if (matchedCount === cards.length) {
-                        setTimeout(() => document.getElementById('overlay').style.display = 'flex', 1000);
+                        gameActive = false; clearInterval(timerInterval);
+                        playSound('win'); showWin();
                     }
-                }, 400);
+                }, 500);
             } else {
                 setTimeout(() => {
                     playSound('wrong');
                     flippedCards[0].classList.remove('flipped');
                     flippedCards[1].classList.remove('flipped');
                     resetBoard();
-                }, 1000);
+                }, 900);
             }
         }
 
-        function resetBoard() {
-            flippedCards = [];
-            lockBoard = false;
+        function resetBoard() { flippedCards = []; lockBoard = false; }
+
+        function showConfetti(card) {
+            const rect = card.getBoundingClientRect();
+            const colors = ['#ff6b6b','#fbbf24','#3b82f6','#10b981','#a855f7','#ec4899'];
+            for (let i=0; i<25; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti';
+                el.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*50) + 'px';
+                el.style.top = (rect.top + rect.height/2) + 'px';
+                el.style.background = colors[Math.floor(Math.random()*colors.length)];
+                el.style.width = (4+Math.random()*6)+'px';
+                el.style.height = (4+Math.random()*6)+'px';
+                el.style.animationDuration = (1+Math.random()*1.5)+'s';
+                el.style.animationDelay = (Math.random()*0.3)+'s';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 3000);
+            }
+        }
+
+        function showWin() {
+            const box = document.querySelector('.overlay-box');
+            document.getElementById('end-title').innerText = '🏆 مۇبارەك بولسۇن!';
+            document.getElementById('end-desc').innerText = 'بارلىق جۈپلەرنى تېپىپ چىقتىڭىز!';
+            document.getElementById('final-stats').style.display = 'flex';
+            document.getElementById('f-score').innerText = score;
+            document.getElementById('f-moves').innerText = moves;
+            document.getElementById('overlay').style.display = 'flex';
+            // Big confetti
+            for (let i=0; i<60; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti';
+                el.style.left = Math.random()*100 + '%';
+                el.style.top = '-10px';
+                el.style.background = ['#ff6b6b','#fbbf24','#3b82f6','#10b981','#a855f7','#ec4899'][Math.floor(Math.random()*6)];
+                el.style.width = (4+Math.random()*8)+'px';
+                el.style.height = (4+Math.random()*8)+'px';
+                el.style.animationDuration = (1.5+Math.random()*2)+'s';
+                el.style.animationDelay = (Math.random()*0.5)+'s';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 4000);
+            }
         }
 
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
-            score = 0;
-            matchedCount = 0;
-            document.getElementById('score').innerText = `ئۇتۇق: 0`;
+            score = 0; moves = 0; matchedCount = 0;
+            document.getElementById('score').innerText = '0';
+            document.getElementById('moves').innerText = '0';
+            document.getElementById('pairs').innerText = `0/${boardSize}`;
+            gameActive = true;
             createBoard();
         }
+        
+        document.addEventListener('DOMContentLoaded', () => { createBoard(); });
     </script>
 </body>
 </html>

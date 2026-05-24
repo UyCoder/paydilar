@@ -7,83 +7,344 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #87ceeb; font-family: 'Tajawal', sans-serif; color: white; }
+        body { margin: 0; overflow: hidden; background: #87ceeb; font-family: 'Tajawal', sans-serif; color: white; touch-action: none; }
         canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #ffeb3b; }
-        #combo-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #ff00ff; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #4caf50, #8bc34a); color: white; border: none; border-radius: 50px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 25px; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ffeb3b; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.4); border: 2px solid #4caf50; color: #1b5e20; border-radius: 15px; cursor: pointer; text-decoration: none; }
+        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; z-index: 10; }
+        #score-container { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 10px 25px; border-radius: 25px; border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 32px 0 rgba(31, 135, 38, 0.3); }
+        #score { font-size: 2.5rem; font-weight: 800; color: #ffeb3b; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        #high-score { font-size: 1.1rem; color: #e8f5e9; margin-top: -5px; }
+        #lives { font-size: 2rem; margin-top: 10px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+        
+        #combo-text { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 4.5rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 30px #4caf50; z-index: 50; white-space: nowrap; }
+        
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(76, 175, 80, 0.4) 0%, rgba(27, 94, 32, 0.8) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
+        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 45px; text-align: center; max-width: 85%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        
+        .btn { padding: 20px 70px; font-size: 2.2rem; background: linear-gradient(135deg, #8bc34a, #4caf50); color: white; border: none; border-radius: 60px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800; margin-top: 35px; box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(76, 175, 80, 0.6); }
+        .btn:active { transform: scale(0.95); }
+        
+        h1 { font-size: 4.5rem; margin: 0 0 20px 0; background: linear-gradient(to bottom, #fff, #ffeb3b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
+        p { font-size: 1.6rem; color: #f1f8e9; line-height: 1.5; margin-bottom: 25px; }
+        
+        #back-btn { position: absolute; bottom: 30px; left: 30px; padding: 14px 35px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 25px; cursor: pointer; text-decoration: none; font-weight: 700; transition: all 0.3s; z-index: 10; }
+        #back-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+
+        /* Power-up indicators */
+        #active-effects { position: absolute; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .effect-timer { background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); border-radius: 15px; padding: 8px 20px; border-left: 6px solid #fff; font-weight: bold; display: flex; align-items: center; gap: 12px; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
+    <div id="ui">
+        <div id="score-container">
+            <div id="score">ئۇتۇق: 0</div>
+            <div id="high-score">ئەڭ يۇقىرى: 0</div>
+        </div>
+        <div id="lives">❤️❤️❤️</div>
+    </div>
+    <div id="active-effects"></div>
     <div id="combo-text">تاتلىق!</div>
     <div id="overlay">
-        <h1>🍇 مەرىپەت باغچىسى</h1>
-        <p>مېۋىلەرنى سېۋەتكە يىغىڭ! <br> "رەڭدار ئالما" 200 نومۇر بېرىدۇ. <br> بارمىقىڭىز بىلەن سۆرەپ تۇتۇڭ. بەك ئاسان!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+        <div class="glass-panel">
+            <h1>🍇 مەرىپەت باغچىسى</h1>
+            <p>مېۋىلەرنى سېۋەتكە يىغىڭ! سېرىق ئالما 200 نومۇر بېرىدۇ. <br> سېسىق مېۋىلەردىن ھوشيار بولۇڭ! <br> ئېكراننى سىيرىپ باشقۇرۇڭ.</p>
+            <div id="final-stats" style="display:none; margin-bottom: 25px;">
+                <h2 style="font-size: 2.8rem; color: #ffeb3b;">ئويۇن تۈگىدى!</h2>
+                <div id="last-score" style="font-size: 2.2rem;">ئاخىرقى نومۇر: 0</div>
+            </div>
+            <button class="btn" onclick="startGame()">باشلاش</button>
+        </div>
     </div>
     <a id="back-btn" href="../index.html">← كەينىگە</a>
 
     <script>
-        let scene, camera, renderer, basket, fruits = [];
-        let score = 0, gameActive = false, audioCtx;
+        let scene, camera, renderer, basket, basketWidth = 6;
+        let fruits = [], powerups = [], particles = [];
+        let score = 0, highScore = localStorage.getItem('garden_highscore') || 0, lives = 3, gameActive = false, audioCtx;
+        let targetX = 0, lastTouchX = 0, gameSpeed = 0.08;
+        
+        // Power-up states
+        let effects = { bigBasket: 0, slowmo: 0, magnet: 0 };
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playPop() { if (!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.2); }
+        function playSound(f, d, type = 'sine') { 
+            if(!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); 
+            o.type = type; o.frequency.setValueAtTime(f, audioCtx.currentTime); 
+            g.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d); 
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); 
+        }
+
+        function createBasket() {
+            const group = new THREE.Group();
+            
+            // Main basket body
+            const bodyGeo = new THREE.CylinderGeometry(3.5, 2.5, 2.5, 12, 1, true);
+            const bodyMat = new THREE.MeshPhongMaterial({ color: 0x8d6e63, side: THREE.DoubleSide, flatShading: true });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            group.add(body);
+
+            // Bottom
+            const bottomGeo = new THREE.CircleGeometry(2.5, 12);
+            const bottom = new THREE.Mesh(bottomGeo, bodyMat);
+            bottom.rotation.x = -Math.PI / 2;
+            bottom.position.y = -1.25;
+            group.add(bottom);
+
+            // Handle
+            const handleGeo = new THREE.TorusGeometry(3, 0.2, 8, 20, Math.PI);
+            const handle = new THREE.Mesh(handleGeo, bodyMat);
+            handle.position.y = 0.5;
+            group.add(handle);
+
+            // Rim
+            const rimGeo = new THREE.TorusGeometry(3.5, 0.2, 8, 24);
+            const rim = new THREE.Mesh(rimGeo, bodyMat);
+            rim.rotation.x = Math.PI / 2;
+            rim.position.y = 1.25;
+            group.add(rim);
+
+            return group;
+        }
+
+        function createLeaf(pos) {
+            const geo = new THREE.PlaneGeometry(0.4, 0.6);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x4caf50, side: THREE.DoubleSide });
+            const leaf = new THREE.Mesh(geo, mat);
+            leaf.position.copy(pos);
+            leaf.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+            leaf.userData = { 
+                vel: new THREE.Vector3((Math.random()-0.5)*0.05, -Math.random()*0.05 - 0.02, (Math.random()-0.5)*0.05),
+                rotVel: new THREE.Vector3(Math.random()*0.02, Math.random()*0.02, Math.random()*0.02)
+            };
+            scene.add(leaf);
+            particles.push(leaf);
+        }
 
         function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            scene = new THREE.Scene(); 
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true }); 
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             document.body.appendChild(renderer.domElement);
+            
             new THREE.TextureLoader().load('pics/wisdom_garden_bg.png', (t) => scene.background = t);
-            scene.add(new THREE.AmbientLight(0xffffff, 1));
+            scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+            const dl = new THREE.DirectionalLight(0xffffff, 0.5); dl.position.set(5, 10, 5); scene.add(dl);
 
-            basket = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 4), new THREE.MeshPhongMaterial({ color: 0x8d6e63 }));
-            scene.add(basket); basket.position.y = -5; camera.position.z = 15;
+            basket = createBasket(); scene.add(basket);
+            basket.position.y = -6; camera.position.z = 15; camera.position.y = 0;
 
-            const handleMove = x => { if (gameActive) basket.position.x = (x / window.innerWidth - 0.5) * 22; };
+            document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}`;
+
+            // Controls
+            const handleMove = x => {
+                if (gameActive) {
+                    targetX = (x / window.innerWidth - 0.5) * 25;
+                }
+            };
+
+            const relativeMove = dx => {
+                if (gameActive) {
+                    targetX = Math.max(-12, Math.min(12, targetX + dx * 0.05));
+                }
+            };
+
             window.addEventListener('mousemove', e => handleMove(e.clientX));
-            window.addEventListener('touchmove', e => { handleMove(e.touches[0].clientX); e.preventDefault(); }, { passive: false });
+            
+            window.addEventListener('touchstart', e => {
+                lastTouchX = e.touches[0].clientX;
+            }, {passive: false});
+
+            window.addEventListener('touchmove', e => {
+                if(!gameActive) return;
+                const dx = e.touches[0].clientX - lastTouchX;
+                relativeMove(dx);
+                lastTouchX = e.touches[0].clientX;
+                e.preventDefault();
+            }, { passive: false });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
 
         function spawnFruit() {
-            const isSpecial = Math.random() < 0.2;
-            const geo = isSpecial ? new THREE.TorusKnotGeometry(0.7, 0.2, 64, 8) : new THREE.SphereGeometry(0.8, 16, 16);
-            const mat = new THREE.MeshPhongMaterial({ color: isSpecial ? 0x00ff00 : (Math.random() > 0.5 ? 0xff0000 : 0x9c27b0) });
+            const r = Math.random();
+            let type, color, scoreVal, geo;
+            
+            if (r < 0.1) { // Watermelon (High points)
+                type = 'watermelon'; scoreVal = 200; color = 0x4caf50;
+                geo = new THREE.SphereGeometry(1.2, 16, 16); geo.scale(1, 0.8, 1);
+            } else if (r < 0.3) { // Grapes
+                type = 'grapes'; scoreVal = 50; color = 0x9c27b0;
+                geo = new THREE.SphereGeometry(0.8, 8, 8);
+            } else if (r < 0.45) { // Rotten
+                type = 'rotten'; scoreVal = -50; color = 0x5d4037;
+                geo = new THREE.IcosahedronGeometry(0.8, 0);
+            } else { // Apple
+                type = 'apple'; scoreVal = 20; color = 0xf44336;
+                geo = new THREE.SphereGeometry(0.8, 16, 16);
+            }
+
+            const mat = new THREE.MeshPhongMaterial({ color: color, shininess: 50 });
             const fruit = new THREE.Mesh(geo, mat);
-            fruit.position.set((Math.random() - 0.5) * 20, 12, 0);
-            fruit.userData = { isSpecial: isSpecial }; scene.add(fruit); fruits.push(fruit);
+            fruit.position.set((Math.random() - 0.5) * 22, 12, 0);
+            fruit.userData = { type: type, score: scoreVal };
+            scene.add(fruit); fruits.push(fruit);
         }
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+        function spawnPowerup() {
+            const types = [
+                { type: 'bigBasket', color: 0x795548, label: '🧺' },
+                { type: 'slowmo', color: 0x03a9f4, label: '⏰' },
+                { type: 'magnet', color: 0xe91e63, label: '🧲' }
+            ];
+            const t = types[Math.floor(Math.random() * types.length)];
+            const geo = new THREE.BoxGeometry(1, 1, 1);
+            const pu = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: t.color, emissive: t.color, emissiveIntensity: 0.3 }));
+            pu.position.set((Math.random() - 0.5) * 20, 12, 0);
+            pu.userData = { type: 'powerup', effect: t.type, label: t.label };
+            scene.add(pu); powerups.push(pu);
+        }
+
+        function showCombo(txt) { 
+            const el = document.getElementById('combo-text'); 
+            el.innerText = txt; el.style.display = 'block'; 
+            setTimeout(() => el.style.display = 'none', 1000); 
+        }
+
+        function updateEffectsUI() {
+            const container = document.getElementById('active-effects');
+            container.innerHTML = '';
+            for(const [name, time] of Object.entries(effects)) {
+                if(time > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'effect-timer';
+                    const labels = { bigBasket: '🧺 چوڭ سېۋەت', slowmo: '⏰ ئاستىلىتىش', magnet: '🧲 ماگنىت' };
+                    const colors = { bigBasket: '#795548', slowmo: '#03a9f4', magnet: '#e91e63' };
+                    div.style.borderLeftColor = colors[name];
+                    div.innerHTML = `<span>${labels[name]}</span> <small>${Math.ceil(time/60)}s</small>`;
+                    container.appendChild(div);
+                }
+            }
+        }
 
         function startGame() {
-            initAudio(); document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; document.getElementById('score').innerText = `ئۇتۇق: 0`;
-            fruits.forEach(f => scene.remove(f)); fruits = [];
+            initAudio(); 
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('final-stats').style.display = 'none';
+            score = 0; lives = 3; gameActive = true; gameSpeed = 0.08;
+            effects = { bigBasket: 0, slowmo: 0, magnet: 0 };
+            updateUI();
+            fruits.concat(powerups, particles).forEach(o => scene.remove(o));
+            fruits = []; powerups = []; particles = [];
+        }
+
+        function updateUI() { 
+            document.getElementById('score').innerText = `ئۇتۇق: ${score}`; 
+            document.getElementById('lives').innerText = '❤️'.repeat(lives); 
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('garden_highscore', highScore);
+                document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}`;
+            }
+        }
+
+        function gameOver() {
+            gameActive = false;
+            document.getElementById('overlay').style.display = 'flex';
+            document.getElementById('final-stats').style.display = 'block';
+            document.getElementById('last-score').innerText = `ئاخىرقى نومۇر: ${score}`;
+            playSound(100, 0.5, 'square');
         }
 
         function animate() {
             requestAnimationFrame(animate);
             if (gameActive) {
+                // Spawning
                 if (Math.random() < 0.04) spawnFruit();
-                for (let i = fruits.length - 1; i >= 0; i--) {
-                    const f = fruits[i]; f.position.y -= 0.08 + (score / 5000);
-                    if (f.position.y < -4.5 && f.position.y > -6 && Math.abs(f.position.x - basket.position.x) < 3.5) {
-                        score += f.userData.isSpecial ? 200 : 20; document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
-                        if (f.userData.isSpecial) showCombo("بەك تاتلىق!"); else if (score % 200 === 0) showCombo("قايتا تۇتۇڭ!");
-                        playPop(); scene.remove(f); fruits.splice(i, 1);
-                    } else if (f.position.y < -10) { scene.remove(f); fruits.splice(i, 1); }
+                if (Math.random() < 0.003) spawnPowerup();
+                if (Math.random() < 0.1) createLeaf(new THREE.Vector3((Math.random()-0.5)*30, 15, (Math.random()-0.5)*10));
+                
+                // Difficulty
+                let currentSpeed = (gameSpeed + (score / 10000)) * (effects.slowmo > 0 ? 0.5 : 1);
+
+                // Basket Movement
+                basket.position.x += (targetX - basket.position.x) * 0.15;
+                basket.rotation.z = (targetX - basket.position.x) * -0.05;
+                
+                // Power-up Scaling
+                const targetScale = effects.bigBasket > 0 ? 1.8 : 1.0;
+                basket.scale.lerp(new THREE.Vector3(targetScale, 1, 1), 0.1);
+                basketWidth = 6 * basket.scale.x;
+
+                // Update Effects
+                for(let k in effects) if(effects[k] > 0) effects[k]--;
+                updateEffectsUI();
+
+                // Object Management
+                const manage = (arr, callback) => {
+                    for (let i = arr.length - 1; i >= 0; i--) {
+                        const o = arr[i]; o.position.y -= currentSpeed;
+                        if(callback(o, i)) { scene.remove(o); arr.splice(i, 1); }
+                        else if(o.position.y < -12) { scene.remove(o); arr.splice(i, 1); }
+                    }
+                };
+
+                manage(fruits, (f) => {
+                    f.rotation.x += 0.02; f.rotation.y += 0.02;
+                    
+                    if(effects.magnet > 0 && f.position.distanceTo(basket.position) < 10 && f.userData.type !== 'rotten') {
+                        f.position.lerp(basket.position, 0.1);
+                    }
+
+                    if (f.position.y < -4.5 && f.position.y > -7 && Math.abs(f.position.x - basket.position.x) < basketWidth/2) {
+                        if(f.userData.type === 'rotten') {
+                            lives--; updateUI(); playSound(150, 0.3, 'sawtooth');
+                            showCombo("دىققەت!");
+                            if (lives <= 0) gameOver();
+                        } else {
+                            score += f.userData.score; updateUI();
+                            if (f.userData.type === 'watermelon') showCombo("بەك تاتلىق!");
+                            else if (score % 500 === 0 && score > 0) showCombo("قالتىس!");
+                            playSound(400 + Math.random()*200, 0.1);
+                        }
+                        return true;
+                    }
+                });
+
+                manage(powerups, (p) => {
+                    p.rotation.y += 0.1;
+                    if (p.position.y < -4.5 && p.position.y > -7 && Math.abs(p.position.x - basket.position.x) < basketWidth/2) {
+                        effects[p.userData.effect] = 600; // 10 seconds
+                        showCombo(p.userData.label + " يېڭىلاش!");
+                        playSound(800, 0.2);
+                        return true;
+                    }
+                });
+
+                // Particles (Leaves)
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.position.add(p.userData.vel);
+                    p.rotation.x += p.userData.rotVel.x;
+                    p.rotation.y += p.userData.rotVel.y;
+                    if(p.position.y < -15) { scene.remove(p); particles.splice(i, 1); }
                 }
             }
             renderer.render(scene, camera);
         }
         init(); animate();
     </script>
+</body>
+</html>
+
 </body>
 </html>
