@@ -62,80 +62,147 @@
     <script>
         const canvas = document.getElementById('game');
         const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-
-        let gameActive = false, score = 0, audioCtx;
-        const gravity = 0.3;
+        let terrainCanvas, terrainCtx;
         
-        let cannon = { x: 50, y: 0, angle: 0 };
-        let shell = { x: 0, y: 0, vx: 0, vy: 0, active: false };
-        let target = { x: 0, y: 0, w: 60, h: 60 };
-        let mountain = { x: 0, h: 0 };
-        let particles = [];
+        function resize() { 
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; 
+            initTerrain();
+        }
+        window.addEventListener('resize', resize);
+
+        let gameActive = false, score = 0, highScore = localStorage.getItem('artillery_highscore') || 0;
+        let audioCtx, particles = [], shells = [];
+        const gravity = 0.25;
+        let wind = 0;
+
+        let cannon = { x: 80, y: 0, angle: -Math.PI/4 };
+        let target = { x: 0, y: 0, w: 80, h: 60, hp: 100 };
         let isDragging = false, dragStartX = 0, dragStartY = 0, dragEndX = 0, dragEndY = 0;
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSound(type) {
+        function playSound(f, d, type = 'sine') {
             if (!audioCtx) return;
             const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
             o.connect(g); g.connect(audioCtx.destination); let now = audioCtx.currentTime;
-            if(type === 'shoot') {
-                o.type = 'sawtooth'; o.frequency.setValueAtTime(100, now); o.frequency.exponentialRampToValueAtTime(10, now + 0.5);
-                g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                o.start(now); o.stop(now + 0.5);
-            } else if(type === 'boom') {
-                o.type = 'square'; o.frequency.setValueAtTime(150, now); o.frequency.exponentialRampToValueAtTime(20, now + 0.5);
-                g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-                o.start(now); o.stop(now + 0.5);
-            }
+            o.type = type; o.frequency.setValueAtTime(f, now); o.frequency.exponentialRampToValueAtTime(f/10, now + d);
+            g.gain.setValueAtTime(0.2, now); g.gain.exponentialRampToValueAtTime(0.01, now + d);
+            o.start(now); o.stop(now + d);
+        }
+
+        function initTerrain() {
+            terrainCanvas = document.createElement('canvas');
+            terrainCanvas.width = canvas.width;
+            terrainCanvas.height = canvas.height;
+            terrainCtx = terrainCanvas.getContext('2d');
+            
+            terrainCtx.fillStyle = '#16213e';
+            terrainCtx.beginPath();
+            const mid = canvas.width / 2;
+            const h = 250 + Math.random() * 200;
+            terrainCtx.moveTo(mid - 200, canvas.height);
+            terrainCtx.lineTo(mid, canvas.height - h);
+            terrainCtx.lineTo(mid + 200, canvas.height);
+            terrainCtx.fill();
+            
+            // Add some base ground
+            terrainCtx.fillRect(0, canvas.height - 50, canvas.width, 50);
+        }
+
+        function destroyTerrain(x, y, radius) {
+            terrainCtx.globalCompositeOperation = 'destination-out';
+            terrainCtx.beginPath();
+            terrainCtx.arc(x, y, radius, 0, Math.PI * 2);
+            terrainCtx.fill();
+            terrainCtx.globalCompositeOperation = 'source-over';
         }
 
         function spawnTarget() {
             cannon.y = canvas.height - 50;
-            // Mountain blocks view
-            mountain.x = canvas.width / 2 - 50 + Math.random() * 100;
-            mountain.h = 200 + Math.random() * (canvas.height/2);
-            
-            // Target behind mountain
-            target.x = mountain.x + 100 + Math.random() * (canvas.width - mountain.x - 200);
-            target.y = canvas.height - target.h - 50;
+            target.x = canvas.width / 2 + 200 + Math.random() * (canvas.width - canvas.width/2 - 350);
+            target.y = canvas.height - 50 - target.h;
+            target.hp = 100;
+            wind = (Math.random() - 0.5) * 0.4;
+            updateUI();
         }
 
         function startGame() {
             initAudio();
             document.getElementById('overlay').style.display = 'none';
-            score = 0; document.getElementById('score').innerText = `يوقىتىلغان نىشان: ${score}`;
+            score = 0; document.getElementById('score').innerText = `نىشان: 0`;
+            document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}`;
             gameActive = true;
+            resize();
             spawnTarget();
             animate();
         }
 
-        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
-        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
-        window.addEventListener('mouseup', handleEnd);
-        
-        window.addEventListener('touchstart', e => { if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
-        window.addEventListener('touchmove', e => { if(isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, {passive: false});
-        window.addEventListener('touchend', handleEnd);
-
-        function handleStart(x, y) { if(!gameActive || shell.active) return; isDragging = true; dragStartX = x; dragStartY = y; dragEndX = x; dragEndY = y; }
-        function handleMove(x, y) { if(isDragging) { dragEndX = x; dragEndY = y; cannon.angle = Math.atan2(dragStartY - y, dragStartX - x); } }
-        function handleEnd() {
-            if(isDragging) {
-                isDragging = false; shell.active = true;
-                let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
-                shell.x = cannon.x; shell.y = cannon.y;
-                shell.vx = dx * 0.1; shell.vy = dy * 0.1;
-                playSound('shoot');
+        function updateUI() {
+            document.getElementById('score').innerText = `نىشان: ${score}`;
+            document.getElementById('wind-value').innerText = Math.abs(Math.floor(wind * 100));
+            document.getElementById('wind-arrow').style.transform = `rotate(${wind > 0 ? 0 : 180}deg)`;
+            if(score > highScore) {
+                highScore = score;
+                localStorage.setItem('artillery_highscore', highScore);
+                document.getElementById('high-score').innerText = `ئەڭ يۇقىرى: ${highScore}`;
             }
         }
 
-        function createExplosion(x, y) {
-            playSound('boom');
-            for(let i=0; i<30; i++) {
-                particles.push({ x: x, y: y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 1, color: Math.random() > 0.5 ? '#e94560' : '#ffb703' });
+        const handleStart = (x, y) => { 
+            if(!gameActive) return; 
+            if(shells.length > 0) {
+                // Cluster split
+                const s = shells[0];
+                if(s.active && !s.split) {
+                    s.split = true;
+                    for(let i=0; i<3; i++) {
+                        shells.push({
+                            x: s.x, y: s.y, 
+                            vx: s.vx + (Math.random()-0.5)*5, 
+                            vy: s.vy + (Math.random()-0.5)*5, 
+                            active: true, split: true 
+                        });
+                    }
+                    playSound(400, 0.2);
+                    document.getElementById('weapon-hint').style.display = 'none';
+                }
+                return;
             }
+            isDragging = true; dragStartX = x; dragStartY = y; dragEndX = x; dragEndY = y; 
+        };
+
+        const handleMove = (x, y) => { if(isDragging) { dragEndX = x; dragEndY = y; cannon.angle = Math.atan2(dragStartY - y, dragStartX - x); } };
+
+        const handleEnd = () => {
+            if(isDragging) {
+                isDragging = false;
+                let dx = dragStartX - dragEndX; let dy = dragStartY - dragEndY;
+                shells.push({ 
+                    x: cannon.x, y: cannon.y, 
+                    vx: dx * 0.1, vy: dy * 0.1, 
+                    active: true, split: false 
+                });
+                playSound(100, 0.5, 'sawtooth');
+                document.getElementById('weapon-hint').style.display = 'block';
+            }
+        };
+
+        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchstart', e => { e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+        window.addEventListener('touchmove', e => { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+        window.addEventListener('touchend', e => { e.preventDefault(); handleEnd(); });
+
+        function createExplosion(x, y, size = 30) {
+            playSound(150, 0.5, 'square');
+            for(let i=0; i<size; i++) {
+                particles.push({ 
+                    x: x, y: y, 
+                    vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12, 
+                    life: 1, color: Math.random() > 0.5 ? '#e94560' : '#ffeb3b' 
+                });
+            }
+            destroyTerrain(x, y, size + 10);
         }
 
         function drawTrajectory() {
@@ -143,69 +210,86 @@
             let tx = cannon.x, ty = cannon.y;
             let tvx = dx * 0.1, tvy = dy * 0.1;
             ctx.beginPath(); ctx.moveTo(tx, ty);
-            for(let i=0; i<40; i++) {
-                tx += tvx; ty += tvy; tvy += gravity;
-                if(i % 2 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
+            for(let i=0; i<60; i++) {
+                tvx += wind; tvy += gravity; tx += tvx; ty += tvy;
+                if(i % 3 === 0) ctx.lineTo(tx, ty); else ctx.moveTo(tx, ty);
             }
-            ctx.strokeStyle = 'rgba(233, 69, 96, 0.5)'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.strokeStyle = 'rgba(233, 69, 96, 0.4)'; ctx.lineWidth = 3; ctx.stroke();
         }
 
         function animate() {
             if(!gameActive) return;
             requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(terrainCanvas, 0, 0);
 
-            // Ground
-            ctx.fillStyle = '#0f3460'; ctx.fillRect(0, canvas.height-50, canvas.width, 50);
-
-            // Mountain
-            ctx.fillStyle = '#16213e';
-            ctx.beginPath(); ctx.moveTo(mountain.x - 100, canvas.height-50); ctx.lineTo(mountain.x, canvas.height - 50 - mountain.h); ctx.lineTo(mountain.x + 100, canvas.height-50); ctx.fill();
-
-            // Target (Invader Box)
+            // Target
             ctx.fillStyle = '#333'; ctx.fillRect(target.x, target.y, target.w, target.h);
-            ctx.fillStyle = '#e94560'; ctx.font = '30px Arial'; ctx.fillText('✖', target.x + 15, target.y + 40);
+            ctx.fillStyle = '#e94560'; ctx.fillRect(target.x, target.y - 15, target.w * (target.hp/100), 8);
+            ctx.fillStyle = '#fff'; ctx.font = '24px Arial'; ctx.fillText('🏴‍☠️', target.x + 25, target.y + 40);
 
             // Cannon
             ctx.save(); ctx.translate(cannon.x, cannon.y); ctx.rotate(cannon.angle);
-            ctx.fillStyle = '#4caf50'; ctx.fillRect(0, -10, 40, 20); // Barrel
+            ctx.fillStyle = '#4caf50'; ctx.fillRect(0, -12, 50, 24);
             ctx.restore();
-            ctx.fillStyle = '#2e7d32'; ctx.beginPath(); ctx.arc(cannon.x, cannon.y, 20, 0, Math.PI*2); ctx.fill(); // Base
-            ctx.fillStyle = '#fff'; ctx.font = '20px Arial'; ctx.fillText('ئاي-يۇلتۇز', cannon.x-35, cannon.y+30);
+            ctx.fillStyle = '#2e7d32'; ctx.beginPath(); ctx.arc(cannon.x, cannon.y, 25, 0, Math.PI*2); ctx.fill();
 
             if(isDragging) drawTrajectory();
 
-            // Shell
-            if(shell.active) {
-                shell.vy += gravity; shell.x += shell.vx; shell.y += shell.vy;
-                ctx.fillStyle = '#ffb703'; ctx.beginPath(); ctx.arc(shell.x, shell.y, 8, 0, Math.PI*2); ctx.fill();
+            // Shells
+            for(let i = shells.length - 1; i >= 0; i--) {
+                let s = shells[i];
+                if(s.active) {
+                    s.vx += wind; s.vy += gravity; s.x += s.vx; s.y += s.vy;
+                    ctx.fillStyle = '#ffb703'; ctx.beginPath(); ctx.arc(s.x, s.y, 8, 0, Math.PI*2); ctx.fill();
+                    
+                    // Shell Trail
+                    if(Math.random() < 0.4) particles.push({ x: s.x, y: s.y, vx: -s.vx*0.2, vy: -s.vy*0.2, life: 0.5, color: '#fff' });
 
-                // Hit Target
-                if(shell.x > target.x && shell.x < target.x + target.w && shell.y > target.y && shell.y < target.y + target.h) {
-                    shell.active = false; createExplosion(target.x + target.w/2, target.y + target.h/2);
-                    score++; document.getElementById('score').innerText = `يوقىتىلغان نىشان: ${score}`;
-                    setTimeout(spawnTarget, 1000);
+                    // Hit Target
+                    if(s.x > target.x && s.x < target.x + target.w && s.y > target.y && s.y < target.y + target.h) {
+                        s.active = false; createExplosion(s.x, s.y, 50);
+                        target.hp -= 40;
+                        if(target.hp <= 0) { score++; updateUI(); setTimeout(spawnTarget, 1000); }
+                        shells.splice(i, 1);
+                        document.getElementById('weapon-hint').style.display = 'none';
+                        continue;
+                    }
+
+                    // Hit Terrain
+                    const pixel = terrainCtx.getImageData(s.x, s.y, 1, 1).data;
+                    if(pixel[3] > 0) {
+                        s.active = false; createExplosion(s.x, s.y);
+                        shells.splice(i, 1);
+                        if(shells.length === 0) {
+                            document.getElementById('weapon-hint').style.display = 'none';
+                            setTimeout(() => { if(target.hp > 0 && shells.length === 0) wind = (Math.random()-0.5)*0.4; updateUI(); }, 1000);
+                        }
+                        continue;
+                    }
+
+                    if(s.y > canvas.height || s.x > canvas.width || s.x < 0) {
+                        s.active = false; shells.splice(i, 1);
+                        if(shells.length === 0) {
+                            document.getElementById('weapon-hint').style.display = 'none';
+                            setTimeout(() => { if(target.hp > 0 && shells.length === 0) wind = (Math.random()-0.5)*0.4; updateUI(); }, 1000);
+                        }
+                    }
                 }
-                // Hit Mountain
-                // Simple triangle collision approximation: just check x range and y below mountain line
-                if(shell.x > mountain.x - 100 && shell.x < mountain.x + 100) {
-                    let mx = shell.x < mountain.x ? (shell.x - (mountain.x - 100))/100 : ((mountain.x + 100) - shell.x)/100;
-                    let my = canvas.height - 50 - mountain.h * mx;
-                    if(shell.y > my) { shell.active = false; createExplosion(shell.x, shell.y); setTimeout(spawnTarget, 1000); }
-                }
-                // Miss
-                if(shell.y > canvas.height || shell.x > canvas.width) { shell.active = false; setTimeout(spawnTarget, 500); }
             }
 
             // Particles
             for(let i=particles.length-1; i>=0; i--) {
                 let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= 0.02;
                 ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fill();
                 ctx.globalAlpha = 1;
                 if(p.life <= 0) particles.splice(i, 1);
             }
         }
     </script>
+</body>
+</html>
+
 </body>
 </html>
