@@ -1,233 +1,587 @@
 <!DOCTYPE html>
-<html lang="ug" dir="rtl">
+<html lang="ug">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎈 ئۇچار شارلار: شار پارتلىتىش</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { margin: 0; overflow: hidden; background: linear-gradient(to bottom, #87CEEB, #e0f6ff); font-family: 'Tajawal', sans-serif; color: white; touch-action: none; }
-        canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 5; }
-        #score { font-size: 2.8rem; font-weight: 800; color: #ff006e; text-shadow: 2px 2px 0px white; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(135, 206, 235, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(10px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #ff006e, #ff85a1); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 10px 20px rgba(255,0,110,0.4); }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ff006e; text-shadow: 0 0 20px white; }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; color: #333; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.8); border: 2px solid #ff006e; color: #ff006e; border-radius: 15px; cursor: pointer; text-decoration: none; font-weight: bold; z-index: 5; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🏹 باتۇر يايچى</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;touch-action:none;user-select:none}
+canvas{display:block}
+#ui{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:5;pointer-events:none;gap:6px}
+#ui>div{background:rgba(0,0,0,0.82);backdrop-filter:blur(12px);border:2px solid rgba(80,160,255,0.4);padding:7px 13px;border-radius:18px;text-align:center;color:#fff;min-width:65px}
+.lbl{font-size:0.65rem;color:#55aaff;letter-spacing:1px;font-weight:700}
+.val{font-size:1.9rem;font-weight:900;color:#fff}
+#lives-row{position:absolute;top:78px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;font-size:1.6rem;letter-spacing:4px;filter:drop-shadow(0 0 10px #ff4444)}
+#wave-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;background:linear-gradient(135deg,#003580,#0060cc);color:#55ddff;font-weight:900;padding:7px 24px;border-radius:24px;font-size:0.95rem;box-shadow:0 4px 18px rgba(0,60,200,0.55);white-space:nowrap;border:2px solid rgba(80,180,255,0.3)}
+#pwr-row{position:absolute;bottom:105px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:10px;pointer-events:none}
+.pwr-tag{background:rgba(0,0,0,0.75);border-radius:20px;padding:6px 14px;font-size:1rem;color:#fff;border:2px solid;display:flex;align-items:center;gap:5px}
+.overlay-dark{position:fixed;inset:0;background:rgba(0,5,20,0.95);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(20px)}
+.overlay-dark.hidden{display:none}
+.fancy-box{background:linear-gradient(148deg,#040c1e,#081a38);border:3px solid rgba(50,130,255,0.55);border-radius:32px;padding:2.4rem;text-align:center;max-width:520px;width:92%;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 22px 70px rgba(0,80,220,0.35)}
+@keyframes popIn{from{opacity:0;transform:scale(0.35) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.fact-icon{font-size:4rem;margin-bottom:6px;animation:bncA 1.1s infinite}
+@keyframes bncA{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fact-title{font-size:1.85rem;font-weight:900;color:#55ddff;margin-bottom:10px;text-shadow:0 0 22px #55ddff44}
+.fact-body{color:#c8e8f8;font-size:1.02rem;line-height:1.85;direction:rtl;text-align:right;background:rgba(0,80,180,0.12);padding:13px 16px;border-radius:14px;border-right:4px solid #0066cc;margin-bottom:14px}
+.big-btn{padding:14px 48px;font-size:1.35rem;background:linear-gradient(135deg,#0044aa,#0088ff);color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:900;box-shadow:0 8px 28px rgba(0,100,255,0.5);transition:transform 0.15s;display:inline-block;margin:4px}
+.big-btn:hover{transform:scale(1.06)}
+.big-btn:active{transform:scale(0.93)}
+.big-btn.gold{background:linear-gradient(135deg,#cc8800,#ffcc22);color:#1a0800;box-shadow:0 8px 28px rgba(200,150,0,0.45)}
+.game-title{font-size:2.3rem;font-weight:900;color:#55ddff;margin:6px 0;text-shadow:0 0 22px #55ddff44}
+.game-desc{color:#6aa4cc;font-size:1rem;line-height:1.85;margin:10px 0 18px;direction:rtl;text-align:right}
+.stats-row{display:flex;justify-content:center;gap:12px;margin:12px 0;flex-wrap:wrap}
+.stat-c{background:rgba(0,80,180,0.15);border-radius:14px;padding:11px 17px;text-align:center;min-width:78px;border:1px solid rgba(50,130,255,0.2)}
+.stat-c .sv{font-size:2rem;font-weight:900;color:#55ddff}
+.stat-c .sl{font-size:0.75rem;color:#5588bb;margin-top:2px}
+#back-btn{position:fixed;bottom:16px;left:16px;padding:10px 20px;background:rgba(0,0,0,0.7);border:2px solid rgba(255,255,255,0.2);color:#fff;border-radius:14px;text-decoration:none;font-size:0.88rem;z-index:10;backdrop-filter:blur(8px)}
+</style>
 </head>
 <body>
-    <div id="ui"><div id="score">ئۇتۇق: 0</div></div>
-    <div id="overlay">
-        <h1>🎈 ئۇچار شارلار</h1>
-        <p>شارلارنى پارتلىتىڭ! <br> ئېكراننى چېكىپ ئوقيا ئېتىڭ. <br> شارلارنىڭ ئىچىدە كۆپلىگەن مۇكاپاتلار بار!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+<div id="ui">
+  <div><div class="lbl">نومۇر</div><div class="val" id="score">0</div></div>
+  <div><div class="lbl">كومبو</div><div class="val" id="combo">×0</div></div>
+  <div><div class="lbl">دەۋر</div><div class="val" id="wavenum">1/7</div></div>
+</div>
+<div id="wave-badge">دەۋر 1 · قەشقەر ئاسمىنى</div>
+<div id="lives-row">🛡️🛡️🛡️</div>
+<div id="pwr-row"></div>
+
+<div id="fact-popup" class="overlay-dark hidden">
+  <div class="fancy-box">
+    <div class="fact-icon" id="fp-icon">🏹</div>
+    <div class="fact-title" id="fp-title">دەۋر 1!</div>
+    <div class="fact-body" id="fp-fact"></div>
+    <button class="big-btn gold" id="fp-btn" onclick="nextWave()">🏹 داۋاملاش!</button>
+  </div>
+</div>
+
+<div id="overlay" class="overlay-dark">
+  <div class="fancy-box">
+    <div style="font-size:4rem;animation:bncA 1.1s infinite">🏹🏰</div>
+    <div class="game-title">باتۇر يايچى</div>
+    <div class="game-desc" id="overlay-desc">خانلىقىڭنى قوغدا! دۈشمەن شارلىرى قەلئىگە يەتسە — قالقانلىرىڭنى يوقىتىسەن! 💣 قارا شارنى ئۇرما! ئالتۇن شارغا تاش! 7 دەۋرنى بېسىپ ئۆتەلەمسەن؟</div>
+    <div id="final-stats" class="stats-row" style="display:none">
+      <div class="stat-c"><div class="sv" id="f-score">0</div><div class="sl">نومۇر</div></div>
+      <div class="stat-c"><div class="sv" id="f-hit">0</div><div class="sl">ئۇرۇش</div></div>
+      <div class="stat-c"><div class="sv" id="f-best">0</div><div class="sl">ئەڭ ياخشى</div></div>
     </div>
-    <a id="back-btn" href="../index.html">← كەينىگە</a>
-    <canvas id="game"></canvas>
+    <button class="big-btn gold" id="start-btn" onclick="initGame()">🏹 جەڭگە كىر!</button>
+    <div style="color:#2a4a88;font-size:0.82rem;margin-top:8px">چىكىپ ياكى تەگمەك بىلەن ئوق ئاتىڭ!</div>
+  </div>
+</div>
 
-    <script>
-        const canvas = document.getElementById('game');
-        const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
+<canvas id="c"></canvas>
+<a id="back-btn" href="../index.html">← كەينىگە</a>
 
-        let balloons = [], arrows = [], texts = [];
-        let score = 0, gameActive = false, audioCtx;
+<script>
+const c=document.getElementById('c'), ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+window.addEventListener('resize',resize); resize();
 
-        const colors = ['#ff006e', '#3a86ff', '#8338ec', '#ffbe0b', '#fb5607'];
-        const rewards = ['مۇكاپات!', 'ئەقىللىق!', 'بەكمۇ ياخشى!', 'ئىتتىك!', 'ھەيران قالارلىق!'];
+// Wave definitions
+const WAVES=[
+  {name:'قەشقەر ئاسمىنى',  count:16, spd:0.7,  bombR:0.00, fastR:0.00, heavyR:0.00, goldR:0.04, pwrR:0.06},
+  {name:'تاريم ئاسمىنى',   count:22, spd:0.85, bombR:0.03, fastR:0.06, heavyR:0.05, goldR:0.04, pwrR:0.06},
+  {name:'تۇرپان ئاسمىنى',  count:28, spd:1.05, bombR:0.05, fastR:0.10, heavyR:0.08, goldR:0.05, pwrR:0.05},
+  {name:'تەڭرىتاغ ئاسمىنى',count:35, spd:1.30, bombR:0.07, fastR:0.14, heavyR:0.10, goldR:0.05, pwrR:0.05},
+  {name:'ئىپەك يولى ئاسمىنى',count:42,spd:1.60, bombR:0.08, fastR:0.18, heavyR:0.12, goldR:0.06, pwrR:0.04},
+  {name:'خانلىق ئاسمىنى',  count:50, spd:1.95, bombR:0.09, fastR:0.20, heavyR:0.14, goldR:0.07, pwrR:0.04},
+  {name:'ئۇلۇغ زەپەر',     count:60, spd:2.35, bombR:0.10, fastR:0.22, heavyR:0.15, goldR:0.09, pwrR:0.03},
+];
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playSound(type) {
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination);
-            let now = audioCtx.currentTime;
-            if(type === 'shoot') {
-                o.type = 'sawtooth';
-                o.frequency.setValueAtTime(300, now);
-                o.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-                g.gain.setValueAtTime(0.1, now);
-                g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
-            } else if(type === 'pop') {
-                o.type = 'sine';
-                o.frequency.setValueAtTime(800, now);
-                o.frequency.exponentialRampToValueAtTime(1500, now + 0.1);
-                g.gain.setValueAtTime(0.2, now);
-                g.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                o.start(now); o.stop(now + 0.1);
-            }
-        }
+const WAVE_FACTS=[
+  {icon:'🏰',title:'قەشقەر — يىپەك يولىنىڭ يۈرىكى',
+   fact:'قەشقەر شەھىرى 2000 يىلدىن ئارتۇق تارىخقا ئىگە! ئىپەك يولىنىڭ ئەڭ مۇھىم تومۇر نۇقتىسى بولۇپ، ئۇيغۇر باتۇرلىرى يۈز يىللار بوي بۇ شەھەرنى ئۆز جانلىرى بىلەن قوغداپ كەلگەن!'},
+  {icon:'👑',title:'ئۇيغۇر خانلىقى — مىلادى 744',
+   fact:'ئۇيغۇر خانلىقى مىلادى 744-يىلى قۇرۇلغان! ئورخۇن-ئۇيغۇر خانلىقى ئورتا ئاسىيانىڭ ئەڭ كۈچلۈك دۆلىتى ئىدى. ئۇلارنىڭ ئۆز يازمىسى، قانۇنى ۋە مەدەنىيىتى بولغان. خانلىق 100 يىلدىن ئارتۇق داۋام ئەتتى!'},
+  {icon:'📜',title:'ئۇيغۇر يازمىسى — 1500 يىل',
+   fact:'ئۇيغۇر يازمىسى 1500 يىلدىن ئارتۇق تارىخقا ئىگە! بۇ يازما مۇغۇل، مانجۇ، ئۆزبەك قاتارلىق 10 دىن ئارتۇق تىلنى يازىشنىڭ ئاساسى بولغان. دۇنيانىڭ ئەڭ مۇھىم يازمىلىرىدىن بىرى!'},
+  {icon:'🗿',title:'مىڭ ئۆي غارلىرى — ئالەمگىر مىراس',
+   fact:'تۇرپاندىكى مىڭ ئۆي غارلىرى دۇنيانىڭ ئەڭ چوڭ رەسسامچىلىق مۇزىيى! ئۇيغۇر رەسساملىرى 1000 يىلدىن ئارتۇق ئۆتمۈشتە ئىشلىگەن بۇ ئارقىئولوگىيىلىك جاي كىشىلىكنىڭ شاھ ئەسىرى!'},
+  {icon:'📚',title:'قۇتادغۇبىلىگ — مىلادى 1069',
+   fact:'«قۇتادغۇبىلىگ» 1069-يىلى يۇسۇپ خاس ھاجىپ تەرىپىدىن يازىلغان! بۇ كىتاب دۇنيانىڭ ئەڭ قەدىمىي تۈركىي ئەدەبىيات شاھئەسىرى. ئۇيغۇر تىلىدا يازىلغان بۇ ئەسەر دۇنيانىڭ 20 دىن ئارتۇق مۇزىيىدە ساقلانمەقتە!'},
+  {icon:'🎶',title:'ئون ئىككى مۇقام — ئۇنېسكو مىراسى',
+   fact:'ئۇيغۇر ئون ئىككى مۇقامى دۇنيانىڭ ئەڭ مۇرەككەپ مۇزىكا مىراسى! 2005-يىلى ئۇنېسكو تەرىپىدىن «مادىدىسىز مەدەنىيەت مىراسى» دەپ تونۇلغان. 336 ساعات ئىجرا ۋاقتى بار ئەڭ ئۇزۇن مۇزىكا مىراسى!'},
+  {icon:'🏆',title:'ئۇيغۇر مىللىتى — 4000 يىللىق شانلىق تارىخ',
+   fact:'ئۇيغۇر مىللىتى 4000 يىلدىن ئارتۇق تارىخقا ئىگە! ئۇلار ئىلىم-پەن، مەدەنىيەت، سەنئەت، تىجارەت ۋە مۇزىكادا دۇنياغا ئەبەدىي مىراس قالدۇرغان شانلىق مىللەت. بۇ مىراسنى ساقلاش ھەر ئۇيغۇر باۋىسىنىڭ شەرىپى!'},
+];
 
-        function shoot(tx, ty) {
-            if(!gameActive) return;
-            initAudio(); playSound('shoot');
-            
-            let startX = canvas.width / 2;
-            let startY = canvas.height - 50;
-            
-            let angle = Math.atan2(ty - startY, tx - startX);
-            let speed = 25; // Arrow speed
-            
-            arrows.push({
-                x: startX, y: startY,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                angle: angle
-            });
-        }
+// Balloon palette
+const BALLOON_CLRS=['#e63950','#3a86ff','#9b5de5','#06d6a0','#ffd166','#ef476f'];
 
-        window.addEventListener('mousedown', e => shoot(e.clientX, e.clientY));
-        window.addEventListener('touchstart', e => { 
-            if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
-                shoot(e.touches[0].clientX, e.touches[0].clientY); 
-            }
-        }, {passive: false});
+let balloons=[], arrows=[], parts=[], effects=[];
+let lives=3, score=0, combo=0, hits=0;
+let wave=0, spawnQ=0, spawnTimer=0;
+let firePow=0, starPow=0;
+let aimX=0, aimY=0, active=false, fr=0;
+let comboTimer=0, fortFlash=0;
+let bestScore=0, audioCtx=null;
+try{bestScore=parseInt(localStorage.getItem('balloonBest2'))||0;}catch(e){}
 
-        function startGame() {
-            initAudio();
-            document.getElementById('overlay').style.display = 'none';
-            score = 0; document.getElementById('score').innerText = `ئۇتۇق: 0`;
-            balloons = []; arrows = []; texts = [];
-            gameActive = true;
-            animate();
-        }
+const AX=()=>c.width/2;
+const AY=()=>c.height-75;
 
-        function spawnBalloon() {
-            let r = 30 + Math.random() * 20;
-            balloons.push({
-                x: Math.random() * (canvas.width - 100) + 50,
-                y: canvas.height + r,
-                r: r,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                speed: 1 + Math.random() * 2,
-                wiggle: Math.random() * Math.PI * 2
-            });
-        }
+function initAudio(){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function tone(f,d,t,v){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.1,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+function sfxShoot(){tone(320,0.06,'sawtooth',0.08);}
+function sfxPop(gold){if(gold){[0,80,160].forEach((d,i)=>setTimeout(()=>tone([880,1200,1600][i],0.15,'sine',0.12),d));}else{tone(600,0.07,'sine',0.12);setTimeout(()=>tone(900,0.06,'sine',0.09),50);}}
+function sfxBomb(){tone(80,0.35,'sawtooth',0.2);setTimeout(()=>tone(60,0.3,'sawtooth',0.15),80);}
+function sfxFort(){tone(200,0.25,'sawtooth',0.15);tone(140,0.2,'sawtooth',0.12);}
+function sfxPwr(){[0,100,200,300].forEach((d,i)=>setTimeout(()=>tone([660,880,1100,1400][i],0.14,'sine',0.11),d));}
+function sfxWave(){[0,130,260,390].forEach((d,i)=>setTimeout(()=>tone([600,800,1100,1500][i],0.22,'sine',0.12),d));}
 
-        function animate() {
-            if(!gameActive) return;
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+function initGame(){
+  initAudio();
+  document.getElementById('overlay').classList.add('hidden');
+  score=0; combo=0; hits=0; lives=3; wave=0;
+  balloons=[]; arrows=[]; parts=[]; effects=[];
+  firePow=0; starPow=0;
+  document.getElementById('final-stats').style.display='none';
+  updateLives();
+  showFact(0);
+}
 
-            // Draw clouds
-            ctx.fillStyle = 'rgba(255,255,255,0.5)';
-            ctx.beginPath();
-            ctx.arc(canvas.width*0.2, canvas.height*0.2, 50, 0, Math.PI*2);
-            ctx.arc(canvas.width*0.25, canvas.height*0.15, 60, 0, Math.PI*2);
-            ctx.arc(canvas.width*0.3, canvas.height*0.2, 50, 0, Math.PI*2);
-            ctx.fill();
+function showFact(w){
+  active=false;
+  const fd=WAVE_FACTS[w];
+  document.getElementById('fp-icon').textContent=fd.icon;
+  document.getElementById('fp-title').textContent=fd.title;
+  document.getElementById('fp-fact').textContent=fd.fact;
+  document.getElementById('fp-btn').textContent=w===0?'🏹 جەڭگە كىر!':'▶ داۋاملاش!';
+  document.getElementById('fact-popup').classList.remove('hidden');
+}
 
-            // Spawn balloons sparingly
-            if(Math.random() < 0.015 && balloons.length < 8) spawnBalloon();
+function nextWave(){
+  document.getElementById('fact-popup').classList.add('hidden');
+  sfxWave();
+  const wd=WAVES[wave];
+  spawnQ=wd.count; spawnTimer=0;
+  balloons=[]; arrows=[];
+  combo=0; comboTimer=0;
+  document.getElementById('wavenum').textContent=(wave+1)+'/7';
+  document.getElementById('wave-badge').textContent='دەۋر '+(wave+1)+' · '+wd.name;
+  updatePwr(); updateUI();
+  active=true;
+  requestAnimationFrame(loop);
+}
 
-            // Draw Bow
-            ctx.save();
-            ctx.translate(canvas.width/2, canvas.height - 50);
-            ctx.strokeStyle = '#8b4513';
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.arc(0, 0, 40, Math.PI, 0);
-            ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(-40, 0); ctx.lineTo(40, 0);
-            ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.stroke();
-            ctx.restore();
+function loop(){
+  if(!active)return;
+  requestAnimationFrame(loop);
+  fr++;
 
-            // Update and Draw Arrows
-            for(let i=arrows.length-1; i>=0; i--) {
-                let a = arrows[i];
-                a.vy += 0.5; // gravity
-                a.x += a.vx;
-                a.y += a.vy;
-                a.angle = Math.atan2(a.vy, a.vx);
+  // Spawn timer
+  const wd=WAVES[wave];
+  spawnTimer++;
+  const interval=Math.max(18, 55-wave*5);
+  if(spawnTimer>=interval && spawnQ>0){spawnTimer=0;spawnQ--;spawnBalloon();}
 
-                ctx.save();
-                ctx.translate(a.x, a.y);
-                ctx.rotate(a.angle);
-                // Shaft
-                ctx.fillStyle = '#654321';
-                ctx.fillRect(-20, -2, 40, 4);
-                // Tip
-                ctx.fillStyle = '#bdc3c7';
-                ctx.beginPath(); ctx.moveTo(20, -5); ctx.lineTo(30, 0); ctx.lineTo(20, 5); ctx.fill();
-                // Feathers
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(-20, -5, 10, 3); ctx.fillRect(-20, 2, 10, 3);
-                ctx.restore();
+  // Check wave clear
+  if(spawnQ===0 && balloons.length===0 && arrows.length===0){
+    active=false;
+    wave++;
+    setTimeout(()=>{
+      if(wave>=WAVES.length)showWin(); else showFact(wave);
+    },600);
+    return;
+  }
 
-                if(a.x < 0 || a.x > canvas.width || a.y > canvas.height) {
-                    arrows.splice(i, 1);
-                    continue;
-                }
+  comboTimer=Math.max(0,comboTimer-1);
+  if(comboTimer===0&&combo>0){combo=0;updateUI();}
+  fortFlash=Math.max(0,fortFlash-4);
+  firePow=Math.max(0,firePow-1);
+  starPow=Math.max(0,starPow-1);
+  if(fr%60===0)updatePwr();
 
-                // Collision
-                for(let j=balloons.length-1; j>=0; j--) {
-                    let b = balloons[j];
-                    let dist = Math.hypot(a.x - b.x, a.y - b.y);
-                    if(dist < b.r) {
-                        playSound('pop');
-                        score += 50;
-                        document.getElementById('score').innerText = `ئۇتۇق: ${score}`;
-                        
-                        let text = rewards[Math.floor(Math.random()*rewards.length)];
-                        texts.push({x: b.x, y: b.y, text: text, alpha: 1, color: b.color});
-                        
-                        balloons.splice(j, 1);
-                        arrows.splice(i, 1);
-                        break;
-                    }
-                }
-            }
+  // Update balloons
+  for(let i=balloons.length-1;i>=0;i--){
+    const b=balloons[i];
+    b.y-=b.spd;
+    b.x+=Math.sin(b.wg+fr*0.025)*b.wgAmp;
+    b.wg+=0.05;
+    if(b.y<50){
+      // Reached fortress!
+      balloons.splice(i,1);
+      if(!b.bomb&&!b.pwr){
+        lives--;fortFlash=120;sfxFort();
+        effects.push({x:c.width/2,y:80,text:'قەلئە ئۇرۇلدى! 💥',a:1,sz:1.3,clr:'#ff4444'});
+        updateLives();
+        if(lives<=0){active=false;setTimeout(showGameOver,400);return;}
+      }
+    }
+  }
 
-            // Update and Draw Balloons
-            for(let i=balloons.length-1; i>=0; i--) {
-                let b = balloons[i];
-                b.y -= b.speed;
-                b.x += Math.sin(b.wiggle) * 0.5;
-                b.wiggle += 0.05;
+  // Update arrows
+  for(let i=arrows.length-1;i>=0;i--){
+    const a=arrows[i];
+    if(a.trail){a.trail.push({x:a.x,y:a.y,l:1});}
+    a.vy+=0.32;
+    a.x+=a.vx; a.y+=a.vy;
+    a.angle=Math.atan2(a.vy,a.vx);
+    if(a.x<-50||a.x>c.width+50||a.y>c.height+50||a.y<-80){arrows.splice(i,1);continue;}
+    checkArrowCollisions(a,i);
+  }
 
-                // String
-                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(b.x, b.y + b.r);
-                ctx.lineTo(b.x, b.y + b.r + 40);
-                ctx.stroke();
+  for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.018;if(p.life<=0)parts.splice(i,1);}
+  for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.y-=1.8;e.a-=0.022;if(e.a<=0)effects.splice(i,1);}
 
-                // Balloon
-                ctx.fillStyle = b.color;
-                ctx.beginPath();
-                ctx.ellipse(b.x, b.y, b.r, b.r * 1.2, 0, 0, Math.PI*2);
-                ctx.fill();
+  draw();
+}
 
-                // Highlight
-                ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                ctx.beginPath();
-                ctx.ellipse(b.x - b.r*0.3, b.y - b.r*0.4, b.r*0.2, b.r*0.4, Math.PI/4, 0, Math.PI*2);
-                ctx.fill();
+function checkArrowCollisions(a,ai){
+  for(let j=balloons.length-1;j>=0;j--){
+    const b=balloons[j];
+    const dist=Math.hypot(a.x-b.x,a.y-b.y);
+    if(dist>b.r+4)continue;
+    // Hit!
+    if(b.bomb){
+      sfxBomb();
+      // Explosion: damages nearby balloons
+      spawnParts(b.x,b.y,'#ff4400',22);
+      effects.push({x:b.x,y:b.y-20,text:'💥 ئاگاھلىق!',a:1,sz:1.2,clr:'#ff4400'});
+      combo=0; score=Math.max(0,score-15);
+      balloons.splice(j,1);
+      arrows.splice(ai,1); updateUI(); return;
+    }
+    if(b.pwr){
+      sfxPwr();
+      spawnParts(b.x,b.y,b.pwrClr,14);
+      if(b.pwrType==='fire'){firePow=280;effects.push({x:b.x,y:b.y-20,text:'🔥 ئوت ئوق ×8',a:1,sz:1.1,clr:'#ff8800'});}
+      else{starPow=420;effects.push({x:b.x,y:b.y-20,text:'⭐ 2× نومۇر',a:1,sz:1.1,clr:'#ffd700'});}
+      balloons.splice(j,1);
+      if(!a.fire)arrows.splice(ai,1);
+      updatePwr(); return;
+    }
+    // Regular/heavy/fast/gold enemy
+    b.hp--;
+    if(b.hp<=0){
+      const mult=starPow>0?2:1;
+      const pts=b.gold?120+combo*20:b.pts;
+      const earned=pts*mult;
+      score+=earned; hits++;
+      combo++; comboTimer=90;
+      sfxPop(b.gold);
+      spawnParts(b.x,b.y,b.clr,b.gold?24:12);
+      const lbl=b.gold?'👑 +'+earned+' ئالتۇن!':combo>=5?'🔥 ×'+combo+' كومبو! +'+earned:'+'+earned;
+      effects.push({x:b.x,y:b.y-22,text:lbl,a:1,sz:combo>=5?1.35:1.0,clr:b.gold?'#ffd700':combo>=5?'#ff8800':'#ffffff'});
+      balloons.splice(j,1);
+      if(!a.fire)arrows.splice(ai,1);
+      updateUI();
+    }else{
+      // Heavy: just ding
+      spawnParts(b.x,b.y,'#aaaaaa',5);
+      if(!a.fire)arrows.splice(ai,1);
+    }
+    return;
+  }
+}
 
-                if(b.y < -100) balloons.splice(i, 1);
-            }
+function spawnBalloon(){
+  const wd=WAVES[wave];
+  const r2=Math.random();
+  let b={x:40+Math.random()*(c.width-80),y:c.height+60,wg:Math.random()*Math.PI*2,wgAmp:0};
 
-            // Floating Texts
-            for(let i=texts.length-1; i>=0; i--) {
-                let t = texts[i];
-                t.y -= 2;
-                t.alpha -= 0.02;
-                ctx.fillStyle = t.color;
-                ctx.globalAlpha = t.alpha;
-                ctx.font = 'bold 30px Tajawal';
-                ctx.textAlign = 'center';
-                ctx.shadowColor = 'white'; ctx.shadowBlur = 10;
-                ctx.fillText(t.text, t.x, t.y);
-                ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  if(r2<wd.pwrR){
+    // Power-up
+    const isPwrFire=Math.random()<0.5;
+    b={...b,r:25,spd:0.75*wd.spd,hp:1,pts:0,pwr:true,
+       pwrType:isPwrFire?'fire':'star',
+       pwrClr:isPwrFire?'#ff8800':'#ffd700',
+       clr:isPwrFire?'#ff5500':'#ffc400',
+       emoji:isPwrFire?'🔥':'⭐',wgAmp:14};
+  }else if(r2<wd.pwrR+wd.bombR){
+    // Bomb
+    b={...b,r:28,spd:0.8*wd.spd,hp:1,pts:-20,bomb:true,clr:'#222222',emoji:'💣',wgAmp:3};
+  }else if(r2<wd.pwrR+wd.bombR+wd.goldR){
+    // Golden
+    b={...b,r:30,spd:0.9*wd.spd,hp:1,pts:100,gold:true,clr:'#ffd040',emoji:'⭐',wgAmp:10};
+  }else if(r2<wd.pwrR+wd.bombR+wd.goldR+wd.fastR){
+    // Fast
+    b={...b,r:17,spd:2.3*wd.spd,hp:1,pts:22,clr:'#06d6a0',emoji:'⚡',wgAmp:18};
+  }else if(r2<wd.pwrR+wd.bombR+wd.goldR+wd.fastR+wd.heavyR){
+    // Heavy armored
+    const hp=2+Math.floor(wave/3);
+    b={...b,r:42,spd:0.5*wd.spd,hp,pts:30+hp*10,clr:'#5555aa',emoji:'🛡️',wgAmp:4};
+  }else{
+    // Regular
+    const clr=BALLOON_CLRS[Math.floor(Math.random()*BALLOON_CLRS.length)];
+    const emojis=['⚔️','🗡️','🏹','🐴','💀','👿'];
+    b={...b,r:25+Math.random()*10,spd:(0.75+Math.random()*0.5)*wd.spd,hp:1,pts:10,clr,
+       emoji:emojis[Math.floor(Math.random()*emojis.length)],wgAmp:8};
+  }
+  balloons.push(b);
+}
 
-                if(t.alpha <= 0) texts.splice(i, 1);
-            }
-        }
-    </script>
+function spawnParts(x,y,clr,n){
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*8;parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,life:1,clr,r:2+Math.random()*5});}
+}
+
+function shoot(tx,ty){
+  if(!active)return;
+  initAudio(); sfxShoot();
+  const ax=AX(), ay=AY();
+  const angle=Math.atan2(ty-ay,tx-ax);
+  const spd=22;
+  const fire=firePow>0;
+  if(fire)firePow=Math.max(0,firePow-35);
+  arrows.push({x:ax,y:ay,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,angle,fire,
+    trail:fire?[]:null});
+}
+
+function updateLives(){
+  const icons=['','🛡️','🛡️🛡️','🛡️🛡️🛡️'];
+  document.getElementById('lives-row').textContent=lives>=0?icons[Math.max(0,lives)]:'';
+}
+function updateUI(){
+  document.getElementById('score').textContent=score;
+  const ce=document.getElementById('combo');
+  ce.textContent='×'+combo;
+  ce.style.color=combo>=8?'#ff6600':combo>=4?'#ffcc00':'#fff';
+}
+function updatePwr(){
+  const row=document.getElementById('pwr-row');
+  row.innerHTML='';
+  if(firePow>0){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#ff8800';d.textContent='🔥 ئوت ئوق '+Math.ceil(firePow/35);row.appendChild(d);}
+  if(starPow>0){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#ffd700';d.textContent='⭐ 2× نومۇر';row.appendChild(d);}
+}
+
+/* ══════════════ DRAW ══════════════ */
+function draw(){
+  ctx.clearRect(0,0,c.width,c.height);
+  drawBackground();
+
+  // Fortress flash overlay
+  if(fortFlash>0){
+    ctx.fillStyle=`rgba(255,0,0,${fortFlash/240*0.35})`;
+    ctx.fillRect(0,0,c.width,80);
+  }
+
+  // Draw balloons
+  for(const b of balloons){
+    ctx.save(); ctx.translate(b.x,b.y);
+    // String
+    ctx.strokeStyle='rgba(255,255,255,0.45)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(0,b.r); ctx.quadraticCurveTo(5,b.r+14,1,b.r+26); ctx.stroke();
+    // Glow
+    if(b.gold||b.pwr){ctx.shadowColor=b.clr;ctx.shadowBlur=22+Math.sin(fr*0.15)*8;}
+    // Body gradient
+    const bg=ctx.createRadialGradient(-b.r*0.28,-b.r*0.28,b.r*0.08,0,0,b.r);
+    bg.addColorStop(0,'rgba(255,255,255,0.6)'); bg.addColorStop(0.4,b.clr+'dd'); bg.addColorStop(1,b.clr+'88');
+    ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(0,0,b.r,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+    // Ring
+    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(0,0,b.r,0,Math.PI*2); ctx.stroke();
+    // Shine
+    ctx.fillStyle='rgba(255,255,255,0.32)';
+    ctx.beginPath(); ctx.ellipse(-b.r*0.28,-b.r*0.28,b.r*0.22,b.r*0.14,-0.6,0,Math.PI*2); ctx.fill();
+    // Emoji
+    ctx.font=(b.r*1.15)+'px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(b.emoji,0,b.r*0.07);
+    // HP pips for armored
+    if(b.hp>1){
+      for(let h=0;h<b.hp;h++){
+        ctx.fillStyle='#55ff55';
+        ctx.fillRect(-b.r+2+h*13,b.r+28,9,5);
+      }
+    }
+    ctx.restore();
+  }
+
+  // Draw arrows
+  for(const a of arrows){
+    ctx.save();
+    // Fire trail
+    if(a.fire&&a.trail){
+      for(let ti=0;ti<a.trail.length;ti++){
+        const t=a.trail[ti];
+        t.l-=0.06;
+        if(t.l<=0)continue;
+        ctx.globalAlpha=t.l*0.6;
+        ctx.fillStyle=ti%2===0?'#ff8800':'#ff4400';
+        ctx.beginPath(); ctx.arc(t.x,t.y,4*t.l,0,Math.PI*2); ctx.fill();
+      }
+      a.trail=a.trail.filter(t=>t.l>0);
+      ctx.globalAlpha=1;
+    }
+    ctx.translate(a.x,a.y); ctx.rotate(a.angle);
+    if(a.fire){ctx.shadowColor='#ff8800';ctx.shadowBlur=12;}
+    // Shaft
+    ctx.fillStyle=a.fire?'#aa4400':'#8B4513'; ctx.fillRect(-22,-2.5,44,5);
+    // Tip
+    ctx.fillStyle=a.fire?'#ffaa00':'#C0C0C0';
+    ctx.beginPath(); ctx.moveTo(22,-5); ctx.lineTo(33,0); ctx.lineTo(22,5); ctx.fill();
+    // Feathers
+    ctx.fillStyle=a.fire?'#ff6600':'#E74C3C';
+    ctx.beginPath(); ctx.moveTo(-22,0); ctx.lineTo(-13,-8); ctx.lineTo(-10,0); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-22,0); ctx.lineTo(-13,8); ctx.lineTo(-10,0); ctx.fill();
+    ctx.shadowBlur=0; ctx.restore();
+  }
+
+  // Particles
+  for(const p of parts){ctx.globalAlpha=p.life;ctx.fillStyle=p.clr;ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();}
+  ctx.globalAlpha=1;
+
+  // Floating effects
+  for(const e of effects){
+    ctx.save(); ctx.globalAlpha=e.a;
+    ctx.shadowColor=e.clr; ctx.shadowBlur=14;
+    ctx.fillStyle=e.clr; ctx.font='bold '+(28*(e.sz||1))+'px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(e.text,e.x,e.y);
+    ctx.restore();
+  }
+
+  drawArcher();
+}
+
+function drawBackground(){
+  // Night sky gradient
+  const sky=ctx.createLinearGradient(0,0,0,c.height);
+  sky.addColorStop(0,'#02040e');
+  sky.addColorStop(0.45,'#041028');
+  sky.addColorStop(1,'#081e44');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,c.width,c.height);
+
+  // Stars
+  for(let i=0;i<60;i++){
+    const sx=(i*177.7)%c.width, sy=(i*89.3)%(c.height*0.7);
+    ctx.fillStyle=`rgba(180,220,255,${0.15+Math.sin(fr*0.04+i*0.8)*0.12})`;
+    ctx.beginPath(); ctx.arc(sx,sy,0.7+(i%4)*0.35,0,Math.PI*2); ctx.fill();
+  }
+
+  // Crescent moon
+  ctx.save(); ctx.translate(c.width-65,55);
+  ctx.shadowColor='#aaddff'; ctx.shadowBlur=28;
+  ctx.fillStyle='#c8e8ff'; ctx.beginPath(); ctx.arc(0,0,22,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#02040e'; ctx.beginPath(); ctx.arc(9,-7,16,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0; ctx.fillStyle='#c8e8ff'; ctx.font='11px sans-serif';
+  ctx.textAlign='center'; ctx.fillText('✦',18,-20);
+  ctx.restore();
+
+  // Mountain silhouette
+  ctx.fillStyle='rgba(0,0,0,0.55)';
+  ctx.beginPath(); ctx.moveTo(0,c.height*0.42);
+  const mpts=[[0,.42],[.06,.34],[.13,.27],[.2,.34],[.28,.22],[.36,.16],[.44,.27],[.52,.19],[.6,.13],[.68,.21],[.76,.29],[.83,.21],[.9,.31],[.96,.37],[1,.4]];
+  for(const [rx,ry] of mpts)ctx.lineTo(c.width*rx,c.height*ry);
+  ctx.lineTo(c.width,c.height); ctx.lineTo(0,c.height); ctx.closePath(); ctx.fill();
+
+  // Snow caps on high peaks
+  ctx.fillStyle='rgba(200,230,255,0.22)';
+  ctx.beginPath(); ctx.moveTo(c.width*0.6,c.height*0.13); ctx.lineTo(c.width*0.56,c.height*0.195); ctx.lineTo(c.width*0.64,c.height*0.195); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(c.width*0.36,c.height*0.16); ctx.lineTo(c.width*0.32,c.height*0.22); ctx.lineTo(c.width*0.40,c.height*0.22); ctx.closePath(); ctx.fill();
+
+  // Fortress at top (battlements along top)
+  const wallH=55, battleW=42, battleH=26, battleGap=26;
+  const wg=ctx.createLinearGradient(0,0,0,wallH);
+  wg.addColorStop(0,'#1a2a4a'); wg.addColorStop(1,'#0e1a30');
+  ctx.fillStyle=wg; ctx.fillRect(0,0,c.width,wallH);
+  // Battlements
+  ctx.fillStyle='#121e38';
+  const bTotal=battleW+battleGap;
+  for(let bx=0;bx<c.width;bx+=bTotal){ctx.fillRect(bx,wallH-battleH,battleW,battleH);}
+  // Wall texture
+  ctx.strokeStyle='rgba(100,150,255,0.05)'; ctx.lineWidth=1;
+  for(let wx=0;wx<c.width;wx+=56){ctx.beginPath();ctx.moveTo(wx,0);ctx.lineTo(wx,wallH);ctx.stroke();}
+  // Uyghur banner
+  ctx.save(); ctx.translate(c.width/2,wallH*0.52);
+  ctx.shadowColor='#4488ff'; ctx.shadowBlur=14;
+  ctx.fillStyle='#55aaff'; ctx.font='bold 16px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('☽',-14,0); ctx.fillText('✦',12,-2);
+  ctx.shadowBlur=0; ctx.restore();
+  // Ground at bottom
+  ctx.fillStyle='#060e22'; ctx.fillRect(0,c.height-60,c.width,60);
+  ctx.strokeStyle='rgba(80,120,255,0.1)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,c.height-60); ctx.lineTo(c.width,c.height-60); ctx.stroke();
+}
+
+function drawArcher(){
+  const ax=AX(), ay=AY();
+  const angle=Math.atan2(aimY-ay, aimX-ax);
+  ctx.save(); ctx.translate(ax,ay);
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.3)';
+  ctx.beginPath(); ctx.ellipse(0,36,20,7,0,0,Math.PI*2); ctx.fill();
+  // Legs
+  ctx.fillStyle='#2a3a6a';
+  ctx.fillRect(-9,-5,7,38); ctx.fillRect(2,-5,7,38);
+  // Boots
+  ctx.fillStyle='#1a2040';
+  ctx.fillRect(-12,28,9,10); ctx.fillRect(3,28,9,10);
+  // Body/armor
+  const ag=ctx.createLinearGradient(-12,-45,12,-5);
+  ag.addColorStop(0,'#2244aa'); ag.addColorStop(1,'#1a3070');
+  ctx.fillStyle=ag; ctx.fillRect(-12,-45,24,40);
+  // Shoulder pads
+  ctx.fillStyle='#3355cc';
+  ctx.beginPath(); ctx.arc(-12,-32,9,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(12,-32,9,0,Math.PI*2); ctx.fill();
+  // Belt
+  ctx.fillStyle='#aa8800'; ctx.fillRect(-12,-8,24,6);
+  // Head
+  ctx.fillStyle='#f5c5a3';
+  ctx.beginPath(); ctx.arc(0,-55,13,0,Math.PI*2); ctx.fill();
+  // Helmet
+  const hg=ctx.createLinearGradient(-14,-68,14,-44);
+  hg.addColorStop(0,'#3355cc'); hg.addColorStop(1,'#223388');
+  ctx.fillStyle=hg; ctx.beginPath(); ctx.ellipse(0,-60,15,11,0,Math.PI,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#4466ff'; ctx.fillRect(-15,-62,30,6);
+  // Eyes
+  ctx.fillStyle='#1a1a1a'; ctx.beginPath(); ctx.arc(-4,-55,2.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(4,-55,2.5,0,Math.PI*2); ctx.fill();
+  // Bow arm (rotate toward aim)
+  ctx.rotate(angle);
+  // Bow
+  if(firePow>0){ctx.shadowColor='#ff8800';ctx.shadowBlur=18;}
+  ctx.strokeStyle=firePow>0?'#cc4400':'#5a2800'; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.arc(0,0,38,-Math.PI*0.42,Math.PI*0.42); ctx.stroke();
+  // Bowstring
+  ctx.strokeStyle=firePow>0?'rgba(255,180,0,0.8)':'rgba(220,220,200,0.85)'; ctx.lineWidth=1.5;
+  const bs=-Math.PI*0.42;
+  ctx.beginPath();
+  ctx.moveTo(Math.cos(bs)*38,Math.sin(bs)*38);
+  ctx.lineTo(Math.cos(-bs)*38,Math.sin(-bs)*38);
+  ctx.stroke();
+  // Arrow on bow
+  ctx.fillStyle=firePow>0?'#aa3300':'#6B3A1F';
+  ctx.fillRect(-4,-2.5,48,4);
+  ctx.fillStyle=firePow>0?'#ff8800':'#C0C0C0';
+  ctx.beginPath(); ctx.moveTo(44,-5); ctx.lineTo(53,0); ctx.lineTo(44,5); ctx.fill();
+  ctx.shadowBlur=0; ctx.restore();
+}
+
+c.addEventListener('mousemove',e=>{aimX=e.clientX;aimY=e.clientY;});
+c.addEventListener('click',e=>{shoot(e.clientX,e.clientY);});
+c.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  const t=e.touches[0]; aimX=t.clientX; aimY=t.clientY;
+  shoot(t.clientX,t.clientY);
+},{passive:false});
+c.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];aimX=t.clientX;aimY=t.clientY;},{passive:false});
+
+function showGameOver(){
+  try{if(score>bestScore){bestScore=score;localStorage.setItem('balloonBest2',bestScore);}}catch(e){}
+  document.getElementById('overlay').classList.remove('hidden');
+  document.querySelector('.game-title').textContent='قەلئە يىقىلدى! 🏚️';
+  document.getElementById('overlay-desc').textContent='قالقانلىرىڭ تاماملاندى! ئەمما سەن ئۇيغۇر تارىخىنى ئۆگەندىڭ — ئۇنى ھەرگىز ئۇنتۇما!';
+  document.getElementById('final-stats').style.display='flex';
+  document.getElementById('f-score').textContent=score;
+  document.getElementById('f-hit').textContent=hits;
+  document.getElementById('f-best').textContent=bestScore;
+  document.getElementById('start-btn').textContent='🔄 قايتا باشلاش';
+}
+
+function showWin(){
+  try{if(score>bestScore){bestScore=score;localStorage.setItem('balloonBest2',bestScore);}}catch(e){}
+  document.getElementById('overlay').classList.remove('hidden');
+  document.querySelector('.game-title').textContent='🏆 خانلىقىڭنى قوغداپ ئۆتتىڭ!';
+  document.getElementById('overlay-desc').textContent='مۇبارەك! 7 دەۋرنى ئۈستۈنلۈك بىلەن بەسىپ ئۆتتىڭ! ھەقىقىي ئۇيغۇر باتۇرى!';
+  document.getElementById('final-stats').style.display='flex';
+  document.getElementById('f-score').textContent=score;
+  document.getElementById('f-hit').textContent=hits;
+  document.getElementById('f-best').textContent=bestScore;
+  document.getElementById('start-btn').textContent='🔄 قايتا باشلاش';
+}
+</script>
 </body>
 </html>

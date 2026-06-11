@@ -1,876 +1,617 @@
 <!DOCTYPE html>
-<html lang="ug" dir="rtl">
+<html lang="ug">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🏀 ۋاسكىتبول چولپىنى</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { overflow: hidden; background: linear-gradient(to bottom, #0a1628, #1a3a5f, #2d5a7a); font-family: 'Tajawal', sans-serif; touch-action: none; user-select: none; }
-        canvas { display: block; }
-        
-        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
-        .ui-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); padding: 10px 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.3); min-width: 100px; }
-        .ui-box .label { font-size: 0.7rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
-        .ui-box .value { font-size: 1.6rem; font-weight: 900; }
-        #score-val { color: #ffb703; text-shadow: 0 0 15px rgba(255,183,3,0.4); }
-        #streak-val { color: #e63946; text-shadow: 0 0 15px rgba(230,57,70,0.3); }
-        #timer-val { color: #00f2ff; font-size: 1.2rem; }
-        #timer-val.warning { color: #e63946; animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        #high-val { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
-        
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 900; color: #ffb703; display: none; pointer-events: none; text-shadow: 0 0 40px rgba(255,183,3,0.8), 0 4px 15px rgba(0,0,0,0.5); z-index: 50; white-space: nowrap; }
-        
-        #hint { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); font-size: 1.1rem; color: rgba(255,255,255,0.3); pointer-events: none; z-index: 5; text-align: center; }
-        
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,119,182,0.6) 0%, rgba(2,62,138,0.95) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); color: white; }
-        .glass-panel { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; padding: 2.5rem; text-align: center; max-width: 460px; width: 90%; animation: popIn 0.5s ease-out; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        @keyframes popIn { from{opacity:0;transform:scale(0.8)translateY(30px)} to{opacity:1;transform:scale(1)translateY(0)} }
-        .glass-panel h1 { font-size: 3rem; margin: 0 0 10px 0; background: linear-gradient(to bottom, #fff, #ffb703); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3)); }
-        .glass-panel p { font-size: 1.2rem; color: #caf0f8; line-height: 1.6; margin-bottom: 1rem; }
-        .final-stats { display: flex; justify-content: center; gap: 25px; margin: 0.5rem 0 1.5rem; }
-        .final-stat { text-align: center; }
-        .final-stat .v { font-size: 2rem; font-weight: 900; color: #ffb703; }
-        .final-stat .l { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-        .btn { padding: 16px 50px; font-size: 1.5rem; background: linear-gradient(135deg, #ffb703, #fb8500); color: #023e8a; border: none; border-radius: 60px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 900; box-shadow: 0 10px 30px rgba(251,133,0,0.4); transition: transform 0.2s; }
-        .btn:active { transform: scale(0.95); }
-        #back-btn { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; }
-        
-        #effects-bar { position: absolute; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: 5; }
-        .effect-tag { background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); border-radius: 20px; padding: 6px 14px; font-size: 0.9rem; color: white; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
-        
-        @media (max-width: 768px) { .glass-panel { padding: 1.5rem; } .glass-panel h1 { font-size: 2rem; } .btn { padding: 14px 36px; font-size: 1.2rem; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🏀 خانلىق كۇبوكى</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;touch-action:none;user-select:none}
+canvas{display:block}
+#ui{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:5;pointer-events:none;gap:5px}
+#ui>div{background:rgba(0,0,0,0.82);backdrop-filter:blur(12px);border:2px solid rgba(255,180,0,0.35);padding:7px 12px;border-radius:18px;text-align:center;color:#fff;min-width:62px}
+.lbl{font-size:0.62rem;color:#ffaa22;letter-spacing:1px;font-weight:700}
+.val{font-size:1.85rem;font-weight:900;color:#fff}
+.val.hot{color:#ff6600;text-shadow:0 0 22px #ff6600;animation:hotA 0.25s infinite alternate}
+@keyframes hotA{from{transform:scale(1)}to{transform:scale(1.18)}}
+#timer-bar{position:absolute;top:72px;left:16px;right:16px;height:5px;background:rgba(0,0,0,0.4);border-radius:3px;z-index:5;pointer-events:none}
+#timer-fill{height:100%;border-radius:3px;background:#ffaa22;box-shadow:0 0 10px #ffaa22;transition:width 0.1s linear}
+#round-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:6;pointer-events:none;background:linear-gradient(135deg,#6b2200,#cc4400);color:#ffd040;font-weight:900;padding:7px 24px;border-radius:24px;font-size:0.92rem;box-shadow:0 4px 18px rgba(180,60,0,0.5);white-space:nowrap;border:2px solid rgba(255,200,60,0.3)}
+#pwr-bar{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);z-index:5;display:flex;gap:8px;pointer-events:none}
+.pwr-tag{background:rgba(0,0,0,0.78);border-radius:20px;padding:5px 13px;font-size:0.9rem;color:#fff;border:2px solid;white-space:nowrap}
+#hint{position:absolute;bottom:84px;left:50%;transform:translateX(-50%);font-size:1rem;color:rgba(255,255,255,0.35);pointer-events:none;z-index:5;text-align:center;white-space:nowrap}
+.overlay-dark{position:fixed;inset:0;background:rgba(5,2,0,0.96);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(20px)}
+.overlay-dark.hidden{display:none}
+.fancy-box{background:linear-gradient(148deg,#120800,#241200);border:3px solid rgba(200,100,0,0.55);border-radius:32px;padding:2.3rem;text-align:center;max-width:520px;width:92%;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);box-shadow:0 22px 70px rgba(160,60,0,0.4)}
+@keyframes popIn{from{opacity:0;transform:scale(0.35) rotate(-6deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.fact-icon{font-size:3.8rem;margin-bottom:6px;animation:bncA 1.1s infinite}
+@keyframes bncA{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.fact-title{font-size:1.8rem;font-weight:900;color:#ffd040;margin-bottom:10px;text-shadow:0 0 20px #ffd04044}
+.fact-body{color:#f5d8a0;font-size:1rem;line-height:1.85;direction:rtl;text-align:right;background:rgba(180,80,0,0.1);padding:12px 15px;border-radius:13px;border-right:4px solid #cc5500;margin-bottom:14px}
+.big-btn{padding:13px 46px;font-size:1.3rem;background:linear-gradient(135deg,#994400,#ff6600);color:#fff;border:none;border-radius:50px;cursor:pointer;font-weight:900;box-shadow:0 8px 26px rgba(200,80,0,0.5);transition:transform 0.15s;display:inline-block;margin:3px}
+.big-btn:hover{transform:scale(1.06)}
+.big-btn:active{transform:scale(0.93)}
+.big-btn.gold{background:linear-gradient(135deg,#cc8800,#ffcc22);color:#180800;box-shadow:0 8px 26px rgba(200,150,0,0.45)}
+.game-title{font-size:2.2rem;font-weight:900;color:#ffd040;margin:6px 0;text-shadow:0 0 20px #ffd04044}
+.game-desc{color:#aa7040;font-size:1rem;line-height:1.85;margin:9px 0 16px;direction:rtl;text-align:right}
+.stats-row{display:flex;justify-content:center;gap:10px;margin:11px 0;flex-wrap:wrap}
+.stat-c{background:rgba(180,80,0,0.12);border-radius:13px;padding:10px 15px;text-align:center;min-width:75px;border:1px solid rgba(200,100,0,0.22)}
+.stat-c .sv{font-size:1.9rem;font-weight:900;color:#ffd040}
+.stat-c .sl{font-size:0.73rem;color:#aa7040;margin-top:2px}
+#back-btn{position:fixed;bottom:16px;left:16px;padding:9px 19px;background:rgba(0,0,0,0.7);border:2px solid rgba(255,255,255,0.2);color:#fff;border-radius:13px;text-decoration:none;font-size:0.87rem;z-index:10;backdrop-filter:blur(8px)}
+</style>
 </head>
 <body>
-    <div id="ui">
-        <div class="ui-box">
-            <div class="label">نومۇر</div>
-            <div class="value" id="score-val">0</div>
-            <div id="high-val">🏆 ئەڭ يۇقىرى: <span id="high-score">0</span></div>
-        </div>
-        <div class="ui-box" style="text-align:center">
-            <div class="label">ئۇدا ئۇتۇش</div>
-            <div class="value" id="streak-val">0</div>
-        </div>
-        <div class="ui-box" style="text-align:center">
-            <div class="label">ۋاقىت</div>
-            <div class="value" id="timer-val">45</div>
-        </div>
+<div id="ui">
+  <div><div class="lbl">نومۇر</div><div class="val" id="score-val">0</div></div>
+  <div><div class="lbl">ئۇدا</div><div class="val" id="streak-val">0</div></div>
+  <div><div class="lbl">ۋاقىت</div><div class="val" id="timer-val">35</div></div>
+  <div><div class="lbl">توغرىلىق</div><div class="val" id="acc-val">-</div></div>
+</div>
+<div id="timer-bar"><div id="timer-fill" style="width:100%"></div></div>
+<div id="round-badge">دەۋر 1 · قەشقەر مەيدانى</div>
+<div id="pwr-bar"></div>
+<div id="hint">توپنى تارتىپ قويۇپ بېرىڭ</div>
+
+<div id="fact-popup" class="overlay-dark hidden">
+  <div class="fancy-box">
+    <div class="fact-icon" id="fp-icon">🏀</div>
+    <div class="fact-title" id="fp-title">دەۋر 1</div>
+    <div class="fact-body" id="fp-fact"></div>
+    <button class="big-btn gold" id="fp-btn" onclick="startRound()">🏀 باشلاش!</button>
+  </div>
+</div>
+
+<div id="overlay" class="overlay-dark">
+  <div class="fancy-box">
+    <div style="font-size:3.8rem;animation:bncA 1.1s infinite">🏀🏆</div>
+    <div class="game-title">خانلىق كۇبوكى</div>
+    <div class="game-desc" id="ov-desc">7 شەھەرنى ئايلىنىپ ئۇيغۇر خانلىقىنىڭ ئەڭ ياخشى تۇپچىسى بول! ئۇتۇمنىڭ تارتىپ قويۇپ بېرىڭ. ئۇدا ئۇتسىڭىز ئوت توپ كۈچى پەيدا بولىدۇ!</div>
+    <div id="final-stats" class="stats-row" style="display:none">
+      <div class="stat-c"><div class="sv" id="f-score">0</div><div class="sl">نومۇر</div></div>
+      <div class="stat-c"><div class="sv" id="f-streak">0</div><div class="sl">ئەڭ ئۇدا</div></div>
+      <div class="stat-c"><div class="sv" id="f-acc">-</div><div class="sl">توغرىلىق</div></div>
+      <div class="stat-c"><div class="sv" id="f-best">0</div><div class="sl">ئەڭ يۇقىرى</div></div>
     </div>
-    <div id="effects-bar"></div>
-    <div id="combo-text">ئاجايىپ!</div>
-    <div id="hint">◈ توپنى تارتىپ قويۇپ بېرىڭ ◈</div>
-    
-    <div id="overlay">
-        <div class="glass-panel">
-            <h1 id="end-title">🏀 ۋاسكىتبول چولپىنى</h1>
-            <p id="end-desc">توپنى گارغا تاشلاپ نومۇر يىغىڭ!<br>تاختىدىن سەكرەپ گارغا كىرسە قوشۇمچە نومۇر.<br>توپنى تارتىپ قويۇپ بېرىڭ.</p>
-            <div class="final-stats" id="final-stats" style="display:none">
-                <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">نومۇر</div></div>
-                <div class="final-stat"><div class="v" id="f-streak">0</div><div class="l">ئەڭ يۇقىرى ئۇدا</div></div>
-                <div class="final-stat"><div class="v" id="f-games">0</div><div class="l">ئېتىش</div></div>
-                <div class="final-stat"><div class="v" id="f-accuracy">0%</div><div class="l">توغرىلىق</div></div>
-            </div>
-            <button class="btn" onclick="startGame()">باشلاش</button>
-        </div>
-    </div>
-    <a id="back-btn" href="../index.html">← كەينىگە</a>
-    <canvas id="game"></canvas>
+    <button class="big-btn gold" id="start-btn" onclick="initGame()">🏀 جەڭگە كىر!</button>
+  </div>
+</div>
 
-    <script>
-        const canvas = document.getElementById('game');
-        const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
+<canvas id="c"></canvas>
+<a id="back-btn" href="../index.html">← كەينىگە</a>
 
-        let gameActive = false, score = 0, bestStreak = 0, highScore = parseInt(localStorage.getItem('bball_high')||'0');
-        document.getElementById('high-score').innerText = highScore;
-        let audioCtx, streak = 0, particles = [], confettis = [], netStrings = [];
-        let frameCount = 0, gameStartTime = 0, gameTimeLeft = 45, totalShots = 0, successfulShots = 0;
-        let gameTime = 45;
-        const gravity = 0.45;
-        
-        let ball = { x: 0, y: 0, r: 25, vx: 0, vy: 0, isShooting: false, isDragging: false, startX: 0, startY: 0, angle: 0, spin: 0, fire: false, mega: false, bankShot: false };
-        let hoop = { x: 0, y: 0, w: 120, h: 10, sideW: 10, dir: 1, speed: 1.5, moving: false, netJiggle: 0 };
-        let effects = { magnet: 0, slowmo: 0, mega: 0 };
-        let powerUps = [];
-        let scores = []; // floating score texts
-        let netAnimating = false, netAnimTimer = 0, netBallY = 0, netBallX = 0, netSway = 0;
+<script>
+const c=document.getElementById('c'), ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+window.addEventListener('resize',()=>{resize();if(round<ROUNDS.length)resetShot();});
+resize();
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
-        function playSound(type) {
-            if (!audioCtx) return; try {
-                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
-                const t = audioCtx.currentTime;
-                if (type==='shoot') { o.type='sine'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(600,t+0.12); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
-                else if (type==='swish') { o.type='sine'; o.frequency.setValueAtTime(800,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.08); g.gain.setValueAtTime(0.06,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
-                else if (type==='bounce') { o.type='triangle'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(300,t+0.06); g.gain.setValueAtTime(0.06,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.08); }
-                else if (type==='bank') { o.type='square'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(800,t+0.1); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15); }
-                else if (type==='powerup') { o.type='sine'; o.frequency.setValueAtTime(400,t); o.frequency.setValueAtTime(600,t+0.15); o.frequency.setValueAtTime(800,t+0.3); g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.35); }
-                else if (type==='miss') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(100,t+0.2); g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
-                o.start(t); o.stop(t+0.35);
-            } catch(e) {}
-        }
+const ROUNDS=[
+  {name:'قەشقەر مەيدانى',   s1:'#100805',s2:'#281508',ac:'#cc6600',hw:120,hspd:0,   mov:false,dur:35},
+  {name:'تۇرپان ئارنىسى',  s1:'#050a18',s2:'#0a1a30',ac:'#0066aa',hw:108,hspd:1.0, mov:true, dur:32},
+  {name:'ئۈرۈمچى كۇبوكى', s1:'#050a08',s2:'#0a1810',ac:'#008844',hw:98, hspd:1.6, mov:true, dur:29},
+  {name:'خوتەن بۇيرۇقى',   s1:'#100505',s2:'#280a08',ac:'#cc0044',hw:90, hspd:2.2, mov:true, dur:27},
+  {name:'ئاقسۇ چولپانى',   s1:'#100510',s2:'#200a20',ac:'#8800cc',hw:84, hspd:2.9, mov:true, dur:25},
+  {name:'ئىلى قالئىسى',    s1:'#050810',s2:'#0a1220',ac:'#4488ff',hw:78, hspd:3.6, mov:true, dur:23},
+  {name:'ئوردۇبالىق نومۇسى',s1:'#080505',s2:'#181010',ac:'#ffcc00',hw:72, hspd:4.4, mov:true, dur:20},
+];
+const FACTS=[
+  {icon:'🏰',title:'قەشقەر — يىپەك يولىنىڭ يۈرىكى',
+   fact:'قەشقەر شەھىرى 2000 يىلدىن ئارتۇق تارىخقا ئىگە! ئىپەك يولىنىڭ ئەڭ چوڭ ۋە ئەڭ مەشھۇر شەھىرى. ئۇيغۇر سودىگەرلىرى بۇ شەھەردىن چىقىپ كۆرە، روم، ھىند ۋە خىتايغا بارغان!'},
+  {icon:'🍇',title:'تۇرپان — ئۈزۈم ۋە ئىلىم مەركىزى',
+   fact:'تۇرپاندىكى مىڭ ئۆي غارلىرى دۇنيانىڭ ئەڭ چوڭ رەسساملىق مۇزىيى! ئۈزۈم باغلىرى ۋە «ئالتۇن مېرىك» ئۈزۈمى بىلەن مەشھۇر. تۇرپان قەدىمىدىن ئۇيغۇر ئىلىم-مەرىپىتىنىڭ مەركىزى بولغان!'},
+  {icon:'📜',title:'ئۇيغۇر يازمىسى — 1500 يىللىق شانلىق تارىخ',
+   fact:'ئۇيغۇر يازمىسى 1500 يىلدىن ئارتۇق تارىخقا ئىگە! بۇ يازما مۇغۇل، مانجۇ، ئۆزبەك قاتارلىق 10 دىن ئارتۇق تىلنى يازىشتا ئاساس بولغان. دۇنيانىڭ ئەڭ مۇھىم يازمىلىرىدىن بىرى ئۇيغۇر يازمىسى!'},
+  {icon:'🕌',title:'خوتەن — يىپەك ۋە قادىمىي مەدەنىيەت',
+   fact:'خوتەن شەھىرى قەدىمىدىن يىپەك ئىستېھسالى بىلەن مەشھۇر! يىپەك يولىنىڭ ئەڭ مۇھىم نۇقتىلىرىدىن بىرى. خوتەن نەپىس تاشى — «خوتەن يۈ تىشى» دۇنياغا مەشھۇر ئۇيغۇر قىممەتلىك تاشى!'},
+  {icon:'📚',title:'قۇتادغۇبىلىگ — مىلادى 1069-يىل',
+   fact:'«قۇتادغۇبىلىگ» 1069-يىلى يۇسۇپ خاس ھاجىپ تەرىپىدىن يازىلغان! دۇنيانىڭ ئەڭ قەدىمىي تۈركىي ئەدەبىيات شاھئەسىرى ئۇيغۇر تىلىدا يازىلغان. بۇ كىتاب 20 دىن ئارتۇق مۇزىيدە ساقلانمەقتە!'},
+  {icon:'🎶',title:'ئون ئىككى مۇقام — ئۇنېسكو مىراسى',
+   fact:'ئۇيغۇر ئون ئىككى مۇقامى 336 ساعات ئىجرا ۋاقتى بار دۇنيانىڭ ئەڭ ئۇزۇن مۇزىكا مىراسى! 2005-يىلى ئۇنېسكو تەرىپىدىن «مادىدىسىز مەدەنىيەت مىراسى» دەپ تونۇلغان. ئۇيغۇر مۇزىكىسى بۈگۈن پۈتۈن دۇنياغا يايرىغان!'},
+  {icon:'🏆',title:'ئوردۇبالىق — ئۇيغۇر خانلىقىنىڭ پايتەختى',
+   fact:'ئوردۇبالىق ئۇيغۇر خانلىقى (744-840 مىلادى) نىڭ پايتەختى ئىدى! «ئوردۇبالىق» سۆزى «شاھارلىق ئوردا» دەگەنلىكنى بىلدۈرىدۇ. بۇ شەھەر بۈگۈن موڭغۇلىيادىكى ئوخون دەرياسى بويىدا يېتىشىدۇ!'},
+];
 
-        function addParticles(x,y,color,count=15) {
-            for (let i=0; i<count; i++) {
-                particles.push({x,y,vx:(Math.random()-0.5)*10,vy:(Math.random()-0.5)*10,life:1,color,size:2+Math.random()*4});
-            }
-        }
+const GRAV=0.45;
+let ball,hoop,parts,confettis,scoreTexts,powerUps;
+let score,streak,bestStreak,totalShots,successShots,round,roundDur,roundStart;
+let firePow=0,magnetPow=0,megaPow=0,slowPow=0;
+let dragging=false,dragSX=0,dragSY=0,dragEX=0,dragEY=0;
+let netSway=0,netAnimating=false,netTimer=0,netBX=0,netBY=0;
+let fr=0,audioCtx=null,gameState='menu',timerInterval=null;
+let bestScore=0,totalShotsAll=0,successShotsAll=0;
+try{bestScore=parseInt(localStorage.getItem('bball2_best'))||0;}catch(e){}
 
-        function addConfetti(count=40) {
-            const colors = ['#ffb703','#e63946','#00f2ff','#10b981','#a855f7','#ec4899','#fbbf24'];
-            for (let i=0; i<count; i++) {
-                confettis.push({x:Math.random()*canvas.width,y:-20,vx:(Math.random()-0.5)*4,vy:Math.random()*4+2,life:1,color:colors[Math.floor(Math.random()*colors.length)],size:4+Math.random()*8,rot:Math.random()*360,rv:(Math.random()-0.5)*15});
-            }
-        }
+function initAudio(){if(!audioCtx)try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+function tone(f,d,t,v){if(!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.type=t||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||0.08,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+function sfxShoot(){tone(280,0.07,'sawtooth',0.08);}
+function sfxSwish(){tone(820,0.09,'sine',0.1);setTimeout(()=>tone(1200,0.07,'sine',0.08),60);}
+function sfxBank(){tone(600,0.08,'square',0.1);setTimeout(()=>tone(800,0.08,'square',0.08),80);}
+function sfxBounce(){tone(380,0.06,'triangle',0.07);}
+function sfxMiss(){tone(180,0.2,'sawtooth',0.09);}
+function sfxPower(){[0,100,200,300].forEach((d,i)=>setTimeout(()=>tone([500,700,900,1200][i],0.14,'sine',0.1),d));}
+function sfxWave(){[0,120,240,370].forEach((d,i)=>setTimeout(()=>tone([600,800,1100,1500][i],0.2,'sine',0.11),d));}
 
-        function showCombo(txt, color='#ffb703') {
-            const el = document.getElementById('combo-text');
-            el.innerText = txt; el.style.color = color; el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 1200);
-        }
+function initGame(){
+  initAudio();
+  document.getElementById('overlay').classList.add('hidden');
+  score=0;streak=0;bestStreak=0;totalShots=0;successShots=0;round=0;
+  totalShotsAll=0;successShotsAll=0;
+  firePow=0;magnetPow=0;megaPow=0;slowPow=0;
+  parts=[];confettis=[];scoreTexts=[];powerUps=[];
+  document.getElementById('final-stats').style.display='none';
+  showFact(0);
+}
 
-        function resetRound() {
-            ball.x = 120;
-            ball.y = canvas.height - 150;
-            ball.vx = 0; ball.vy = 0; ball.spin = 0;
-            ball.isShooting = false;
-            ball.fire = streak >= 3;
-            ball.mega = effects.mega > 0;
-            ball.bankShot = false;
-            ball.r = ball.mega ? 35 : 25;
-            
-            // Difficulty progression: hoop narrows, moves faster
-            const diffFactor = Math.min(score / 200, 1);
-            const hoopWidth = 120 - Math.floor(diffFactor * 40); // shrinks from 120 to 80
-            hoop.w = Math.max(hoopWidth, 80);
-            hoop.speed = 1.5 + diffFactor * 2.5; // faster movement
-            hoop.x = Math.min(canvas.width - 180, canvas.width - 250 - Math.random() * 150);
-            hoop.x = Math.max(hoop.x, 150);
-            hoop.y = canvas.height / 3.5 + Math.random() * 100;
-            hoop.moving = score >= 20; // starts moving earlier
-            netSway = 0;
-            netAnimating = false;
-            
-            if (effects.magnet > 0) effects.magnet--;
-            if (effects.slowmo > 0) effects.slowmo--;
-            if (effects.mega > 0) effects.mega--;
-            updateUI();
-            updateEffectsBar();
-        }
+function showFact(r){
+  gameState='fact';
+  if(timerInterval)clearInterval(timerInterval);
+  const fd=FACTS[r];
+  document.getElementById('fp-icon').textContent=fd.icon;
+  document.getElementById('fp-title').textContent=fd.title;
+  document.getElementById('fp-fact').textContent=fd.fact;
+  document.getElementById('fp-btn').textContent=r===0?'🏀 مەيداننى باس!':'▶ داۋاملاش!';
+  document.getElementById('fact-popup').classList.remove('hidden');
+}
 
-        function resetGame() {
-            score = 0; streak = 0; bestStreak = 0;
-            effects = { magnet: 0, slowmo: 0, mega: 0 };
-            powerUps = [];
-            particles = []; confettis = []; scores = [];
-            frameCount = 0;
-            netAnimating = false;
-        }
+function startRound(){
+  document.getElementById('fact-popup').classList.add('hidden');
+  sfxWave();
+  const rd=ROUNDS[round];
+  roundDur=rd.dur;
+  document.getElementById('round-badge').textContent='دەۋر '+(round+1)+' · '+rd.name;
+  document.getElementById('timer-val').textContent=roundDur;
+  document.getElementById('timer-fill').style.background=rd.ac;
+  document.getElementById('timer-fill').style.boxShadow='0 0 10px '+rd.ac;
+  document.getElementById('timer-fill').style.width='100%';
+  dragging=false; ball={x:0,y:0,vx:0,vy:0,r:24,angle:0,spin:0,shooting:false,bankShot:false,fire:false};
+  hoop={x:0,y:0,w:rd.hw,h:10,dir:1,spd:rd.hspd,moving:rd.mov,netJiggle:0};
+  netSway=0; netAnimating=false;
+  resetShot();
+  gameState='playing';
+  roundStart=Date.now();
+  timerInterval=setInterval(()=>{
+    if(gameState!=='playing')return;
+    const elapsed=Math.floor((Date.now()-roundStart)/1000);
+    const left=Math.max(0,roundDur-elapsed);
+    document.getElementById('timer-val').textContent=left;
+    document.getElementById('timer-fill').style.width=(left/roundDur*100)+'%';
+    document.getElementById('timer-val').className='val'+(left<=8?' hot':'');
+    if(left<=0){clearInterval(timerInterval);endRound();}
+  },250);
+  requestAnimationFrame(loop);
+}
 
-        function startGame() {
-            initAudio();
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('end-title').innerText = '🏀 ۋاسكىتبول چولپىنى';
-            document.getElementById('end-desc').innerHTML = 'توپنى گارغا تاشلاپ نومۇر يىغىڭ!<br>تاختىدىن سەكرەپ گارغا كىرسە قوشۇمچە نومۇر.<br>توپنى تارتىپ قويۇپ بېرىڭ.';
-            document.getElementById('final-stats').style.display = 'none';
-            resetGame();
-            gameActive = true;
-            gameTimeLeft = 45;
-            gameStartTime = Date.now();
-            totalShots = 0; successfulShots = 0;
-            document.getElementById('timer-val').textContent = gameTimeLeft;
-            document.getElementById('timer-val').classList.remove('warning');
-            resetRound();
-            if (!animateLoopStarted) { animateLoopStarted = true; animate(); }
-        }
+function resetShot(){
+  ball.x=c.width*0.15;
+  ball.y=c.height-130;
+  ball.vx=0;ball.vy=0;ball.spin=0;
+  ball.shooting=false;ball.bankShot=false;
+  ball.fire=firePow>0||streak>=3;
+  ball.r=megaPow>0?33:24;
+  dragging=false;
+  const rd=ROUNDS[round];
+  hoop.w=Math.max(rd.hw-Math.min(score/40,22),52);
+  hoop.x=Math.max(c.width*0.38, Math.min(c.width-160, c.width*0.55+Math.random()*(c.width*0.25)));
+  hoop.y=c.height*0.22+Math.random()*(c.height*0.2);
+  hoop.spd=rd.hspd*(1+score/800);
+  hoop.dir=Math.random()<0.5?1:-1;
+}
 
-        function roundRect(c, x, y, w, h, r) {
-            if(w < 2 * r) r = w / 2;
-            if(h < 2 * r) r = h / 2;
-            c.beginPath();
-            c.moveTo(x + r, y);
-            c.lineTo(x + w - r, y);
-            c.quadraticCurveTo(x + w, y, x + w, y + r);
-            c.lineTo(x + w, y + h - r);
-            c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            c.lineTo(x + r, y + h);
-            c.quadraticCurveTo(x, y + h, x, y + h - r);
-            c.lineTo(x, y + r);
-            c.quadraticCurveTo(x, y, x + r, y);
-            c.closePath();
-        }
+function endRound(){
+  gameState='between';
+  round++;
+  totalShotsAll+=totalShots;successShotsAll+=successShots;
+  totalShots=0;successShots=0;streak=0;
+  firePow=0;magnetPow=0;megaPow=0;slowPow=0;
+  updatePwrUI();
+  if(round>=ROUNDS.length){setTimeout(showFinal,400);}
+  else{setTimeout(()=>showFact(round),500);}
+}
 
-        function gameOver() {
-            gameActive = false;
-            document.getElementById('overlay').style.display = 'flex';
-            document.getElementById('end-title').innerText = '🏆 ۋاقىت تۈگىدى!';
-            document.getElementById('end-desc').innerHTML = 'تامام! نەتىجىڭىزنى كۆرۈڭ.';
-            document.getElementById('final-stats').style.display = 'flex';
-            document.getElementById('f-score').textContent = score;
-            document.getElementById('f-streak').textContent = bestStreak + '×';
-            document.getElementById('f-games').textContent = totalShots;
-            const acc = totalShots > 0 ? Math.round(successfulShots / totalShots * 100) : 0;
-            document.getElementById('f-accuracy').textContent = acc + '%';
-            if(score > highScore) {
-                highScore = score;
-                localStorage.setItem('bball_high', highScore.toString());
-                document.getElementById('high-score').innerText = highScore;
-            }
-            addConfetti(80);
-        }
+function showFinal(){
+  try{if(score>bestScore){bestScore=score;localStorage.setItem('bball2_best',bestScore);}}catch(e){}
+  gameState='menu';
+  document.getElementById('overlay').classList.remove('hidden');
+  document.querySelector('.game-title').textContent='🏆 خانلىق كۇبوكى ئۇتتىڭىز!';
+  const acc=totalShotsAll>0?Math.round(successShotsAll/totalShotsAll*100):0;
+  document.getElementById('ov-desc').textContent='مۇبارەك! 7 شەھەردىن ئۆتتىڭىز! ھەقىقىي ئۇيغۇر چولپانى!';
+  document.getElementById('final-stats').style.display='flex';
+  document.getElementById('f-score').textContent=score;
+  document.getElementById('f-streak').textContent=bestStreak+'×';
+  document.getElementById('f-acc').textContent=acc+'%';
+  document.getElementById('f-best').textContent=bestScore;
+  document.getElementById('start-btn').textContent='🔄 قايتا باشلاش';
+}
 
-        function updateUI() {
-            document.getElementById('score-val').innerText = score;
-            document.getElementById('streak-val').innerText = streak;
-            document.getElementById('streak-val').style.color = streak >= 3 ? '#ffb703' : '#e63946';
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('bball_high', highScore.toString());
-                document.getElementById('high-score').innerText = highScore;
-            }
-        }
+/* ═════════ INPUT ═════════ */
+const getXY=(e)=>e.touches?{x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY};
+c.addEventListener('mousedown',e=>{if(gameState!=='playing'||ball.shooting||netAnimating)return;const{x,y}=getXY(e);if(Math.hypot(ball.x-x,ball.y-y)<120){dragging=true;dragSX=x;dragSY=y;dragEX=x;dragEY=y;}});
+c.addEventListener('mousemove',e=>{if(dragging){const{x,y}=getXY(e);dragEX=x;dragEY=y;}});
+c.addEventListener('mouseup',releaseShot);
+c.addEventListener('touchstart',e=>{e.preventDefault();if(gameState!=='playing'||ball.shooting||netAnimating)return;const{x,y}=getXY(e);if(Math.hypot(ball.x-x,ball.y-y)<130){dragging=true;dragSX=x;dragSY=y;dragEX=x;dragEY=y;}},{passive:false});
+c.addEventListener('touchmove',e=>{e.preventDefault();if(dragging){const{x,y}=getXY(e);dragEX=x;dragEY=y;}},{passive:false});
+c.addEventListener('touchend',e=>{e.preventDefault();releaseShot();},{passive:false});
 
-        function updateEffectsBar() {
-            const cont = document.getElementById('effects-bar');
-            cont.innerHTML = '';
-            if (effects.magnet > 0) cont.innerHTML += `<div class="effect-tag">🧲 ماگنىت ${effects.magnet}</div>`;
-            if (effects.slowmo > 0) cont.innerHTML += `<div class="effect-tag">⏱ ئاستا ${effects.slowmo}</div>`;
-            if (effects.mega > 0) cont.innerHTML += `<div class="effect-tag">🔵 چوڭ توپ ${effects.mega}</div>`;
-        }
+function releaseShot(){
+  if(!dragging)return;
+  dragging=false;ball.shooting=true;
+  const dx=dragSX-dragEX, dy=dragSY-dragEY;
+  const spd=slowPow>0?0.55:1.0;
+  ball.vx=dx*0.115*spd; ball.vy=dy*0.115*spd;
+  ball.spin=dx*0.018;
+  sfxShoot();
+  document.getElementById('hint').style.opacity='0';
+  totalShots++;
+}
 
-        // Drag controls
-        let dragEndX = 0, dragEndY = 0;
-        const handleStart = (x, y) => {
-            if (!gameActive || ball.isShooting || netAnimating) return;
-            if (Math.hypot(ball.x - x, ball.y - y) < 200) {
-                ball.isDragging = true; ball.startX = x; ball.startY = y;
-                dragEndX = x; dragEndY = y;
-            }
-        };
-        const handleMove = (x, y) => { if (ball.isDragging) { dragEndX = x; dragEndY = y; } };
-        const handleEnd = () => {
-            if (ball.isDragging) {
-                ball.isDragging = false; ball.isShooting = true;
-                const dx = (ball.startX - dragEndX);
-                const dy = (ball.startY - dragEndY);
-                ball.vx = dx * 0.12;
-                ball.vy = dy * 0.12;
-                ball.spin = dx * 0.02;
-                if (effects.slowmo > 0) { ball.vx *= 0.5; ball.vy *= 0.5; }
-                playSound('shoot');
-                document.getElementById('hint').style.display = 'none';
-            }
-        };
+/* ═════════ LOOP ═════════ */
+let loopRunning=false;
+function loop(){
+  requestAnimationFrame(loop);
+  fr++;
+  if(gameState==='menu'||gameState==='fact'){
+    drawBackground(); drawConfetti();
+    return;
+  }
+  ctx.clearRect(0,0,c.width,c.height);
+  drawBackground();
 
-        window.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
-        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
-        window.addEventListener('mouseup', handleEnd);
-        window.addEventListener('touchstart', e => {
-            if (e.target.closest('.btn') || e.target.closest('#back-btn')) return;
-            e.preventDefault(); handleStart(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: false });
-        window.addEventListener('touchmove', e => { if (ball.isDragging) { e.preventDefault(); handleMove(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: false });
-        window.addEventListener('touchend', e => { e.preventDefault(); handleEnd(); }, { passive: false });
+  // Move hoop
+  if(hoop.moving&&ball.shooting){
+    hoop.y+=hoop.spd*hoop.dir;
+    if(hoop.y>c.height-280||hoop.y<c.height*0.12)hoop.dir*=-1;
+  }
 
-        // ===== DRAWING =====
-        function drawStadium() {
-            // Sky gradient
-            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGrad.addColorStop(0, '#0a1628');
-            skyGrad.addColorStop(0.5, '#1a3a5f');
-            skyGrad.addColorStop(1, '#2d5a7a');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Court floor with wood texture
-            const floorY = canvas.height - 80;
-            ctx.fillStyle = '#c17a36';
-            ctx.fillRect(0, floorY, canvas.width, 80);
-            // Floor lines
-            ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-            ctx.lineWidth = 1;
-            for (let x=0; x<canvas.width; x+=30) {
-                ctx.beginPath(); ctx.moveTo(x, floorY); ctx.lineTo(x, canvas.height); ctx.stroke();
-            }
-            // Court markings
-            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-            ctx.lineWidth = 3;
-            ctx.setLineDash([10, 10]);
-            ctx.beginPath();
-            ctx.arc(canvas.width/2, floorY, 80, Math.PI, 0);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            // Crowd silhouettes
-            for (let i=0; i<canvas.width; i+=35) {
-                ctx.fillStyle = `rgba(0,0,0,${0.15 + Math.sin(frameCount*0.02 + i*0.1)*0.05})`;
-                ctx.beginPath();
-                ctx.arc(i, floorY-5, 18, Math.PI, 0);
-                ctx.fill();
-            }
-            
-            // Stadium lights glow
-            ctx.fillStyle = 'rgba(255,200,100,0.03)';
-            ctx.beginPath();
-            ctx.moveTo(60, 0); ctx.lineTo(0, 150); ctx.lineTo(120, 150);
-            ctx.closePath(); ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(canvas.width-60, 0); ctx.lineTo(canvas.width, 150); ctx.lineTo(canvas.width-120, 150);
-            ctx.closePath(); ctx.fill();
-        }
+  // Magnet
+  if(magnetPow>0&&ball.shooting){
+    const cx=hoop.x+hoop.w/2, cy=hoop.y;
+    const dist=Math.hypot(ball.x-cx,ball.y-cy);
+    if(dist<260){ball.vx+=(cx-ball.x)*0.025;ball.vy+=(cy-ball.y)*0.025;}
+  }
 
-        function drawHoop() {
-            const h = hoop;
-            
-            // Pole
-            ctx.fillStyle = '#888';
-            ctx.shadowBlur = 0;
-            ctx.fillRect(h.x + h.w/2 - 5, h.y + h.h, 10, canvas.height - h.y - h.h - 80);
-            
-            // Backboard - glass look
-            const bbX = h.x + h.w + 5;
-            const bbW = 18;
-            const bbH = h.h * 12;
-            const bbY = h.y - bbH/2 + h.h/2;
-            
-            // Backboard shadow
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            ctx.fillRect(bbX + 3, bbY + 3, bbW, bbH);
-            
-            // Backboard glass
-            const bbGrad = ctx.createLinearGradient(bbX, bbY, bbX + bbW, bbY);
-            bbGrad.addColorStop(0, 'rgba(255,255,255,0.6)');
-            bbGrad.addColorStop(0.3, 'rgba(255,255,255,0.3)');
-            bbGrad.addColorStop(0.7, 'rgba(255,255,255,0.1)');
-            bbGrad.addColorStop(1, 'rgba(255,255,255,0.4)');
-            ctx.fillStyle = bbGrad;
-            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-            ctx.lineWidth = 2;
-            ctx.fillRect(bbX, bbY, bbW, bbH);
-            ctx.strokeRect(bbX, bbY, bbW, bbH);
-            
-            // Backboard target square (small square on backboard)
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 2;
-            const sqSize = 20;
-            ctx.strokeRect(bbX + 1, h.y - sqSize/2, sqSize, sqSize);
-            
-            // Rim with 3D effect
-            const rimGrad = ctx.createLinearGradient(h.x, h.y, h.x, h.y + h.h);
-            rimGrad.addColorStop(0, '#ff4444');
-            rimGrad.addColorStop(0.3, '#e63946');
-            rimGrad.addColorStop(0.7, '#c1121f');
-            rimGrad.addColorStop(1, '#a00');
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = 'rgba(230,57,70,0.3)';
-            ctx.fillStyle = rimGrad;
-            // Rounded rim
-            const r = h.h/2;
-            ctx.beginPath();
-            ctx.moveTo(h.x + r, h.y);
-            ctx.lineTo(h.x + h.w - r, h.y);
-            ctx.quadraticCurveTo(h.x + h.w, h.y, h.x + h.w, h.y + r);
-            ctx.lineTo(h.x + h.w, h.y + h.h - r);
-            ctx.quadraticCurveTo(h.x + h.w, h.y + h.h, h.x + h.w - r, h.y + h.h);
-            ctx.lineTo(h.x + r, h.y + h.h);
-            ctx.quadraticCurveTo(h.x, h.y + h.h, h.x, h.y + h.h - r);
-            ctx.lineTo(h.x, h.y + r);
-            ctx.quadraticCurveTo(h.x, h.y, h.x + r, h.y);
-            ctx.closePath();
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // Rim connector to pole
-            ctx.fillStyle = '#888';
-            ctx.fillRect(h.x + h.w, h.y + h.h/2 - 2, 10, 4);
-            
-            // ===== NET =====
-            const netDepth = 50;
-            const netSegments = 8;
-            const netWidth = h.w - 10;
-            
-            // Net sway animation
-            netSway *= 0.9;
-            if (netAnimating) {
-                netSway += Math.sin(frameCount * 0.3) * 0.5;
-                netAnimTimer--;
-                if (netAnimTimer <= 0) netAnimating = false;
-            }
-            
-            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-            ctx.lineWidth = 1.2;
-            
-            // Draw net as grid of strings
-            for (let i = 0; i <= netSegments; i++) {
-                const t = i / netSegments;
-                const topX = h.x + 5 + t * netWidth;
-                
-                // Vertical string
-                const bottomX = h.x + 5 + t * netWidth + netSway * Math.sin(t * Math.PI) * 3;
-                const bottomY = h.y + h.h + netDepth + netSway * 0.3;
-                
-                ctx.beginPath();
-                ctx.moveTo(topX, h.y + h.h);
-                
-                // Curved string
-                for (let s = 1; s <= 8; s++) {
-                    const st = s / 8;
-                    const cx = topX + (bottomX - topX) * st + netSway * Math.sin(st * Math.PI) * 2;
-                    const cy = h.y + h.h + st * netDepth;
-                    ctx.lineTo(cx, cy);
-                }
-                ctx.stroke();
-            }
-            
-            // Horizontal net strings
-            for (let j = 1; j <= 3; j++) {
-                const st = j / 4;
-                const yPos = h.y + h.h + st * netDepth;
-                const sway = netSway * Math.sin(st * Math.PI) * 3;
-                ctx.beginPath();
-                ctx.moveTo(h.x + 5 + sway * 0.3, yPos);
-                for (let i = 0; i <= netSegments; i++) {
-                    const t = i / netSegments;
-                    ctx.lineTo(h.x + 5 + t * netWidth + sway * Math.sin(t * Math.PI), yPos);
-                }
-                ctx.stroke();
-            }
-            
-            // Net bottom ring outline
-            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            const bY = h.y + h.h + netDepth;
-            ctx.moveTo(h.x + 5 + netSway * 0.5, bY);
-            ctx.lineTo(h.x + netWidth + 5 + netSway * 0.5, bY);
-            ctx.stroke();
-        }
+  // Ball physics
+  if(ball.shooting){
+    ball.vy+=GRAV;
+    ball.x+=ball.vx; ball.y+=ball.vy;
+    ball.angle+=ball.spin;
 
-        function drawBallTrajectory() {
-            if (!ball.isDragging) return;
-            let tx = ball.x, ty = ball.y;
-            let tvx = (ball.startX - dragEndX) * 0.12, tvy = (ball.startY - dragEndY) * 0.12;
-            if (effects.slowmo > 0) { tvx *= 0.5; tvy *= 0.5; }
-            
-            ctx.beginPath();
-            ctx.moveTo(tx, ty);
-            for (let i = 0; i < 50; i++) {
-                tx += tvx; ty += tvy; tvy += gravity;
-                if (i % 2 === 0) ctx.lineTo(tx, ty);
-            }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 8]);
-            ctx.stroke();
-            ctx.setLineDash([]);
-        }
+    // Backboard
+    const bbX=hoop.x+hoop.w+3, bbW=16;
+    const bbY=hoop.y-55, bbH=70;
+    if(ball.vy>0&&ball.x+ball.r>bbX&&ball.x-ball.r<bbX+bbW&&ball.y+ball.r>bbY&&ball.y-ball.r<bbY+bbH){
+      ball.vx=-Math.abs(ball.vx)*0.62; ball.vy-=1.2; ball.x=bbX-ball.r-1;
+      ball.bankShot=true; sfxBank();
+      addParticles(ball.x,ball.y,'rgba(255,255,255,0.5)',5);
+    }
 
-        function drawBall(x, y, r, angle) {
-            ctx.save();
-            
-            // Ball shadow
-            ctx.fillStyle = 'rgba(0,0,0,0.15)';
-            ctx.beginPath();
-            ctx.ellipse(x + 5, y + r + 8, r * 0.8, r * 0.2, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.translate(x, y);
-            ctx.rotate(angle);
-            
-            // Ball color
-            const isFire = ball.fire && ball.isShooting;
-            const isMega = ball.mega;
-            const c1 = isFire ? '#fb8500' : (isMega ? '#3b82f6' : '#e07020');
-            const c2 = isFire ? '#ffb703' : (isMega ? '#60a5fa' : '#f4a261');
-            
-            // Ball glow
-            if (isFire) {
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = '#ffb703';
-            } else if (isMega) {
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = '#60a5fa';
-            }
-            
-            // Main circle with gradient
-            const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, 2, 0, 0, r);
-            grad.addColorStop(0, c2);
-            grad.addColorStop(0.7, c1);
-            grad.addColorStop(1, '#8B4513');
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.arc(0, 0, r, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // Ball lines
-            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-            ctx.lineWidth = 1.5;
-            // Vertical line
-            ctx.beginPath(); ctx.moveTo(0, -r); ctx.lineTo(0, r); ctx.stroke();
-            // Horizontal line
-            ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
-            // Arc lines
-            ctx.beginPath(); ctx.arc(-r*0.3, 0, r*0.7, -Math.PI/3, Math.PI/3); ctx.stroke();
-            ctx.beginPath(); ctx.arc(r*0.3, 0, r*0.7, Math.PI*2/3, Math.PI*4/3); ctx.stroke();
-            
-            // Fire effect on fire ball
-            if (isFire && ball.isShooting) {
-                ctx.fillStyle = `rgba(255,200,50,${0.3 + Math.random()*0.4})`;
-                ctx.beginPath();
-                ctx.arc(-r*0.7, r*0.3, 3 + Math.random()*4, 0, Math.PI*2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(r*0.5, -r*0.6, 2 + Math.random()*3, 0, Math.PI*2);
-                ctx.fill();
-            }
-            
-            // Mega ball glow ring
-            if (isMega) {
-                ctx.strokeStyle = `rgba(96,165,250,${0.2 + Math.sin(frameCount*0.1)*0.15})`;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(0, 0, r + 4, 0, Math.PI*2);
-                ctx.stroke();
-            }
-            
-            ctx.restore();
-        }
+    // Rim bounce
+    if(ball.vy>0){
+      if(Math.abs(ball.x-hoop.x)<ball.r+4&&ball.y+ball.r>hoop.y&&ball.y-ball.r<hoop.y+hoop.h){
+        ball.vx=Math.abs(ball.vx)*0.48;ball.vy=-Math.abs(ball.vy)*0.42;ball.spin*=-0.5;sfxBounce();netSway=5;
+      }
+      if(Math.abs(ball.x-(hoop.x+hoop.w))<ball.r+4&&ball.y+ball.r>hoop.y&&ball.y-ball.r<hoop.y+hoop.h){
+        ball.vx=-Math.abs(ball.vx)*0.48;ball.vy=-Math.abs(ball.vy)*0.42;ball.spin*=-0.5;sfxBounce();netSway=-5;
+      }
+    }
 
-        function updateAndDrawPowerUps() {
-            for (let i = powerUps.length - 1; i >= 0; i--) {
-                const pu = powerUps[i];
-                pu.y += 1.5;
-                pu.rot += 0.05;
-                
-                // Draw floating power-up
-                ctx.save();
-                ctx.translate(pu.x, pu.y);
-                ctx.rotate(pu.rot);
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = pu.color;
-                
-                if (pu.type === 'magnet') {
-                    ctx.fillStyle = '#00f2ff';
-                    ctx.font = '24px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('🧲', 0, 0);
-                } else if (pu.type === 'slowmo') {
-                    ctx.fillStyle = '#a855f7';
-                    ctx.font = '24px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('⏱', 0, 0);
-                } else if (pu.type === 'mega') {
-                    ctx.fillStyle = '#3b82f6';
-                    ctx.font = '24px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('🔵', 0, 0);
-                }
-                ctx.shadowBlur = 0;
-                ctx.restore();
-                
-                // Check collision with ball
-                if (ball.isShooting && Math.hypot(pu.x - ball.x, pu.y - ball.y) < ball.r + 20) {
-                    score += 20;
-                    showCombo(pu.type === 'magnet' ? '🧲 ماگنىت!' : (pu.type === 'slowmo' ? '⏱ ئاستا!' : '🔵 چوڭ توپ!'));
-                    if (pu.type === 'magnet') effects.magnet = 5;
-                    else if (pu.type === 'slowmo') effects.slowmo = 3;
-                    else if (pu.type === 'mega') effects.mega = 3;
-                    playSound('powerup');
-                    addParticles(pu.x, pu.y, pu.color, 20);
-                    updateEffectsBar();
-                    powerUps.splice(i, 1);
-                    continue;
-                }
-                
-                if (pu.y > canvas.height + 20) powerUps.splice(i, 1);
-            }
-        }
+    // SCORE detection
+    if(ball.vy>0&&ball.x>hoop.x+8&&ball.x<hoop.x+hoop.w-8&&ball.y+ball.r>hoop.y+hoop.h&&ball.y<hoop.y+hoop.h+12){
+      successShots++;
+      let pts=12+streak*6;
+      if(ball.fire)pts=Math.round(pts*2);
+      if(ball.bankShot)pts=Math.round(pts*1.5);
+      score+=pts;streak++;
+      if(streak>bestStreak)bestStreak=streak;
+      ball.fire=streak>=3;
+      if(streak===3){addScoreText(hoop.x+hoop.w/2,hoop.y-30,'🔥 ئوت توپ!','#ff6600',32);sfxPower();}
+      else if(streak===5){magnetPow=6;addScoreText(hoop.x+hoop.w/2,hoop.y-30,'🧲 ماگنىت!','#00ccff',28);sfxPower();}
+      else if(streak===8){megaPow=4;addScoreText(hoop.x+hoop.w/2,hoop.y-30,'🔵 چوڭ توپ!','#4488ff',28);addConfetti(50);sfxPower();}
+      else if(streak===12){slowPow=5;addScoreText(hoop.x+hoop.w/2,hoop.y-30,'⏱ ئاستا!','#aa55ff',28);sfxPower();}
+      else{const lbl=ball.bankShot?'🏦 +'+pts:ball.fire?'🔥 +'+pts:'+'+pts;addScoreText(hoop.x+hoop.w/2,hoop.y-24,lbl,ball.bankShot?'#ffd040':ball.fire?'#ff8800':'#ffffff',ball.bankShot?34:28);}
+      if(streak>=3&&streak%3===0)addConfetti(30);
+      ball.shooting=false;netAnimating=true;netTimer=22;netBX=hoop.x+hoop.w/2;netBY=hoop.y+hoop.h;netSway=16;
+      sfxSwish();
+      addParticles(hoop.x+hoop.w/2,hoop.y+hoop.h+8,'#ffd040',18);
+      addParticles(hoop.x+hoop.w/2,hoop.y+hoop.h+8,'#ffffff',8);
+      if(magnetPow>0)magnetPow--;if(megaPow>0)megaPow--;if(slowPow>0)slowPow--;
+      updateUI();updatePwrUI();
+      setTimeout(()=>{if(gameState==='playing')resetShot();},620);
+    }
 
-        function drawFloatingScore() {
-            for (let i = scores.length - 1; i >= 0; i--) {
-                const s = scores[i];
-                s.y -= 1.2;
-                s.life -= 0.02;
-                ctx.fillStyle = s.color;
-                ctx.globalAlpha = s.life;
-                ctx.font = `bold ${s.size}px 'Tajawal', sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.fillText(s.text, s.x, s.y);
-                ctx.globalAlpha = 1;
-                if (s.life <= 0) scores.splice(i, 1);
-            }
-        }
+    // Out of bounds
+    if(ball.y>c.height+80||ball.x<-100||ball.x>c.width+100){
+      if(ball.shooting){
+        streak=0;ball.shooting=false;sfxMiss();updateUI();
+        setTimeout(()=>{if(gameState==='playing')resetShot();},420);
+      }
+    }
+  }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            frameCount++;
-            
-            if (!gameActive) {
-                // Still draw particles/confetti
-                drawStadium();
-                for (let i=confettis.length-1; i>=0; i--) {
-                    const c=confettis[i]; c.x+=c.vx; c.y+=c.vy; c.vy+=0.05; c.rot+=c.rv;
-                    ctx.save(); ctx.translate(c.x,c.y); ctx.rotate(c.rot*Math.PI/180);
-                    ctx.fillStyle=c.color; ctx.fillRect(-c.size/2,-c.size/4,c.size,c.size/2);
-                    ctx.restore();
-                    c.life-=0.008;
-                    if (c.life<=0||c.y>canvas.height+20) confettis.splice(i,1);
-                }
-                return;
-            }
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawStadium();
+  // Net animation
+  if(netAnimating){
+    netBY+=2.5;netBX+=netSway*0.08;netSway*=0.88;
+    netTimer--;if(netTimer<=0)netAnimating=false;
+  }
 
-            // Hoop movement
-            if (hoop.moving) {
-                hoop.y += hoop.speed * hoop.dir;
-                if (hoop.y > canvas.height - 250 || hoop.y < 120) hoop.dir *= -1;
-            }
+  // Power-ups floating
+  for(let i=powerUps.length-1;i>=0;i--){
+    const p=powerUps[i];p.y+=1.2;p.rot+=0.05;
+    if(ball.shooting&&Math.hypot(ball.x-p.x,ball.y-p.y)<ball.r+22){
+      if(p.type==='mag')magnetPow=6;
+      else if(p.type==='slow')slowPow=5;
+      else if(p.type==='mega')megaPow=4;
+      sfxPower();addParticles(p.x,p.y,p.clr,16);
+      addScoreText(p.x,p.y-20,p.lbl,p.clr,26);
+      powerUps.splice(i,1);updatePwrUI();continue;
+    }
+    if(p.y>c.height+30)powerUps.splice(i,1);
+  }
+  if(fr%340===0&&powerUps.length<3){
+    const types=[{type:'mag',emoji:'🧲',clr:'#00ccff',lbl:'🧲 ماگنىت!'},{type:'slow',emoji:'⏱',clr:'#aa55ff',lbl:'⏱ ئاستا!'},{type:'mega',emoji:'🔵',clr:'#4488ff',lbl:'🔵 چوڭ توپ!'}];
+    const t=types[Math.floor(Math.random()*types.length)];
+    powerUps.push({x:80+Math.random()*(c.width-160),y:-28,...t,rot:0});
+  }
 
-            // Timer countdown
-            const elapsed = (Date.now() - gameStartTime) / 1000;
-            gameTimeLeft = Math.max(0, Math.ceil(gameTime - elapsed));
-            document.getElementById('timer-val').textContent = gameTimeLeft;
-            document.getElementById('timer-val').classList.toggle('warning', gameTimeLeft <= 10);
-            
-            if(gameTimeLeft <= 0) {
-                gameOver();
-                return;
-            }
-            
-            // Ball physics
-            if (ball.isShooting) {
-                // Magnet attraction
-                if (effects.magnet > 0 && Math.hypot(ball.x - (hoop.x + hoop.w/2), ball.y - hoop.y) < 200) {
-                    ball.vx += ((hoop.x + hoop.w/2) - ball.x) * 0.03;
-                    ball.vy += (hoop.y - ball.y) * 0.03;
-                }
-                
-                ball.vy += gravity;
-                ball.x += ball.vx;
-                ball.y += ball.vy;
-                ball.angle += ball.spin;
-                
-                // Backboard bank shot physics
-                const bbX = hoop.x + hoop.w + 5;
-                const bbY = hoop.y - hoop.h * 5.5;
-                const bbW = 18;
-                const bbH = hoop.h * 11;
-                
-                // Ball hits backboard
-                if (ball.vy > 0 && ball.x + ball.r > bbX && ball.x - ball.r < bbX + bbW &&
-                    ball.y + ball.r > bbY && ball.y - ball.r < bbY + bbH) {
-                    
-                    playSound('bounce');
-                    addParticles(ball.x, ball.y, 'rgba(255,255,255,0.5)', 5);
-                    // Bounce off backboard
-                    ball.vx = -Math.abs(ball.vx) * 0.6;
-                    // Give a slight upward nudge for realistic bank
-                    ball.vy -= 1.5;
-                    ball.x = bbX - ball.r - 1;
-                    
-                    // Track bank shot
-                    ball.bankShot = true;
-                }
-                
-                // Ball hits rim (either side)
-                const rimLeft = hoop.x;
-                const rimRight = hoop.x + hoop.w;
-                const rimTop = hoop.y;
-                const rimBottom = hoop.y + hoop.h;
-                
-                // Check rim hit (only from above)
-                if (ball.vy > 0) {
-                    // Left rim
-                    if (Math.abs(ball.x - rimLeft) < ball.r + 5 && 
-                        ball.y + ball.r > rimTop && ball.y - ball.r < rimBottom) {
-                        ball.vx = Math.abs(ball.vx) * 0.5;
-                        ball.vy = -Math.abs(ball.vy) * 0.4;
-                        ball.spin *= -0.5;
-                        playSound('bounce');
-                        netSway = 5;
-                    }
-                    // Right rim
-                    if (Math.abs(ball.x - rimRight) < ball.r + 5 && 
-                        ball.y + ball.r > rimTop && ball.y - ball.r < rimBottom) {
-                        ball.vx = -Math.abs(ball.vx) * 0.5;
-                        ball.vy = -Math.abs(ball.vy) * 0.4;
-                        ball.spin *= -0.5;
-                        playSound('bounce');
-                        netSway = -5;
-                    }
-                }
-                
-                // Check if ball goes through the hoop (enters from above, exits below)
-                const ballCenterX = ball.x;
-                const ballCenterY = ball.y;
-                
-                if (ball.vy > 0 && 
-                    ballCenterX > hoop.x + 10 && ballCenterX < hoop.x + hoop.w - 10 &&
-                    ballCenterY + ball.r > hoop.y + hoop.h && ballCenterY < hoop.y + hoop.h + 10) {
-                    
-                    // SCORE!
-                    totalShots++;
-                    successfulShots++;
-                    const isBank = ball.bankShot || false;
-                    let points = 10 + streak * 5;
-                    if (ball.fire) points *= 2;
-                    if (isBank) points = Math.floor(points * 1.5);
-                    
-                    score += points;
-                    streak++;
-                    if (streak > bestStreak) bestStreak = streak;
-                    
-                    if (streak === 3) { showCombo('🔥 ئوتلۇق توپ!', '#ff6b6b'); ball.fire = true; }
-                    if (streak % 5 === 0) {
-                        effects.magnet = 5;
-                        showCombo('🧲 ماگنىت كۈچى!', '#00f2ff');
-                        updateEffectsBar();
-                    }
-                    if (streak % 10 === 0) {
-                        effects.mega = 3;
-                        showCombo('🔵 چوڭ توپ!', '#60a5fa');
-                        updateEffectsBar();
-                        addConfetti(60);
-                    }
-                    if (streak % 15 === 0) {
-                        effects.slowmo = 3;
-                        showCombo('⏱ ئاستا ھەرىكەت!', '#a855f7');
-                        updateEffectsBar();
-                    }
-                    
-                    // Show floating score
-                    const txt = isBank ? `🏦 +${points}` : `+${points}`;
-                    const col = isBank ? '#ffb703' : '#ffffff';
-                    scores.push({x: hoop.x + hoop.w/2, y: hoop.y - 20, text: txt, color: col, life: 1, size: isBank ? 36 : 28});
-                    
-                    playSound(isBank ? 'bank' : 'swish');
-                    addParticles(hoop.x + hoop.w/2, hoop.y + hoop.h + 10, '#ffb703', 20);
-                    addParticles(hoop.x + hoop.w/2, hoop.y + hoop.h + 10, '#ffffff', 10);
-                    
-                    // NET ANIMATION - ball goes through net
-                    netAnimating = true;
-                    netAnimTimer = 20;
-                    netBallX = hoop.x + hoop.w/2;
-                    netBallY = hoop.y + hoop.h;
-                    netSway = 15;
-                    
-                    ball.isShooting = false;
-                    updateUI();
-                    
-                    setTimeout(() => { if (gameActive) resetRound(); }, 600);
-                }
-                
-                // Missed - ball goes out of bounds
-                if (ball.y > canvas.height + 100 || ball.x > canvas.width + 100 || ball.x < -100) {
-                    if (ball.isShooting) {
-                        totalShots++;
-                        streak = 0;
-                        playSound('miss');
-                        ball.isShooting = false;
-                        updateUI();
-                        setTimeout(() => { if (gameActive) resetRound(); }, 400);
-                    }
-                }
-            }
+  drawTrajectory();
+  drawHoop();
+  if(netAnimating)drawBall(netBX,netBY,ball.r*0.82,netBX*0.08);
+  for(const p of powerUps){
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+    ctx.shadowColor=p.clr;ctx.shadowBlur=18;
+    ctx.font='26px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(p.emoji,0,0);ctx.shadowBlur=0;ctx.restore();
+  }
+  if(!netAnimating)drawBall(ball.x,ball.y,ball.r,ball.angle);
 
-            // Draw trajectory
-            drawBallTrajectory();
-            
-            // Draw hoop (drawn after ball for proper layering with net)
-            drawHoop();
-            
-            // Draw net animation ball (ball going through net)
-            if (netAnimating) {
-                netBallY += 2;
-                netBallX += netSway * 0.1;
-                drawBall(netBallX, netBallY, ball.r * 0.8, netBallX * 0.1);
-            }
-            
-            // Draw ball (hide during net animation)
-            if (!netAnimating) {
-                drawBall(ball.x, ball.y, ball.r, ball.angle);
-            }
-            
-            // Power-ups
-            updateAndDrawPowerUps();
-            
-            // Floating scores
-            drawFloatingScore();
-            
-            // Draw timer bar at top
-            const barW = canvas.width - 40;
-            const barX = 20;
-            const barY = 68;
-            const fill = gameTimeLeft / gameTime;
-            ctx.fillStyle = 'rgba(0,0,0,0.3)';
-            roundRect(ctx, barX, barY, barW, 6, 3);
-            ctx.fill();
-            const timerColor = gameTimeLeft <= 10 ? '#e63946' : (gameTimeLeft <= 20 ? '#f39c12' : '#00f2ff');
-            ctx.fillStyle = timerColor;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = timerColor;
-            roundRect(ctx, barX, barY, barW * fill, 6, 3);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // Particles
-            for (let i=particles.length-1; i>=0; i--) {
-                const p = particles[i];
-                p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.life -= 0.025;
-                ctx.globalAlpha = Math.max(p.life, 0);
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-                if (p.life <= 0) particles.splice(i, 1);
-            }
-            
-            // Confetti
-            for (let i=confettis.length-1; i>=0; i--) {
-                const c = confettis[i];
-                c.x += c.vx; c.y += c.vy; c.vy += 0.04; c.rot += c.rv;
-                ctx.save();
-                ctx.translate(c.x, c.y);
-                ctx.rotate(c.rot * Math.PI / 180);
-                ctx.fillStyle = c.color;
-                ctx.fillRect(-c.size/2, -c.size/4, c.size, c.size/2);
-                ctx.restore();
-                c.life -= 0.006;
-                if (c.life <= 0 || c.y > canvas.height + 20) confettis.splice(i, 1);
-            }
-            
-            // Spawn power-ups randomly
-            if (frameCount % 300 === 0 && powerUps.length < 3) {
-                const types = ['magnet', 'slowmo', 'mega'];
-                const type = types[Math.floor(Math.random() * types.length)];
-                const colors = { magnet: '#00f2ff', slowmo: '#a855f7', mega: '#3b82f6' };
-                powerUps.push({
-                    x: 50 + Math.random() * (canvas.width - 100),
-                    y: -30,
-                    type,
-                    color: colors[type],
-                    rot: 0
-                });
-            }
-            
-            updateEffectsBar();
-        }
+  // Score texts
+  for(let i=scoreTexts.length-1;i>=0;i--){
+    const s=scoreTexts[i];s.y-=1.4;s.a-=0.018;
+    if(s.a<=0){scoreTexts.splice(i,1);continue;}
+    ctx.save();ctx.globalAlpha=s.a;ctx.fillStyle=s.clr;
+    ctx.font='bold '+s.sz+'px sans-serif';ctx.textAlign='center';ctx.fillText(s.t,s.x,s.y);
+    ctx.restore();
+  }
 
-        let animateLoopStarted = true;
-        animate();
-    </script>
+  // Particles
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=0.022;
+    if(p.life<=0){parts.splice(i,1);continue;}
+    ctx.globalAlpha=p.life;ctx.fillStyle=p.clr;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  drawConfetti();
+}
+
+/* ═════════ DRAW ═════════ */
+function drawBackground(){
+  const rd=ROUNDS[Math.min(round,ROUNDS.length-1)];
+  // Sky
+  const sky=ctx.createLinearGradient(0,0,0,c.height);
+  sky.addColorStop(0,rd.s1);sky.addColorStop(0.65,rd.s2);
+  ctx.fillStyle=sky;ctx.fillRect(0,0,c.width,c.height);
+
+  // Stars
+  for(let i=0;i<55;i++){
+    const sx=(i*177.7)%c.width,sy=(i*89.3)%(c.height*0.5);
+    ctx.fillStyle=`rgba(255,220,160,${0.12+Math.sin(fr*0.04+i)*0.1})`;
+    ctx.beginPath();ctx.arc(sx,sy,0.6+(i%4)*0.4,0,Math.PI*2);ctx.fill();
+  }
+
+  // Moon
+  ctx.save();ctx.translate(c.width*0.88,48);
+  ctx.shadowColor=rd.ac;ctx.shadowBlur=28;
+  ctx.fillStyle=rd.ac;ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=rd.s1;ctx.beginPath();ctx.arc(9,-6,16,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.fillStyle=rd.ac;ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('✦',19,-19);
+  ctx.restore();
+
+  // Mountains
+  ctx.fillStyle='rgba(0,0,0,0.45)';
+  ctx.beginPath();ctx.moveTo(0,c.height*0.42);
+  const mpts=[[0,.42],[.07,.34],[.14,.27],[.21,.34],[.29,.21],[.37,.15],[.45,.27],[.53,.18],[.61,.12],[.69,.21],[.77,.29],[.84,.20],[.91,.30],[.97,.36],[1,.4]];
+  for(const[rx,ry]of mpts)ctx.lineTo(c.width*rx,c.height*ry);
+  ctx.lineTo(c.width,c.height);ctx.lineTo(0,c.height);ctx.closePath();ctx.fill();
+
+  // City silhouette
+  drawCity(rd);
+
+  // Court floor
+  const fY=c.height*0.76;
+  const fg=ctx.createLinearGradient(0,fY,0,c.height);
+  fg.addColorStop(0,'#4a2808');fg.addColorStop(1,'#2a1404');
+  ctx.fillStyle=fg;ctx.fillRect(0,fY,c.width,c.height-fY);
+  ctx.strokeStyle='rgba(255,200,100,0.06)';ctx.lineWidth=1;
+  for(let x=0;x<c.width;x+=28){ctx.beginPath();ctx.moveTo(x,fY);ctx.lineTo(x,c.height);ctx.stroke();}
+  // Center circle
+  ctx.strokeStyle='rgba(255,200,100,0.09)';ctx.lineWidth=2;ctx.setLineDash([8,8]);
+  ctx.beginPath();ctx.arc(c.width/2,fY,70,Math.PI,0);ctx.stroke();
+  ctx.setLineDash([]);
+  // Court line
+  ctx.strokeStyle='rgba(255,200,100,0.12)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,fY);ctx.lineTo(c.width,fY);ctx.stroke();
+  // Crowd
+  for(let i=0;i<c.width;i+=32){
+    ctx.fillStyle=`rgba(0,0,0,${0.2+Math.sin(fr*0.02+i*0.1)*0.04})`;
+    ctx.beginPath();ctx.arc(i,fY-4,14,Math.PI,0);ctx.fill();
+  }
+}
+
+function drawCity(rd){
+  const bY=c.height*0.47;
+  ctx.fillStyle='rgba(0,0,0,0.65)';
+  ctx.beginPath();
+  ctx.moveTo(0,bY);
+  const W=c.width;
+  // Left: flat block
+  ctx.lineTo(0,bY-35); ctx.lineTo(W*0.06,bY-35); ctx.lineTo(W*0.06,bY-52);
+  // Small minaret left
+  ctx.lineTo(W*0.08,bY-52); ctx.lineTo(W*0.08,bY-80); ctx.lineTo(W*0.085,bY-88);
+  ctx.arc(W*0.09,bY-88,W*0.005,Math.PI,0,false);
+  ctx.lineTo(W*0.095,bY-80); ctx.lineTo(W*0.095,bY-55); ctx.lineTo(W*0.13,bY-55);
+  // Dome mosque
+  ctx.lineTo(W*0.13,bY-65); ctx.lineTo(W*0.16,bY-65);
+  ctx.arc(W*0.195,bY-65,W*0.036,Math.PI,0,false);
+  ctx.lineTo(W*0.23,bY-65); ctx.lineTo(W*0.23,bY-55); ctx.lineTo(W*0.26,bY-55);
+  // Central big minaret
+  ctx.lineTo(W*0.26,bY-40); ctx.lineTo(W*0.33,bY-40); ctx.lineTo(W*0.33,bY-75);
+  ctx.lineTo(W*0.335,bY-88); ctx.lineTo(W*0.338,bY-98);
+  ctx.arc(W*0.343,bY-98,W*0.005,Math.PI,0,false);
+  ctx.lineTo(W*0.348,bY-88); ctx.lineTo(W*0.35,bY-75); ctx.lineTo(W*0.35,bY-40);
+  // Central large dome
+  ctx.lineTo(W*0.4,bY-40); ctx.lineTo(W*0.4,bY-60); ctx.lineTo(W*0.43,bY-70);
+  ctx.arc(W*0.475,bY-70,W*0.045,Math.PI,0,false);
+  ctx.lineTo(W*0.52,bY-70); ctx.lineTo(W*0.52,bY-60); ctx.lineTo(W*0.54,bY-60);
+  // Right side buildings
+  ctx.lineTo(W*0.54,bY-45); ctx.lineTo(W*0.60,bY-45); ctx.lineTo(W*0.60,bY-68);
+  ctx.lineTo(W*0.605,bY-78); ctx.arc(W*0.61,bY-78,W*0.005,Math.PI,0,false);
+  ctx.lineTo(W*0.615,bY-68); ctx.lineTo(W*0.615,bY-45);
+  // Right dome
+  ctx.lineTo(W*0.68,bY-45); ctx.lineTo(W*0.68,bY-58);
+  ctx.arc(W*0.705,bY-58,W*0.026,Math.PI,0,false);
+  ctx.lineTo(W*0.73,bY-58); ctx.lineTo(W*0.73,bY-45);
+  // Right edge
+  ctx.lineTo(W*0.82,bY-45); ctx.lineTo(W*0.82,bY-55); ctx.lineTo(W,bY-38); ctx.lineTo(W,bY);
+  ctx.closePath();ctx.fill();
+  // Lantern glow on minarets
+  const lanterns=[[0.09,bY-90],[0.343,bY-100],[0.61,bY-80]];
+  for(const[rx,ly]of lanterns){
+    ctx.save();ctx.shadowColor=rd.ac;ctx.shadowBlur=18+Math.sin(fr*0.12+rx*10)*5;
+    ctx.fillStyle=rd.ac;ctx.globalAlpha=0.7;
+    ctx.beginPath();ctx.arc(W*rx,ly,3,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawHoop(){
+  const h=hoop;
+  netSway*=0.9;
+  // Pole
+  ctx.fillStyle='#777';
+  ctx.fillRect(h.x+h.w/2-4,h.y+h.h,8,c.height-h.y-h.h-Math.floor(c.height*0.24));
+  // Backboard with crescent
+  const bbX=h.x+h.w+3,bbW=15,bbY=h.y-52,bbH=68;
+  ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fillRect(bbX,bbY,bbW,bbH);
+  ctx.strokeStyle='rgba(255,255,255,0.45)';ctx.lineWidth=1.5;ctx.strokeRect(bbX,bbY,bbW,bbH);
+  // Crescent on backboard
+  const rd=ROUNDS[Math.min(round,ROUNDS.length-1)];
+  ctx.save();ctx.translate(bbX+bbW/2,h.y-8);
+  ctx.fillStyle=rd.ac;ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.7)';ctx.beginPath();ctx.arc(3,-2,5,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  // Rim
+  const rg=ctx.createLinearGradient(h.x,h.y,h.x,h.y+h.h);
+  rg.addColorStop(0,'#ff5555');rg.addColorStop(1,'#aa1111');
+  ctx.shadowBlur=10;ctx.shadowColor='rgba(255,60,60,0.35)';
+  ctx.fillStyle=rg;
+  ctx.beginPath();ctx.moveTo(h.x+5,h.y);ctx.lineTo(h.x+h.w-5,h.y);
+  ctx.quadraticCurveTo(h.x+h.w,h.y,h.x+h.w,h.y+5);
+  ctx.lineTo(h.x+h.w,h.y+h.h-5);ctx.quadraticCurveTo(h.x+h.w,h.y+h.h,h.x+h.w-5,h.y+h.h);
+  ctx.lineTo(h.x+5,h.y+h.h);ctx.quadraticCurveTo(h.x,h.y+h.h,h.x,h.y+h.h-5);
+  ctx.lineTo(h.x,h.y+5);ctx.quadraticCurveTo(h.x,h.y,h.x+5,h.y);ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;
+  // Rim connector
+  ctx.fillStyle='#777';ctx.fillRect(h.x+h.w,h.y+h.h/2-2,8,4);
+  // Net
+  const nd=48,ns=8,nw=h.w-8;
+  ctx.strokeStyle='rgba(255,255,255,0.42)';ctx.lineWidth=1.1;
+  for(let i=0;i<=ns;i++){
+    const t=i/ns,tx=h.x+4+t*nw;
+    const bx=h.x+4+t*nw+netSway*Math.sin(t*Math.PI)*2.5;
+    const by=h.y+h.h+nd+netSway*0.25;
+    ctx.beginPath();ctx.moveTo(tx,h.y+h.h);
+    for(let s=1;s<=8;s++){const st=s/8;ctx.lineTo(tx+(bx-tx)*st+netSway*Math.sin(st*Math.PI)*1.5,h.y+h.h+st*nd);}
+    ctx.stroke();
+  }
+  for(let j=1;j<=3;j++){
+    const st=j/4,yp=h.y+h.h+st*nd,sw=netSway*Math.sin(st*Math.PI)*2.5;
+    ctx.beginPath();ctx.moveTo(h.x+4,yp);
+    for(let i=0;i<=ns;i++){const t=i/ns;ctx.lineTo(h.x+4+t*nw+sw*Math.sin(t*Math.PI),yp);}ctx.stroke();
+  }
+}
+
+function drawBall(x,y,r,angle){
+  ctx.save();
+  ctx.fillStyle='rgba(0,0,0,0.12)';
+  ctx.beginPath();ctx.ellipse(x+4,y+r+6,r*0.75,r*0.18,0,0,Math.PI*2);ctx.fill();
+  ctx.translate(x,y);ctx.rotate(angle);
+  const fire=ball.fire&&ball.shooting;
+  const mega=megaPow>0;
+  const c1=fire?'#cc4400':mega?'#2255bb':'#cc5500';
+  const c2=fire?'#ff8800':mega?'#5588ff':'#ff9933';
+  if(fire){ctx.shadowBlur=30;ctx.shadowColor='#ff6600';}
+  else if(mega){ctx.shadowBlur=20;ctx.shadowColor='#4488ff';}
+  const grad=ctx.createRadialGradient(-r*0.28,-r*0.28,2,0,0,r);
+  grad.addColorStop(0,c2);grad.addColorStop(0.7,c1);grad.addColorStop(1,'#5a2200');
+  ctx.fillStyle=grad;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(0,0,0,0.28)';ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(0,r);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.stroke();
+  ctx.beginPath();ctx.arc(-r*0.3,0,r*0.72,-Math.PI/3,Math.PI/3);ctx.stroke();
+  ctx.beginPath();ctx.arc(r*0.3,0,r*0.72,Math.PI*2/3,Math.PI*4/3);ctx.stroke();
+  if(fire&&ball.shooting){
+    ctx.fillStyle=`rgba(255,180,40,${0.28+Math.random()*0.38})`;
+    ctx.beginPath();ctx.arc(-r*0.65,r*0.3,3+Math.random()*4,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(r*0.5,-r*0.55,2+Math.random()*3,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawTrajectory(){
+  if(!dragging)return;
+  let tx=ball.x,ty=ball.y;
+  const sp=slowPow>0?0.55:1.0;
+  let tvx=(dragSX-dragEX)*0.115*sp,tvy=(dragSY-dragEY)*0.115*sp;
+  ctx.beginPath();ctx.moveTo(tx,ty);
+  for(let i=0;i<55;i++){tx+=tvx;ty+=tvy;tvy+=GRAV;if(i%2===0)ctx.lineTo(tx,ty);}
+  ctx.strokeStyle='rgba(255,255,255,0.22)';ctx.lineWidth=2;ctx.setLineDash([5,8]);
+  ctx.stroke();ctx.setLineDash([]);
+  // Drag arrow from ball
+  ctx.save();ctx.globalAlpha=0.45;
+  ctx.strokeStyle='#ffd040';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(ball.x,ball.y);ctx.lineTo(dragEX,dragEY);ctx.stroke();
+  ctx.restore();
+}
+
+function addParticles(x,y,clr,n){
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*8;parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,clr,r:2+Math.random()*5});}
+}
+function addScoreText(x,y,t,clr,sz){scoreTexts.push({x,y,t,clr,sz:sz||26,a:1});}
+function addConfetti(n){
+  const cols=['#ffd040','#ff4444','#00ccff','#44dd88','#aa55ff','#ff88cc'];
+  for(let i=0;i<n;i++){confettis.push({x:Math.random()*c.width,y:-20,vx:(Math.random()-0.5)*5,vy:2+Math.random()*4,life:1,clr:cols[Math.floor(Math.random()*cols.length)],sz:4+Math.random()*8,rot:Math.random()*360,rv:(Math.random()-0.5)*14});}
+}
+function drawConfetti(){
+  for(let i=confettis.length-1;i>=0;i--){
+    const p=confettis[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.rot+=p.rv;p.life-=0.006;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+    ctx.globalAlpha=Math.max(p.life,0);ctx.fillStyle=p.clr;
+    ctx.fillRect(-p.sz/2,-p.sz/4,p.sz,p.sz/2);ctx.restore();
+    if(p.life<=0||p.y>c.height+20)confettis.splice(i,1);
+  }
+  ctx.globalAlpha=1;
+}
+
+function updateUI(){
+  document.getElementById('score-val').textContent=score;
+  const sv=document.getElementById('streak-val');
+  sv.textContent=streak;sv.className='val'+(streak>=3?' hot':'');
+  const acc=totalShots>0?Math.round(successShots/totalShots*100):'-';
+  document.getElementById('acc-val').textContent=acc+(typeof acc==='number'?'%':'');
+}
+function updatePwrUI(){
+  const row=document.getElementById('pwr-bar');
+  row.innerHTML='';
+  const rd=ROUNDS[Math.min(round,ROUNDS.length-1)];
+  if(firePow>0||streak>=3){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#ff6600';d.textContent='🔥 ئوت توپ';row.appendChild(d);}
+  if(magnetPow>0){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#00ccff';d.textContent='🧲 ماگنىت ×'+magnetPow;row.appendChild(d);}
+  if(megaPow>0){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#4488ff';d.textContent='🔵 چوڭ توپ ×'+megaPow;row.appendChild(d);}
+  if(slowPow>0){const d=document.createElement('div');d.className='pwr-tag';d.style.borderColor='#aa55ff';d.textContent='⏱ ئاستا ×'+slowPow;row.appendChild(d);}
+}
+
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
