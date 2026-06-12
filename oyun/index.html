@@ -6,6 +6,15 @@
     <title>🎮 بىلىك بالىلار ئويۇنلىرى - Game Hub</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    .featured-large{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#7c3aed,#3b82f6);padding:20px;border-radius:14px;color:#fff;margin-bottom:18px;cursor:pointer;border:1px solid rgba(255,255,255,0.06);box-shadow:0 12px 30px rgba(18,18,50,0.45)}
+    .featured-large .f-icon{font-size:3.2rem}
+    .featured-large .f-body{flex:1;text-align:right}
+    .featured-large h2{margin:0;font-size:1.2rem}
+    .featured-large p{margin:6px 0 0;color:rgba(255,255,255,0.95)}
+    .featured-large .f-btn{background:#fff;color:#3b82f6;padding:8px 12px;border-radius:12px;border:none;font-weight:700}
+    @media (max-width:680px){ .featured-large{flex-direction:column;align-items:flex-start} .featured-large .f-btn{align-self:stretch} }
+    </style>
 </head>
 <body>
     <!-- Animated Background -->
@@ -40,12 +49,33 @@
         </div>
 
         <main>
+            <!-- Featured keyboard training shown above the games list -->
+            <div class="featured-large" onclick="window.location.href='../UyghurKeyboardTraining/Ug-TrainingApp.html'" role="button" aria-label="ئۇيغۇرچە كۇنۇپكا مەشىق باشلاش">
+                <span class="f-icon">⌨️</span>
+                <div class="f-body">
+                    <h2>كۇنۇپكا تاختىسى — ئۇيغۇرچە خەت بېسىش مەشىق</h2>
+                    <p>ئۇيغۇرچە خەت بېسىش مەشىقىگە مۇشۇ يەردىن بېرىڭ. باشلاش ئۈچۈن بېسىڭ.</p>
+                </div>
+                <button class="f-btn">باشلاش</button>
+            </div>
+
             <div class="section-title">
                 <span class="bar"></span>
                 <span id="sectionLabel">🌟 بارلىق ئويۇنلار</span>
                 <span style="color:#64748b;font-size:0.8rem;font-weight:400;" id="gameCount"></span>
             </div>
             <div class="game-grid" id="gameGrid">
+                <!-- Keyboard training (first game) -->
+                <div class="game-card" onclick="window.location.href='../UyghurKeyboardTraining/Ug-TrainingApp.html'" style="cursor:pointer;">
+                    <div class="game-card-bg" style="background: linear-gradient(135deg,#7c3aed,#a855f7);"></div>
+                    <div class="game-card-inner">
+                        <span class="game-icon">⌨️</span>
+                        <span class="game-name">كۇنۇپكا تاختىسى</span>
+                        <div class="game-desc">ئۇيغۇرچە خەت بېسىش مەشىق قورالىغا ئۆتۈڭ</div>
+                        <div class="game-badge badge-green">مۇھىم</div>
+                    </div>
+                </div>
+
                 <!-- Games injected via JS -->
             </div>
         </main>
