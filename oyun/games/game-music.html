@@ -1,87 +1,559 @@
 <!DOCTYPE html>
 <html lang="ug" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎵 مۇزىكا دۇنياسى: ناۋا</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        body { margin: 0; overflow: hidden; background: #1a0a2e; font-family: 'Tajawal', sans-serif; color: white; }
-        canvas { display: block; }
-        #ui { position: absolute; top: 20px; right: 20px; text-align: right; pointer-events: none; text-shadow: 0 0 10px rgba(168, 85, 247, 0.8); }
-        #score { font-size: 2.8rem; font-weight: 800; color: #a855f7; }
-        #combo-text { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 900; color: #ffffff; display: none; pointer-events: none; text-shadow: 0 0 20px #ec4899; z-index: 50; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 10, 46, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(15px); }
-        .btn { padding: 18px 60px; font-size: 1.8rem; background: linear-gradient(135deg, #a855f7, #ec4899); color: white; border: none; border-radius: 50px; cursor: pointer; }
-        h1 { font-size: 4rem; margin-bottom: 10px; color: #ec4899; text-shadow: 0 0 20px #a855f7; }
-        p { font-size: 1.4rem; max-width: 650px; text-align: center; line-height: 1.6; }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 12px 24px; background: rgba(255,255,255,0.1); border: 2px solid #a855f7; color: white; border-radius: 15px; cursor: pointer; text-decoration: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🎵 مۇقام قەھرىمانى</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#05020f;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:100vh;overflow:hidden;touch-action:none;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+#canvas{display:block;border-radius:10px;max-width:100vw;}
+#hud{
+  display:flex;gap:12px;align-items:center;justify-content:space-between;
+  padding:6px 14px;background:rgba(0,0,0,.68);border-radius:9px;
+  margin-bottom:4px;width:100%;max-width:800px;
+  border:1px solid rgba(168,85,247,.35);color:#e0c0ff;font-size:14px;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+.hv{color:#ffd700;font-weight:bold;font-size:17px;}
+#pw{width:100%;max-width:800px;margin-bottom:4px;position:relative;height:14px;}
+#pbg{background:rgba(0,0,0,.5);border:1px solid rgba(168,85,247,.3);border-radius:8px;height:100%;overflow:hidden;}
+#pbar{background:linear-gradient(90deg,#a855f7,#ec4899,#f59e0b);height:100%;width:0%;border-radius:8px;transition:width .18s;}
+#plbl{position:absolute;right:50%;top:50%;transform:translate(50%,-50%);font-size:10px;color:#d0b0f0;pointer-events:none;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;}
+.li{font-size:19px;transition:opacity .3s;}
+.li.lost{opacity:.18;}
+.ov{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.88);z-index:100;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+.ob{
+  background:linear-gradient(160deg,#18082e,#0a0418);
+  border:2px solid rgba(168,85,247,.55);border-radius:16px;
+  padding:30px 38px;text-align:center;max-width:470px;width:90%;
+  box-shadow:0 0 40px rgba(168,85,247,.2);
+}
+.ot{font-size:30px;color:#ec4899;margin-bottom:8px;text-shadow:0 0 18px rgba(236,72,153,.55);}
+.os{font-size:15px;color:#c0a0d8;margin-bottom:16px;}
+.obtn{
+  padding:11px 32px;background:linear-gradient(135deg,#a855f7,#ec4899);
+  border:none;border-radius:9px;color:#fff;font-weight:bold;font-size:17px;
+  cursor:pointer;margin-top:10px;box-shadow:0 0 18px rgba(168,85,247,.4);
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+  transition:transform .15s;
+}
+.obtn:hover{transform:scale(1.05);}
+#fact-ov .ob{background:linear-gradient(160deg,#0e0820,#080412);border-color:rgba(168,85,247,.5);}
+.fw{font-size:18px;color:#c084fc;margin-bottom:7px;}
+.ft{font-size:17px;color:#e879f9;margin-bottom:11px;font-weight:bold;}
+.fb{font-size:14px;color:#d8b4fe;line-height:1.85;margin-bottom:14px;direction:rtl;text-align:right;}
+.hidden{display:none!important;}
+</style>
 </head>
 <body>
-    <div id="ui"><div id="score">ناۋا: 0</div></div>
-    <div id="combo-text">ناھايىتى ياخشى!</div>
-    <div id="overlay">
-        <h1>🎵 مۇزىكا دۇنياسى</h1>
-        <p>نوتىلارنى تۇتۇپ مۇزىكا ئاڭلاڭ! <br> "رەڭدار نوتىلار" 100 نومۇر بېرىدۇ. <br> ھېچقانداق يىقىلىش يوق، پەقەت مۇزىكا!</p>
-        <button class="btn" onclick="startGame()">باشلاش</button>
+
+<div id="hud">
+  <div style="display:flex;align-items:center;gap:3px;">
+    <span class="li" id="l0">❤️</span><span class="li" id="l1">❤️</span><span class="li" id="l2">❤️</span>
+  </div>
+  <div>🏆 <span class="hv" id="sc">0</span></div>
+  <div>🎵 <span class="hv" id="rv">1/7</span></div>
+  <div>🔥 <span class="hv" id="cv">0</span>×</div>
+</div>
+
+<div id="pw">
+  <div id="pbg"><div id="pbar"></div></div>
+  <div id="plbl">0 / 0</div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<!-- Menu -->
+<div class="ov" id="menu-ov">
+  <div class="ob">
+    <div class="ot">🎵 مۇقام قەھرىمانى</div>
+    <div class="os">ئۇيغۇر مۇقامى — دۇنيا مىراسى!</div>
+    <div style="font-size:12px;color:#80508a;margin-bottom:14px;direction:rtl;text-align:right;line-height:1.8;">
+      ئاسماندىن چۈشىۋاتقان نوتىلارنى چىكىپ تۇتۇڭ!<br>
+      🟣 ئادەتتىكى نوتا — 10 نومۇر<br>
+      💛 ئالتۇن نوتا — 30 نومۇر<br>
+      🎵 مۇقام نوتا — 60 نومۇر<br>
+      💣 بومبادىن ساقلىنىڭ — جان يوقىلىدۇ!
     </div>
-    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <button class="obtn" onclick="startGame()">🎮 ئويۇنغا باشلا</button>
+    <div style="font-size:12px;color:#50308a;margin-top:11px;">ئەڭ يۇقىرى نەتىجە: <span id="hiv">0</span></div>
+  </div>
+</div>
 
-    <script>
-        let scene, camera, renderer, notes = [];
-        let score = 0, gameActive = false, audioCtx;
+<!-- Fact popup -->
+<div class="ov hidden" id="fact-ov">
+  <div class="ob">
+    <div class="fw" id="fwb"></div>
+    <div class="ft" id="ftit"></div>
+    <div class="fb" id="fbdy"></div>
+    <button class="obtn" onclick="nextRound()">▶ كېيىنكى دولقۇن</button>
+  </div>
+</div>
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        function playNote(freq, isSpecial) { if (!audioCtx) return; const t = audioCtx.currentTime; const play = (f, offset) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(f, t + offset); g.gain.setValueAtTime(0.2, t + offset); g.gain.exponentialRampToValueAtTime(0.01, t + offset + 0.5); o.connect(g); g.connect(audioCtx.destination); o.start(t + offset); o.stop(t + offset + 0.5); }; play(freq, 0); if (isSpecial) { play(freq * 1.25, 0); play(freq * 1.5, 0); } }
+<!-- Game over -->
+<div class="ov hidden" id="go-ov">
+  <div class="ob">
+    <div class="ot" id="got"></div>
+    <div class="os" id="gos"></div>
+    <div style="font-size:14px;color:#a080c0;margin:10px 0;line-height:2.1;">
+      نەتىجىڭىز: <span class="hv" id="gosc"></span><br>
+      دولقۇن: <span class="hv" id="gorv"></span>/7 &nbsp; كومبو: <span class="hv" id="gocb"></span>
+    </div>
+    <button class="obtn" onclick="startGame()">🔄 قايتا ئويناش</button>
+    <a href="../index.html" style="display:block;margin-top:11px;color:#70508a;font-size:13px;">⬅ ئاساسى بەتكە</a>
+  </div>
+</div>
 
-        function init() {
-            scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            new THREE.TextureLoader().load('pics/music_bg.png', (t) => scene.background = t);
-            scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 12;
-            window.addEventListener('mousedown', onCatch);
-            window.addEventListener('touchstart', e => { onCatch(e.touches[0]); e.preventDefault(); }, { passive: false });
-        }
+<script>
+const C=document.getElementById('canvas'),ctx=C.getContext('2d');
+const F="'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif";
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 800); }
+function resize(){
+  C.width=Math.min(window.innerWidth,800);
+  C.height=Math.min(window.innerHeight*0.70,490);
+}
+resize();
+window.addEventListener('resize',resize);
 
-        function spawnNote() {
-            const freqs = [261.63, 293.66, 329.63, 392.00, 440.00]; const isSpecial = Math.random() < 0.2;
-            const note = new THREE.Mesh(new THREE.TorusGeometry(1, 0.3, 16, 32), new THREE.MeshPhongMaterial({ color: isSpecial ? 0x00ff00 : 0xec4899 }));
-            note.position.set((Math.random() - 0.5) * 15, 10, 0);
-            note.userData = { freq: freqs[Math.floor(Math.random()*freqs.length)], isSpecial: isSpecial, speed: 0.04 + Math.random()*0.03 };
-            scene.add(note); notes.push(note);
-        }
+// ---- Data ----
+const ROUNDS=[
+  {name:'ئۇيغۇر',      target:12,maxN:2,spd:1.3,bRate:0.00},
+  {name:'ناۋا',         target:15,maxN:3,spd:1.65,bRate:0.05},
+  {name:'چاببايات',    target:18,maxN:3,spd:2.0, bRate:0.07},
+  {name:'مۇشاۋۋەرەك', target:20,maxN:4,spd:2.35,bRate:0.08},
+  {name:'ئاشىرا',      target:22,maxN:4,spd:2.75,bRate:0.09},
+  {name:'ئىرەك',       target:25,maxN:5,spd:3.1, bRate:0.11},
+  {name:'نۇسخاۋات',   target:28,maxN:5,spd:3.55,bRate:0.13}
+];
 
-        function onCatch(e) {
-            if (!gameActive) return;
-            initAudio();
-            const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
-            const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(notes);
-            if (intersects.length > 0) {
-                const n = intersects[0].object; playNote(n.userData.freq, n.userData.isSpecial);
-                score += n.userData.isSpecial ? 100 : 20; document.getElementById('score').innerText = `ناۋا: ${score}`;
-                showCombo(n.userData.isSpecial ? "ئاجايىپ!" : "ناھايىتى ياخشى!");
-                scene.remove(n); notes = notes.filter(item => item !== n);
-            }
-        }
+const FACTS=[
+  {t:'ئون ئىككى مۇقام — دۇنيا مىراسى',
+   b:'ئۇيغۇر ئون ئىككى مۇقامى 2005-يىلى يۇنىسكو ئىنسانىيەتنىڭ مادىيسىز مىراسى تىزىملىكىگە كىرگۈزۈلدى. ئون ئىككى مۇقام ناخشا، ئۇسۇل ۋە چالغۇ مۇزىكىسىدىن تەركىپ تاپقان يىگانە سەنئەت ئەسىرى.'},
+  {t:'دۇتار — ئىككى تارلىق ئۇيغۇر سازى',
+   b:'دۇتار ئۇيغۇر مىللىي سازلىرى ئىچىدە ئەڭ كەڭ تارقالغىنى. «دۇ» ئىككى، «تار» تار دەگەن مەنىنى بىلدۈرىدۇ. دۇتارنى چالغاندا ئوڭ قولدا ئىككى تارنى پۈكۈپ، سول قولدا نوتىلارنى باسىدۇ.'},
+  {t:'چاببايات مۇقامى — مۇھەببەت ناخشىسى',
+   b:'چاببايات ئون ئىككى مۇقامنىڭ ئۈچىنچى مۇقامى بولۇپ، يۇمشاق ۋە ئىچكىرى ئاۋازى بىلەن تونۇلغان. چاببايات مۇقامىدا مۇھەببەت ۋە تەبىئەتنى مەدھىيىلىگەن شېئىرلار كۆپ ئۇچرايدۇ.'},
+  {t:'راۋاپ — قۇمۇل چالغۇسى',
+   b:'راۋاپ ئۇيغۇرلارنىڭ قەدىمكى تارلىق سازى بولۇپ، قۇمۇل راۋىپى ۋە كاشقەر راۋىپى دەپ ئىككى تۈرگە ئايرىلىدۇ. راۋاپنى چالغان ئۇستىلار مۇساپىرلارنى ئەگەشتۈرۈپ مۇقام ئايتقان.'},
+  {t:'ئاشىرا مۇقامى — ئاياللار مۇقامى',
+   b:'ئاشىرا مۇقامى ئون ئىككى مۇقامنىڭ بىرىنچىسى بولۇپ، گۈزەل ۋە ئىنچىكە ئاۋاز بىلەن پەرقلىنىدۇ. تارىختا ئاشىرانى يۇقىرى ئاۋازلىق ناخشىچىلار ئايتقان.'},
+  {t:'داپ — مۇقەددەس دۇپ-دۇپ سازى',
+   b:'داپ ئۇيغۇر مۇزىكىسىدىكى ئەڭ مۇھىم دۇپ-دۇپ سازى. داپ چېلىش قىزلار ۋە ئايالار ئۈچۈن مۇھىم سەنئەت بولۇپ، تويلار ۋە مەرىكىلەردە مۇزىكا ئوتتۇرىغا چىقىرىدۇ.'},
+  {t:'ئابدۇرېكىم ئەيسا — مۇقام ئۇستازى',
+   b:'ئابدۇرېكىم ئەيسا ئۇيغۇر مۇقامىنى دۇنياغا تونۇشتۇرغان ئۇلۇغ سەنئەتكار. ئۇ 2500 دىن ئارتۇق ناخشا ياتلاپ، ئون ئىككى مۇقامنى دۇنياغا تاراتىشتا پۈتۈن ھاياتىنى باغىشلىغان.'}
+];
 
-        function startGame() {
-            document.getElementById('overlay').style.display = 'none';
-            score = 0; gameActive = true; document.getElementById('score').innerText = `ناۋا: 0`;
-            notes.forEach(n => scene.remove(n)); notes = [];
-        }
+// Note type: 0=normal(purple), 1=gold, 2=muqam(pink/rainbow), 3=bomb
+const NC=['#a855f7','#ffd700','#ec4899','#ff3030'];
+const NG=['rgba(168,85,247,.75)','rgba(255,215,0,.75)','rgba(236,72,153,.75)','rgba(255,48,48,.75)'];
+const NP=[10,30,60,0];
+const SCALE=[261.63,293.66,329.63,369.99,392.00,440.00,493.88,523.25];
 
-        function animate() {
-            requestAnimationFrame(animate);
-            if (gameActive) { if (Math.random() < 0.02) spawnNote(); for (let i = notes.length - 1; i >= 0; i--) { const n = notes[i]; n.position.y -= n.userData.speed; n.rotation.z += 0.03; if (n.position.y < -8) { scene.remove(n); notes.splice(i, 1); } } }
-            renderer.render(scene, camera);
-        }
-        init(); animate();
-    </script>
+// ---- State ----
+let gs='menu',score=0,hs=+localStorage.getItem('mqhs')||0;
+let round=0,lives=3,combo=0,bc=0,caught=0,fc=0;
+let notes=[],parts=[],floats=[],lastSpawn=0;
+let shake=0,glowC=null,glowT=0,running=false;
+
+document.getElementById('hiv').textContent=hs;
+
+// ---- Audio ----
+let aC;
+function iAudio(){if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();}
+function pNote(freq,type){
+  if(!aC)return;const t=aC.currentTime;
+  if(type===2){
+    [freq,freq*1.26,freq*1.5].forEach((f,i)=>{
+      const o=aC.createOscillator(),g=aC.createGain();
+      o.type='triangle';o.frequency.value=f;
+      g.gain.setValueAtTime(0.16,t+i*0.06);g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+      o.connect(g);g.connect(aC.destination);o.start(t+i*0.06);o.stop(t+0.9);
+    });
+  } else {
+    const o=aC.createOscillator(),g=aC.createGain();
+    o.type=type===1?'sine':'triangle';o.frequency.value=freq;
+    g.gain.setValueAtTime(0.2,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+    o.connect(g);g.connect(aC.destination);o.start();o.stop(t+0.55);
+  }
+}
+function pBomb(){
+  if(!aC)return;const t=aC.currentTime;
+  const o=aC.createOscillator(),g=aC.createGain();
+  o.type='sawtooth';o.frequency.setValueAtTime(350,t);o.frequency.exponentialRampToValueAtTime(40,t+0.5);
+  g.gain.setValueAtTime(0.35,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.5);
+  o.connect(g);g.connect(aC.destination);o.start();o.stop(t+0.5);
+}
+function pCombo(){
+  if(!aC)return;
+  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>pNote(f,1),i*80));
+}
+function pWin(){
+  if(!aC)return;
+  [392,523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>pNote(f,1),i*90));
+}
+
+// ---- Particles ----
+function addP(x,y,col,n=14){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,s=1.5+Math.random()*5.5;
+    const colors=[col,'#ffd700','#fff','#f0a0ff'];
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1.5,life:20+Math.random()*18,maxL:38,col:colors[Math.floor(Math.random()*4)],sz:2+Math.random()*3,isNote:false});
+  }
+  const syms=['♪','♫','♩','♬'];
+  for(let i=0;i<(col==='#ff3030'?2:4);i++){
+    parts.push({x,y,vx:(Math.random()-0.5)*7,vy:-2.5-Math.random()*4,life:30,maxL:30,col,sz:13,isNote:true,sym:syms[Math.floor(Math.random()*4)]});
+  }
+}
+function addFl(x,y,txt,col='#fff',sz=22){
+  floats.push({x,y,txt,col,life:36,maxL:36,vy:-2.4,sz});
+}
+
+// ---- Background ----
+function drawBG(){
+  const sky=ctx.createLinearGradient(0,0,0,C.height);
+  sky.addColorStop(0,'#050110');sky.addColorStop(.4,'#0e0425');
+  sky.addColorStop(.7,'#1a082a');sky.addColorStop(1,'#220615');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,C.width,C.height);
+
+  if(glowT>0){
+    const rg=ROUNDS[Math.min(round,6)];
+    const gl=ctx.createRadialGradient(C.width/2,C.height/2,0,C.width/2,C.height/2,C.width*0.7);
+    gl.addColorStop(0,glowC||'transparent');gl.addColorStop(1,'transparent');
+    ctx.fillStyle=gl;ctx.globalAlpha=glowT/20*0.32;
+    ctx.fillRect(0,0,C.width,C.height);ctx.globalAlpha=1;
+    glowT--;
+  }
+
+  // Stars
+  for(let i=0;i<85;i++){
+    const sx=(i*137.5+50)%C.width,sy=(i*97.3+15)%(C.height*.52);
+    const tw=0.3+Math.sin(fc*0.02+i)*0.45;
+    ctx.fillStyle=`rgba(255,255,255,${tw*.75})`;
+    ctx.fillRect(sx,sy,1+(i%4===0?1.5:.4),1+(i%4===0?1.5:.4));
+  }
+
+  // Crescent moon
+  ctx.save();ctx.translate(C.width-62,48);
+  ctx.fillStyle='rgba(255,240,210,0.95)';ctx.shadowBlur=24;ctx.shadowColor='rgba(210,150,255,.5)';
+  ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#050110';ctx.shadowBlur=0;
+  ctx.beginPath();ctx.arc(8,-4,17,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  ctx.font='14px sans-serif';ctx.fillStyle='rgba(255,225,150,.82)';
+  ctx.fillText('✦',C.width-37,33);
+
+  // Mountains
+  ctx.fillStyle='rgba(18,6,28,.7)';
+  ctx.beginPath();ctx.moveTo(0,C.height-55);
+  for(let x=0;x<=C.width;x+=5)
+    ctx.lineTo(x,C.height-55-Math.sin(x*0.004)*52-Math.sin(x*0.009)*18);
+  ctx.lineTo(C.width,C.height);ctx.lineTo(0,C.height);ctx.fill();
+
+  // Uyghur city silhouette
+  const gy=C.height-28;
+  ctx.fillStyle='rgba(6,2,14,.95)';
+  ctx.beginPath();ctx.moveTo(0,gy);
+  // Left minaret
+  ctx.lineTo(C.width*.04,gy);ctx.lineTo(C.width*.04,gy-44);
+  ctx.lineTo(C.width*.06,gy-54);ctx.lineTo(C.width*.08,gy-44);ctx.lineTo(C.width*.08,gy-28);
+  // Low building
+  ctx.lineTo(C.width*.13,gy-28);ctx.lineTo(C.width*.13,gy-36);ctx.lineTo(C.width*.21,gy-36);ctx.lineTo(C.width*.21,gy);
+  // Dome
+  ctx.lineTo(C.width*.23,gy);ctx.lineTo(C.width*.23,gy-40);
+  ctx.bezierCurveTo(C.width*.23,gy-62,C.width*.33,gy-62,C.width*.33,gy-40);
+  ctx.lineTo(C.width*.33,gy);
+  // Mid buildings
+  ctx.lineTo(C.width*.36,gy);ctx.lineTo(C.width*.36,gy-26);ctx.lineTo(C.width*.49,gy-26);ctx.lineTo(C.width*.49,gy);
+  // Dome 2
+  ctx.lineTo(C.width*.52,gy);ctx.lineTo(C.width*.52,gy-34);
+  ctx.bezierCurveTo(C.width*.52,gy-55,C.width*.63,gy-55,C.width*.63,gy-34);
+  ctx.lineTo(C.width*.63,gy);
+  // Right minaret
+  ctx.lineTo(C.width*.67,gy);ctx.lineTo(C.width*.67,gy-52);
+  ctx.lineTo(C.width*.69,gy-62);ctx.lineTo(C.width*.71,gy-52);ctx.lineTo(C.width*.71,gy-30);
+  // Right buildings
+  ctx.lineTo(C.width*.78,gy-30);ctx.lineTo(C.width*.78,gy-38);ctx.lineTo(C.width*.88,gy-38);ctx.lineTo(C.width*.88,gy);
+  ctx.lineTo(C.width,gy);ctx.lineTo(C.width,C.height);ctx.lineTo(0,C.height);
+  ctx.fill();
+
+  // Glowing windows
+  ctx.fillStyle='rgba(255,200,80,.32)';
+  [[C.width*.15,gy-24],[C.width*.17,gy-16],[C.width*.39,gy-18],
+   [C.width*.44,gy-18],[C.width*.74,gy-20],[C.width*.83,gy-28]].forEach(([wx,wy])=>{
+    ctx.beginPath();ctx.arc(wx,wy,3,0,Math.PI*2);ctx.fill();
+  });
+
+  // Torch lights on minarets
+  drawTorch(C.width*.06,gy-56);
+  drawTorch(C.width*.69,gy-64);
+}
+
+function drawTorch(x,y){
+  const ph=fc*.14;
+  ctx.shadowBlur=12;ctx.shadowColor='rgba(200,130,255,.8)';
+  const fg=ctx.createRadialGradient(x,y,0,x,y,9);
+  fg.addColorStop(0,'rgba(255,255,200,.95)');
+  fg.addColorStop(.45,'rgba(200,130,255,.8)');
+  fg.addColorStop(1,'transparent');
+  ctx.fillStyle=fg;
+  ctx.beginPath();
+  ctx.moveTo(x-4,y);
+  ctx.quadraticCurveTo(x+Math.sin(ph)*3-5,y-7,x,y-14);
+  ctx.quadraticCurveTo(x+5+Math.sin(ph)*3,y-7,x+4,y);
+  ctx.fill();ctx.shadowBlur=0;
+}
+
+// Uyghur musician at bottom right
+function drawMusician(){
+  const bx=C.width-52,by=C.height-28;
+  // Robe
+  ctx.fillStyle='#6030a0';
+  ctx.beginPath();ctx.ellipse(bx,by-12,10,16,0,0,Math.PI*2);ctx.fill();
+  // Head
+  ctx.fillStyle='#c8a070';
+  ctx.beginPath();ctx.arc(bx,by-32,9,0,Math.PI*2);ctx.fill();
+  // Doppa hat
+  ctx.fillStyle='#18082a';
+  ctx.beginPath();ctx.ellipse(bx,by-40,9,4,0,0,Math.PI*2);ctx.fill();
+  ctx.fillRect(bx-7,by-44,14,7);
+  ctx.fillStyle='rgba(255,215,0,.55)';ctx.font='5px sans-serif';
+  ctx.textAlign='center';ctx.fillText('✦✦',bx,by-39);
+  // Dutar
+  ctx.strokeStyle='#8a6040';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(bx-3,by-22);ctx.lineTo(bx-22,by+2);ctx.stroke();
+  ctx.fillStyle='#6a4020';
+  ctx.beginPath();ctx.ellipse(bx-24,by+4,8,5,0,0,Math.PI*2);ctx.fill();
+  // Strings
+  ctx.strokeStyle='rgba(255,215,0,.35)';ctx.lineWidth=0.5;
+  ctx.beginPath();ctx.moveTo(bx-3,by-22);ctx.lineTo(bx-20,by+0);ctx.stroke();
+}
+
+// ---- Spawn note ----
+function spawnNote(){
+  const rd=ROUNDS[round];
+  let type;
+  const r=Math.random();
+  if(r<rd.bRate) type=3;
+  else{const rr=Math.random();type=rr<.62?0:(rr<.85?1:2);}
+  const radius=type===3?18:(type===2?22:17);
+  notes.push({
+    x:65+Math.random()*(C.width-130),y:0-radius*2.5,
+    vy:rd.spd+Math.random()*.55,
+    r:radius,type,rot:0,pulse:Math.random()*Math.PI*2,
+    freq:SCALE[Math.floor(Math.random()*SCALE.length)],caught:false
+  });
+}
+
+// ---- Hit detection ----
+function tryHit(cx,cy){
+  if(gs!=='playing')return;
+  iAudio();
+  let best=null,bestD=Infinity;
+  notes.forEach(n=>{
+    if(n.caught)return;
+    const d=Math.hypot(n.x-cx,n.y-cy);
+    if(d<n.r+14&&d<bestD){bestD=d;best=n;}
+  });
+  if(!best)return;
+  best.caught=true;
+  if(best.type===3){
+    pBomb();shake=18;combo=0;
+    document.getElementById('cv').textContent='0';
+    addFl(best.x,best.y-22,'💣 بومبا!','#ff4444',26);
+    addP(best.x,best.y,'#ff3030',22);
+    glowC='rgba(255,50,50,.45)';glowT=16;
+    lives--;
+    for(let i=0;i<3;i++) document.getElementById(`l${i}`).classList.toggle('lost',i>=lives);
+    if(lives<=0){gs='gameover';setTimeout(doGameOver,700);}
+  } else {
+    pNote(best.freq,best.type);
+    combo++;if(combo>bc)bc=combo;
+    const multiplier=1+Math.floor(combo/5)*.25;
+    const pts=Math.floor(NP[best.type]*multiplier);
+    score+=pts;caught++;
+    document.getElementById('sc').textContent=score;
+    document.getElementById('cv').textContent=combo;
+    const cols=['#c084fc','#ffd700','#f0abfc'];
+    const bonusTxt=combo>=5?` 🔥${combo}×`:'';
+    addFl(best.x,best.y-20,`+${pts}${bonusTxt}`,cols[best.type],combo>=5?30:20);
+    addP(best.x,best.y,NC[best.type],best.type===2?22:15);
+    glowC=NG[best.type];glowT=12;
+    if(combo>=5)pCombo();
+    if(score>hs){hs=score;localStorage.setItem('mqhs',hs);document.getElementById('hiv').textContent=hs;}
+    // Progress
+    const tgt=ROUNDS[round].target;
+    document.getElementById('pbar').style.width=`${Math.min(caught/tgt*100,100)}%`;
+    document.getElementById('plbl').textContent=`${caught} / ${tgt}`;
+    if(caught>=tgt){gs='fact';setTimeout(showFact,700);}
+  }
+}
+
+window.addEventListener('mousedown',e=>tryHit(e.clientX,e.clientY));
+window.addEventListener('touchstart',e=>{
+  if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='A'){
+    e.preventDefault();tryHit(e.touches[0].clientX,e.touches[0].clientY);
+  }
+},{passive:false});
+
+// ---- Round flow ----
+function showFact(){
+  pWin();
+  const f=FACTS[round];
+  document.getElementById('fwb').textContent=`🎵 دولقۇن ${round+1}/7 — ${ROUNDS[round].name} مۇقامى تامام!`;
+  document.getElementById('ftit').textContent=`📜 ${f.t}`;
+  document.getElementById('fbdy').textContent=f.b;
+  document.getElementById('fact-ov').classList.remove('hidden');
+}
+
+function nextRound(){
+  document.getElementById('fact-ov').classList.add('hidden');
+  round++;
+  if(round>=7){doVictory();return;}
+  document.getElementById('rv').textContent=`${round+1}/7`;
+  caught=0;combo=0;notes=[];
+  document.getElementById('cv').textContent='0';
+  document.getElementById('pbar').style.width='0%';
+  document.getElementById('plbl').textContent=`0 / ${ROUNDS[round].target}`;
+  gs='playing';
+}
+
+function doVictory(){
+  gs='gameover';
+  document.getElementById('got').textContent='🏆 غەلبە!';
+  document.getElementById('gos').textContent='بارلىق مۇقامنى تاماملىدىڭ! ئالقىش!';
+  document.getElementById('gosc').textContent=score;
+  document.getElementById('gorv').textContent=7;
+  document.getElementById('gocb').textContent=bc;
+  document.getElementById('go-ov').classList.remove('hidden');
+}
+
+function doGameOver(){
+  document.getElementById('got').textContent='💔 ئۆمۈر تۈگىدى';
+  document.getElementById('gos').textContent='توختاما، قايتا سىناڭ!';
+  document.getElementById('gosc').textContent=score;
+  document.getElementById('gorv').textContent=round+1;
+  document.getElementById('gocb').textContent=bc;
+  document.getElementById('go-ov').classList.remove('hidden');
+}
+
+// ---- Start ----
+function startGame(){
+  iAudio();
+  ['menu-ov','go-ov','fact-ov'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  score=0;round=0;lives=3;combo=0;bc=0;caught=0;fc=0;shake=0;glowT=0;lastSpawn=0;
+  notes=[];parts=[];floats=[];
+  for(let i=0;i<3;i++) document.getElementById(`l${i}`).classList.remove('lost');
+  document.getElementById('sc').textContent='0';
+  document.getElementById('rv').textContent='1/7';
+  document.getElementById('cv').textContent='0';
+  document.getElementById('pbar').style.width='0%';
+  document.getElementById('plbl').textContent=`0 / ${ROUNDS[0].target}`;
+  gs='playing';
+  if(!running){running=true;requestAnimationFrame(loop);}
+}
+
+// ---- Main loop ----
+function loop(){
+  requestAnimationFrame(loop);fc++;
+  ctx.save();
+  if(shake>0.5){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=0.84;}else shake=0;
+  ctx.clearRect(-20,-20,C.width+40,C.height+40);
+  drawBG();
+
+  if(gs==='playing'){
+    const rd=ROUNDS[round];
+    const activeN=notes.filter(n=>!n.caught).length;
+    if(activeN<rd.maxN&&fc-lastSpawn>Math.max(30-round*2,14)){spawnNote();lastSpawn=fc;}
+
+    // Update & draw notes
+    for(let i=notes.length-1;i>=0;i--){
+      const n=notes[i];
+      if(n.caught){notes.splice(i,1);continue;}
+      n.y+=n.vy;n.rot+=0.04;n.pulse+=0.09;
+      if(n.y>C.height+42){notes.splice(i,1);continue;}
+
+      const pf=1+Math.sin(n.pulse)*.09;
+      ctx.save();ctx.translate(n.x,n.y);ctx.rotate(n.rot);ctx.scale(pf,pf);
+
+      if(n.type===3){
+        // Bomb
+        ctx.shadowBlur=20;ctx.shadowColor='rgba(255,50,50,.9)';
+        ctx.fillStyle='#bb1818';
+        ctx.beginPath();ctx.arc(0,0,n.r,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle='#ff4444';ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(0,0,n.r,0,Math.PI*2);ctx.stroke();
+        ctx.shadowBlur=0;
+        ctx.font=`${n.r*1.2}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillStyle='#fff';ctx.fillText('💣',0,2);
+      } else {
+        // Outer glow halo
+        const gc=ctx.createRadialGradient(0,0,n.r*.3,0,0,n.r*1.9);
+        gc.addColorStop(0,NC[n.type]+'99');gc.addColorStop(1,'transparent');
+        ctx.fillStyle=gc;ctx.beginPath();ctx.arc(0,0,n.r*1.9,0,Math.PI*2);ctx.fill();
+        // Body
+        ctx.shadowBlur=22;ctx.shadowColor=NG[n.type];
+        ctx.fillStyle=NC[n.type];
+        ctx.beginPath();ctx.arc(0,0,n.r,0,Math.PI*2);ctx.fill();
+        // Inner shine
+        ctx.fillStyle='rgba(255,255,255,.22)';
+        ctx.beginPath();ctx.arc(-n.r*.22,-n.r*.22,n.r*.42,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+        // Symbol
+        ctx.fillStyle='rgba(255,255,255,.92)';
+        ctx.font=`bold ${n.r*1.1}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(n.type===2?'🎵':(n.type===1?'♫':'♪'),0,2);
+      }
+      ctx.restore();
+    }
+  }
+
+  // Particles
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life--;
+    if(p.life<=0){parts.splice(i,1);continue;}
+    ctx.globalAlpha=p.life/p.maxL;
+    if(p.isNote){
+      ctx.fillStyle=p.col;ctx.font=`${p.sz}px sans-serif`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(p.sym,p.x,p.y);
+    } else {
+      ctx.fillStyle=p.col;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.sz*(p.life/p.maxL),0,Math.PI*2);ctx.fill();
+    }
+  }
+  ctx.globalAlpha=1;
+
+  // Floating texts
+  for(let i=floats.length-1;i>=0;i--){
+    const f=floats[i];f.y+=f.vy;f.vy*=0.95;f.life--;
+    if(f.life<=0){floats.splice(i,1);continue;}
+    ctx.fillStyle=f.col;ctx.globalAlpha=f.life/f.maxL;
+    ctx.font=`bold ${f.sz}px ${F}`;ctx.textAlign='center';
+    ctx.shadowBlur=8;ctx.shadowColor='rgba(0,0,0,.6)';
+    ctx.fillText(f.txt,f.x,f.y);ctx.shadowBlur=0;
+  }
+  ctx.globalAlpha=1;
+
+  drawMusician();
+
+  if(gs==='playing'){
+    ctx.font=`bold 13px ${F}`;ctx.textAlign='center';
+    ctx.fillStyle='rgba(196,132,252,.72)';
+    ctx.fillText(`🎵 ${ROUNDS[round].name} مۇقامى`,C.width/2,20);
+  }
+
+  ctx.restore();
+}
+</script>
 </body>
 </html>
