@@ -1,249 +1,446 @@
 <!DOCTYPE html>
 <html lang="ug" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🏗️ ئەقىللىق قۇرۇلۇشچى: مۇنار سېلىش</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { overflow: hidden; background: #0f172a; font-family: 'Segoe UI', sans-serif; color: white; user-select: none; -webkit-user-select: none; touch-action: none; }
-        canvas { display: block; }
-        
-        #ui { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 10; }
-        #score { font-size: 2.2rem; font-weight: 800; color: #f59e0b; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        #lives { font-size: 1.5rem; color: #ff4757; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        #combo-text { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: 900; color: #f59e0b; display: none; pointer-events: none; text-shadow: 0 0 30px rgba(245,158,11,0.8); z-index: 50; }
-        #hint { position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: rgba(255,255,255,0.4); pointer-events: none; z-index: 5; text-align: center; }
-        
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(12px); }
-        .overlay-box { background: rgba(30,41,59,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2.5rem; text-align: center; max-width: 440px; width: 90%; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from{opacity:0;transform:scale(0.9)translateY(20px)} to{opacity:1;transform:scale(1)translateY(0)} }
-        .overlay-box h1 { font-size: 2.8rem; margin-bottom: 10px; color: #f59e0b; }
-        .overlay-box p { font-size: 1.1rem; color: #94a3b8; line-height: 1.6; margin-bottom: 1.5rem; }
-        .final-stats { display: flex; justify-content: center; gap: 20px; margin: 1rem 0 1.5rem; }
-        .final-stat { text-align: center; }
-        .final-stat .v { font-size: 2rem; font-weight: 800; color: #f59e0b; }
-        .final-stat .l { font-size: 0.8rem; color: #94a3b8; }
-        .btn { padding: 12px 40px; font-size: 1.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(245,158,11,0.4); transition: transform 0.2s; font-family: inherit; }
-        .btn:active { transform: scale(0.95); }
-        #back-btn { position: absolute; bottom: 20px; left: 20px; padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; text-decoration: none; font-size: 0.9rem; z-index: 10; backdrop-filter: blur(8px); }
-        
-        @media (max-width: 768px) { .overlay-box { padding: 1.5rem; } .overlay-box h1 { font-size: 2rem; } .btn { padding: 12px 36px; font-size: 1.2rem; } #score { font-size: 1.6rem; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🏰 ئۇيغۇر مىنارىسى</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#04060f;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;min-height:100vh;overflow:hidden;touch-action:none;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+#canvas{display:block;border-radius:10px;max-width:100vw;}
+#hud{
+  display:flex;gap:12px;align-items:center;justify-content:space-between;
+  padding:6px 14px;background:rgba(0,0,0,.65);border-radius:9px;
+  margin-bottom:5px;width:100%;max-width:800px;
+  border:1px solid rgba(180,130,50,.35);color:#f0d090;font-size:14px;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+.hv{color:#ffd700;font-weight:bold;font-size:17px;}
+.li{font-size:18px;transition:opacity .3s;}
+.li.lost{opacity:.18;}
+.ov{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.88);z-index:100;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+}
+.ob{
+  background:linear-gradient(160deg,#1a1200,#0d0800);
+  border:2px solid rgba(180,130,50,.55);border-radius:16px;
+  padding:30px 38px;text-align:center;max-width:470px;width:90%;
+  box-shadow:0 0 40px rgba(180,130,50,.18);
+}
+.ot{font-size:30px;color:#ffd700;margin-bottom:8px;text-shadow:0 0 18px rgba(255,215,0,.5);}
+.os{font-size:15px;color:#c8a050;margin-bottom:16px;}
+.obtn{
+  padding:11px 32px;background:linear-gradient(135deg,#c8a050,#ffd700);
+  border:none;border-radius:9px;color:#1a0800;font-weight:bold;font-size:17px;
+  cursor:pointer;margin-top:10px;
+  font-family:'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif;
+  transition:transform .15s;
+}
+.obtn:hover{transform:scale(1.05);}
+#fo .ob{background:linear-gradient(160deg,#0d1a00,#060d00);border-color:rgba(80,180,50,.5);}
+.fw{font-size:18px;color:#90ee90;margin-bottom:6px;}
+.ft{font-size:16px;color:#7ddc7d;margin-bottom:10px;font-weight:bold;}
+.fb{font-size:14px;color:#c8e8c8;line-height:1.85;margin-bottom:14px;direction:rtl;text-align:right;}
+.hidden{display:none!important;}
+</style>
 </head>
 <body>
-    <div id="ui">
-        <div id="score">🏗️ قەۋەت: 0</div>
-        <div id="lives">❤️❤️❤️❤️❤️</div>
+
+<div id="hud">
+  <div style="display:flex;align-items:center;gap:3px;">
+    <span class="li" id="l0">❤️</span><span class="li" id="l1">❤️</span><span class="li" id="l2">❤️</span>
+  </div>
+  <div>🏆 <span class="hv" id="sv">0</span></div>
+  <div>🏰 <span class="hv" id="rv">1/7</span></div>
+  <div>قەۋەت: <span class="hv" id="pv">0/0</span></div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<div class="ov" id="mo">
+  <div class="ob">
+    <div class="ot">🏰 ئۇيغۇر مىنارىسى</div>
+    <div class="os">تارىخى بىنالارنى قايتا قۇر!</div>
+    <div style="font-size:12px;color:#907030;margin-bottom:14px;direction:rtl;text-align:right;line-height:1.85;">
+      يۆتكىلىۋاتقان تاش توغرا ئورۇنغا كەلگەندە چىكىڭ!<br>
+      🟩 يېشىل رەڭ توغرا ئورۇن بەلگىسى<br>
+      ⭐ ئالتۇن تاش ئاپتوماتىك توغرىلىنىدۇ<br>
+      3 مارتا يىتىپ كەلمىسە ئويۇن تاماملىنىدۇ
     </div>
-    <div id="combo-text">🏗️ ئىنتايىن ياخشى!</div>
-    <div id="hint">◀ چىكىپ تاش قويۇڭ ▶</div>
-    <div id="overlay">
-        <div class="overlay-box">
-            <h1>🏗️ ئەقىللىق قۇرۇلۇشچى</h1>
-            <p>مۇنار سېلىڭ! تاشلارنى بىر-بىرىنىڭ ئۈستىگە قويۇڭ.<br>🥇 ئالتۇن تاش ئاپتوماتىك توغرىلىنىدۇ.</p>
-            <div class="final-stats" id="final-stats" style="display:none">
-                <div class="final-stat"><div class="v" id="f-score">0</div><div class="l">قەۋەت</div></div>
-            </div>
-            <button class="btn" onclick="startGame()">باشلاش</button>
-        </div>
+    <button class="obtn" onclick="startGame()">🎮 ئويۇنغا باشلا</button>
+    <div style="font-size:12px;color:#604020;margin-top:11px;">ئەڭ يۇقىرى: <span id="hiv">0</span></div>
+  </div>
+</div>
+
+<div class="ov hidden" id="fo">
+  <div class="ob">
+    <div class="fw" id="fwb"></div>
+    <div class="ft" id="ftit"></div>
+    <div class="fb" id="fbdy"></div>
+    <button class="obtn" onclick="nextRound()" style="background:linear-gradient(135deg,#4a9050,#7ddc7d);color:#0a1800;">▶ كېيىنكى دولقۇن</button>
+  </div>
+</div>
+
+<div class="ov hidden" id="go">
+  <div class="ob">
+    <div class="ot" id="got"></div>
+    <div class="os" id="gos"></div>
+    <div style="font-size:14px;color:#a08040;margin:10px 0;line-height:2.1;">
+      نەتىجە: <span class="hv" id="gosc"></span> &nbsp; دولقۇن: <span class="hv" id="gorv"></span>/7
     </div>
-    <a id="back-btn" href="../index.html">← كەينىگە</a>
+    <button class="obtn" onclick="startGame()">🔄 قايتا ئويناش</button>
+    <a href="../index.html" style="display:block;margin-top:11px;color:#7a6030;font-size:13px;">⬅ ئاساسى بەتكە</a>
+  </div>
+</div>
 
-    <script>
-        let scene, camera, renderer, blocks = [], currentBlock;
-        let score = 0, lives = 5, gameActive = false, speed = 0.08, dir = 1;
-        let particles = [];
-        let audioCtx;
+<script>
+const C=document.getElementById('canvas'),ctx=C.getContext('2d');
+const F="'UKIJ Tuz Tom','UKIJ Tuz','Alkatip Tor','Microsoft Uighur',Arial,sans-serif";
+const BH=30; // block height
 
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
-        function playSound(type) {
-            if (!audioCtx) return; try {
-                const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); g.gain.value = 0.08;
-                const t = audioCtx.currentTime;
-                if (type==='place') { o.type='sine'; o.frequency.setValueAtTime(400+score*20,t); o.frequency.exponentialRampToValueAtTime(500+score*20,t+0.08); g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
-                else if (type==='gold') { o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.setValueAtTime(900,t+0.1); o.frequency.setValueAtTime(1200,t+0.2); g.gain.exponentialRampToValueAtTime(0.001,t+0.25); }
-                else if (type==='fail') { o.type='sawtooth'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(50,t+0.2); g.gain.exponentialRampToValueAtTime(0.001,t+0.2); }
-                else if (type==='gameover') { o.type='sawtooth'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(100,t+0.5); g.gain.exponentialRampToValueAtTime(0.001,t+0.5); }
-                o.start(t); o.stop(t+0.5);
-            } catch(e) {}
-        }
+function resize(){
+  C.width=Math.min(window.innerWidth,800);
+  C.height=Math.min(window.innerHeight*0.80,520);
+}
+resize();
+window.addEventListener('resize',resize);
 
-        function addParticles(x,y,z,color,count=12) {
-            for (let i=0; i<count; i++) {
-                const p = new THREE.Mesh(new THREE.SphereGeometry(0.06+Math.random()*0.08, 3,3), new THREE.MeshBasicMaterial({color, transparent:true, opacity:1}));
-                p.position.set(x+(Math.random()-0.5)*0.5, y+Math.random()*0.3, z+(Math.random()-0.5)*0.5);
-                p.userData = {vx:(Math.random()-0.5)*0.2, vy:Math.random()*0.15+0.05, vz:(Math.random()-0.5)*0.2, life:1};
-                scene.add(p); particles.push(p);
-            }
-        }
-        function updateParticles() {
-            for (let i=particles.length-1; i>=0; i--) {
-                const p=particles[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz;
-                p.userData.vy-=0.005; p.userData.life-=0.03; p.material.opacity=Math.max(0,p.userData.life);
-                if (p.userData.life<=0) { scene.remove(p); p.geometry.dispose(); p.material.dispose(); particles.splice(i,1); }
-            }
-        }
+const GND=()=>C.height-44;
+const PW=220; // platform width
+const PX=()=>Math.floor(C.width/2-PW/2);
 
-        function init() {
-            scene = new THREE.Scene(); scene.background = new THREE.Color(0x0f172a); scene.fog = new THREE.Fog(0x0f172a, 20, 60);
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
-            renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true; document.body.appendChild(renderer.domElement);
-            
-            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-            const dl = new THREE.DirectionalLight(0xffffff, 0.6); dl.position.set(10,20,10); dl.castShadow = true; scene.add(dl);
-            const hl = new THREE.HemisphereLight(0x87CEEB, 0x2d4c1e, 0.3); scene.add(hl);
-            
-            // Ground grid
-            const gridHelper = new THREE.GridHelper(10, 10, 0x444466, 0x333355);
-            gridHelper.position.y = -0.5; scene.add(gridHelper);
-            
-            const ground = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, 10), new THREE.MeshStandardMaterial({color:0x1a1a3a, roughness:0.9}));
-            ground.position.y = -0.5; ground.receiveShadow = true; scene.add(ground);
-            blocks.push(ground);
-            
-            camera.position.set(8, 8, 8); camera.lookAt(0, 0, 0);
-            
-            document.addEventListener('mousedown', placeBlock);
-            document.addEventListener('touchstart', e => { placeBlock(); e.preventDefault(); }, {passive:false});
-            window.addEventListener('resize', ()=>{camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight);});
-        }
+const ROUNDS=[
+  {name:'قەشقەر ئىد-كاھ',  target:6,  spd:2.0,bw:200,tol:90, ac:'#d4a020'},
+  {name:'ئارپان مىنارىسى',  target:7,  spd:2.7,bw:185,tol:80, ac:'#2090c0'},
+  {name:'خوتەن سارىيى',    target:8,  spd:3.4,bw:172,tol:72, ac:'#8040c0'},
+  {name:'ئۇيغۇر قەلئەسى',  target:9,  spd:4.2,bw:160,tol:65, ac:'#20a050'},
+  {name:'ئورخۇن ئوردۇسى',  target:9,  spd:5.0,bw:148,tol:58, ac:'#c04080'},
+  {name:'ئافاق خوجا',       target:10, spd:6.0,bw:138,tol:52, ac:'#e08020'},
+  {name:'ئۇلۇغ خانلىق',    target:10, spd:7.2,bw:128,tol:46, ac:'#ffd700'}
+];
 
-        function showCombo(txt) { const el = document.getElementById('combo-text'); el.innerText = txt; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 700); }
+const FACTS=[
+  {t:'قەشقەر ئىد-كاھ مەسچىتى',
+   b:'ئىد-كاھ مەسچىتى 1442-يىلى قۇرۇلغان بولۇپ، خىتايدىكى ئەڭ چوڭ مەسچىت سۈپىتىدە تونۇلىدۇ. ئۇنىڭ مەيدانىدا 16000 كىشى بىر ۋاقىتتا نامازى ئوقۇيالايدۇ. سەرق رەڭدىكى مىنارىتى قەشقەر شەھىرىنىڭ بەلگىسىدۇر.'},
+  {t:'ئارپانخوجا مىنارىسى — تۇرپاننىڭ رەمزى',
+   b:'ئارپانخوجا مىنارىسى 1777-يىلى قۇرۇلغان. ئۇنىڭ ئېگىزلىكى 44 مېتىر بولۇپ، ئىچكى قىسمىدا 72 باسقۇچلۇق پىللە بار. مىنارىنىڭ سىرتىدا 15 تۈرلۈك ئۇيغۇر گۇللۇق نەقىشلىرى ئىشلەنگەن.'},
+  {t:'خوتەن — نىفرىت تاش مەملىكىتى',
+   b:'خوتەن شەھىرى 3000 يىلدىن ئارتۇق تارىخقا ئىگە. ئۇ ئىپەك يولىنىڭ ئەڭ مۇھىم ئۈگەتلىرىدىن بىرى بولۇپ، نىفرىت تاش، ئىپەك ۋە قالىچە يەرلەنمىسى بىلەن مەشھۇر ئىدى.'},
+  {t:'ئۇيغۇر قەلئەلىرى — تاشتىن ئىنشا',
+   b:'ئۇيغۇرلار تاغ ئۈستى ۋە دەرە بويىدا مۇستەھكەم قەلئەلەر سالغان. بۇ قەلئەلەر قالىن تاش تاملار، مىناراتلار ۋە تۆۋرۈكلۈك دەرۋازىلاردىن تەركىپ تاپقان. ئوردۇكەنت ۋە ئىدىقۇت شاھىرى ئۇيغۇر قەلئە مەدەنىيىتىنىڭ نامايەندىسىدۇر.'},
+  {t:'ئوردۇبالىق — ئۇيغۇر پايتەختى',
+   b:'ئوردۇبالىق 744-يىلى ئۇيغۇر خانلىقىنىڭ پايتەختى بولغان. بۇ شەھەر ئورخۇن دەريا بويىدا قۇرۇلغان بولۇپ، ئۈزۈكسىز سارايلار، بازارلار ۋە كاتتا يوللار بار شەھەر ئىدى.'},
+  {t:'ئافاق خوجا مازىرى — قەشقەر مىراسى',
+   b:'ئافاق خوجا مازىرى قەشقەر شەھىرىنىڭ سىرتىدا جايلاشقان. 17-ئەسىردە قۇرۇلغان بۇ مازار پارسىيە مەدەنىيىتى ئۈلگىسىدە بىنا قىلىنغان. كۆك كاشان چۆرىلگەن گۇمبەزى دۇنيادا ئاتاقلىق.'},
+  {t:'ئۇلۇغ ئۇيغۇر خانلىقى (744-840 م)',
+   b:'ئۇيغۇر خانلىقى مەركىزى ئاسىيانىڭ ئەڭ كۈچلۈك دۆلەتلىرىدىن بىرى ئىدى. ئۇلار قالا سالىش، ئارىق قىزىش ۋە ئىلىم-پەن ساھەلىرىدە يۇقىرى سەۋىيىگە يەتكەن. ئۇيغۇر ئالىملىرى بىر قانچە يازمىنى ئىشلىتىشكە ئۇستا ئىدى.'}
+];
 
-        function spawnBlock() {
-            const last = blocks[blocks.length-1];
-            const isGolden = Math.random() < 0.2;
-            const w = last.geometry.parameters.width;
-            const d = last.geometry.parameters.depth;
-            const hue = (score * 0.08) % 1;
-            const color = isGolden ? 0xffd700 : new THREE.Color().setHSL(hue, 0.7, 0.5);
-            
-            const geo = new THREE.BoxGeometry(w, 0.8, d);
-            const mat = new THREE.MeshPhongMaterial({ color, emissive: isGolden ? 0xffd700 : color, emissiveIntensity: isGolden ? 0.3 : 0.05 });
-            currentBlock = new THREE.Mesh(geo, mat);
-            currentBlock.userData = { isGolden };
-            currentBlock.castShadow = true;
-            
-            if (dir === 1) {
-                currentBlock.position.set(dir === 1 ? -10 : last.position.x, score * 0.8 + 0.4, last.position.z);
-            } else {
-                currentBlock.position.set(last.position.x, score * 0.8 + 0.4, dir === 2 ? -10 : last.position.z);
-            }
-            scene.add(currentBlock);
-            document.getElementById('hint').style.display = 'block';
-        }
+// State
+let gs='menu',score=0,hs=+localStorage.getItem('bldhs3')||0;
+let round=0,lives=3,placed=0,fc=0;
+let bx=0,bw=200,bdir=1,bspd=2.0,isGold=false,shake=0,running=false;
+let tower=[],parts=[],floats=[];
 
-        function placeBlock() {
-            if (!gameActive || !currentBlock) return;
-            initAudio();
-            const last = blocks[blocks.length-1];
-            
-            if (currentBlock.userData.isGolden) {
-                currentBlock.position.x = last.position.x;
-                currentBlock.position.z = last.position.z;
-            }
-            
-            const diffX = Math.abs(currentBlock.position.x - last.position.x);
-            const diffZ = Math.abs(currentBlock.position.z - last.position.z);
-            const maxW = last.geometry.parameters.width * 0.5 + currentBlock.geometry.parameters.width * 0.5;
-            const maxD = last.geometry.parameters.depth * 0.5 + currentBlock.geometry.parameters.depth * 0.5;
-            
-            if (diffX > maxW || diffZ > maxD) {
-                lives--;
-                playSound('fail');
-                scene.remove(currentBlock);
-                updateUI();
-                if (lives <= 0) {
-                    gameActive = false; playSound('gameover');
-                    document.getElementById('hint').style.display = 'none';
-                    document.getElementById('overlay').style.display = 'flex';
-                    document.getElementById('final-stats').style.display = 'flex';
-                    document.getElementById('f-score').innerText = score;
-                    document.getElementById('overlay').querySelector('h1').innerText = '🏗️ ئويۇن تۈگىدى';
-                    document.getElementById('overlay').querySelector('p').innerText = `سىز ${score} قەۋەتلىك مۇنار سالدىڭىز!`;
-                } else {
-                    spawnBlock();
-                }
-                return;
-            }
+document.getElementById('hiv').textContent=hs;
 
-            // Success
-            score++;
-            updateUI();
-            showCombo(`🏗️ قەۋەت ${score}!`);
-            playSound(currentBlock.userData.isGolden ? 'gold' : 'place');
-            addParticles(currentBlock.position.x, currentBlock.position.y, currentBlock.position.z, currentBlock.userData.isGolden ? 0xffd700 : 0x4ade80, 15);
-            blocks.push(currentBlock);
-            dir = Math.random() > 0.5 ? 1 : 2;
-            speed += 0.002;
-            
-            // Camera animation
-            const targetY = 8 + score * 0.3;
-            const targetCamZ = 8 + score * 0.2;
-            camera.position.y += (targetY - camera.position.y) * 0.1;
-            camera.position.z += (targetCamZ - camera.position.z) * 0.1;
-            camera.lookAt(0, score * 0.4, 0);
-            
-            setTimeout(() => {
-                if (gameActive) spawnBlock();
-            }, 300);
-            document.getElementById('hint').style.display = 'none';
-        }
+// Audio
+let aC;
+function iA(){if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();}
+function tone(f,type,dur,vol=0.28){
+  if(!aC)return;const t=aC.currentTime;
+  const o=aC.createOscillator(),g=aC.createGain();
+  o.type=type;o.frequency.value=f;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  o.connect(g);g.connect(aC.destination);o.start();o.stop(t+dur);
+}
+function sPlace(perf){if(perf){[500,700,900].forEach((f,i)=>setTimeout(()=>tone(f,'sine',.2,.3),i*70));}else tone(380,'sine',.18,.25);}
+function sMiss(){tone(180,'sawtooth',.35,.4);}
+function sGold(){[500,700,900,1200].forEach((f,i)=>setTimeout(()=>tone(f,'sine',.25,.35),i*80));}
+function sWin(){[350,440,550,660,770,880].forEach((f,i)=>setTimeout(()=>tone(f,'sine',.3,.3),i*90));}
 
-        function startGame() {
-            initAudio();
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('overlay').querySelector('h1').innerText = '🏗️ ئەقىللىق قۇرۇلۇشچى';
-            document.getElementById('overlay').querySelector('p').innerText = 'مۇنار سېلىڭ! تاشلارنى بىر-بىرىنىڭ ئۈستىگە قويۇڭ.';
-            document.getElementById('final-stats').style.display = 'none';
-            score = 0; lives = 5; gameActive = true; speed = 0.08;
-            updateUI();
-            
-            // Clear blocks (keep ground)
-            blocks.slice(1).forEach(b => { scene.remove(b); b.geometry.dispose(); b.material.dispose(); });
-            blocks = [blocks[0]];
-            particles.forEach(p => { scene.remove(p); p.geometry.dispose(); p.material.dispose(); }); particles = [];
-            
-            camera.position.set(8, 8, 8); camera.lookAt(0, 0, 0);
-            setTimeout(() => { if (gameActive) spawnBlock(); }, 500);
-        }
+// Particles & floats
+function addP(x,y,col,n=14){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,s=1.5+Math.random()*5.5;
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,life:18+Math.random()*20,maxL:38,col:[col,'#ffd700','#fff'][Math.floor(Math.random()*3)],sz:2+Math.random()*3});
+  }
+}
+function addFl(x,y,txt,col='#fff',sz=22){floats.push({x,y,txt,col,life:36,maxL:36,vy:-2.4,sz});}
 
-        function updateUI() { document.getElementById('score').innerText = `🏗️ قەۋەت: ${score}`; document.getElementById('lives').innerText = '❤️'.repeat(Math.max(0,lives)); }
+// Tower top reference
+function getTop(){
+  if(tower.length>0)return tower[tower.length-1];
+  return{x:PX(),y:GND()-BH,width:PW};
+}
 
-        function animate() {
-            requestAnimationFrame(animate);
-            if (gameActive && currentBlock) {
-                // Recycle speed sign based on current axis
-                const s = speed < 0 ? -Math.abs(speed) : Math.abs(speed);
-                if (dir === 1) {
-                    currentBlock.position.x += s;
-                    if (currentBlock.position.x > 8) speed = -Math.abs(speed);
-                    if (currentBlock.position.x < -8) speed = Math.abs(speed);
-                } else {
-                    currentBlock.position.z += s;
-                    if (currentBlock.position.z > 8) speed = -Math.abs(speed);
-                    if (currentBlock.position.z < -8) speed = Math.abs(speed);
-                }
-                currentBlock.rotation.y += 0.005;
-            }
-            updateParticles();
-            
-            // Smooth camera
-            if (gameActive) {
-                const targetY = 8 + score * 0.3;
-                const targetZ = 8 + score * 0.2;
-                camera.position.y += (targetY - camera.position.y) * 0.05;
-                camera.position.z += (targetZ - camera.position.z) * 0.05;
-                camera.lookAt(0, score * 0.4, 0);
-            }
-            
-            renderer.render(scene, camera);
-        }
-        init(); animate();
-    </script>
+// Spawn slider
+function spawnSlider(){
+  const rd=ROUNDS[round];
+  bw=rd.bw;
+  bdir=Math.random()<0.5?1:-1;
+  bx=bdir===1?0:C.width-bw;
+  bspd=rd.spd;
+  isGold=Math.random()<0.20;
+}
+
+// Draw background
+function drawBG(){
+  const sky=ctx.createLinearGradient(0,0,0,C.height);
+  sky.addColorStop(0,'#04060f');sky.addColorStop(.4,'#0a0e20');
+  sky.addColorStop(.7,'#140a08');sky.addColorStop(1,'#1e0d05');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,C.width,C.height);
+  // Stars
+  for(let i=0;i<80;i++){
+    const sx=(i*137.5+50)%C.width,sy=(i*97.3+15)%(C.height*.48);
+    const tw=.3+Math.sin(fc*.022+i)*.45;
+    ctx.fillStyle=`rgba(255,255,255,${tw*.75})`;
+    ctx.fillRect(sx,sy,1+(i%4===0?1.5:.4),1+(i%4===0?1.5:.4));
+  }
+  // Crescent moon
+  ctx.save();ctx.translate(C.width-62,48);
+  ctx.fillStyle='rgba(255,245,200,.95)';ctx.shadowBlur=22;ctx.shadowColor='rgba(255,230,150,.5)';
+  ctx.beginPath();ctx.arc(0,0,22,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#04060f';ctx.shadowBlur=0;
+  ctx.beginPath();ctx.arc(8,-4,17,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  ctx.font='14px sans-serif';ctx.fillStyle='rgba(255,230,150,.85)';
+  ctx.fillText('✦',C.width-38,33);
+  // Mountains
+  ctx.fillStyle='rgba(14,14,32,.7)';
+  ctx.beginPath();ctx.moveTo(0,C.height-85);
+  for(let x=0;x<=C.width;x+=5)ctx.lineTo(x,C.height-85-Math.sin(x*.003)*62-Math.sin(x*.007)*24);
+  ctx.lineTo(C.width,C.height);ctx.lineTo(0,C.height);ctx.fill();
+  // Ground
+  const gd=ctx.createLinearGradient(0,GND()-8,0,C.height);
+  gd.addColorStop(0,'#3a2008');gd.addColorStop(.5,'#200e04');gd.addColorStop(1,'#100702');
+  ctx.fillStyle=gd;ctx.fillRect(0,GND()-8,C.width,C.height-GND()+8);
+  ctx.strokeStyle='rgba(180,130,60,.1)';ctx.lineWidth=1;
+  for(let y=GND()+4;y<C.height;y+=8){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(C.width,y);ctx.stroke();}
+}
+
+// Draw a block
+function drawBlock(x,y,w,h,col,gold){
+  if(w<4)return;
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(x+3,y+3,w,h);
+  ctx.fillStyle=col;ctx.fillRect(x,y,w,h);
+  ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillRect(x,y,w,5);
+  ctx.fillStyle='rgba(255,255,255,.10)';ctx.fillRect(x,y+5,5,h-5);
+  ctx.fillStyle='rgba(0,0,0,.22)';ctx.fillRect(x+w-5,y+5,5,h-5);
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(x,y+h-4,w,4);
+  if(w>50){
+    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x+6,y+h/2);ctx.lineTo(x+w-6,y+h/2);ctx.stroke();
+    const dm=Math.min(h*.32,w*.18);
+    ctx.beginPath();
+    ctx.moveTo(x+w/2,y+h/2-dm);ctx.lineTo(x+w/2+dm,y+h/2);
+    ctx.lineTo(x+w/2,y+h/2+dm);ctx.lineTo(x+w/2-dm,y+h/2);
+    ctx.closePath();ctx.stroke();
+  }
+  if(gold){
+    ctx.strokeStyle='rgba(255,255,100,.6)';ctx.lineWidth=2;ctx.strokeRect(x+2,y+2,w-4,h-4);
+    ctx.fillStyle='rgba(255,255,0,.7)';ctx.font=`${Math.min(h-4,14)}px sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('⭐',x+w/2,y+h/2);ctx.textBaseline='alphabetic';
+  }
+}
+
+// Draw stone base platform
+function drawBase(){
+  const bx2=PX(),by=GND()-BH-10,bw2=PW,bh=BH+14;
+  ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(bx2+4,by+4,bw2,bh);
+  ctx.fillStyle='#5a4020';ctx.fillRect(bx2,by,bw2,bh);
+  ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(bx2,by,bw2,5);
+  ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(bx2,by+bh-5,bw2,5);
+  ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;
+  for(let i=0;i<4;i++)ctx.strokeRect(bx2+i*56+2,by+2,54,bh-4);
+  ctx.fillStyle='rgba(255,215,0,.55)';ctx.font=`12px ${F}`;ctx.textAlign='center';
+  ctx.fillText('✦ ✦ ✦',bx2+bw2/2,by+bh/2+4);
+}
+
+// Draw target zone
+function drawTarget(){
+  if(gs!=='playing')return;
+  const top=getTop();
+  const cx2=top.x+top.width/2;
+  const tol=ROUNDS[round].tol;
+  ctx.fillStyle='rgba(80,220,80,.12)';ctx.fillRect(cx2-tol,top.y-5,tol*2,5);
+  ctx.strokeStyle='rgba(80,220,80,.45)';ctx.lineWidth=1;
+  ctx.setLineDash([3,3]);ctx.strokeRect(cx2-tol,top.y-5,tol*2,5);ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,100,.25)';ctx.lineWidth=1;ctx.setLineDash([4,5]);
+  ctx.beginPath();ctx.moveTo(cx2,top.y-8);ctx.lineTo(cx2,top.y-32);ctx.stroke();ctx.setLineDash([]);
+}
+
+// Draw slider block
+function drawSlider(){
+  if(gs!=='playing')return;
+  const col=isGold?'#ffd700':ROUNDS[round].ac;
+  const top=getTop();
+  const sy=Math.max(38,top.y-BH-22);
+  const pulse=1+Math.sin(fc*.13)*.05;
+  ctx.shadowBlur=20;ctx.shadowColor=isGold?'rgba(255,215,0,.8)':(ROUNDS[round].ac+'cc');
+  ctx.save();
+  ctx.translate(bx+bw/2,sy+BH/2);ctx.scale(pulse,pulse);ctx.translate(-bw/2,-BH/2);
+  drawBlock(0,0,bw,BH,col,isGold);
+  ctx.restore();ctx.shadowBlur=0;
+  // Arrow
+  ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='13px sans-serif';ctx.textAlign='center';
+  ctx.fillText('▼',bx+bw/2,sy-4);
+  // Alignment line to target
+  const topCX=getTop().x+getTop().width/2;
+  const blkCX=bx+bw/2;
+  const inZone=Math.abs(blkCX-topCX)<=ROUNDS[round].tol;
+  ctx.strokeStyle=inZone?'rgba(100,255,100,.4)':'rgba(255,255,255,.1)';
+  ctx.lineWidth=1;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(blkCX,sy+BH);ctx.lineTo(topCX,getTop().y);ctx.stroke();ctx.setLineDash([]);
+}
+
+// Place block
+function doPlace(){
+  if(gs!=='playing')return;
+  iA();
+  const top=getTop();
+  const rd=ROUNDS[round];
+  if(isGold){
+    const nx=top.x+(top.width-bw)/2;
+    const ny=top.y-BH;
+    tower.push({x:nx,y:ny,width:bw,color:'#ffd700',gold:true});
+    sGold();addP(nx+bw/2,ny,'#ffd700',22);
+    addFl(C.width/2,ny-14,'+20 ⭐ ئالتۇن قەۋەت!','#ffd700',28);
+    score+=20;placed++;updUI();chkRound();spawnSlider();return;
+  }
+  const topCX=top.x+top.width/2;
+  const blkCX=bx+bw/2;
+  const dist=Math.abs(blkCX-topCX);
+  const tol=rd.tol;
+  if(dist>tol){
+    lives--;shake=18;sMiss();
+    addFl(C.width/2,C.height*.38,'❌ يىتىپ كەلمىدى!','#ff4444',28);
+    addP(blkCX,top.y-BH*.5,'#ff4444',22);
+    for(let i=0;i<3;i++)document.getElementById(`l${i}`).classList.toggle('lost',i>=lives);
+    if(lives<=0){gs='gameover';setTimeout(showGO,700);}
+    else spawnSlider();
+    return;
+  }
+  const ratio=1-dist/tol;
+  let pts=Math.floor(10+ratio*12);
+  let lbl=ratio>.85?'تەڭ! ⭐':(ratio>.5?'ياخشى!':'مۇۋاپىق');
+  if(ratio>.85)pts=22;
+  const ny=top.y-BH;
+  tower.push({x:bx,y:ny,width:bw,color:rd.ac,gold:false});
+  sPlace(ratio>.85);
+  addP(blkCX,ny,rd.ac,15);
+  addFl(blkCX,ny-14,`+${pts} ${lbl}`,ratio>.85?'#ffd700':'#c0f0ff',24);
+  score+=pts;placed++;updUI();chkRound();spawnSlider();
+}
+
+function updUI(){
+  document.getElementById('sv').textContent=score;
+  document.getElementById('pv').textContent=`${placed}/${ROUNDS[round].target}`;
+  if(score>hs){hs=score;localStorage.setItem('bldhs3',hs);document.getElementById('hiv').textContent=hs;}
+}
+
+function chkRound(){
+  if(placed>=ROUNDS[round].target){gs='fact';setTimeout(showFact,900);}
+}
+
+function showFact(){
+  sWin();
+  const f=FACTS[round];
+  document.getElementById('fwb').textContent=`🏰 دولقۇن ${round+1}/7 — ${ROUNDS[round].name} تامام!`;
+  document.getElementById('ftit').textContent=`📜 ${f.t}`;
+  document.getElementById('fbdy').textContent=f.b;
+  document.getElementById('fo').classList.remove('hidden');
+}
+
+function nextRound(){
+  document.getElementById('fo').classList.add('hidden');
+  round++;
+  if(round>=7){doVictory();return;}
+  document.getElementById('rv').textContent=`${round+1}/7`;
+  placed=0;tower=[];
+  document.getElementById('pv').textContent=`0/${ROUNDS[round].target}`;
+  spawnSlider();gs='playing';
+}
+
+function doVictory(){
+  gs='gameover';
+  document.getElementById('got').textContent='🏆 غەلبە!';
+  document.getElementById('gos').textContent='بارلىق ئۇيغۇر بىنالىرىنى قايتا تىكلىدىڭ!';
+  document.getElementById('gosc').textContent=score;
+  document.getElementById('gorv').textContent=7;
+  document.getElementById('go').classList.remove('hidden');
+}
+
+function showGO(){
+  document.getElementById('got').textContent='💔 تاملار يىقىلدى!';
+  document.getElementById('gos').textContent='تىرىشماقنى توختاتما!';
+  document.getElementById('gosc').textContent=score;
+  document.getElementById('gorv').textContent=round+1;
+  document.getElementById('go').classList.remove('hidden');
+}
+
+window.addEventListener('mousedown',e=>{if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='A')doPlace();});
+window.addEventListener('touchstart',e=>{
+  if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='A'){e.preventDefault();doPlace();}
+},{passive:false});
+
+function startGame(){
+  iA();
+  ['mo','go','fo'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  score=0;round=0;lives=3;placed=0;fc=0;shake=0;
+  tower=[];parts=[];floats=[];
+  for(let i=0;i<3;i++)document.getElementById(`l${i}`).classList.remove('lost');
+  document.getElementById('sv').textContent='0';
+  document.getElementById('rv').textContent='1/7';
+  document.getElementById('pv').textContent=`0/${ROUNDS[0].target}`;
+  spawnSlider();gs='playing';
+  if(!running){running=true;requestAnimationFrame(loop);}
+}
+
+function loop(){
+  requestAnimationFrame(loop);fc++;
+  ctx.save();
+  if(shake>0.5){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=0.84;}else shake=0;
+  ctx.clearRect(-20,-20,C.width+40,C.height+40);
+  drawBG();drawBase();
+  tower.forEach(b=>drawBlock(b.x,b.y,b.width,BH,b.color,b.gold));
+  drawTarget();
+  if(gs==='playing'){
+    bx+=bdir*bspd;
+    if(bx+bw>=C.width){bx=C.width-bw;bdir=-1;}
+    if(bx<=0){bx=0;bdir=1;}
+    drawSlider();
+  }
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.life--;
+    if(p.life<=0){parts.splice(i,1);continue;}
+    ctx.fillStyle=p.col;ctx.globalAlpha=p.life/p.maxL;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.sz*(p.life/p.maxL),0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  for(let i=floats.length-1;i>=0;i--){
+    const f=floats[i];f.y+=f.vy;f.vy*=.95;f.life--;
+    if(f.life<=0){floats.splice(i,1);continue;}
+    ctx.fillStyle=f.col;ctx.globalAlpha=f.life/f.maxL;
+    ctx.font=`bold ${f.sz}px ${F}`;ctx.textAlign='center';
+    ctx.shadowBlur=8;ctx.shadowColor='rgba(0,0,0,.6)';
+    ctx.fillText(f.txt,f.x,f.y);ctx.shadowBlur=0;
+  }
+  ctx.globalAlpha=1;
+  if(gs==='playing'){
+    ctx.font=`bold 13px ${F}`;ctx.textAlign='center';
+    ctx.fillStyle='rgba(255,215,0,.65)';
+    ctx.fillText(ROUNDS[round].name,C.width/2,18);
+  }
+  ctx.restore();
+}
+</script>
 </body>
 </html>
