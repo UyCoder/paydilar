@@ -1056,6 +1056,58 @@ body::after {
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
   .achievements-grid { grid-template-columns: repeat(3, 1fr); }
 }
+.entry-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.entry-card {
+  width: min(520px, 100%);
+  background: rgba(20,20,40,0.98);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  padding: 28px;
+  text-align: center;
+}
+.entry-card h2 {
+  margin-bottom: 18px;
+  font-size: 1.5rem;
+  color: #f8fafc;
+}
+.entry-card p {
+  margin-bottom: 26px;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+.entry-buttons {
+  display: grid;
+  gap: 12px;
+}
+.entry-btn {
+  padding: 16px 18px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.entry-btn:hover { transform: translateY(-2px); }
+.entry-btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: white;
+}
+.entry-btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: #f8fafc;
+  border: 1px solid rgba(255,255,255,0.15);
+}
 </style>
 </head>
 <body>
@@ -1117,6 +1169,18 @@ body::after {
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Entry Selection Overlay -->
+<div class="entry-overlay" id="entryOverlay">
+  <div class="entry-card">
+    <h2>باشقا تاللاش</h2>
+    <p>قايسى يۆنىلىشتە مەشىق قىلماقچىسىز؟</p>
+    <div class="entry-buttons">
+      <button class="entry-btn entry-btn-primary" id="keyboardOption">يېڭىدىن كۇنۇپكا ئۆگىنىمەن</button>
+      <button class="entry-btn entry-btn-secondary" id="normalOption">نورمال ئۇيغۇرچە جۈملىلەرنى مەشىق قىلمەن</button>
+    </div>
+  </div>
+</div>
 
 <div class="wrapper">
 
@@ -1548,6 +1612,31 @@ function createParticles() {
   }
 }
 createParticles();
+
+/* ========================
+   ENTRY SELECTION PROMPT
+======================== */
+function closeEntryOverlay() {
+  const overlay = document.getElementById('entryOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+function openKeyboardLearning() {
+  window.location.href = 'keyBoard.html';
+}
+function showEntryChoice() {
+  const keyboardBtn = document.getElementById('keyboardOption');
+  const normalBtn = document.getElementById('normalOption');
+  const overlay = document.getElementById('entryOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  keyboardBtn.addEventListener('click', openKeyboardLearning);
+  normalBtn.addEventListener('click', () => {
+    closeEntryOverlay();
+    showToast('نورمال ئۇيغۇرچە مەشىق باشلاندى', 'success');
+  });
+}
+
+window.addEventListener('load', showEntryChoice);
 
 /* ========================
    SOUND ENGINE
