@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بىلىك سۆھبەت ئانالىز قۇرالى 81</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'), local('UKIJ_Ekran'); }
+        @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'), local('UKIJ_Tuz'); }
+        body { font-family: "UKIJ Ekran", "Noto Naskh Arabic", sans-serif; background: #0f172a; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <!-- Global Tools Navigation -->
+    <nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;">
+        <style>
+            #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+            #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#10b981;letter-spacing:.1em;white-space:nowrap;}
+            #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+            #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+            #bilik-global-nav a.bgn.active{background:#059669;color:#fff;border-color:#10b981;box-shadow:0 0 8px rgba(16, 185, 129, .35);}
+        </style>
+        <div id="bilik-global-nav-wrap">
+            <span class="bgl">بىلىك قۇراللىرى:</span>
+            <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+            <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+            <a href="81.html" data-page="81.html" class="bgn active">81 · سودا سۆھبىتى</a>
+            <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+            <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+            <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-700 bg-slate-900 flex items-center justify-between px-6 z-50 shadow-2xl">
+        <div class="flex items-center gap-4">
+            <div class="bg-emerald-500 text-slate-900 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-2xl">🤝</div>
+            <div>
+                <h1 class="text-xl font-bold text-white">تىجارەت سۆھبىتى ئانالىزچىسى <span class="text-emerald-500 text-xs">v8.1</span></h1>
+                <p class="text-[10px] text-slate-400 font-mono tracking-widest uppercase">Business Negotiation & Legal Intelligence</p>
+            </div>
+        </div>
+        <div id="clock" class="text-xs text-emerald-500 font-mono"></div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Control Panel -->
+        <aside class="w-[480px] border-l border-slate-700 bg-slate-800/50 flex flex-col z-40">
+            
+            <div class="p-4 bg-slate-900/50 border-b border-slate-700">
+                <p class="text-xs text-slate-300 leading-relaxed text-justify">
+                    بۇ قۇرال مەخسۇس ئاۋازلىق تىجارەت، خەلقئارا سودا سۆھبەتلىرىنى جۈملىمۇ-جۈملە تەرجىمە قىلىپ، ئىقتىساد، قانۇن، شەرىئەت ۋە خېيىم-خەتەر (SWOT) نۇقتىسىدىن پارچىلاپ خۇلاسىلەش ئۈچۈن ياسالغان.
+                </p>
+            </div>
+
+            <div class="flex-1 p-4 flex flex-col min-h-0">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] text-slate-400 font-bold">AI غا بېرىدىغان مەخسۇس بۇيرۇق (كۆچۈرۈڭ):</span>
+                    <button onclick="copyPromptText()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg">كۆچۈرۈش 📋</button>
+                </div>
+                <!-- Prompt Area readonly -->
+                <textarea id="promptArea" readonly class="w-full flex-1 bg-slate-900 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-slate-300 resize-none outline-none leading-relaxed border-dashed" dir="rtl"></textarea>
+            </div>
+
+            <div class="p-4 bg-slate-900/80 border-t border-slate-700">
+                <label class="block text-[10px] font-bold text-amber-500 mb-2 uppercase">نەتىجە JSON نى چاپلاڭ</label>
+                <textarea id="jsonInput" class="w-full h-32 bg-slate-950 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-amber-400 outline-none mb-3 focus:border-amber-500 transition-all" placeholder="{ ... }" dir="ltr"></textarea>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="renderFinalReport()" class="bg-amber-600 hover:bg-amber-500 text-slate-900 font-bold py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2"><span>⚡</span> ئانالىزلاش</button>
+                    <button onclick="saveReportHTML()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2"><span>💾</span> HTML ساقلاش</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <div class="flex-1 bg-slate-950 relative overflow-hidden">
+            <iframe id="reportPreview" class="w-full h-full border-none bg-white"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // --- EXACT PROMPT FROM USER ---
+        const userPrompt = `1. بۇ سۆھبەتنىڭ پۈتۈن مەزمۇنىنى جۈملىمۇ جۈملە چۈشۈرۈپ قويماي ئۇيغۇرچىغا تەرجىمە قىلىپ بەرگىن. ئامال بار تېمىلارغا بۆلۈشكە ۋاقتىنى تەخمىنەن ھەر 10 مىنۇتتا ئەسكەرتىپ قويغىن. بەزى مەزمۇنلارنى ئەسلى ئاۋازدىن تەكرار ئىزدەپ سېلىشتۇرۇشقا توغرا كەلسە ئاسان تاپالىشىم كېرەك. مۇھىم ئاتالغۇلارنىڭ ئەسلى تىلدىكى ئاتىلىشىنى تىرناق ئىچىگە ئەسكەرتىپ ماڭغىن، چۈنكى ئاتالغۇلارنىڭ تەرجىمىسىىدە چۈشىنىشمەسلىك چىقىپ قالمىسۇن.
+2. بۇ سۇدىدا زىيان تارتىش ئىھتىمالىمىز بولغان نۇقتىلارنىڭ ھەممىسىنى، پايدا ئېلىشىمىز مۇمكىن  بولغان بارلىق نۇقتىلارنى، بىزنىڭ ئەۋزەللىكىمىزنىڭ ھەممىسىنى، بىزنىڭ بۇ تىجارەتتىكى بارلىق ئاجىزلىقلىرمىزنى ھەربىىرنى كۆپ تۈردە خۇلاسىلەپ بەرگىن.
+3. خەلقئارا شىركەت شېرىكچىلىك قانۇنى، خەلقئارا ئىقتىساد، ئەرەب دۆلەتلىرى شىرىكچىلىك قانۇنى، ئىسلامىي شىرىكچىلىك قانۇنىقاتارلىق نۇقتىلاردا تەھلىل چىقىرىپ بېرىشىڭ كېرەك.
+4. سېنىڭچە بۇ سۆھبەتتە بىز پايدا ئالدۇقمۇ ياكى زىيان تارتتۇقمۇ؟ پايدا زېياننى ھېسابلاپ باققىن. ۋە بەك تەپسىلي تەييارلاپ بەرگىن. 
+5. ئېسىڭدە بولسۇنكى يۇقارقى مەلۇماتلارنى قىسقا قىپ قويمىغىن. چۈنكى قىسقا قىپ قويساڭ بۇ بەك چوڭ سودا ھېسابلىنىدۇ، ماڭا تولۇق ۋە پۈتۈن ئىقتىدارىڭنى ئىشقا سېلىپ پايدا ئېلىشقا ياردەم قىلىشىڭ كېرەك. 
+6. ئەڭ بېشىدا بۇ سۆھبەتنىڭ ئومۇمىي خۇلاسىسىنى يېزىپ بەرگىن. خۇلاسىدە بۇ سۆھبەتنىڭ ۋاقتى، ئۇزۇنلۇقى، قايسى تىللاردا پاراڭلاشقانلىقى، قانچە چوڭ تۈر پاراڭلىشىلغانلىقى ۋە ئۇلارنىڭ مەزمۇنى، ئومۇمىي قاتناشقۇچىلار، قاتناشقۇچىلارنىڭ ئىپادىسى، قاتناشقۇچىلارنىڭ خاتالىقى ياكى مۇھىم رول ئوينىغان سۆز ۋە قارارلىرى،  ئىسلام شەرىئىتىدىكى قايسى تۈرگە كىرىدىغان سۆھبەت بولغانلىقى... قاتارلىق تېمىلارنىڭ بىرنىمۇ چۈشۈرۈپ قويماي ھەربىىر ئۈچۈن ئۇزۇن ئۇزۇن ئابزاسلار بىلەن تەھلىل تەييارلاپ بەرگىن. ئېسىڭدە بولسۇنكى بۇ تۈرگە ھورۇنلىق قىلمىغىن.
+7. ئەڭ ئاخىرىدا بۇ سۆھبەتتىن ئۆگىنىۋېلىش كېرەك بولغان ئەرەبچە، سۈرىيەچە، ئېنگلىزچە، تۈركچە مۇھىم جۈملىلەردىن 5 جۈملە خۇلاسىلەپ بەرگىن. شۇنداق بولغاندا مەن مۇشۇ خىل سۆھبەتلەر ئارقىلىق ئاسانلا تىل ئۆگىنىپ، ھەرقايسى تىللاردىكى سودا سۆھبەت مۇھىتىدا پايدا ئېلىش پۇرسىتىمنى ئاشۇرالايمەن.`;
+
+        const jsonSchema = `
+
+!! ئاستىدىكىسى سېنىڭ قايتۇرىدىغان نەتىجەڭنىڭ JSON فورماتى. باشقا ھېچقانداق سۆز قوشماي پەقەت مۇشۇ قېلىپتىلا جاۋاب قايتۇر:
+
+{
+  "report_title": "...",
+  "overall_summary": {
+    "meta_info": "ۋاقتى، ئۇزۇنلۇقى، قايسى تىللاردا پاراڭلاشقانلىقى قاتارلىقلار...",
+    "projects_overview": "قانچە چوڭ تۈر پاراڭلىشىلغانلىقى ۋە ئۇلارنىڭ تەپسىلىي مەزمۇنى...",
+    "participants_eval": "ئومۇمىي قاتناشقۇچىلار، ئىپادىسى، خاتالىقلىرى، مۇھىم رول ئوينىغان سۆزلىرى...",
+    "sharia_class": "ئىسلام شەرىئىتىدىكى قايسى شېرىكچىلىك/سودا تۈرىگە كىرىدۇ، تەپسىلىي تەھلىل..."
+  },
+  "transcript_intervals": [
+    { 
+      "time": "00:00 - 10:00", 
+      "text": "بۇ بۆلەكتىكى سۆھبەتنىڭ جۈملىمۇ جۈملە ئۇيغۇرچە تەرجىمىسى (مۇھىم ئاتالغۇلارنىڭ ئەسلى تىلى تىرناق ئىچىدە)..." 
+    }
+  ],
+  "business_analysis": {
+    "risks": ["زىيان تارتىش ئېھتىمالى بولغان نۇقتا 1...", "نۇقتا 2..."],
+    "opportunities": ["پايدا ئېلىش مۇمكىنچىلىكى بولغان نۇقتا 1...", "نۇقتا 2..."],
+    "strengths": ["بىزنىڭ بۇ سودىدىكى ئەۋزەللىكىمىز 1...", "ئەۋزەللىك 2..."],
+    "weaknesses": ["بىزنىڭ بۇ تىجارەتتىكى ئاجىزلىقىمىز 1...", "ئاجىزلىق 2..."]
+  },
+  "legal_economic_analysis": {
+    "intl_corporate_law": "خەلقئارا شىركەت شېرىكچىلىك قانۇنى نۇقتىسىدىن تەھلىل...",
+    "intl_economics": "خەلقئارا ئىقتىساد نۇقتىسىدىن تەھلىل...",
+    "arab_law": "ئەرەب دۆلەتلىرى شىرىكچىلىك قانۇنى نۇقتىسىدىن تەھلىل...",
+    "islamic_law": "ئىسلامىي شىرىكچىلىك قانۇنى نۇقتىسىدىن تەھلىل..."
+  },
+  "outcome_assessment": {
+    "verdict": "خۇلاسە (بىز پايدا ئالدۇقمۇ ياكى زىيان تارتتۇقمۇ؟)...",
+    "profit_loss_calc": "پايدا ۋە زىياننى كونكرېت ھېسابلاپ چىقىش (سانلىق ۋە لوگىكىلىق ئانالىز)...",
+    "detailed_reasoning": "نەتىجىنىڭ سەۋەبلىرى ھەققىدە بەك تەپسىلىي تەھلىل..."
+  },
+  "language_learning": [
+    {
+      "phrase_original": "ئەسلى تىلدىكى جۈملە (مەسىلەن ئەرەبچە ياكى تۈركچە)",
+      "language": "قايسى تىل ئىكەنلىكى",
+      "meaning_uy": "ئۇيغۇرچە تەرجىمىسى ۋە ئىشلىتىلىش ئورنى"
+    }
+  ]
+}`;
+
+        document.getElementById('promptArea').value = userPrompt + "\n" + jsonSchema;
+
+        function copyPromptText() {
+            const area = document.getElementById('promptArea');
+            area.select();
+            navigator.clipboard.writeText(area.value);
+            alert("پىرومپت كۆچۈرۈلدى! گۇگېل جېمىناي (Gemini) ياكى ChatGPT غا چاپلاپ، ئاندىن سۆھبەت تېكىستىنى بېرىڭ.");
+        }
+
+        // --- RENDER ENGINE ---
+        let generatedHTML = "";
+
+        function renderFinalReport() {
+            const jsonStr = document.getElementById('jsonInput').value;
+            if(!jsonStr.trim()) return;
+            try {
+                const cleanJson = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+                const data = JSON.parse(cleanJson);
+                generatedHTML = buildTemplateHTML(data);
+                
+                const iframe = document.getElementById('reportPreview');
+                iframe.srcdoc = generatedHTML;
+                
+            } catch(e) { alert("JSON خاتالىقى: " + e.message); }
+        }
+
+        function saveReportHTML() {
+            if (!generatedHTML) {
+                alert("ئالدى بىلەن ئانالىزلاپ دوكلات ھاسىل قىلىڭ!");
+                return;
+            }
+            const blob = new Blob([generatedHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Bilik_Business_Analysis_v81_${new Date().getTime()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function buildTemplateHTML(data) {
+            const list = (arr, fn) => arr && arr.length ? arr.map(fn).join('') : '';
+            const formatParagraphs = (text) => text ? text.split('\\n').filter(p => p.trim()).map(p => `<p class="indent-[2.5em] text-justify leading-[2] mb-4 text-slate-700 text-[15px]">${p}</p>`).join('') : '';
+
+            return `
+            <!DOCTYPE html>
+            <html lang="ug" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <script src="https://cdn.tailwindcss.com"><\/script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+                <style>
+                    @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'); }
+                    @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'); }
+                    body { font-family: 'UKIJ Ekran', serif; background: #f1f5f9; padding: 20px; padding-bottom: 120px; }
+                    .card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; margin-bottom: 25px; }
+                    .title-tuz { font-family: 'UKIJ Tuz', sans-serif; }
+                    .indent-\\[2\\.5em\\] { text-indent: 2.5em; }
+                </style>
+            </head>
+            <body class="max-w-5xl mx-auto">
+                <div id="report-content">
+                    
+                    <!-- Header -->
+                    <div class="card p-10 text-center bg-slate-800 text-white border-none shadow-xl border-b-4 border-emerald-500">
+                        <div class="text-emerald-400 font-bold uppercase tracking-[0.1em] text-xs mb-4">بىلىك تىجارەت ئانالىزى v8.1 مەخپىي دوكلات</div>
+                        <h1 class="text-3xl font-bold title-tuz mb-4">${data.report_title || 'سودا سۆھبىتى تەھلىل دوكلاتى'}</h1>
+                        <div class="text-xs text-slate-300 font-mono">ئاپتوماتىك ھاسىل قىلىنغان ۋاقىت: ${new Date().toLocaleDateString('ug-CN')}</div>
+                    </div>
+
+                    <!-- 6. Overall Summary (يىغىننىڭ ئومۇمىي خۇلاسىسى) -->
+                    <div class="card p-8 border-r-4 border-emerald-600">
+                        <h2 class="text-2xl font-bold mb-6 text-emerald-800 flex items-center gap-2 title-tuz"><span>📌</span> سۆھبەتنىڭ ئومۇمىي خۇلاسىسى</h2>
+                        
+                        <div class="mb-6">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 bg-slate-100 p-2 rounded">⏱️ ئاساسىي ئۇچۇرلار</h3>
+                            ${formatParagraphs(data.overall_summary?.meta_info)}
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 bg-slate-100 p-2 rounded">📂 پاراڭلىشىلغان چوڭ تۈرلەر</h3>
+                            ${formatParagraphs(data.overall_summary?.projects_overview)}
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 bg-slate-100 p-2 rounded">👥 قاتناشقۇچىلار ئانالىزى</h3>
+                            ${formatParagraphs(data.overall_summary?.participants_eval)}
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 mb-2 bg-slate-100 p-2 rounded">⚖️ شەرىئەتتىكى ئورنى</h3>
+                            ${formatParagraphs(data.overall_summary?.sharia_class)}
+                        </div>
+                    </div>
+
+                    <!-- 2. SWOT Analysis -->
+                    <h2 class="text-2xl font-bold mb-6 mt-10 flex items-center gap-2 title-tuz"><span>🎯</span> سودىدىكى خەتەر ۋە پۇرسەت ئانالىزى (SWOT)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <!-- Strengths -->
+                        <div class="card p-6 border-t-4 border-blue-500 bg-blue-50/30">
+                            <h3 class="font-bold text-blue-700 mb-4 flex items-center gap-2"><span>💪</span> بىزنىڭ ئەۋزەللىكىمىز (Strengths)</h3>
+                            <ul class="space-y-3">
+                                ${list(data.business_analysis?.strengths, s => `<li class="text-sm text-slate-700 flex gap-2"><span class="text-blue-500">✔</span> <span>${s}</span></li>`)}
+                            </ul>
+                        </div>
+                        <!-- Weaknesses -->
+                        <div class="card p-6 border-t-4 border-rose-500 bg-rose-50/30">
+                            <h3 class="font-bold text-rose-700 mb-4 flex items-center gap-2"><span>⚠️</span> بىزنىڭ ئاجىزلىقىمىز (Weaknesses)</h3>
+                            <ul class="space-y-3">
+                                ${list(data.business_analysis?.weaknesses, w => `<li class="text-sm text-slate-700 flex gap-2"><span class="text-rose-500">✘</span> <span>${w}</span></li>`)}
+                            </ul>
+                        </div>
+                        <!-- Opportunities -->
+                        <div class="card p-6 border-t-4 border-emerald-500 bg-emerald-50/30">
+                            <h3 class="font-bold text-emerald-700 mb-4 flex items-center gap-2"><span>🚀</span> پايدا ئېلىش پۇرسەتلىرى (Opportunities)</h3>
+                            <ul class="space-y-3">
+                                ${list(data.business_analysis?.opportunities, o => `<li class="text-sm text-slate-700 flex gap-2"><span class="text-emerald-500">★</span> <span>${o}</span></li>`)}
+                            </ul>
+                        </div>
+                        <!-- Risks -->
+                        <div class="card p-6 border-t-4 border-orange-500 bg-orange-50/30">
+                            <h3 class="font-bold text-orange-700 mb-4 flex items-center gap-2"><span>🔥</span> زىيان تارتىش ئېھتىمالى (Risks)</h3>
+                            <ul class="space-y-3">
+                                ${list(data.business_analysis?.risks, r => `<li class="text-sm text-slate-700 flex gap-2"><span class="text-orange-500">!</span> <span>${r}</span></li>`)}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 3. Legal & Economic Analysis -->
+                    <div class="card p-8 bg-slate-50 mb-10">
+                        <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center gap-2 title-tuz"><span>⚖️</span> قانۇن ۋە ئىقتىساد ئىستراتېگىيەسى</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-5 rounded border border-slate-200">
+                                <h4 class="font-bold text-sky-700 mb-3 text-sm">🌐 خەلقئارا شىركەت قانۇنى</h4>
+                                ${formatParagraphs(data.legal_economic_analysis?.intl_corporate_law)}
+                            </div>
+                            <div class="bg-white p-5 rounded border border-slate-200">
+                                <h4 class="font-bold text-indigo-700 mb-3 text-sm">📈 خەلقئارا ئىقتىساد تەھلىلى</h4>
+                                ${formatParagraphs(data.legal_economic_analysis?.intl_economics)}
+                            </div>
+                            <div class="bg-white p-5 rounded border border-slate-200">
+                                <h4 class="font-bold text-amber-700 mb-3 text-sm">🏛️ ئەرەب دۆلەتلىرى قانۇنى</h4>
+                                ${formatParagraphs(data.legal_economic_analysis?.arab_law)}
+                            </div>
+                            <div class="bg-white p-5 rounded border border-slate-200">
+                                <h4 class="font-bold text-emerald-700 mb-3 text-sm">🕋 ئىسلام شىرىكچىلىك قانۇنى (فىقھى)</h4>
+                                ${formatParagraphs(data.legal_economic_analysis?.islamic_law)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Win/Loss Assessment -->
+                    <div class="card p-8 border-2 border-indigo-200 bg-indigo-50/50 mb-10">
+                        <h2 class="text-2xl font-bold mb-6 text-indigo-900 flex items-center gap-2 title-tuz"><span>💰</span> پايدا-زىيان ھېساباتى ۋە ھۆكۈم</h2>
+                        <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 mb-4 shadow-sm">
+                            <strong class="text-indigo-800 block mb-2">خۇلاسە ھۆكۈم:</strong>
+                            <p class="text-slate-700 font-bold">${data.outcome_assessment?.verdict}</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-l-4 border-pink-500 mb-4 shadow-sm">
+                            <strong class="text-pink-800 block mb-2">تەپسىلىي ھېسابات:</strong>
+                            ${formatParagraphs(data.outcome_assessment?.profit_loss_calc)}
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm">
+                            <strong class="text-purple-800 block mb-2">سەۋەب ۋە ئانالىز:</strong>
+                            ${formatParagraphs(data.outcome_assessment?.detailed_reasoning)}
+                        </div>
+                    </div>
+
+                    <!-- 1. Full Transcript -->
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 title-tuz"><span>🎙️</span> سۆھبەتنىڭ تولۇق تەرجىمىسى (10 مىنۇتلۇق بۆلەكلەر)</h2>
+                    <div class="space-y-6 mb-10">
+                        ${list(data.transcript_intervals, int => `
+                        <div class="card p-6 border-r-4 border-slate-400">
+                            <div class="inline-block bg-slate-800 text-white px-3 py-1 rounded text-xs font-mono mb-4">⏱️ ${int.time}</div>
+                            ${formatParagraphs(int.text)}
+                        </div>
+                        `)}
+                    </div>
+
+                    <!-- 7. Language Learning -->
+                    <div class="card p-8 bg-slate-900 text-white mb-10 border-none">
+                        <h2 class="text-xl font-bold mb-6 text-amber-400 flex items-center gap-2 title-tuz"><span>📚</span> سودا تىلى ئۆگىنىش (مۇھىم 5 جۈملە)</h2>
+                        <div class="space-y-4">
+                            ${list(data.language_learning, lang => `
+                            <div class="bg-white/10 p-4 rounded-lg border border-white/20">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="font-amiri text-lg text-emerald-300 dir-auto" dir="auto">${lang.phrase_original}</div>
+                                    <span class="text-[10px] bg-slate-700 px-2 py-1 rounded">${lang.language}</span>
+                                </div>
+                                <p class="text-sm text-slate-300 text-justify">${lang.meaning_uy}</p>
+                            </div>
+                            `)}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FLOATING CONTROLS FOR TTS & PDF -->
+                <div id="controlsContainer" class="fixed bottom-4 left-4 z-50 flex items-end gap-2" data-html2canvas-ignore="true">
+                    <button onclick="toggleControls()" id="toggleBtn" class="bg-slate-800 text-white w-8 h-8 rounded-full shadow-xl flex items-center justify-center text-xs hover:bg-slate-700 transition">⚙️</button>
+                    
+                    <div id="controlPanelMain" class="hidden bg-slate-900/95 backdrop-blur-sm p-2 rounded-lg shadow-2xl border border-slate-700 flex flex-col gap-2 w-64">
+                        <div class="flex gap-1">
+                            <select id="voiceSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-full dir-ltr focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                            </select>
+                            <select id="rateSelect" class="bg-slate-700 text-white text-[10px] p-1 rounded w-14 text-center focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                <option value="1.0">1.0x</option>
+                                <option value="1.5" selected>1.5x</option>
+                                <option value="2.0">2.0x</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-5 gap-1">
+                            <button onclick="prevChunk()" class="bg-slate-600 hover:bg-slate-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئالدىنقى">⏮</button>
+                            <button onclick="startReading()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئوقۇش">▶</button>
+                            <button onclick="nextChunk()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-1.5 rounded text-[10px] font-bold" title="كېيىنكى">⏭</button>
+                            <button onclick="stopReading()" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded text-[10px] font-bold" title="توختا">■</button>
+                            <button onclick="savePDF()" class="bg-amber-600 hover:bg-amber-500 text-white p-1.5 rounded text-[10px] font-bold" title="PDF">📄</button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+                    const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+                    function convertForTTS(text, map) {
+                        return text.split('').map(c => map[c] || c).join('');
+                    }
+
+                    let chunks = [];
+                    let chunkIndex = 0;
+                    let isReading = false;
+
+                    function toggleControls() {
+                        const panel = document.getElementById('controlPanelMain');
+                        const btn = document.getElementById('toggleBtn');
+                        if (panel.classList.contains('hidden')) {
+                            panel.classList.remove('hidden');
+                            btn.innerHTML = '▼';
+                        } else {
+                            panel.classList.add('hidden');
+                            btn.innerHTML = '⚙️';
+                        }
+                    }
+
+                    function startReading() {
+                        stopReading();
+                        isReading = true;
+                        
+                        const voiceVal = document.getElementById('voiceSelect').value;
+                        const reportEl = document.getElementById('report-content');
+                        let clone = reportEl.cloneNode(true);
+                        
+                        const noTts = clone.querySelectorAll('.no-tts, .dir-auto');
+                        noTts.forEach(el => el.remove());
+                        let fullText = clone.innerText;
+
+                        let rawChunks = fullText.split(/\\n+/);
+                        chunks = [];
+                        let lastChunk = "";
+                        for (let i = 0; i < rawChunks.length; i++) {
+                            let clean = rawChunks[i].trim();
+                            if (clean.length > 0 && clean !== lastChunk) {
+                                chunks.push(clean);
+                                lastChunk = clean;
+                            }
+                        }
+
+                        chunkIndex = 0;
+                        speakNextChunk();
+                    }
+
+                    function speakNextChunk() {
+                        if (!isReading) return;
+                        if (chunkIndex >= chunks.length) {
+                            isReading = false;
+                            return;
+                        }
+
+                        const voiceVal = document.getElementById('voiceSelect').value;
+                        const rateVal = parseFloat(document.getElementById('rateSelect').value);
+                        let chunkText = chunks[chunkIndex];
+                        let finalText = chunkText;
+
+                        if(voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+                        else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+                        const utterance = new SpeechSynthesisUtterance(finalText);
+                        const voices = window.speechSynthesis.getVoices();
+                        let chosenVoice = null;
+                        
+                        if(voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+                        else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+
+                        if(chosenVoice) utterance.voice = chosenVoice;
+                        utterance.rate = rateVal;
+
+                        utterance.onend = function() {
+                            if (isReading) {
+                                chunkIndex++;
+                                speakNextChunk();
+                            }
+                        };
+                        utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    function nextChunk() {
+                        if (!isReading || chunks.length === 0) return;
+                        window.speechSynthesis.cancel();
+                    }
+
+                    function prevChunk() {
+                        if (!isReading || chunks.length === 0) return;
+                        if (chunkIndex > 0) {
+                            chunkIndex -= 2; 
+                            if (chunkIndex < -1) chunkIndex = -1;
+                            window.speechSynthesis.cancel();
+                        }
+                    }
+
+                    function stopReading() { 
+                        isReading = false;
+                        window.speechSynthesis.cancel(); 
+                    }
+
+                    function savePDF() {
+                        const el = document.getElementById('report-content');
+                        const d = new Date();
+                        const f = (n) => n.toString().padStart(2, '0');
+                        const fname = \`Bilik_Business_81_\${d.getFullYear()}-\${f(d.getMonth()+1)}-\${f(d.getDate())}_\${f(d.getHours())}-\${f(d.getMinutes())}.pdf\`;
+                        
+                        const opt = { margin: [10,10,10,10], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
+                        html2pdf().set(opt).from(el).save();
+                    }
+                <\/script>
+            </body>
+            </html>`;
+        }
+
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('clock').innerText = d.toLocaleDateString('ug-CN') + ' ' + d.toLocaleTimeString('ug-CN');
+        }, 1000);
+    </script>
+</body>
+</html>
