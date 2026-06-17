@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بىلىك سلايد ياسىغۇچ · 83</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLDJH96FKW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BLDJH96FKW');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'), local('UKIJ_Tuz'); }
+        @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'), local('UKIJ_Ekran'); }
+
+        body { font-family: "UKIJ Tuz", "Noto Naskh Arabic", serif; background: #050810; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #3b3f5c; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        #progress-bar {
+            height: 3px;
+            transition: width 0.4s ease;
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            box-shadow: 0 0 8px rgba(139,92,246,0.6);
+        }
+
+        .slide-wrapper { display: none; width: 100%; height: 100%; position: absolute; inset: 0; }
+        .slide-wrapper.active { display: flex; flex-direction: column; animation: slideIn 0.35s cubic-bezier(.4,0,.2,1); }
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.965); } to { opacity: 1; transform: scale(1); } }
+
+        [contenteditable="true"]:focus { outline: 2px dashed rgba(139,92,246,0.7); border-radius: 4px; min-width: 20px; }
+        [contenteditable="true"]:hover { outline: 1px dashed rgba(255,255,255,0.2); border-radius: 3px; cursor: text; }
+
+        .tts-on { animation: ttsPulse 0.9s ease infinite; }
+        @keyframes ttsPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,.5); } 50% { box-shadow: 0 0 0 8px rgba(139,92,246,0); } }
+
+        /* Responsive slide typography */
+        .s-title   { font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 900; line-height: 1.25; }
+        .s-sub     { font-size: clamp(1rem, 2vw, 1.5rem); line-height: 1.5; opacity: .85; }
+        .s-body    { font-size: clamp(0.9rem, 1.5vw, 1.2rem); line-height: 1.95; }
+        .s-point   { font-size: clamp(0.85rem, 1.4vw, 1.1rem); line-height: 1.75; }
+        .s-quote   { font-size: clamp(1.2rem, 2.6vw, 2.1rem); line-height: 1.65; font-style: italic; }
+        .s-label   { font-size: clamp(0.68rem, 1vw, 0.88rem); letter-spacing: .06em; font-weight: 700; }
+        .s-small   { font-size: clamp(0.75rem, 1.1vw, 0.95rem); line-height: 1.65; }
+        .s-lesson  { font-size: clamp(0.82rem, 1.3vw, 1rem); }
+        .s-takeaway{ font-size: clamp(0.85rem, 1.3vw, 1.05rem); line-height: 1.6; }
+
+        /* Fullscreen tweaks */
+        #slideViewer:fullscreen { background: #000; }
+        #slideViewer:-webkit-full-screen { background: #000; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+<!-- ═══ GLOBAL NAV ═══ -->
+<nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;flex-shrink:0;">
+    <style>
+        #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+        #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#22c55e;letter-spacing:.1em;white-space:nowrap;}
+        #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+        #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+        #bilik-global-nav a.bgn.active{background:#7c3aed;color:#fff;border-color:#8b5cf6;box-shadow:0 0 8px rgba(139,92,246,.4);}
+    </style>
+    <div id="bilik-global-nav-wrap">
+        <span class="bgl">بىلىك قۇراللىرى:</span>
+        <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+        <a href="02.html" data-page="02.html" class="bgn">02 · ماقالە</a>
+        <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+        <a href="81.html" data-page="81.html" class="bgn">81 · سودا سۆھبىتى</a>
+        <a href="82.html" data-page="82.html" class="bgn">82 · ۋىديو ئانالىز</a>
+        <a href="83.html" data-page="83.html" class="bgn">83 · سلايد ياسىغۇچ</a>
+        <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+        <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+        <a href="87.html" data-page="87.html" class="bgn">87 · 6 مۇتەخەسسىس</a>
+        <a href="88.html" data-page="88.html" class="bgn">88 · خىتاي</a>
+        <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
+        <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
+    </div>
+</nav>
+<script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
+
+<!-- ═══ HEADER ═══ -->
+<header class="border-b border-slate-800 bg-slate-950 flex items-center justify-between px-5 py-2.5 z-50 shadow-2xl flex-shrink-0">
+    <div class="flex items-center gap-3">
+        <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/Biliklogo.png" alt="Bilik" class="w-9 h-9 rounded-lg object-contain bg-slate-800 p-0.5">
+        <div>
+            <h1 class="text-base font-black text-white leading-tight">بىلىك سلايد ياسىغۇچ <span class="text-violet-400 text-[10px] font-mono">v1.0</span></h1>
+            <p class="text-[9px] text-slate-500 font-mono tracking-widest uppercase">Bilik Research Center · AI Slide Builder · 83</p>
+        </div>
+    </div>
+    <div id="clock" class="text-xs text-violet-400 font-mono tabular-nums"></div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<div class="flex-1 flex overflow-hidden">
+
+    <!-- ▌SLIDE VIEWER ▐ -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-950 relative" id="slideViewer">
+
+        <!-- Progress bar -->
+        <div class="h-[3px] bg-slate-800/60 flex-shrink-0 relative">
+            <div id="progress-bar" style="width:0%"></div>
+        </div>
+
+        <!-- Slide area -->
+        <div class="flex-1 relative overflow-hidden bg-gray-950" id="slideArea">
+            <div id="slidePlaceholder" class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-25 pointer-events-none">
+                <div class="text-7xl">📊</div>
+                <p class="text-slate-400 text-lg text-center" style="font-family:'UKIJ Tuz','Noto Naskh Arabic',serif;">يان تەرەپتىن JSON چاپلاپ سلايد ياساڭ</p>
+            </div>
+        </div>
+
+        <!-- Controls bar -->
+        <div class="flex-shrink-0 border-t border-slate-800/80 bg-slate-950/95 backdrop-blur px-4 py-2 flex items-center gap-2">
+
+            <!-- Navigation -->
+            <div class="flex items-center gap-1.5">
+                <button onclick="prevSlide()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-violet-800 text-white flex items-center justify-center text-base transition-colors" title="ئالدىنقى (←)">❮</button>
+                <span id="slideCounter" class="text-xs text-slate-400 font-mono w-14 text-center select-none">0 / 0</span>
+                <button onclick="nextSlide()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-violet-800 text-white flex items-center justify-center text-base transition-colors" title="كىيىنكى (→)">❯</button>
+            </div>
+
+            <div class="w-px h-6 bg-slate-700 mx-1"></div>
+
+            <!-- TTS -->
+            <button onclick="toggleTTS()" id="ttsBtn" class="flex items-center gap-1 bg-slate-800 hover:bg-indigo-900 text-white text-[11px] px-2.5 py-1.5 rounded-lg transition-colors font-bold">🔊 ئوقۇ</button>
+            <button onclick="stopTTS()" class="w-7 h-7 bg-slate-800 hover:bg-red-900/70 text-white rounded-lg text-xs flex items-center justify-center transition-colors" title="توختات">⏹</button>
+
+            <div class="w-px h-6 bg-slate-700 mx-1"></div>
+
+            <!-- Edit -->
+            <button onclick="toggleEdit()" id="editBtn" class="flex items-center gap-1 bg-slate-800 hover:bg-amber-900/70 text-white text-[11px] px-2.5 py-1.5 rounded-lg transition-colors font-bold">✏️ تۈزەت</button>
+
+            <!-- Spacer -->
+            <div class="flex-1"></div>
+
+            <!-- Save & Fullscreen -->
+            <button onclick="saveSlideHTML()" class="flex items-center gap-1 bg-violet-700 hover:bg-violet-600 text-white text-[11px] px-3 py-1.5 rounded-lg transition-colors font-bold shadow-lg">
+                📥 HTML ساقلاش
+            </button>
+            <button onclick="toggleFullscreen()" id="fsBtn" class="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 text-white text-[11px] px-3 py-1.5 rounded-lg transition-colors font-bold">
+                ⛶ پۈتۈن ئىكران
+            </button>
+        </div>
+    </div>
+
+    <!-- ▌INPUT PANEL ▐ -->
+    <aside class="w-[390px] flex-shrink-0 border-r border-slate-800 bg-slate-900/40 flex flex-col overflow-hidden">
+
+        <!-- STEP 1 -->
+        <div class="flex-shrink-0 p-3 border-b border-slate-800 space-y-2.5">
+            <div class="flex items-center gap-2">
+                <span class="bg-violet-700 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black flex-shrink-0">1</span>
+                <span class="text-[11px] font-bold text-slate-200">مەزمۇن ۋە تەلەپ كىرگۈزۈڭ</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[10px] text-slate-500 block mb-1">سلايد سانى (سۈكۈت: 15)</label>
+                    <input id="slideCount" type="number" min="3" max="60" value="15"
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none focus:border-violet-500 transition-colors text-center">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-500 block mb-1">سلايد تىلى</label>
+                    <select id="slideLanguage" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-violet-500 transition-colors">
+                        <option value="ug">ئۇيغۇرچە</option>
+                        <option value="tr">تۈركچە</option>
+                        <option value="ar">ئەرەبچە</option>
+                        <option value="en">ئىنگلىزچە</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[10px] text-slate-500 block mb-1">ئالاھىدە تەلەپ (ئىختىيارى)</label>
+                <textarea id="userExtraPrompt" rows="2"
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 outline-none focus:border-violet-500 transition-colors resize-none"
+                    placeholder="مەسىلەن: ياشلارغا مۆلچەرلەنسۇن، ئۇيغۇر ئائىلىسىدىن مىسال ئالسۇن..."></textarea>
+            </div>
+
+            <div>
+                <label class="text-[10px] text-slate-500 block mb-1">ئانالىزلىنىدىغان مەزمۇن</label>
+                <textarea id="mainContent" rows="5"
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 outline-none focus:border-violet-500 transition-colors resize-none"
+                    placeholder="ئانالىز قىلىنىدىغان ئۇزۇن مەزمۇننى بۇ يەرگە چاپلاڭ..."></textarea>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="buildPrompt()" class="flex-1 bg-violet-700 hover:bg-violet-600 text-white text-xs py-2 rounded-lg font-bold transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-violet-900/30">
+                    ⚡ پرومپت ياسا
+                </button>
+                <button onclick="copyPrompt()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-xs py-2 rounded-lg font-bold transition-colors flex items-center justify-center gap-1.5">
+                    📋 كۆچۈر
+                </button>
+            </div>
+        </div>
+
+        <!-- Generated Prompt Display -->
+        <div class="flex-shrink-0 p-3 border-b border-slate-800">
+            <label class="text-[10px] text-violet-400 font-bold block mb-1.5">↑ گېمىناي / ChatGPT غا چاپلاڭ → JSON ئالىڭ</label>
+            <textarea id="generatedPrompt" readonly rows="4"
+                class="w-full bg-slate-950 border border-violet-900/50 rounded-lg px-3 py-2 text-[9px] font-mono text-violet-300 outline-none resize-none border-dashed leading-relaxed"
+                placeholder="«پرومپت ياسا» نى باسسىڭىز بۇ يەردە تەييار بولىدۇ..."></textarea>
+        </div>
+
+        <!-- STEP 2: JSON paste -->
+        <div class="flex-1 p-3 flex flex-col min-h-0">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="bg-amber-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black flex-shrink-0">2</span>
+                <span class="text-[11px] font-bold text-slate-200">AI قايتۇرغان JSON نى چاپلاڭ</span>
+            </div>
+
+            <textarea id="jsonInput"
+                class="flex-1 bg-slate-950 border border-slate-700 rounded-xl p-3 text-[10px] font-mono text-amber-300 outline-none focus:border-amber-500 transition-colors resize-none leading-relaxed"
+                placeholder='{ "presentation_title": "...", "slides": [ ... ] }' dir="ltr"></textarea>
+
+            <button onclick="buildSlides()" class="mt-2.5 w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black py-3 rounded-xl text-sm transition-all shadow-lg shadow-amber-900/30 flex items-center justify-center gap-2">
+                🎬 سلايد ياسا
+            </button>
+        </div>
+    </aside>
+</div>
+
+<script>
+/* ─── Clock ─── */
+(function tick() {
+    const d = new Date();
+    document.getElementById('clock').textContent = d.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    setTimeout(tick, 1000);
+})();
+
+/* ─── State ─── */
+let slides = [], cur = 0, editMode = false, ttsActive = false;
+
+/* ─── Slide backgrounds (cycling) ─── */
+const BGROUPS = [
+    'linear-gradient(150deg,#020617 0%,#0f172a 30%,#1e1b4b 60%,#312e81 100%)',   // 0 indigo-deep
+    'linear-gradient(135deg,#0d1b2a 0%,#1b3a5c 50%,#0d3b6e 100%)',               // 1 navy
+    'linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)',               // 2 teal-dark
+    'linear-gradient(135deg,#1a0533 0%,#3d0f8f 50%,#5b21b6 100%)',               // 3 purple
+    'linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%)',               // 4 emerald
+    'linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#3730a3 100%)',               // 5 indigo
+    'linear-gradient(135deg,#0c4a6e 0%,#075985 50%,#0369a1 100%)',               // 6 sky
+    'linear-gradient(135deg,#134e4a 0%,#0f766e 50%,#0d9488 100%)',               // 7 teal
+    'linear-gradient(135deg,#1e3a5f 0%,#1e40af 50%,#2563eb 100%)',               // 8 blue
+    'linear-gradient(135deg,#14532d 0%,#166534 50%,#15803d 100%)',               // 9 green
+];
+const TYPE_BG = {
+    cover:      'linear-gradient(150deg,#020617 0%,#0f172a 25%,#1e1b4b 55%,#4c1d95 85%,#6d28d9 100%)',
+    example:    'linear-gradient(135deg,#431407 0%,#7c2d12 45%,#9a3412 75%,#b45309 100%)',
+    quote:      'linear-gradient(135deg,#1a0533 0%,#581c87 50%,#7e22ce 100%)',
+    conclusion: 'linear-gradient(135deg,#052e16 0%,#14532d 50%,#15803d 100%)',
+};
+
+function getSlideBG(slide, idx) {
+    return TYPE_BG[slide.type] || BGROUPS[idx % BGROUPS.length];
+}
+
+/* ─── HTML escape ─── */
+function h(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+/* ─── Prompt builder ─── */
+function buildPrompt() {
+    const count  = parseInt(document.getElementById('slideCount').value) || 15;
+    const lang   = document.getElementById('slideLanguage').value;
+    const extra  = document.getElementById('userExtraPrompt').value.trim();
+    const content= document.getElementById('mainContent').value.trim();
+
+    const langLabel = {ug:'ئۇيغۇرچە', tr:'تۈركچە', ar:'ئەرەبچە', en:'English'}[lang] || 'ئۇيغۇرچە';
+
+    const schema = `{
+  "presentation_title": "پرېزېنتاتسىيە ئاتى",
+  "subtitle": "كىچىك تېما ياكى تارىخ",
+  "keywords": ["كىليۇچى سۆز 1","2","3"],
+  "slides": [
+    {"id":1,"type":"cover","title":"باش تېما","subtitle":"چۈشەندۈرمە ياكى ئىزاھ","highlights":["مۇھىم نۇقتا 1","نۇقتا 2","نۇقتا 3"]},
+    {"id":2,"type":"content","title":"بۆلۈم ئىسمى","body":"ئاساسىي مەزمۇن تېكىستى...","points":["نۇقتا 1","نۇقتا 2","نۇقتا 3"],"example":{"label":"ئەمەلىي مىسال","text":"قىسقا مىسال مەزمۇنى..."}},
+    {"id":3,"type":"example","title":"ئەمەلىي ۋەقە","case_title":"مىسال تېمىسى","case_body":"تەپسىلاتلىق ۋەقە مەزمۇنى...","lesson":"بۇ مىسالدىن ئۆگىنىدىغىنىمىز: ..."},
+    {"id":4,"type":"quote","title":"مۇھىم سۆز","quote":"مەشھۇر ياكى مۇھىم ئاتالغۇ...","source":"ئاپتور ياكى مەنبە"},
+    {"id":5,"type":"conclusion","title":"خۇلاسە","summary":"ئومۇمىي خۇلاسە مەزمۇنى...","takeaways":["ئاساسىي نۇقتا 1","نۇقتا 2","نۇقتا 3"],"call_to_action":"كىيىنكى قەدەم ياكى چاقىرىق"}
+  ]
+}`;
+
+    const prompt = `مەزمۇن:
+${content || '(مەزمۇن يوق — ئۆزىڭىز قوشۇڭ)'}
+
+تەلەپلەر:
+• پۈتۈن مەزمۇن ${langLabel} بولسۇن
+• جەمئىي سلايد سانى: ${count} دانە
+• چوقۇم 2–3 دانە ئاممىۋى خەلقنىڭ دىققىتىنى تارتىدىغان ئەمەلىي مىسال قوشۇلسۇن (type:"example")
+• سلايد تۈرلىرى: cover × 1، content × (نۇرغۇن)، example × 2-3، quote × 1-2، conclusion × 1
+• "بىلىك تەتقىقات مەركىزى" بىلىملىك ئۇقۇم بىلەن ئىشلىتىلسۇن${extra ? '\n• ئالاھىدە تەلەپ: ' + extra : ''}
+
+پەقەت تۆۋەندىكى JSON فورماتىدا جاۋاب بەر، باشقا ھەرقانداق سۆز ياكى چۈشەندۈرمە قوشما:
+
+${schema}`;
+
+    document.getElementById('generatedPrompt').value = prompt;
+}
+
+function copyPrompt() {
+    const ta = document.getElementById('generatedPrompt');
+    if (!ta.value.trim()) buildPrompt();
+    navigator.clipboard.writeText(ta.value).then(() => {
+        alert('پرومپت كۆچۈرۈلدى! گۇگېل گېمىناي ياكى ChatGPT غا چاپلاپ JSON ئالىڭ.');
+    }).catch(() => { ta.select(); document.execCommand('copy'); alert('پرومپت كۆچۈرۈلدى!'); });
+}
+
+/* ─── JSON parsing ─── */
+function parseJSON(raw) {
+    const fen = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    let s = (fen ? fen[1] : raw).trim();
+    const fb = Math.min(s.indexOf('{') >= 0 ? s.indexOf('{') : 1e9, s.indexOf('[') >= 0 ? s.indexOf('[') : 1e9);
+    if (fb < 1e9) s = s.slice(fb);
+    const lb = Math.max(s.lastIndexOf('}'), s.lastIndexOf(']'));
+    if (lb > -1) s = s.slice(0, lb + 1);
+    return JSON.parse(s.replace(/,\s*([}\]])/g, '$1'));
+}
+
+/* ─── Slide rendering ─── */
+const LOGO = `<div style="position:absolute;top:16px;left:18px;display:flex;align-items:center;gap:8px;z-index:10;pointer-events:none;">
+    <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/Biliklogo.png" style="width:30px;height:30px;border-radius:6px;object-fit:contain;background:rgba(255,255,255,.08);padding:2px;" alt="">
+    <span style="font-size:9px;color:rgba(255,255,255,.45);font-weight:700;letter-spacing:.07em;">بىلىك تەتقىقات مەركىزى</span>
+</div>`;
+
+function numBadge(idx, total) {
+    return `<div style="position:absolute;bottom:14px;right:18px;font-size:10px;color:rgba(255,255,255,.28);font-family:monospace;pointer-events:none;">${idx+1} / ${total}</div>`;
+}
+
+function renderSlide(slide, idx, total) {
+    const nb = numBadge(idx, total);
+
+    switch (slide.type) {
+
+        case 'cover': return `
+<div style="width:100%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 80px 60px;text-align:center;overflow:hidden;">
+    ${LOGO}
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 60%,rgba(109,40,217,.18) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="s-label" style="color:rgba(167,139,250,.75);margin-bottom:14px;">${h(slide.subtitle || '')}</div>
+    <h1 class="s-title" style="color:#fff;margin-bottom:20px;text-shadow:0 4px 30px rgba(0,0,0,.6);">${h(slide.title || '')}</h1>
+    ${slide.highlights?.length ? `<div style="display:flex;flex-direction:column;gap:9px;margin-top:12px;align-items:center;">
+        ${slide.highlights.map(hl => `<div style="background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.38);border-radius:30px;padding:6px 22px;" class="s-point"><span style="color:rgba(221,214,254,.9);">${h(hl)}</span></div>`).join('')}
+    </div>` : ''}
+    ${nb}
+</div>`;
+
+        case 'example': return `
+<div style="width:100%;height:100%;position:relative;display:flex;flex-direction:column;padding:55px 55px 48px;overflow:hidden;">
+    ${LOGO}
+    <div style="position:absolute;top:14px;right:18px;background:rgba(251,191,36,.2);border:1px solid rgba(251,191,36,.45);border-radius:20px;padding:3px 13px;" class="s-label"><span style="color:rgba(253,230,138,.9);">📍 ئەمەلىي مىسال</span></div>
+    <div style="margin-top:22px;">
+        <div class="s-label" style="color:rgba(251,191,36,.65);margin-bottom:5px;">${h(slide.title || '')}</div>
+        <h2 style="font-size:clamp(1.3rem,2.8vw,2.1rem);font-weight:900;color:#fff;line-height:1.3;margin-bottom:18px;">${h(slide.case_title || '')}</h2>
+    </div>
+    <div style="flex:1;background:rgba(0,0,0,.28);border:1px solid rgba(251,191,36,.2);border-radius:14px;padding:22px;overflow-y:auto;">
+        <p class="s-body" style="color:rgba(253,230,138,.88);line-height:1.95;">${h(slide.case_body || '')}</p>
+    </div>
+    ${slide.lesson ? `<div style="margin-top:14px;background:rgba(251,191,36,.12);border-right:4px solid rgba(251,191,36,.6);padding:11px 16px;border-radius:8px;display:flex;align-items:flex-start;gap:8px;">
+        <span style="font-size:14px;flex-shrink:0;">💡</span>
+        <p class="s-lesson" style="color:rgba(253,230,138,.85);"><strong style="color:rgba(251,191,36,.9);">ئۆگىنىدىغىنىمىز: </strong>${h(slide.lesson)}</p>
+    </div>` : ''}
+    ${nb}
+</div>`;
+
+        case 'quote': return `
+<div style="width:100%;height:100%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 90px 60px;text-align:center;overflow:hidden;">
+    ${LOGO}
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 50% 50%,rgba(126,34,206,.15) 0%,transparent 65%);pointer-events:none;"></div>
+    ${slide.title ? `<div class="s-label" style="color:rgba(216,180,254,.5);margin-bottom:18px;">${h(slide.title)}</div>` : ''}
+    <div style="font-size:clamp(5rem,9vw,8rem);color:rgba(167,139,250,.18);line-height:.85;font-family:Georgia,serif;margin-bottom:-18px;">"</div>
+    <blockquote class="s-quote" style="color:rgba(233,213,255,.93);max-width:820px;margin-bottom:28px;">${h(slide.quote || '')}</blockquote>
+    ${slide.source ? `<p class="s-small" style="color:rgba(196,181,253,.6);letter-spacing:.08em;">— ${h(slide.source)}</p>` : ''}
+    ${nb}
+</div>`;
+
+        case 'conclusion': return `
+<div style="width:100%;height:100%;position:relative;display:flex;flex-direction:column;padding:52px 55px 48px;overflow:hidden;">
+    ${LOGO}
+    <div style="position:absolute;top:14px;right:18px;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.38);border-radius:20px;padding:3px 13px;" class="s-label"><span style="color:rgba(134,239,172,.9);">✅ خۇلاسە</span></div>
+    <h2 style="font-size:clamp(1.5rem,3vw,2.3rem);font-weight:900;color:#fff;line-height:1.25;margin-top:22px;margin-bottom:14px;">${h(slide.title || 'خۇلاسە')}</h2>
+    ${slide.summary ? `<p class="s-body" style="color:rgba(167,243,208,.82);margin-bottom:18px;line-height:1.9;">${h(slide.summary)}</p>` : ''}
+    ${slide.takeaways?.length ? `<div style="flex:1;display:flex;flex-direction:column;gap:9px;margin-bottom:14px;overflow:hidden;">
+        ${slide.takeaways.map((t,i) => `<div style="display:flex;align-items:flex-start;gap:12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);border-radius:10px;padding:10px 16px;">
+            <span style="color:rgba(34,197,94,.85);font-weight:900;font-size:1rem;flex-shrink:0;margin-top:1px;">${i+1}</span>
+            <p class="s-takeaway" style="color:rgba(187,247,208,.88);">${h(t)}</p>
+        </div>`).join('')}
+    </div>` : ''}
+    ${slide.call_to_action ? `<div style="background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.4);border-radius:12px;padding:13px 20px;text-align:center;">
+        <p style="font-size:clamp(.9rem,1.5vw,1.15rem);color:rgba(167,243,208,.95);font-weight:700;">🚀 ${h(slide.call_to_action)}</p>
+    </div>` : ''}
+    ${nb}
+</div>`;
+
+        default: /* content */ return `
+<div style="width:100%;height:100%;position:relative;display:flex;flex-direction:column;padding:52px 55px 48px;overflow:hidden;">
+    ${LOGO}
+    <h2 style="font-size:clamp(1.5rem,3vw,2.3rem);font-weight:900;color:#fff;line-height:1.28;margin-top:22px;margin-bottom:16px;">${h(slide.title || '')}</h2>
+    ${slide.body ? `<p class="s-body" style="color:rgba(226,232,240,.82);margin-bottom:16px;">${h(slide.body)}</p>` : ''}
+    ${slide.points?.length ? `<div style="flex:1;display:flex;flex-direction:column;gap:10px;${slide.example ? 'margin-bottom:14px;' : ''}overflow:hidden;">
+        ${slide.points.map(pt => `<div style="display:flex;align-items:flex-start;gap:13px;">
+            <div style="width:7px;height:7px;border-radius:50%;background:rgba(139,92,246,.85);flex-shrink:0;margin-top:8px;"></div>
+            <p class="s-point" style="color:rgba(203,213,225,.88);">${h(pt)}</p>
+        </div>`).join('')}
+    </div>` : ''}
+    ${slide.example ? `<div style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.28);border-right:4px solid rgba(139,92,246,.65);border-radius:10px;padding:13px 17px;margin-top:auto;">
+        <p class="s-label" style="color:rgba(196,181,253,.75);margin-bottom:6px;">📍 ${h(slide.example.label || 'ئەمەلىي مىسال')}</p>
+        <p class="s-small" style="color:rgba(221,214,254,.82);line-height:1.75;">${h(slide.example.text || '')}</p>
+    </div>` : ''}
+    ${nb}
+</div>`;
+    }
+}
+
+/* ─── Build slides from JSON ─── */
+function buildSlides() {
+    const raw = document.getElementById('jsonInput').value.trim();
+    if (!raw) { alert('JSON چاپلاڭ!'); return; }
+
+    let data;
+    try { data = parseJSON(raw); } catch(e) { alert('JSON خاتالىقى: ' + e.message); return; }
+
+    slides = data.slides || [];
+    if (!slides.length) { alert('سلايد تېپىلمىدى!'); return; }
+
+    const area = document.getElementById('slideArea');
+    document.getElementById('slidePlaceholder')?.remove();
+    area.querySelectorAll('.slide-wrapper').forEach(el => el.remove());
+
+    slides.forEach((slide, i) => {
+        const div = document.createElement('div');
+        div.className = 'slide-wrapper';
+        div.id = `sw${i}`;
+        div.style.background = getSlideBG(slide, i);
+        div.innerHTML = renderSlide(slide, i, slides.length);
+        area.appendChild(div);
+    });
+
+    cur = 0;
+    showSlide(0);
+    editMode = false;
+    document.getElementById('editBtn').textContent = '✏️ تۈزەت';
+    document.getElementById('editBtn').style.background = '';
+}
+
+/* ─── Navigation ─── */
+function showSlide(idx) {
+    document.querySelectorAll('.slide-wrapper').forEach((el, i) => el.classList.toggle('active', i === idx));
+    document.getElementById('slideCounter').textContent = `${idx + 1} / ${slides.length}`;
+    const pct = slides.length > 1 ? (idx / (slides.length - 1)) * 100 : 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    cur = idx;
+    if (editMode) applyEditable(true);
+    stopTTS();
+}
+
+function nextSlide() { if (cur < slides.length - 1) showSlide(cur + 1); }
+function prevSlide() { if (cur > 0) showSlide(cur - 1); }
+
+document.addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowDown')  nextSlide();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp')    prevSlide();
+    if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+});
+
+/* ─── Edit mode ─── */
+function applyEditable(on) {
+    const active = document.querySelector('.slide-wrapper.active');
+    if (!active) return;
+    active.querySelectorAll('h1,h2,h3,h4,p,blockquote').forEach(el => {
+        if (on) el.setAttribute('contenteditable', 'true');
+        else     el.removeAttribute('contenteditable');
+    });
+}
+
+function toggleEdit() {
+    editMode = !editMode;
+    const btn = document.getElementById('editBtn');
+    if (editMode) {
+        btn.style.background = 'rgba(146,64,14,.7)';
+        btn.style.color = '#fef3c7';
+        btn.textContent = '✏️ تۈزىتىش يوشۇن';
+    } else {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.textContent = '✏️ تۈزەت';
+    }
+    applyEditable(editMode);
+}
+
+/* ─── TTS ─── */
+function toggleTTS() {
+    if (ttsActive) { stopTTS(); return; }
+    const active = document.querySelector('.slide-wrapper.active');
+    if (!active) return;
+    const text = active.innerText
+        .replace(/بىلىك تەتقىقات مەركىزى/g, '')
+        .replace(/\d+ \/ \d+/g, '')
+        .trim();
+    if (!('speechSynthesis' in window)) { alert('بۇ توركۆرگۈ ئاۋاز ئوقۇشنى قوللىمايدۇ.'); return; }
+    stopTTS();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'ar-SA';
+    utt.rate = 0.82;
+    utt.pitch = 1.05;
+    utt.onend = () => { ttsActive = false; document.getElementById('ttsBtn').classList.remove('tts-on'); };
+    utt.onerror = () => { ttsActive = false; };
+    window.speechSynthesis.speak(utt);
+    ttsActive = true;
+    document.getElementById('ttsBtn').classList.add('tts-on');
+}
+
+function stopTTS() {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    ttsActive = false;
+    document.getElementById('ttsBtn').classList.remove('tts-on');
+}
+
+/* ─── Fullscreen ─── */
+function toggleFullscreen() {
+    const el = document.getElementById('slideViewer');
+    if (!document.fullscreenElement) {
+        el.requestFullscreen().catch(err => console.warn('Fullscreen:', err));
+    } else {
+        document.exitFullscreen();
+    }
+}
+document.addEventListener('fullscreenchange', () => {
+    document.getElementById('fsBtn').textContent = document.fullscreenElement ? '✕ ئادەتتىكى' : '⛶ پۈتۈن ئىكران';
+});
+
+/* ─── Save HTML ─── */
+function saveSlideHTML() {
+    if (!slides.length) { alert('ئالدى بىلەن سلايد ياساڭ!'); return; }
+
+    const allWrappers = Array.from(document.querySelectorAll('.slide-wrapper'));
+    const slidesHTML = allWrappers.map((el, i) =>
+        `<div class="slide-wrapper${i===0?' active':''}" style="${el.style.cssText}">${el.innerHTML}</div>`
+    ).join('\n');
+
+    const total = allWrappers.length;
+
+    const html = `<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بىلىك سلايد · بىلىك تەتقىقات مەركىزى</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'UKIJ Tuz';src:local('UKIJ Tuz'),local('UKIJ_Tuz');}
+@font-face{font-family:'UKIJ Ekran';src:local('UKIJ Ekran'),local('UKIJ_Ekran');}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"UKIJ Tuz","Noto Naskh Arabic",serif;background:#000;overflow:hidden;height:100vh;width:100vw;}
+.slide-wrapper{display:none;width:100%;height:100vh;position:absolute;inset:0;overflow:hidden;}
+.slide-wrapper.active{display:flex;flex-direction:column;animation:fi .35s cubic-bezier(.4,0,.2,1);}
+@keyframes fi{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:scale(1)}}
+#ctrl{position:fixed;bottom:0;left:0;right:0;background:rgba(5,8,16,.85);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;padding:8px 18px;z-index:999;gap:10px;}
+.cb{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:"UKIJ Tuz","Noto Naskh Arabic",serif;font-size:13px;transition:background .2s;}
+.cb:hover{background:rgba(139,92,246,.4);}
+.cb.purple{background:rgba(109,40,217,.4);border-color:rgba(139,92,246,.5);}
+.cb.green{background:rgba(22,163,74,.3);border-color:rgba(34,197,94,.4);}
+.cb.red{background:rgba(220,38,38,.25);border-color:rgba(239,68,68,.4);}
+.cb.tts-on{animation:tp .9s ease infinite;}
+@keyframes tp{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,.5)}50%{box-shadow:0 0 0 8px rgba(139,92,246,0)}}
+#ctr{color:rgba(255,255,255,.4);font-size:12px;font-family:monospace;min-width:55px;text-align:center;}
+#pb-wrap{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.07);z-index:1000;}
+#pb{height:3px;background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);box-shadow:0 0 8px rgba(139,92,246,.6);transition:width .4s ease;width:0%;}
+[contenteditable="true"]:focus{outline:2px dashed rgba(139,92,246,.7);border-radius:4px;}
+[contenteditable="true"]:hover{outline:1px dashed rgba(255,255,255,.18);border-radius:3px;cursor:text;}
+.s-title{font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:900;line-height:1.25;}
+.s-sub{font-size:clamp(1rem,2vw,1.5rem);line-height:1.5;opacity:.85;}
+.s-body{font-size:clamp(.9rem,1.5vw,1.2rem);line-height:1.95;}
+.s-point{font-size:clamp(.85rem,1.4vw,1.1rem);line-height:1.75;}
+.s-quote{font-size:clamp(1.2rem,2.6vw,2.1rem);line-height:1.65;font-style:italic;}
+.s-label{font-size:clamp(.68rem,1vw,.88rem);letter-spacing:.06em;font-weight:700;}
+.s-small{font-size:clamp(.75rem,1.1vw,.95rem);line-height:1.65;}
+.s-lesson{font-size:clamp(.82rem,1.3vw,1rem);}
+.s-takeaway{font-size:clamp(.85rem,1.3vw,1.05rem);line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="pb-wrap"><div id="pb"></div></div>
+${slidesHTML}
+<div id="ctrl">
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="cb" onclick="p()">❮ ئالدىنقى</button>
+    <span id="ctr">1 / ${total}</span>
+    <button class="cb" onclick="n()">كىيىنكى ❯</button>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="cb" id="ttsB" onclick="tts()">🔊 ئوقۇ</button>
+    <button class="cb red" onclick="stp()">⏹</button>
+    <button class="cb" id="eBtn" onclick="editT()">✏️ تۈزەت</button>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="cb purple" onclick="fs()">⛶ پۈتۈن ئىكران</button>
+  </div>
+</div>
+<script>
+var c=0,tot=${total},em=false,ta=false;
+function upd(){
+  document.querySelectorAll('.slide-wrapper').forEach(function(el,i){el.classList.toggle('active',i===c);});
+  document.getElementById('ctr').textContent=(c+1)+' / '+tot;
+  var pct=tot>1?(c/(tot-1))*100:100;
+  document.getElementById('pb').style.width=pct+'%';
+  stp();
+}
+function n(){if(c<tot-1){c++;upd();}}
+function p(){if(c>0){c--;upd();}}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown')n();
+  else if(e.key==='ArrowRight'||e.key==='ArrowUp')p();
+  else if(e.key==='f'||e.key==='F')fs();
+});
+function fs(){
+  var el=document.documentElement;
+  if(!document.fullscreenElement){el.requestFullscreen();}
+  else{document.exitFullscreen();}
+}
+document.addEventListener('fullscreenchange',function(){
+  document.querySelector('.cb.purple').textContent=document.fullscreenElement?'✕ ئادەتتىكى':'⛶ پۈتۈن ئىكران';
+});
+function editT(){
+  em=!em;
+  var btn=document.getElementById('eBtn');
+  btn.textContent=em?'💾 ساقلا':'✏️ تۈزەت';
+  btn.style.background=em?'rgba(146,64,14,.5)':'';
+  var sl=document.querySelector('.slide-wrapper.active');
+  if(!sl)return;
+  sl.querySelectorAll('h1,h2,h3,h4,p,blockquote').forEach(function(el){
+    if(em)el.setAttribute('contenteditable','true');
+    else el.removeAttribute('contenteditable');
+  });
+}
+function tts(){
+  var sl=document.querySelector('.slide-wrapper.active');
+  if(!sl)return;
+  var txt=sl.innerText.replace(/بىلىك تەتقىقات مەركىزى/g,'').replace(/\\d+ \\/ \\d+/g,'').trim();
+  if(!('speechSynthesis' in window))return;
+  stp();
+  var u=new SpeechSynthesisUtterance(txt);
+  u.lang='ar-SA';u.rate=0.82;u.pitch=1.05;
+  u.onend=function(){ta=false;document.getElementById('ttsB').classList.remove('tts-on');};
+  window.speechSynthesis.speak(u);
+  ta=true;document.getElementById('ttsB').classList.add('tts-on');
+}
+function stp(){
+  if('speechSynthesis'in window)window.speechSynthesis.cancel();
+  ta=false;document.getElementById('ttsB').classList.remove('tts-on');
+}
+upd();
+<\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Bilik_Slides_${Date.now()}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
