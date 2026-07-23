@@ -1,0 +1,375 @@
+---
+layout: default
+title: خىتاينى چۈشىنىش
+---
+
+<style>
+  .hc-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+    direction: rtl;
+  }
+  .hc-header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #e0e6ed;
+  }
+  .hc-icon { font-size: 2.8rem; margin-bottom: 10px; }
+  .hc-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a2235;
+    margin-bottom: 8px;
+  }
+  .hc-header p {
+    color: #4a5568;
+    font-size: 0.95rem;
+  }
+  .hc-count-badge {
+    display: inline-block;
+    background: #01579b;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 20px;
+    margin-top: 10px;
+  }
+
+  .hc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #0277bd;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    padding: 6px 14px;
+    background: #e1f5fe;
+    border-radius: 7px;
+    transition: all 0.2s;
+  }
+  .hc-back:hover { background: #0277bd; color: #fff; }
+
+  .hc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #e0e6ed;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  .hc-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f4f8;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.18s;
+  }
+  .hc-item:last-child { border-bottom: none; }
+  .hc-item:hover { background: #f0f7ff; }
+
+  .hc-num {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0277bd, #01579b);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(1,87,155,0.25);
+  }
+
+  .hc-body { flex: 1; min-width: 0; }
+  .hc-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a2235;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .hc-item:hover .hc-title { color: #0277bd; }
+
+  .hc-arrow {
+    color: #b3e5fc;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: color 0.18s, transform 0.18s;
+  }
+  .hc-item:hover .hc-arrow { color: #0277bd; transform: translateX(-4px); }
+</style>
+
+<div class="hc-page">
+  <a href="{{ '/' | relative_url }}" class="hc-back">← باش بەتكە</a>
+
+  <div class="hc-header">
+    <div class="hc-icon">📚</div>
+    <h1>خىتاينى چۈشىنىش</h1>
+    <p>خىتاي تارىخى، ئىدىيولوگىيەسى ۋە سىياسىتى ھەققىدە يۈرۈشلۈك تەھلىل</p>
+    <span class="hc-count-badge">41 ماقالە</span>
+  </div>
+
+  <div class="hc-list">
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/01/Hitaylar/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">1</span>
+      <span class="hc-body"><span class="hc-title">خىتايلار كىملەر؟</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/02/Hitay-elini-idare-qilish/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">2</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئېلىنى ئىدارە قىلىش ئۇسۇلى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/03/Hitay-dorisi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">3</span>
+      <span class="hc-body"><span class="hc-title">خىتاي دورىسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/04/Hitay-Atom-bombisi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">4</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئاتوم بومبىسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/05/Hitay-hilsi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">5</span>
+      <span class="hc-body"><span class="hc-title">خىتاي خۇلاسىسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/12/Hitay-nemishqa-och/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">6</span>
+      <span class="hc-body"><span class="hc-title">خىتاي نېمىشقا ئاچكۆز؟</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/13/cheklimisiz-urush/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">7</span>
+      <span class="hc-body"><span class="hc-title">چەكسىز ئۇرۇش</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/14/Hitay-adem-Yeydu/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">8</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئادەم يەيدۇ</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/14/Hitayche-hile/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">9</span>
+      <span class="hc-body"><span class="hc-title">خىتايچە ھىيلە</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/15/Hitay-maymun/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">10</span>
+      <span class="hc-body"><span class="hc-title">خىتاي مايمۇنى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/15/Hitay-topilingi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">11</span>
+      <span class="hc-body"><span class="hc-title">خىتاي توپىلىڭى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/15/BingTuan/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">12</span>
+      <span class="hc-body"><span class="hc-title">بىڭتۇان</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/16/Hitayche-kemsitish/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">13</span>
+      <span class="hc-body"><span class="hc-title">خىتايچە كەمسىتىش</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/20/Hitay-armiyisi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">14</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئارمىيەسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/21/Hitay-kengeymichiliki/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">15</span>
+      <span class="hc-body"><span class="hc-title">خىتاي كەڭەيمىچىلىكى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/22/Hitay-Helqi-uyghurlargha-qandaq-qaraydu/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">16</span>
+      <span class="hc-body"><span class="hc-title">خەلق ئۇيغۇرلارغا قانداق قارايدۇ</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/29/Hitay-qandaq-millet/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">17</span>
+      <span class="hc-body"><span class="hc-title">خىتاي قانداق مىللەت؟</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/30/Hitay-istihbarati/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">18</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئىستىخباراتى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/05/31/Hitay-Qandaq-millet/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">19</span>
+      <span class="hc-body"><span class="hc-title">خىتاي قانداق مىللەت (2)</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/06/04/Hitay-ghrbidiyar-neziriyisi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">20</span>
+      <span class="hc-body"><span class="hc-title">غەربدىيار نەزىرىيەسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2024/09/20/Hitay-emeldarning-hiylisi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">21</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئەمەلدارنىڭ ھىيلىسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/03/11/chinese_ideologies/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">22</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئىدىيولوگىيەلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/03/19/Hunlarning_evladlari/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">23</span>
+      <span class="hc-body"><span class="hc-title">خۇننىلارنىڭ ئەۋلادلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/07/HitayJosusliri/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">24</span>
+      <span class="hc-body"><span class="hc-title">خىتاي جاسۇسلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/15/tebiqewaz-Hitaylar/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">25</span>
+      <span class="hc-body"><span class="hc-title">تەبىيئەتپەرەز خىتايلار</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/22/uyghur-ve-hitay-qanunchilik-perqi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">26</span>
+      <span class="hc-body"><span class="hc-title">ئۇيغۇر ۋە خىتاي قانۇنچىلىق پەرىقى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/24/kutadgubilik-ve-hitay-qanunchilik-perqi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">27</span>
+      <span class="hc-body"><span class="hc-title">قۇتادغۇبىلىك ۋە خىتاي قانۇنى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/25/Hitay-zulumininig-tarihi-izliri/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">28</span>
+      <span class="hc-body"><span class="hc-title">خىتاي زۇلۇمىنىڭ تارىخى ئىزلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/04/26/shangYangKim/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">29</span>
+      <span class="hc-body"><span class="hc-title">شاڭ ياڭ كىم؟</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/06/27/Hitay-idologiye-tarihi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">30</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ئىدولوگىيە تارىخى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/06/29/on-chong-Hitay-impratori/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">31</span>
+      <span class="hc-body"><span class="hc-title">ئون چوڭ خىتاي ئىمپىراتورى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/06/29/xiJinping-sozliri/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">32</span>
+      <span class="hc-body"><span class="hc-title">شى جىنپىڭنىڭ سۆزلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/08/08/HitayHeqqide9HilSinariye/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">33</span>
+      <span class="hc-body"><span class="hc-title">خىتاي ھەققىدە 9 ھىل سىنارىيە</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/08/16/kimning-zhonguosi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">34</span>
+      <span class="hc-body"><span class="hc-title">كىمنىڭ جۇڭگوسى؟</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/08/17/totYawayiHeqqide/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">35</span>
+      <span class="hc-body"><span class="hc-title">توت ياۋىسى ھەققىدە</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/08/20/Hitay-otturaSherq-munasiwetliri/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">36</span>
+      <span class="hc-body"><span class="hc-title">خىتاي-ئوتتۇرا شەرق مۇناسىۋەتلىرى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/09/29/shimali-qi-doliti/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">37</span>
+      <span class="hc-body"><span class="hc-title">شىمالىي چى دۆلىتى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/10/04/ademYeydighanHitaylar/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">38</span>
+      <span class="hc-body"><span class="hc-title">ئادەم يەيدىغان خىتايلار</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/10/13/qinShiHuangningAldinishi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">39</span>
+      <span class="hc-body"><span class="hc-title">چىن شى خۇاڭنىڭ ئالدىنىشى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/12/20/rezil-Hitay-nezeriyesi/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">40</span>
+      <span class="hc-body"><span class="hc-title">رەزىل خىتاي نەزىرىيەسى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+    <a href="https://uycoder.github.io/paydilar/2025/12/30/Hitay-tESHWIQATI/index.html" class="hc-item" target="_blank">
+      <span class="hc-num">41</span>
+      <span class="hc-body"><span class="hc-title">خىتاي تەشۋىقات كۈچى</span></span>
+      <i class="fa-solid fa-arrow-left hc-arrow"></i>
+    </a>
+
+  </div>
+</div>

@@ -6,7 +6,19 @@
     <meta name="author" content="{{site.author}}">
     <meta name="description" content="{{site.description}}">
     <link rel="shortcut icon" type="image/png" href="http://via.placeholder.com/128x128">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crimson+Text">
+    <style>
+      @font-face {
+        font-family: 'Alkatip';
+        src: url('{{ "/fonts/ALKATIP-TOR.woff2" | relative_url }}') format('woff2'),
+             url('{{ "/fonts/ALKATIP-TOR.woff" | relative_url }}') format('woff');
+        font-display: swap;
+      }
+      body, .nav, .nav-item, button, input, select, textarea {
+        font-family: 'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur',
+                     'Noto Naskh Arabic', Arial, sans-serif !important;
+        direction: rtl;
+      }
+    </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
     <link rel="stylesheet" href="{{ '/css/styles.css' | relative_url }}">
