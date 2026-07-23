@@ -1,250 +1,470 @@
-<!DOCTYPE html>
-<html lang="ug">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خىتاينى چۈشىنىش - 41 ماقالە</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'UKIJ Tuz Tom', 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: #fff;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .subtitle {
-            text-align: center;
-            color: #aaa;
-            margin-bottom: 40px;
-        }
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-        .article-btn {
-            display: block;
-            padding: 25px 15px;
-            background: linear-gradient(145deg, #1e3a5f, #0d2847);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-            border: 2px solid #2a5a9f;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .article-btn:hover {
-            transform: translateY(-5px);
-            background: linear-gradient(145deg, #2a5a9f, #1e3a5f);
-            box-shadow: 0 8px 25px rgba(42, 90, 159, 0.5);
-            border-color: #4a8adf;
-        }
-        .article-btn .number {
-            display: block;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #4a8adf;
-        }
-        .note {
-            text-align: center;
-            color: #888;
-            margin-top: 30px;
-            padding: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>خىتاينى چۈشىنىش</h1>
-        <p class="subtitle">41 ماقالەلىك يۈرۈشلۈك</p>
-        
-        <div class="button-grid">
-            <a href="https://uycoder.github.io/paydilar/2024/05/01/Hitaylar/index.html" class="article-btn" target="_blank">
-                <span class="number">1</span>
-                خىتايلار
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/02/Hitay-elini-idare-qilish/index.html" class="article-btn" target="_blank">
-                <span class="number">2</span>
-                ئېلىنى ئىدارە قىلىش
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/03/Hitay-dorisi/index.html" class="article-btn" target="_blank">
-                <span class="number">3</span>
-                دوورىسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/04/Hitay-Atom-bombisi/index.html" class="article-btn" target="_blank">
-                <span class="number">4</span>
-                ئاتوم بومبىسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/05/Hitay-hilsi/index.html" class="article-btn" target="_blank">
-                <span class="number">5</span>
-                خىلاسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/12/Hitay-nemishqa-och/index.html" class="article-btn" target="_blank">
-                <span class="number">6</span>
-                نەمەشقا ئوچ
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/13/cheklimisiz-urush/index.html" class="article-btn" target="_blank">
-                <span class="number">7</span>
-                چەكمىسىز ئۇرۇش
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/14/Hitay-adem-Yeydu/index.html" class="article-btn" target="_blank">
-                <span class="number">8</span>
-                ئادەم يېيدۇ
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/14/Hitayche-hile/index.html" class="article-btn" target="_blank">
-                <span class="number">9</span>
-                خىتايچە ھىيلە
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/15/Hitay-maymun/index.html" class="article-btn" target="_blank">
-                <span class="number">10</span>
-                مايمۇن
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/15/Hitay-topilingi/index.html" class="article-btn" target="_blank">
-                <span class="number">11</span>
-                توپىلىڭى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/15/BingTuan/index.html" class="article-btn" target="_blank">
-                <span class="number">12</span>
-                بىڭتۇان
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/16/Hitayche-kemsitish/index.html" class="article-btn" target="_blank">
-                <span class="number">13</span>
-                كەمسىتىش
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/20/Hitay-armiyisi/index.html" class="article-btn" target="_blank">
-                <span class="number">14</span>
-                ئارمەيسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/21/Hitay-kengeymichiliki/index.html" class="article-btn" target="_blank">
-                <span class="number">15</span>
-                كەڭەيمىچىلىكى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/22/Hitay-Helqi-uyghurlargha-qandaq-qaraydu/index.html" class="article-btn" target="_blank">
-                <span class="number">16</span>
-                ئۇيغۇرلارغا قارايدۇ
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/29/Hitay-qandaq-millet/index.html" class="article-btn" target="_blank">
-                <span class="number">17</span>
-                قانداق مىللىت
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/30/Hitay-istihbarati/index.html" class="article-btn" target="_blank">
-                <span class="number">18</span>
-                ئىستىhbarاتى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/05/31/Hitay-Qandaq-millet/index.html" class="article-btn" target="_blank">
-                <span class="number">19</span>
-                قانداق مىللىت
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/06/04/Hitay-ghrbidiyar-neziriyisi/index.html" class="article-btn" target="_blank">
-                <span class="number">20</span>
-                غەربدىيار نەزىرىيەسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2024/09/20/Hitay-emeldarning-hiylisi/index.html" class="article-btn" target="_blank">
-                <span class="number">21</span>
-                ئەمەلدارنىڭ ھىيلەسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/03/11/chinese_ideologies/index.html" class="article-btn" target="_blank">
-                <span class="number">22</span>
-                ئىدىيولوگىيەلەر
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/03/19/Hunlarning_evladlari/index.html" class="article-btn" target="_blank">
-                <span class="number">23</span>
-                ئۇغلادلار
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/07/HitayJosusliri/index.html" class="article-btn" target="_blank">
-                <span class="number">24</span>
-                خىتاي جاسۇسلىرى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/15/tebiqewaz-Hitaylar/index.html" class="article-btn" target="_blank">
-                <span class="number">25</span>
-                تەبىقەۋاز خىتايلار
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/22/uyghur-ve-hitay-qanunchilik-perqi/index.html" class="article-btn" target="_blank">
-                <span class="number">26</span>
-                قانۇنچىلىك پەرىقى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/24/kutadgubilik-ve-hitay-qanunchilik-perqi/index.html" class="article-btn" target="_blank">
-                <span class="number">27</span>
-                قۇتەدگۇبىلىك
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/25/Hitay-zulumininig-tarihi-izliri/index.html" class="article-btn" target="_blank">
-                <span class="number">28</span>
-                زۇلۇمنىڭ تارخى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/04/26/shangYangKim/index.html" class="article-btn" target="_blank">
-                <span class="number">29</span>
-                شاڭ ياڭ كىم
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/06/27/Hitay-idologiye-tarihi/index.html" class="article-btn" target="_blank">
-                <span class="number">30</span>
-                ئىدولوگىيە تارخى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/06/29/on-chong-Hitay-impratori/index.html" class="article-btn" target="_blank">
-                <span class="number">31</span>
-                ئونچوڭ ئىمپېراتورى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/06/29/xiJinping-sozliri/index.html" class="article-btn" target="_blank">
-                <span class="number">32</span>
-                شى جىنپىڭنىڭ سۆزلىرى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/08/08/HitayHeqqide9HilSinariye/index.html" class="article-btn" target="_blank">
-                <span class="number">33</span>
-                9 ھىل سىنارەسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/08/16/kimning-zhonguosi/index.html" class="article-btn" target="_blank">
-                <span class="number">34</span>
-                كىمنىڭ جۇڭگوسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/08/17/totYawayiHeqqide/index.html" class="article-btn" target="_blank">
-                <span class="number">35</span>
-                توت ياۋىسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/08/20/Hitay-otturaSherq-munasiwetliri/index.html" class="article-btn" target="_blank">
-                <span class="number">36</span>
-                ئوتتۇرا şەرق مۇناسىۋەتلەرى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/09/29/shimali-qi-doliti/index.html" class="article-btn" target="_blank">
-                <span class="number">37</span>
-                شىمالىي جى دولىتى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/10/04/ademYeydighanHitaylar/index.html" class="article-btn" target="_blank">
-                <span class="number">38</span>
-                ئادەم يېيدىغان خىتايلار
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/10/13/qinShiHuangningAldinishi/index.html" class="article-btn" target="_blank">
-                <span class="number">39</span>
-                چىن شى خۇاڭنىڭ ئالدىنىشى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/12/20/rezil-Hitay-nezeriyesi/index.html" class="article-btn" target="_blank">
-                <span class="number">40</span>
-                رەزىل نەزىرىيەسى
-            </a>
-            <a href="https://uycoder.github.io/paydilar/2025/12/30/Hitay-tESHWIQATI/index.html" class="article-btn" target="_blank">
-                <span class="number">41</span>
-                تەشۋىقات كۈچى
-            </a>
+---
+layout: default
+title: بارلىق يازمىلار
+---
+
+<style>
+  /* ── Page base ── */
+  .all-page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+    direction: rtl;
+  }
+
+  /* ── Page header ── */
+  .all-page-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .all-page-hd h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1a2235;
+  }
+  .all-page-hd .total-badge {
+    background: #e1f5fe;
+    color: #0277bd;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid #b3e5fc;
+  }
+  .all-page-hd a.back-home {
+    font-size: 0.85rem;
+    color: #0277bd;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8a96a8;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0e6ed;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Top-3 featured grid ── */
+  .top3-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+  .top3-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e6ed;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .top3-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    transform: translateY(-3px);
+  }
+  .top3-thumb {
+    height: 140px;
+    background: linear-gradient(135deg, #0277bd 0%, #01579b 100%);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .top3-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .top3-thumb-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    opacity: 0.25;
+  }
+  .top3-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .top3-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .top3-cat {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #0277bd;
+    background: #e1f5fe;
+    padding: 2px 9px;
+    border-radius: 20px;
+    display: inline-block;
+    width: fit-content;
+  }
+  .top3-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a2235;
+    line-height: 1.5;
+  }
+  .top3-title a { color: inherit; }
+  .top3-title a:hover { color: #0277bd; }
+  .top3-excerpt {
+    font-size: 0.83rem;
+    color: #4a5568;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .top3-meta {
+    font-size: 0.76rem;
+    color: #8a96a8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .top3-read {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #0277bd;
+  }
+  .top3-read:hover { text-decoration: underline; }
+
+  /* ── Paginated list ── */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #e0e6ed;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    margin-bottom: 28px;
+  }
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f4f8;
+    transition: background 0.18s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-item:hover { background: #f4f8fc; }
+  .list-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #b3e5fc;
+    min-width: 28px;
+    text-align: center;
+    background: #01579b;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .list-thumb {
+    width: 56px;
+    height: 42px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #0277bd 0%, #01579b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.5);
+  }
+  .list-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .list-body { flex: 1; min-width: 0; }
+  .list-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a2235;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .list-item:hover .list-title { color: #0277bd; }
+  .list-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .list-cat {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #0277bd;
+    background: #e1f5fe;
+    padding: 1px 7px;
+    border-radius: 10px;
+  }
+  .list-date {
+    font-size: 0.72rem;
+    color: #8a96a8;
+  }
+  .list-excerpt {
+    font-size: 0.78rem;
+    color: #8a96a8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+    display: block;
+  }
+
+  /* ── Pagination controls ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .page-btn {
+    padding: 7px 16px;
+    border: 1px solid #e0e6ed;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+  .page-btn:hover:not(:disabled) { background: #e1f5fe; color: #0277bd; border-color: #b3e5fc; }
+  .page-btn.active { background: #0277bd; color: #fff; border-color: #0277bd; font-weight: 700; }
+  .page-btn:disabled { opacity: 0.35; cursor: default; }
+  .page-info {
+    font-size: 0.82rem;
+    color: #8a96a8;
+    padding: 0 6px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 760px) {
+    .top3-grid { grid-template-columns: 1fr; }
+    .top3-thumb { height: 120px; }
+  }
+  @media (max-width: 480px) {
+    .list-thumb { display: none; }
+    .list-num { display: none; }
+  }
+</style>
+
+{% assign all_posts = site.posts %}
+{% assign total_posts = all_posts | size %}
+{% assign top3 = all_posts | limit: 3 %}
+
+<div class="all-page">
+
+  <!-- Page header -->
+  <div class="all-page-hd">
+    <h1><i class="fa-solid fa-list"></i> بارلىق يازمىلار</h1>
+    <span class="total-badge">{{ total_posts }} يازما</span>
+    <a href="{{ '/' | relative_url }}" class="back-home">
+      ← باش بەتكە
+    </a>
+  </div>
+
+  <!-- Top 3 large cards -->
+  <div class="section-label">
+    <i class="fa-solid fa-fire"></i> يېقىندا ئىلان قىلىنغان
+  </div>
+
+  <div class="top3-grid">
+    {% for post in top3 %}
+    {% assign _img = post.image %}
+    {% unless _img %}
+      {% if post.content contains 'src="' %}
+        {% assign _img = post.content | split: 'src="' | last | split: '"' | first %}
+        {% unless _img contains '//' %}{% assign _img = nil %}{% endunless %}
+      {% endif %}
+    {% endunless %}
+    {% assign _cat = post.categories | first | default: "" %}
+
+    <div class="top3-card">
+      <div class="top3-thumb">
+        {% if _img %}
+          <img src="{{ _img }}" alt="{{ post.title }}">
+        {% else %}
+          <div class="top3-thumb-icon">📝</div>
+        {% endif %}
+        {% if _cat != "" %}
+        <span class="top3-badge">{{ _cat | replace: "_", " " }}</span>
+        {% endif %}
+      </div>
+      <div class="top3-body">
+        {% if _cat != "" %}
+        <span class="top3-cat">{{ _cat | replace: "_", " " }}</span>
+        {% endif %}
+        <div class="top3-title">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
         </div>
-        
-        <p class="note">ھەر بىر كнопكە چىكلىسىڭىز ئالتىن ماقالە ئىچىلىدۇ</p>
+        <div class="top3-excerpt">
+          {{ post.excerpt | strip_html | strip_newlines | truncate: 110 }}
+        </div>
+        <div class="top3-meta">
+          <i class="fa-regular fa-calendar fa-xs"></i>
+          {{ post.date | date: "%Y · %m · %d" }}
+        </div>
+        <a href="{{ post.url | relative_url }}" class="top3-read">
+          تولۇق ئوقۇ ←
+        </a>
+      </div>
     </div>
-</body>
-</html>
+    {% endfor %}
+  </div>
+
+  <!-- All posts (JS-paginated) -->
+  <div class="section-label">
+    <i class="fa-solid fa-newspaper"></i> بارلىق يازمىلار
+  </div>
+
+  <div class="posts-list" id="postsList"></div>
+
+  <div class="pagination" id="pagination"></div>
+
+</div>
+
+<script>
+(function() {
+  var PER_PAGE = 10;
+  var currentPage = 1;
+
+  /* Liquid generates the full post array */
+  var posts = [
+    {% for post in all_posts %}{% assign _pi = post.image %}{% unless _pi %}{% if post.content contains 'src="' %}{% assign _pi = post.content | split: 'src="' | last | split: '"' | first %}{% unless _pi contains '//' %}{% assign _pi = "" %}{% endunless %}{% endif %}{% endunless %}
+    {
+      n: {{ forloop.index }},
+      title: {{ post.title | jsonify }},
+      url: "{{ post.url | relative_url }}",
+      date: "{{ post.date | date: '%Y-%m-%d' }}",
+      cat: {{ post.categories | first | default: "" | jsonify }},
+      excerpt: {{ post.excerpt | strip_html | strip_newlines | truncate: 90 | jsonify }},
+      img: {{ _pi | default: "" | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  function renderPage(page) {
+    currentPage = page;
+    var start = (page - 1) * PER_PAGE;
+    var slice = posts.slice(start, start + PER_PAGE);
+    var listEl = document.getElementById('postsList');
+    var html = '';
+    slice.forEach(function(p) {
+      var thumb = p.img
+        ? '<div class="list-thumb"><img src="' + p.img + '" alt="' + p.title.replace(/"/g, '&quot;') + '"></div>'
+        : '<div class="list-thumb">📝</div>';
+      var cat = p.cat
+        ? '<span class="list-cat">' + p.cat.replace(/_/g, ' ') + '</span>'
+        : '';
+      html += '<a class="list-item" href="' + p.url + '">'
+        + '<span class="list-num">' + p.n + '</span>'
+        + thumb
+        + '<span class="list-body">'
+        +   '<span class="list-title">' + p.title + '</span>'
+        +   '<span class="list-meta-row">' + cat + '<span class="list-date">' + p.date + '</span></span>'
+        +   '<span class="list-excerpt">' + p.excerpt + '</span>'
+        + '</span>'
+        + '</a>';
+    });
+    listEl.innerHTML = html;
+    renderPagination();
+    window.scrollTo({ top: listEl.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  }
+
+  function renderPagination() {
+    var totalPages = Math.ceil(posts.length / PER_PAGE);
+    var el = document.getElementById('pagination');
+    if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+    var html = '';
+
+    /* Prev */
+    html += '<button class="page-btn" onclick="goPage(' + (currentPage - 1) + ')"'
+      + (currentPage === 1 ? ' disabled' : '') + '>→ ئالدىنقى</button>';
+
+    /* Page numbers — show up to 7, with ellipsis */
+    var pages = buildPageNums(currentPage, totalPages);
+    pages.forEach(function(p) {
+      if (p === '…') {
+        html += '<span class="page-info">…</span>';
+      } else {
+        html += '<button class="page-btn' + (p === currentPage ? ' active' : '')
+          + '" onclick="goPage(' + p + ')">' + p + '</button>';
+      }
+    });
+
+    /* Next */
+    html += '<button class="page-btn" onclick="goPage(' + (currentPage + 1) + ')"'
+      + (currentPage === totalPages ? ' disabled' : '') + '>كېيىنكى ←</button>';
+
+    el.innerHTML = html;
+  }
+
+  function buildPageNums(cur, total) {
+    if (total <= 7) {
+      var arr = [];
+      for (var i = 1; i <= total; i++) arr.push(i);
+      return arr;
+    }
+    var nums = [1];
+    if (cur > 3) nums.push('…');
+    for (var i = Math.max(2, cur - 1); i <= Math.min(total - 1, cur + 1); i++) nums.push(i);
+    if (cur < total - 2) nums.push('…');
+    nums.push(total);
+    return nums;
+  }
+
+  window.goPage = function(p) {
+    var totalPages = Math.ceil(posts.length / PER_PAGE);
+    if (p < 1 || p > totalPages) return;
+    renderPage(p);
+  };
+
+  renderPage(1);
+})();
+</script>

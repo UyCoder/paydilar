@@ -1,0 +1,520 @@
+---
+layout: home
+title: باش بەت
+---
+
+{% assign post_count = site.posts | size %}
+
+<!-- ============================================================
+     FEATURED SLIDER (3 most recent posts, auto-cycles 5s)
+============================================================ -->
+<section class="featured-wrap">
+  <div class="container">
+    <div class="slider-wrap">
+
+      {% for post in site.posts limit:3 %}
+      {% assign _fi = post.image %}
+      {% unless _fi %}
+        {% if post.content contains 'src="' %}
+          {% assign _fi = post.content | split: 'src="' | last | split: '"' | first %}
+          {% unless _fi contains '//' %}{% assign _fi = nil %}{% endunless %}
+        {% endif %}
+      {% endunless %}
+      {% assign _cat = post.categories | first | default: "يازما" %}
+
+      <div class="featured-card slider-slide{% if forloop.first %} slide-active{% endif %}" data-cat="{{ _cat }}">
+
+        <div class="featured-visual{% if _fi %} featured-visual--img{% endif %}">
+          {% if _fi %}
+            <img src="{{ _fi }}" alt="{{ post.title }}" class="featured-img">
+            <div class="featured-img-overlay">
+              <div class="featured-badge">{{ _cat | replace: "_", " " }}</div>
+            </div>
+          {% else %}
+            <div class="featured-visual-icon">📝</div>
+            <div class="featured-badge">{{ _cat | replace: "_", " " }}</div>
+          {% endif %}
+        </div>
+
+        <div class="featured-body">
+          <div class="featured-eyebrow">
+            <span class="tag-new">✨ يېڭى يازما</span>
+            <span class="featured-date">
+              <i class="fa-regular fa-calendar"></i>
+              {{ post.date | date: "%Y · %m · %d" }}
+            </span>
+          </div>
+
+          <h1 class="featured-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h1>
+
+          <p class="featured-excerpt">
+            {{ post.content | replace: '</p>', ' . ' | replace: '<br>', ' ' | strip_html | strip_newlines | truncate: 520 }}
+          </p>
+
+          <div class="featured-foot">
+            <a href="{{ post.url | relative_url }}" class="btn-read">
+              تولۇق ئوقۇ &nbsp;<i class="fa-solid fa-arrow-left fa-sm"></i>
+            </a>
+            <span class="featured-date">
+              <i class="fa-solid fa-layer-group fa-sm"></i>
+              {{ post_count }} يازما
+            </span>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+      <!-- Dots -->
+      <div class="slider-dots">
+        <button type="button" class="sdot sdot-active" onclick="goSlide(0)" aria-label="1-يازما"></button>
+        <button type="button" class="sdot" onclick="goSlide(1)" aria-label="2-يازما"></button>
+        <button type="button" class="sdot" onclick="goSlide(2)" aria-label="3-يازما"></button>
+      </div>
+
+      <!-- Arrows -->
+      <button type="button" class="slider-arrow sarr-prev" onclick="stepSlide(-1)" aria-label="ئالدىنقى">&#8250;</button>
+      <button type="button" class="slider-arrow sarr-next" onclick="stepSlide(1)"  aria-label="كېيىنكى">&#8249;</button>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CATEGORY QUICK NAV
+============================================================ -->
+<nav class="cat-nav" aria-label="تۈر تىزملىكى">
+  <div class="container cat-nav-inner">
+    <a href="#" class="active" id="btnAll" onclick="showSection('posts');return false;">🌐 ھەممىسى</a>
+    <a href="#" class="cat-nav-special" id="btnHitay" onclick="showSection('hitay');return false;">📚 خىتاينى چۈشىنىش</a>
+    {% assign cats = "" %}
+    {% for post in site.posts %}
+      {% for cat in post.categories %}
+        {% unless cats contains cat %}
+          {% assign cats = cats | append: cat | append: "|" %}
+        {% endunless %}
+      {% endfor %}
+    {% endfor %}
+    {% assign cat_list = cats | split: "|" | uniq %}
+    {% for c in cat_list limit: 10 %}
+      {% if c != "" %}
+      <a href="#">{{ c | replace: "_", " " }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</nav>
+
+<!-- ============================================================
+     MAIN: posts feed + sidebar
+============================================================ -->
+<div class="home-body">
+
+  <!-- Posts feed -->
+  <main>
+
+    <!-- ── Normal posts section ── -->
+    <div id="sectionPosts">
+      <div class="section-hd">
+        <h2>يازمىلار</h2>
+        <a href="/paydilar/allArticles/">بارلىقى <i class="fa-solid fa-chevron-left fa-xs"></i></a>
+      </div>
+
+      <div class="posts-feed">
+        {% for post in site.posts offset:1 limit:18 %}
+        {% assign cat = post.categories | first | default: "" %}
+
+        {% assign _post_img = post.image %}
+        {% unless _post_img %}
+          {% if post.content contains 'src="' %}
+            {% assign _post_img = post.content | split: 'src="' | last | split: '"' | first %}
+            {% unless _post_img contains '//' %}{% assign _post_img = nil %}{% endunless %}
+          {% endif %}
+        {% endunless %}
+
+        <article class="post-card" data-cat="{{ cat }}">
+
+          <div class="post-thumb{% if _post_img %} post-thumb--img{% endif %}">
+            {% if _post_img %}
+            <img src="{{ _post_img }}" alt="{{ post.title }}" class="post-thumb-img">
+            {% else %}
+            <span>{{ post.title | slice: 0 }}</span>
+            {% endif %}
+          </div>
+
+          <div class="post-body">
+            {% if cat != "" %}
+            <a class="post-cat-tag" href="#">{{ cat | replace: "_", " " }}</a>
+            {% endif %}
+
+            <h2 class="post-title">
+              <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+            </h2>
+
+            <p class="post-excerpt">
+              {{ post.content | replace: '</p>', ' . ' | replace: '<br>', ' ' | strip_html | strip_newlines | truncate: 260 }}
+            </p>
+
+            <div class="post-meta">
+              <span class="post-date">
+                <i class="fa-regular fa-calendar fa-xs"></i>
+                {{ post.date | date: "%Y-%m-%d" }}
+              </span>
+              <a href="{{ post.url | relative_url }}" class="post-more">
+                ئوقۇ <i class="fa-solid fa-arrow-left fa-xs"></i>
+              </a>
+            </div>
+          </div>
+
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="load-more">
+        <a href="/paydilar/allArticles/" class="btn-more">
+          <i class="fa-solid fa-list"></i> بارلىق يازمىلارنى كۆر
+        </a>
+      </div>
+    </div>
+
+    <!-- ── خىتاينى چۈشىنىش section (hidden by default) ── -->
+    <div id="sectionHitay" class="hidden-section">
+      <div class="section-hd">
+        <h2>📚 خىتاينى چۈشىنىش</h2>
+        <span class="hc-inline-badge">41 ماقالە</span>
+      </div>
+
+      <div class="hc-inline-list">
+
+        {% assign hc_articles = "خىتايلار كىملەر؟|https://uycoder.github.io/paydilar/2024/05/01/Hitaylar/index.html,خىتاي ئېلىنى ئىدارە قىلىش ئۇسۇلى|https://uycoder.github.io/paydilar/2024/05/02/Hitay-elini-idare-qilish/index.html,خىتاي دورىسى|https://uycoder.github.io/paydilar/2024/05/03/Hitay-dorisi/index.html,خىتاي ئاتوم بومبىسى|https://uycoder.github.io/paydilar/2024/05/04/Hitay-Atom-bombisi/index.html,خىتاي خۇلاسىسى|https://uycoder.github.io/paydilar/2024/05/05/Hitay-hilsi/index.html,خىتاي نېمىشقا ئاچكۆز؟|https://uycoder.github.io/paydilar/2024/05/12/Hitay-nemishqa-och/index.html,چەكسىز ئۇرۇش|https://uycoder.github.io/paydilar/2024/05/13/cheklimisiz-urush/index.html,خىتاي ئادەم يەيدۇ|https://uycoder.github.io/paydilar/2024/05/14/Hitay-adem-Yeydu/index.html,خىتايچە ھىيلە|https://uycoder.github.io/paydilar/2024/05/14/Hitayche-hile/index.html,خىتاي مايمۇنى|https://uycoder.github.io/paydilar/2024/05/15/Hitay-maymun/index.html,خىتاي توپىلىڭى|https://uycoder.github.io/paydilar/2024/05/15/Hitay-topilingi/index.html,بىڭتۇان|https://uycoder.github.io/paydilar/2024/05/15/BingTuan/index.html,خىتايچە كەمسىتىش|https://uycoder.github.io/paydilar/2024/05/16/Hitayche-kemsitish/index.html,خىتاي ئارمىيەسى|https://uycoder.github.io/paydilar/2024/05/20/Hitay-armiyisi/index.html,خىتاي كەڭەيمىچىلىكى|https://uycoder.github.io/paydilar/2024/05/21/Hitay-kengeymichiliki/index.html,خەلق ئۇيغۇرلارغا قانداق قارايدۇ|https://uycoder.github.io/paydilar/2024/05/22/Hitay-Helqi-uyghurlargha-qandaq-qaraydu/index.html,خىتاي قانداق مىللەت؟|https://uycoder.github.io/paydilar/2024/05/29/Hitay-qandaq-millet/index.html,خىتاي ئىستىخباراتى|https://uycoder.github.io/paydilar/2024/05/30/Hitay-istihbarati/index.html,خىتاي قانداق مىللەت (2)|https://uycoder.github.io/paydilar/2024/05/31/Hitay-Qandaq-millet/index.html,غەربدىيار نەزىرىيەسى|https://uycoder.github.io/paydilar/2024/06/04/Hitay-ghrbidiyar-neziriyisi/index.html,خىتاي ئەمەلدارنىڭ ھىيلىسى|https://uycoder.github.io/paydilar/2024/09/20/Hitay-emeldarning-hiylisi/index.html,خىتاي ئىدىيولوگىيەلىرى|https://uycoder.github.io/paydilar/2025/03/11/chinese_ideologies/index.html,خۇننىلارنىڭ ئەۋلادلىرى|https://uycoder.github.io/paydilar/2025/03/19/Hunlarning_evladlari/index.html,خىتاي جاسۇسلىرى|https://uycoder.github.io/paydilar/2025/04/07/HitayJosusliri/index.html,تەبىيئەتپەرەز خىتايلار|https://uycoder.github.io/paydilar/2025/04/15/tebiqewaz-Hitaylar/index.html,ئۇيغۇر ۋە خىتاي قانۇنچىلىق پەرىقى|https://uycoder.github.io/paydilar/2025/04/22/uyghur-ve-hitay-qanunchilik-perqi/index.html,قۇتادغۇبىلىك ۋە خىتاي قانۇنى|https://uycoder.github.io/paydilar/2025/04/24/kutadgubilik-ve-hitay-qanunchilik-perqi/index.html,خىتاي زۇلۇمىنىڭ تارىخى ئىزلىرى|https://uycoder.github.io/paydilar/2025/04/25/Hitay-zulumininig-tarihi-izliri/index.html,شاڭ ياڭ كىم؟|https://uycoder.github.io/paydilar/2025/04/26/shangYangKim/index.html,خىتاي ئىدولوگىيە تارىخى|https://uycoder.github.io/paydilar/2025/06/27/Hitay-idologiye-tarihi/index.html,ئون چوڭ خىتاي ئىمپىراتورى|https://uycoder.github.io/paydilar/2025/06/29/on-chong-Hitay-impratori/index.html,شى جىنپىڭنىڭ سۆزلىرى|https://uycoder.github.io/paydilar/2025/06/29/xiJinping-sozliri/index.html,خىتاي ھەققىدە 9 ھىل سىنارىيە|https://uycoder.github.io/paydilar/2025/08/08/HitayHeqqide9HilSinariye/index.html,كىمنىڭ جۇڭگوسى؟|https://uycoder.github.io/paydilar/2025/08/16/kimning-zhonguosi/index.html,توت ياۋىسى ھەققىدە|https://uycoder.github.io/paydilar/2025/08/17/totYawayiHeqqide/index.html,خىتاي-ئوتتۇرا شەرق مۇناسىۋەتلىرى|https://uycoder.github.io/paydilar/2025/08/20/Hitay-otturaSherq-munasiwetliri/index.html,شىمالىي چى دۆلىتى|https://uycoder.github.io/paydilar/2025/09/29/shimali-qi-doliti/index.html,ئادەم يەيدىغان خىتايلار|https://uycoder.github.io/paydilar/2025/10/04/ademYeydighanHitaylar/index.html,چىن شى خۇاڭنىڭ ئالدىنىشى|https://uycoder.github.io/paydilar/2025/10/13/qinShiHuangningAldinishi/index.html,رەزىل خىتاي نەزىرىيەسى|https://uycoder.github.io/paydilar/2025/12/20/rezil-Hitay-nezeriyesi/index.html,خىتاي تەشۋىقات كۈچى|https://uycoder.github.io/paydilar/2025/12/30/Hitay-tESHWIQATI/index.html" | split: "," %}
+
+        {% for item in hc_articles %}
+          {% assign parts = item | split: "|" %}
+          {% assign hc_title = parts[0] %}
+          {% assign hc_url   = parts[1] %}
+          {% assign hc_n     = forloop.index %}
+          <a href="{{ hc_url }}" class="hc-row" target="_blank">
+            <span class="hc-row-num">{{ hc_n }}</span>
+            <span class="hc-row-title">{{ hc_title }}</span>
+            <i class="fa-solid fa-arrow-left hc-row-arrow"></i>
+          </a>
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <!-- About -->
+    <div class="widget">
+      <div class="about-widget">
+        <div class="about-logo-wrap">
+          <img
+            src="{{ '/pics/me480.320.png' | relative_url }}"
+            alt="{{ site.title }}"
+            class="about-logo"
+            onerror="this.src='https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png'">
+        </div>
+        <div class="about-title">{{ site.title }}</div>
+        <div class="about-desc">{{ site.description }}</div>
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-num">{{ post_count }}</div>
+            <div class="stat-label">يازما</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">{{ cat_list | size }}</div>
+            <div class="stat-label">تۈر</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">{{ site.posts | map: 'date' | map: 'year' | uniq | size }}</div>
+            <div class="stat-label">يىل</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prices widget -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-coins"></i> باھا ئۇچۇرلىرى</div>
+      <div id="pricesWidget"><div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div></div>
+    </div>
+
+    <!-- World news widget -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-globe"></i> دۇنيا سىياسىتى</div>
+      <div class="news-tabs" id="newsTabs"></div>
+      <div id="newsWidget"><div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div></div>
+    </div>
+
+    <!-- Recent posts -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-fire"></i> يېڭى يازمىلار</div>
+      <div class="recent-list">
+        {%- for post in site.posts limit: 8 -%}
+        <div class="recent-item">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          <span class="recent-d">{{ post.date | date: "%m/%d" }}</span>
+        </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Understanding China series -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-book-open"></i> خىتاينى چۈشىنىش</div>
+      <button type="button" class="hc-widget-link" onclick="showSection('hitay')">
+        <span class="hc-widget-icon">📚</span>
+        <span class="hc-widget-text">
+          <strong>خىتاينى چۈشىنىش يۈرۈشلۈكى</strong>
+          <small>41 ماقالەلىك تەھلىل توپلىمى</small>
+        </span>
+        <i class="fa-solid fa-arrow-left hc-widget-arrow"></i>
+      </button>
+    </div>
+
+    <!-- Categories -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-tags"></i> مەزمۇن تۈرلىرى</div>
+      <div class="cat-cloud">
+        {% for c in cat_list limit: 24 %}
+        {% if c != "" %}
+        <a class="cat-chip" href="#" data-cat="{{ c }}">{{ c | replace: "_", " " }}</a>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="widget">
+      <div class="widget-head"><i class="fa-solid fa-link"></i> پايدىلىق ئۇلانمىلار</div>
+      <ul class="quick-links">
+        <li>
+          <a href="/paydilar/wiki.html">
+            <i class="fa-solid fa-book"></i> ۋىكى ئامبار
+          </a>
+        </li>
+        <li>
+          <a href="https://uycoder.github.io/paydilar/oyun/">
+            <i class="fa-solid fa-gamepad"></i> ئويۇنلار
+          </a>
+        </li>
+        <li>
+          <a href="https://uycoder.github.io/paydilar/news/UyghurNews.html">
+            <i class="fa-solid fa-newspaper"></i> خەۋەرلەر
+          </a>
+        </li>
+        <li>
+          <a href="/paydilar/HikmetlerHulasisi/">
+            <i class="fa-solid fa-lightbulb"></i> ھىكمەتلەر
+          </a>
+        </li>
+        <li>
+          <a href="/paydilar/relations.html">
+            <i class="fa-solid fa-earth-asia"></i> مۇناسىۋەتلەر
+          </a>
+        </li>
+        <li>
+          <a href="/paydilar/countries.html">
+            <i class="fa-solid fa-flag"></i> دۆلەتلەر
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i> GitHub
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+/* ================================================================
+   FEATURED SLIDER  — 3 slides, auto-advance every 5s
+================================================================ */
+(function() {
+  var slides = document.querySelectorAll('.slider-slide');
+  var dots   = document.querySelectorAll('.sdot');
+  var cur    = 0;
+  var timer;
+
+  function go(n) {
+    slides[cur].classList.remove('slide-active');
+    dots[cur].classList.remove('sdot-active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('slide-active');
+    dots[cur].classList.add('sdot-active');
+  }
+
+  function start() {
+    clearInterval(timer);
+    timer = setInterval(function(){ go(cur + 1); }, 5000);
+  }
+
+  window.goSlide   = function(n) { go(n); start(); };
+  window.stepSlide = function(d) { go(cur + d); start(); };
+
+  /* pause on hover */
+  var wrap = document.querySelector('.slider-wrap');
+  if (wrap) {
+    wrap.addEventListener('mouseenter', function(){ clearInterval(timer); });
+    wrap.addEventListener('mouseleave', start);
+  }
+
+  start();
+})();
+
+/* ================================================================
+   PRICES WIDGET  — gold/gram  silver/gram  USD→TRY
+================================================================ */
+(function() {
+  var el = document.getElementById('pricesWidget');
+  if (!el) return;
+  var OZ = 31.1035; // troy oz → grams
+
+  /* All three values from the same CORS-safe CDN — no key needed
+     XAU = gold troy oz in USD,  XAG = silver troy oz in USD */
+  var BASE = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/';
+  Promise.all([
+    fetch(BASE + 'xau.json').then(function(r){ return r.json(); }),
+    fetch(BASE + 'xag.json').then(function(r){ return r.json(); }),
+    fetch(BASE + 'usd.json').then(function(r){ return r.json(); })
+  ]).then(function(res) {
+    var goldPerOz   = res[0].xau && res[0].xau.usd ? res[0].xau.usd : null;
+    var silverPerOz = res[1].xag && res[1].xag.usd ? res[1].xag.usd : null;
+    var tryRate     = res[2].usd && res[2].usd.try  ? res[2].usd.try  : null;
+    var gold   = goldPerOz   ? (goldPerOz   / OZ).toFixed(2) : '—';
+    var silver = silverPerOz ? (silverPerOz / OZ).toFixed(3) : '—';
+    var lira   = tryRate     ? tryRate.toFixed(2)             : '—';
+    el.innerHTML =
+      '<div class="price-row"><span class="price-ico">🥇</span>' +
+        '<span class="price-lbl">1 گرام ئالتۇن</span>' +
+        '<span class="price-val">$' + gold + '</span></div>' +
+      '<div class="price-row"><span class="price-ico">🥈</span>' +
+        '<span class="price-lbl">1 گرام كۈمۈش</span>' +
+        '<span class="price-val">$' + silver + '</span></div>' +
+      '<div class="price-row"><span class="price-ico">💵</span>' +
+        '<span class="price-lbl">1 دوللار</span>' +
+        '<span class="price-val">' + lira + ' لىرا</span></div>' +
+      '<div class="price-updated">يېڭىلانغان: ' + new Date().toLocaleTimeString() + '</div>';
+  }).catch(function() {
+    el.innerHTML = '<div class="widget-err">باھا يۈكلىيەلمىدى</div>';
+  });
+})();
+
+/* ================================================================
+   NEWS WIDGET  — multi-source with tab switcher
+================================================================ */
+(function() {
+  var el    = document.getElementById('newsWidget');
+  var tabs  = document.getElementById('newsTabs');
+  if (!el || !tabs) return;
+
+  var SOURCES = [
+    { id:'bbc',       label:'BBC',         rss:'https://feeds.bbci.co.uk/news/world/rss.xml',                                        lang:'en' },
+    { id:'fp',        label:'FP',          rss:'https://foreignpolicy.com/feed/',                                                     lang:'en' },
+    { id:'fa',        label:'FA',          rss:'https://www.foreignaffairs.com/rss.xml',                                              lang:'en' },
+    { id:'wsj',       label:'WSJ',         rss:'https://feeds.a.djnews.net/rss/RSSWorldNews',                                         lang:'en' },
+    { id:'econ',      label:'Economist',   rss:'https://www.economist.com/the-world-this-week/rss.xml',                               lang:'en' },
+    { id:'gnews',     label:'G.News',      rss:'https://news.google.com/rss/search?q=world+politics&hl=en&gl=US&ceid=US:en',          lang:'en' },
+    { id:'politico',  label:'Politico',    rss:'https://rss.politico.com/politics-news.xml',                                          lang:'en' },
+    { id:'cnn',       label:'CNN',         rss:'http://rss.cnn.com/rss/edition_world.rss',                                            lang:'en' },
+    { id:'almonitor', label:'Al-Monitor',  rss:'https://www.al-monitor.com/rss',                                                      lang:'en' },
+    { id:'sana',      label:'SANA',        rss:'https://sana.sy/?feed=rss2',                                                          lang:'ar' }
+  ];
+
+  var cache = {};
+  var active = 'bbc';
+
+  /* Build tab buttons */
+  tabs.innerHTML = SOURCES.map(function(s) {
+    return '<button type="button" class="news-tab' + (s.id === active ? ' nt-active' : '') +
+           '" data-src="' + s.id + '">' + s.label + '</button>';
+  }).join('');
+
+  tabs.addEventListener('click', function(e) {
+    var btn = e.target.closest('.news-tab');
+    if (!btn) return;
+    var id = btn.dataset.src;
+    if (id === active) return;
+    active = id;
+    tabs.querySelectorAll('.news-tab').forEach(function(b){ b.classList.remove('nt-active'); });
+    btn.classList.add('nt-active');
+    loadSource(id);
+  });
+
+  function translate(text, lang) {
+    var sl = lang || 'en';
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + sl + '&tl=ug&dt=t&q=' + encodeURIComponent(text);
+    return fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(d){ return (d[0]||[]).map(function(s){ return s[0]||''; }).join(''); })
+      .catch(function(){ return text; });
+  }
+
+  function loadSource(id) {
+    if (cache[id]) { renderArticles(cache[id]); return; }
+    el.innerHTML = '<div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div>';
+    var src = SOURCES.find(function(s){ return s.id === id; });
+    if (!src) return;
+    var api = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(src.rss) + '&count=10';
+    fetch(api)
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.status !== 'ok') throw new Error('rss');
+        var items = (data.items || []).slice(0, 10);
+        return Promise.all(items.map(function(item, i) {
+          return translate(item.title || '', src.lang).then(function(ug) {
+            return { n: i + 1, title: ug || item.title, link: item.link || '#' };
+          });
+        }));
+      })
+      .then(function(articles) {
+        cache[id] = articles;
+        if (active === id) renderArticles(articles);
+      })
+      .catch(function() {
+        if (active === id) el.innerHTML = '<div class="widget-err">خەۋەر يۈكلىيەلمىدى</div>';
+      });
+  }
+
+  function renderArticles(articles) {
+    el.innerHTML = articles.map(function(a) {
+      return '<a class="news-row" href="' + a.link + '" target="_blank" rel="noopener">' +
+        '<span class="news-n">' + a.n + '</span>' +
+        '<span class="news-t">' + a.title + '</span>' +
+        '</a>';
+    }).join('');
+  }
+
+  loadSource(active);
+})();
+
+/* ================================================================
+   CAT-NAV SECTION TOGGLE
+================================================================ */
+function showSection(which) {
+  var posts = document.getElementById('sectionPosts');
+  var hitay = document.getElementById('sectionHitay');
+  var btnAll = document.getElementById('btnAll');
+  var btnHC  = document.getElementById('btnHitay');
+
+  if (which === 'hitay') {
+    posts.classList.add('hidden-section');
+    hitay.classList.remove('hidden-section');
+    if (btnAll) btnAll.classList.remove('active');
+    if (btnHC)  btnHC.classList.add('active');
+  } else {
+    hitay.classList.add('hidden-section');
+    posts.classList.remove('hidden-section');
+    if (btnHC)  btnHC.classList.remove('active');
+    if (btnAll) btnAll.classList.add('active');
+  }
+}
+</script>

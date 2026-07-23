@@ -1,16 +1,16 @@
 {
   "items": [
     {
+      "name": "بلوگ ھەققىدە",
+      "link": "/about/"
+    },
+    {
       "name": "مەن كىم",
       "link": "/portfolio/"
     },
     {
       "name": "ۋىكى",
       "link": "/wiki.html"
-    },
-    {
-      "name": "بلوگ ھەققىدە",
-      "link": "/about/"
     },
     {
       "name": "خەۋەرلەر",

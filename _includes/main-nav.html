@@ -1,0 +1,202 @@
+<style>
+  /* ── Fonts ── */
+  @font-face {
+    font-family: 'Alkatip';
+    src: url('{{ "/fonts/ALKATIP-TOR.woff2" | relative_url }}') format('woff2'),
+         url('{{ "/fonts/ALKATIP-TOR.woff" | relative_url }}') format('woff');
+    font-display: swap;
+  }
+
+  /* ── Design tokens (nav subset) ── */
+  :root {
+    --primary:       #0277bd;
+    --primary-dark:  #01579b;
+    --primary-lite:  #e1f5fe;
+    --primary-mid:   #b3e5fc;
+    --bg:            #f2f5f9;
+    --bg-2:          #e8ecf2;
+    --card:          #ffffff;
+    --border:        #e0e6ed;
+    --text-1:        #1a2235;
+    --text-2:        #4a5568;
+    --shadow-xs:     0 1px 3px rgba(0,0,0,0.07);
+    --shadow-sm:     0 2px 10px rgba(0,0,0,0.08);
+    --radius-sm:     7px;
+    --nav-h:         62px;
+    --ease:          all 0.22s ease;
+  }
+
+  /* ── Global base (applied when this nav is included in default.html) ── */
+  body {
+    font-family: 'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur', 'Noto Naskh Arabic', Arial, sans-serif;
+    direction: rtl;
+    background: var(--bg);
+    color: var(--text-1);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--primary); text-decoration: none; transition: var(--ease); }
+  a:hover { color: var(--primary-dark); }
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ── Sticky nav ── */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.97);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-xs);
+    height: var(--nav-h);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 16px;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.08rem;
+    color: var(--text-1);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-brand .site-name { color: var(--primary); }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .nav-links a {
+    padding: 5px 13px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-2);
+    white-space: nowrap;
+    transition: var(--ease);
+  }
+  .nav-links a:hover { background: var(--primary-lite); color: var(--primary); }
+  .nav-links a.active { background: var(--primary); color: #fff; }
+  .nav-burger {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    cursor: pointer;
+    color: var(--text-2);
+    font-size: 1rem;
+    margin-inline-start: auto;
+  }
+  .nav-burger:hover { background: var(--bg-2); }
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px 12px;
+    gap: 4px;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 998;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    display: block;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--text-2);
+    font-size: 0.95rem;
+  }
+  .mobile-menu a:hover { background: var(--primary-lite); color: var(--primary); }
+  .hikmet-bar {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: rgba(255,255,255,0.92);
+    font-size: 0.82rem;
+    padding: 7px 0;
+    text-align: center;
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .hikmet-bar::before { content: "💡 "; opacity: 0.8; }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-burger { display: flex; align-items: center; }
+  }
+</style>
+
+<!-- ================================================================
+     MAIN NAV
+================================================================ -->
+<nav class="site-nav" role="navigation" aria-label="ئاساسىي تىزملىك">
+  <div class="container nav-inner">
+    <a href="{{ '/' | relative_url }}" class="nav-brand">
+      <span class="site-name">{{ site.title }}</span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <a href="{{ '/' | relative_url }}"{% if page.url == '/' %} class="active"{% endif %}>باش بەت</a>
+      {% for item in site.data.nav.items %}
+      <a href="{{ item.link | relative_url }}"{% if page.url contains item.link %} class="active"{% endif %}>{{ item.name }}</a>
+      {% endfor %}
+    </div>
+
+    <button type="button" class="nav-burger" id="burgerBtn" aria-label="تىزملىك" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="{{ '/' | relative_url }}">🏠 باش بەت</a>
+  {% for item in site.data.nav.items %}
+  <a href="{{ item.link | relative_url }}">{{ item.name }}</a>
+  {% endfor %}
+</div>
+
+<div class="hikmet-bar" id="hikmetBar">يۈكلىنىۋاتىدۇ...</div>
+
+<script>
+(function() {
+  var burger = document.getElementById('burgerBtn');
+  var menu   = document.getElementById('mobileMenu');
+  if (burger && menu) {
+    burger.addEventListener('click', function() {
+      var open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open);
+      burger.querySelector('i').className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    });
+  }
+
+  var hikmetEl = document.getElementById('hikmetBar');
+  if (hikmetEl) {
+    fetch('https://raw.githubusercontent.com/UyCoder/paydilar/master/hikmetler/hikmetler.txt')
+      .then(function(r) { return r.ok ? r.text() : Promise.reject(); })
+      .then(function(txt) {
+        var lines = txt.split(/[\n.]+/).map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 8; });
+        if (lines.length) {
+          hikmetEl.textContent = lines[Math.floor(Math.random() * lines.length)];
+        }
+      })
+      .catch(function() { hikmetEl.textContent = 'پايدىلىق بىلىملەر ۋە پىكىرلەر'; });
+  }
+})();
+</script>
