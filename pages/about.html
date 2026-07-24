@@ -4,32 +4,15 @@ title: بلوگ ھەققىدە
 permalink: /about/
 ---
 
-<div class="columns is-multiline">
-
-    <div class="column is-half is-offset-one-quarter">
-        <div class="content">
-
-            <figure class="image is-96x96 is-centered">
-                <img class="is-rounded" src="../pics/about128.jpg">
-            </figure>
-            
-            <hr>
-
-            {% for paragraph in site.data.about.paragraphs %}
-            <p>{{paragraph}}</p>
-            {% endfor %}
-            
-        </div>
-    </div>
-    
+<div style="text-align:center;margin-bottom:20px;">
+  <img src="{{ '/pics/me480.320.png' | relative_url }}"
+       alt="{{ site.title }}"
+       style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #e1f5fe;"
+       onerror="this.src='https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png'">
 </div>
 
-<style type="text/css" media="screen">
-    body {
-        text-align:center !important;
-    }
-    .container {
-        text-align: justify;
-        text-indent: 30px;
-    }
-</style>
+<hr>
+
+{% for paragraph in site.data.about.paragraphs %}
+<p>{{paragraph}}</p>
+{% endfor %}

@@ -24,6 +24,9 @@
     --radius-sm:     7px;
     --nav-h:         62px;
     --ease:          all 0.22s ease;
+    --radius:        12px;
+    --text-3:        #8a96a8;
+    --shadow-md:     0 6px 24px rgba(0,0,0,0.10);
   }
 
   /* ── Global base (applied when this nav is included in default.html) ── */
@@ -56,53 +59,66 @@
     box-shadow: var(--shadow-xs);
     height: var(--nav-h);
   }
-  .nav-inner {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    gap: 16px;
+  /* All nav rules use .site-nav prefix to override Bulma with higher specificity */
+  .site-nav .nav-inner {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    gap: 16px !important;
+    max-width: 1160px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
   }
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 1.08rem;
-    color: var(--text-1);
-    white-space: nowrap;
-    flex-shrink: 0;
+  .site-nav .nav-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-weight: 700 !important;
+    font-size: 1.08rem !important;
+    color: var(--text-1) !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    text-decoration: none !important;
   }
-  .nav-brand .site-name { color: var(--primary); }
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    flex: 1;
-    justify-content: center;
-    overflow: hidden;
+  .site-nav .nav-brand .site-name { color: var(--primary) !important; }
+  .site-nav .nav-links {
+    display: flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+    flex: 1 !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  .nav-links a {
-    padding: 5px 13px;
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
-    color: var(--text-2);
-    white-space: nowrap;
-    transition: var(--ease);
+  .site-nav .nav-links a {
+    padding: 5px 13px !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 0.9rem !important;
+    color: var(--text-2) !important;
+    white-space: nowrap !important;
+    transition: var(--ease) !important;
+    text-decoration: none !important;
+    background: transparent !important;
+    border: none !important;
+    display: inline-block !important;
+    line-height: normal !important;
   }
-  .nav-links a:hover { background: var(--primary-lite); color: var(--primary); }
-  .nav-links a.active { background: var(--primary); color: #fff; }
-  .nav-burger {
-    display: none;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 6px 10px;
-    cursor: pointer;
-    color: var(--text-2);
-    font-size: 1rem;
-    margin-inline-start: auto;
+  .site-nav .nav-links a:hover { background: var(--primary-lite) !important; color: var(--primary) !important; }
+  .site-nav .nav-links a.active { background: var(--primary) !important; color: #fff !important; }
+  .site-nav .nav-burger {
+    display: none !important;
+    background: none !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 6px 10px !important;
+    cursor: pointer !important;
+    color: var(--text-2) !important;
+    font-size: 1rem !important;
+    margin-inline-start: auto !important;
   }
-  .nav-burger:hover { background: var(--bg-2); }
+  .site-nav .nav-burger:hover { background: var(--bg-2) !important; }
   .mobile-menu {
     display: none;
     flex-direction: column;
@@ -117,13 +133,14 @@
   }
   .mobile-menu.open { display: flex; }
   .mobile-menu a {
-    display: block;
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-    color: var(--text-2);
-    font-size: 0.95rem;
+    display: block !important;
+    padding: 9px 14px !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-2) !important;
+    font-size: 0.95rem !important;
+    text-decoration: none !important;
   }
-  .mobile-menu a:hover { background: var(--primary-lite); color: var(--primary); }
+  .mobile-menu a:hover { background: var(--primary-lite) !important; color: var(--primary) !important; }
   .hikmet-bar {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     color: rgba(255,255,255,0.92);
@@ -137,17 +154,116 @@
   }
   .hikmet-bar::before { content: "💡 "; opacity: 0.8; }
 
+  /* Search bar */
+  .nav-search {
+    position: relative;
+    flex-shrink: 0;
+    margin-inline-start: auto;
+  }
+  .nav-search-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    cursor: pointer;
+    color: var(--text-2);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--ease);
+  }
+  .nav-search-btn:hover { background: var(--bg-2); border-color: var(--primary-mid); }
+  .search-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1100;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 80px;
+  }
+  .search-overlay.open { display: flex; }
+  .search-box {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 640px;
+    margin: 0 20px;
+    overflow: hidden;
+  }
+  .search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-input-row i { color: var(--primary); font-size: 1rem; }
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    direction: rtl;
+    background: transparent;
+    color: var(--text-1);
+  }
+  .search-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--text-3);
+    padding: 2px 6px;
+  }
+  .search-results {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
+  .search-result-item {
+    display: flex;
+    flex-direction: column;
+    padding: 11px 18px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: var(--ease);
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: var(--bg); }
+  .sr-title { font-size: 0.95rem; font-weight: 600; color: var(--text-1); }
+  .sr-meta  { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+  .search-empty { padding: 24px 18px; text-align: center; color: var(--text-3); font-size: 0.9rem; }
+
   @media (max-width: 640px) {
-    .nav-links { display: none; }
-    .nav-burger { display: flex; align-items: center; }
+    .site-nav .nav-links { display: none !important; }
+    .site-nav .nav-burger { display: flex !important; align-items: center !important; }
   }
 </style>
+
+<!-- Search index (Liquid generates JS array of all posts) -->
+<script>
+var SEARCH_INDEX = [
+  {% for post in site.posts %}
+  {
+    t: {{ post.title | jsonify }},
+    u: "{{ post.url | relative_url }}",
+    d: "{{ post.date | date: '%Y-%m-%d' }}",
+    e: {{ post.excerpt | strip_html | strip_newlines | truncate: 80 | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+</script>
 
 <!-- ================================================================
      MAIN NAV
 ================================================================ -->
 <nav class="site-nav" role="navigation" aria-label="ئاساسىي تىزملىك">
-  <div class="container nav-inner">
+  <div class="nav-inner">
     <a href="{{ '/' | relative_url }}" class="nav-brand">
       <span class="site-name">{{ site.title }}</span>
     </a>
@@ -159,11 +275,34 @@
       {% endfor %}
     </div>
 
+    <!-- Search button — far left in RTL -->
+    <div class="nav-search">
+      <button type="button" class="nav-search-btn" id="searchOpenBtn" aria-label="ئىزدەش">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>ئىزدەش</span>
+      </button>
+    </div>
+
     <button type="button" class="nav-burger" id="burgerBtn" aria-label="تىزملىك" aria-expanded="false">
       <i class="fa-solid fa-bars"></i>
     </button>
   </div>
 </nav>
+
+<!-- Search overlay -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)_closeSearch()">
+  <div class="search-box">
+    <div class="search-input-row">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="search" class="search-input" id="searchInput"
+             placeholder="ماقالە ئىزدەش…" autocomplete="off" dir="rtl">
+      <button type="button" class="search-close-btn" onclick="_closeSearch()">✕</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="search-empty">ئىزدىمەكچى بولغان ماقالىنى كىرگۈزۈڭ</div>
+    </div>
+  </div>
+</div>
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="{{ '/' | relative_url }}">🏠 باش بەت</a>
@@ -197,6 +336,55 @@
         }
       })
       .catch(function() { hikmetEl.textContent = 'پايدىلىق بىلىملەر ۋە پىكىرلەر'; });
+  }
+
+  /* ── Search ── */
+  var searchOpen  = document.getElementById('searchOpenBtn');
+  var overlay     = document.getElementById('searchOverlay');
+  var searchInput = document.getElementById('searchInput');
+  var results     = document.getElementById('searchResults');
+
+  if (searchOpen) {
+    searchOpen.addEventListener('click', function() {
+      overlay.classList.add('open');
+      setTimeout(function(){ searchInput && searchInput.focus(); }, 80);
+    });
+  }
+
+  window._closeSearch = function() {
+    if (overlay) overlay.classList.remove('open');
+    if (searchInput) searchInput.value = '';
+    if (results) results.innerHTML = '<div class="search-empty">ئىزدىمەكچى بولغان ماقالىنى كىرگۈزۈڭ</div>';
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') window._closeSearch();
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      var q = this.value.trim();
+      if (!q || q.length < 1) {
+        results.innerHTML = '<div class="search-empty">ئىزدىمەكچى بولغان ماقالىنى كىرگۈزۈڭ</div>';
+        return;
+      }
+      var ql = q.toLowerCase();
+      var matched = (typeof SEARCH_INDEX !== 'undefined' ? SEARCH_INDEX : []).filter(function(p) {
+        return (p.t && p.t.indexOf(q) >= 0) ||
+               (p.e && p.e.indexOf(q) >= 0) ||
+               (p.t && p.t.toLowerCase().indexOf(ql) >= 0);
+      }).slice(0, 12);
+      if (!matched.length) {
+        results.innerHTML = '<div class="search-empty">« ' + q + ' » بويىچە نەتىجە تېپىلمىدى</div>';
+        return;
+      }
+      results.innerHTML = matched.map(function(p) {
+        return '<a class="search-result-item" href="' + p.u + '">' +
+          '<span class="sr-title">' + p.t + '</span>' +
+          '<span class="sr-meta">' + p.d + (p.e ? ' · ' + p.e : '') + '</span>' +
+          '</a>';
+      }).join('');
+    });
   }
 })();
 </script>
