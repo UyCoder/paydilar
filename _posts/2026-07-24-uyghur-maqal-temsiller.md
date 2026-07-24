@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "ئۇيغۇر خەلق ماقال-تەمسىللىرىدىكى دۆلەتچىلىك ۋە سىياسىي ھېكمەتلەر"
-date: 2026-07-24 15:00:00 -0500
+date: 2026-07-24 00:00:00 +0000
 categories: [تارىخ، مەدەنىيەت، سىياسەت]
 image: https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/bengu-taslar-1770908547.jpg
 ---
