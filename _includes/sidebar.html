@@ -1,0 +1,364 @@
+{% assign sb_cats = site.posts | map: "categories" | join: "," | split: "," | uniq | sort %}
+
+<style>
+  /* Sidebar layout wrapper — used by page.html and post.html */
+  .page-with-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+    direction: rtl;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .page-with-sidebar { grid-template-columns: 1fr; }
+    .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  }
+  @media (max-width: 600px) {
+    .sidebar { grid-template-columns: 1fr; }
+    .page-with-sidebar { padding: 16px 14px 40px; gap: 16px; }
+  }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 18px; }
+
+  .widget {
+    background: var(--card, #fff);
+    border: 1px solid var(--border, #e0e6ed);
+    border-radius: var(--radius, 12px);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs, 0 1px 3px rgba(0,0,0,0.07));
+  }
+  .widget-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border, #e0e6ed);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-1, #1a2235);
+  }
+  .widget-head i { color: var(--primary, #0277bd); width: 16px; }
+  .widget-body { padding: 14px 16px; }
+  .widget-spin { padding: 14px 16px; color: var(--text-3, #8a96a8); font-size: 0.85rem; }
+  .widget-err  { padding: 14px 16px; color: #c53030; font-size: 0.82rem; }
+
+  /* About widget */
+  .about-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 20px 16px;
+  }
+  .about-logo-wrap {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary-lite, #e1f5fe);
+    background: var(--bg, #f2f5f9);
+    flex-shrink: 0;
+  }
+  .about-logo {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scale(1.45);
+    transform-origin: center;
+    display: block;
+  }
+  .about-title { font-size: 1rem; font-weight: 700; color: var(--text-1, #1a2235); }
+  .about-desc  { font-size: 0.83rem; color: var(--text-2, #4a5568); line-height: 1.6; }
+  .about-stats {
+    display: flex; gap: 20px; justify-content: center;
+    width: 100%; padding-top: 10px;
+    border-top: 1px solid var(--border, #e0e6ed);
+  }
+  .stat-item { text-align: center; }
+  .stat-num  { font-size: 1.25rem; font-weight: 700; color: var(--primary, #0277bd); }
+  .stat-label{ font-size: 0.72rem; color: var(--text-3, #8a96a8); }
+
+  /* Prices */
+  .price-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border, #e0e6ed);
+  }
+  .price-row:last-of-type { border-bottom: none; }
+  .price-ico { font-size: 1.1rem; }
+  .price-lbl { flex: 1; font-size: 0.83rem; color: var(--text-2, #4a5568); }
+  .price-val { font-size: 0.88rem; font-weight: 700; color: var(--primary, #0277bd); }
+  .price-updated { font-size: 0.7rem; color: var(--text-3, #8a96a8); padding: 6px 16px 10px; }
+
+  /* News tabs */
+  .news-tabs {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    padding: 10px 12px 6px;
+    border-bottom: 1px solid var(--border, #e0e6ed);
+  }
+  .news-tab {
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    border: 1px solid var(--border, #e0e6ed);
+    background: var(--bg, #f2f5f9);
+    color: var(--text-2, #4a5568);
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .news-tab:hover { background: var(--primary-lite, #e1f5fe); }
+  .news-tab.nt-active { background: var(--primary, #0277bd); color: #fff; border-color: var(--primary, #0277bd); }
+  .news-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border, #e0e6ed);
+    text-decoration: none; transition: background 0.18s;
+  }
+  .news-row:last-child { border-bottom: none; }
+  .news-row:hover { background: var(--bg, #f2f5f9); }
+  .news-n { font-size: 0.7rem; font-weight: 700; color: var(--primary, #0277bd); min-width: 18px; flex-shrink: 0; margin-top: 2px; }
+  .news-t { font-size: 0.82rem; color: var(--text-1, #1a2235); line-height: 1.45; }
+
+  /* Recent posts */
+  .recent-list { display: flex; flex-direction: column; gap: 0; }
+  .recent-item {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 8px; padding: 10px 16px;
+    border-bottom: 1px solid var(--border, #e0e6ed);
+    transition: background 0.18s;
+  }
+  .recent-item:last-child { border-bottom: none; }
+  .recent-item:hover { background: var(--bg, #f2f5f9); }
+  .recent-list a {
+    font-size: 0.85rem; color: var(--text-1, #1a2235);
+    line-height: 1.45; flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .recent-list a:hover { color: var(--primary, #0277bd); }
+  .recent-d { font-size: 0.72rem; color: var(--text-3, #8a96a8); white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+
+  /* China series widget */
+  .hc-widget-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; width: 100%;
+    background: none; border: none; cursor: pointer;
+    text-align: right; color: var(--text-1, #1a2235);
+    transition: background 0.18s; font-family: inherit;
+    text-decoration: none;
+  }
+  .hc-widget-link:hover { background: var(--bg, #f2f5f9); }
+  .hc-widget-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .hc-widget-text { flex: 1; }
+  .hc-widget-text strong { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 2px; }
+  .hc-widget-text small  { font-size: 0.76rem; color: var(--text-3, #8a96a8); }
+  .hc-widget-arrow { color: var(--primary, #0277bd); font-size: 0.8rem; }
+
+  /* Categories */
+  .cat-cloud { display: flex; flex-wrap: wrap; gap: 7px; padding: 14px 16px; }
+  .cat-chip {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 0.78rem; background: var(--bg-2, #e8ecf2);
+    color: var(--text-2, #4a5568); border: 1px solid var(--border, #e0e6ed);
+    transition: all 0.2s; cursor: pointer; text-decoration: none;
+  }
+  .cat-chip:hover { background: var(--primary-lite, #e1f5fe); color: var(--primary, #0277bd); border-color: var(--primary-mid, #b3e5fc); }
+
+  /* Quick links */
+  .quick-links { list-style: none; margin: 0; padding: 0; }
+  .quick-links li { border-bottom: 1px solid var(--border, #e0e6ed); }
+  .quick-links li:last-child { border-bottom: none; }
+  .quick-links a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; font-size: 0.88rem;
+    color: var(--text-2, #4a5568); transition: all 0.2s; text-decoration: none;
+  }
+  .quick-links a:hover { background: var(--bg, #f2f5f9); color: var(--primary, #0277bd); padding-right: 22px; }
+  .quick-links i { width: 16px; color: var(--primary, #0277bd); flex-shrink: 0; }
+</style>
+
+<aside class="sidebar">
+
+  <!-- About -->
+  <div class="widget">
+    <div class="about-widget">
+      <div class="about-logo-wrap">
+        <img src="{{ '/pics/me480.320.png' | relative_url }}" alt="{{ site.title }}" class="about-logo"
+             onerror="this.src='https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/favicon.png'">
+      </div>
+      <div class="about-title">{{ site.title }}</div>
+      <div class="about-desc">{{ site.description }}</div>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-num">{{ site.posts | size }}</div>
+          <div class="stat-label">يازما</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">{{ sb_cats | size }}</div>
+          <div class="stat-label">تۈر</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">{{ site.posts | map: 'date' | map: 'year' | uniq | size }}</div>
+          <div class="stat-label">يىل</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prices -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-coins"></i> باھا ئۇچۇرلىرى</div>
+    <div id="sbPricesWidget"><div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div></div>
+  </div>
+
+  <!-- World news -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-globe"></i> دۇنيا سىياسىتى</div>
+    <div class="news-tabs" id="sbNewsTabs"></div>
+    <div id="sbNewsWidget"><div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div></div>
+  </div>
+
+  <!-- Recent posts -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-fire"></i> يېڭى يازمىلار</div>
+    <div class="recent-list">
+      {%- for post in site.posts limit: 8 -%}
+      <div class="recent-item">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <span class="recent-d">{{ post.date | date: "%m/%d" }}</span>
+      </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Understanding China series -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-book-open"></i> خىتاينى چۈشىنىش</div>
+    <a class="hc-widget-link" href="{{ '/hitayni-chushinish/' | relative_url }}">
+      <span class="hc-widget-icon">📚</span>
+      <span class="hc-widget-text">
+        <strong>خىتاينى چۈشىنىش يۈرۈشلۈكى</strong>
+        <small>41 ماقالەلىك تەھلىل توپلىمى</small>
+      </span>
+      <i class="fa-solid fa-arrow-left hc-widget-arrow"></i>
+    </a>
+  </div>
+
+  <!-- Categories -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-tags"></i> مەزمۇن تۈرلىرى</div>
+    <div class="cat-cloud">
+      {% for c in sb_cats limit: 24 %}
+      {% if c != "" %}
+      <a class="cat-chip" href="{{ '/allArticles/' | relative_url }}">{{ c | replace: "_", " " }}</a>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Quick links -->
+  <div class="widget">
+    <div class="widget-head"><i class="fa-solid fa-link"></i> پايدىلىق ئۇلانمىلار</div>
+    <ul class="quick-links">
+      <li><a href="{{ '/wiki.html' | relative_url }}"><i class="fa-solid fa-book"></i> ۋىكى ئامبار</a></li>
+      <li><a href="https://uycoder.github.io/paydilar/oyun/" target="_blank" rel="noopener"><i class="fa-solid fa-gamepad"></i> ئويۇنلار</a></li>
+      <li><a href="https://uycoder.github.io/paydilar/news/UyghurNews.html" target="_blank" rel="noopener"><i class="fa-solid fa-newspaper"></i> خەۋەرلەر</a></li>
+      <li><a href="{{ '/allArticles/' | relative_url }}"><i class="fa-solid fa-list"></i> بارلىق يازمىلار</a></li>
+      <li><a href="{{ '/relations.html' | relative_url }}"><i class="fa-solid fa-earth-asia"></i> مۇناسىۋەتلەر</a></li>
+      <li><a href="{{ '/countries.html' | relative_url }}"><i class="fa-solid fa-flag"></i> دۆلەتلەر</a></li>
+      <li><a href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> GitHub</a></li>
+    </ul>
+  </div>
+
+</aside>
+
+<script>
+/* Prices widget (sidebar) */
+(function() {
+  var el = document.getElementById('sbPricesWidget');
+  if (!el) return;
+  var OZ = 31.1035;
+  var BASE = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/';
+  Promise.all([
+    fetch(BASE + 'xau.json').then(function(r){ return r.json(); }),
+    fetch(BASE + 'xag.json').then(function(r){ return r.json(); }),
+    fetch(BASE + 'usd.json').then(function(r){ return r.json(); })
+  ]).then(function(res) {
+    var gold   = res[0].xau && res[0].xau.usd ? (res[0].xau.usd / OZ).toFixed(2) : '—';
+    var silver = res[1].xag && res[1].xag.usd ? (res[1].xag.usd / OZ).toFixed(3) : '—';
+    var lira   = res[2].usd && res[2].usd.try  ? res[2].usd.try.toFixed(2)         : '—';
+    el.innerHTML =
+      '<div class="price-row"><span class="price-ico">🥇</span><span class="price-lbl">1 گرام ئالتۇن</span><span class="price-val">$' + gold + '</span></div>' +
+      '<div class="price-row"><span class="price-ico">🥈</span><span class="price-lbl">1 گرام كۈمۈش</span><span class="price-val">$' + silver + '</span></div>' +
+      '<div class="price-row"><span class="price-ico">💵</span><span class="price-lbl">1 دوللار</span><span class="price-val">' + lira + ' لىرا</span></div>' +
+      '<div class="price-updated">يېڭىلانغان: ' + new Date().toLocaleTimeString() + '</div>';
+  }).catch(function() { el.innerHTML = '<div class="widget-err">باھا يۈكلىيەلمىدى</div>'; });
+})();
+
+/* News widget (sidebar) */
+(function() {
+  var el   = document.getElementById('sbNewsWidget');
+  var tabs = document.getElementById('sbNewsTabs');
+  if (!el || !tabs) return;
+  var SOURCES = [
+    { id:'bbc',      label:'BBC',        rss:'https://feeds.bbci.co.uk/news/world/rss.xml',                               lang:'en' },
+    { id:'fp',       label:'FP',         rss:'https://foreignpolicy.com/feed/',                                            lang:'en' },
+    { id:'fa',       label:'FA',         rss:'https://www.foreignaffairs.com/rss.xml',                                     lang:'en' },
+    { id:'wsj',      label:'WSJ',        rss:'https://feeds.a.djnews.net/rss/RSSWorldNews',                                lang:'en' },
+    { id:'econ',     label:'Economist',  rss:'https://www.economist.com/the-world-this-week/rss.xml',                      lang:'en' },
+    { id:'gnews',    label:'G.News',     rss:'https://news.google.com/rss/search?q=world+politics&hl=en&gl=US&ceid=US:en', lang:'en' },
+    { id:'politico', label:'Politico',   rss:'https://rss.politico.com/politics-news.xml',                                 lang:'en' },
+    { id:'cnn',      label:'CNN',        rss:'http://rss.cnn.com/rss/edition_world.rss',                                   lang:'en' },
+    { id:'almonitor',label:'Al-Monitor', rss:'https://www.al-monitor.com/rss',                                             lang:'en' },
+    { id:'sana',     label:'SANA',       rss:'https://sana.sy/?feed=rss2',                                                 lang:'ar' }
+  ];
+  var cache = {}, active = 'bbc';
+  tabs.innerHTML = SOURCES.map(function(s) {
+    return '<button type="button" class="news-tab' + (s.id===active?' nt-active':'') + '" data-src="' + s.id + '">' + s.label + '</button>';
+  }).join('');
+  tabs.addEventListener('click', function(e) {
+    var btn = e.target.closest('.news-tab');
+    if (!btn) return;
+    var id = btn.dataset.src;
+    if (id === active) return;
+    active = id;
+    tabs.querySelectorAll('.news-tab').forEach(function(b){ b.classList.remove('nt-active'); });
+    btn.classList.add('nt-active');
+    loadSrc(id);
+  });
+  function translate(text, lang) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + (lang||'en') + '&tl=ug&dt=t&q=' + encodeURIComponent(text);
+    return fetch(url).then(function(r){ return r.json(); })
+      .then(function(d){ return (d[0]||[]).map(function(s){ return s[0]||''; }).join(''); })
+      .catch(function(){ return text; });
+  }
+  function loadSrc(id) {
+    if (cache[id]) { render(cache[id]); return; }
+    el.innerHTML = '<div class="widget-spin">⏳ يۈكلىنىۋاتىدۇ…</div>';
+    var src = SOURCES.find(function(s){ return s.id===id; });
+    if (!src) return;
+    fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(src.rss) + '&count=10')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.status !== 'ok') throw new Error();
+        return Promise.all((data.items||[]).slice(0,10).map(function(item,i) {
+          return translate(item.title||'', src.lang).then(function(ug) {
+            return { n:i+1, title:ug||item.title, link:item.link||'#' };
+          });
+        }));
+      })
+      .then(function(articles) { cache[id]=articles; if(active===id) render(articles); })
+      .catch(function() { if(active===id) el.innerHTML='<div class="widget-err">خەۋەر يۈكلىيەلمىدى</div>'; });
+  }
+  function render(articles) {
+    el.innerHTML = articles.map(function(a) {
+      return '<a class="news-row" href="' + a.link + '" target="_blank" rel="noopener">' +
+        '<span class="news-n">' + a.n + '</span><span class="news-t">' + a.title + '</span></a>';
+    }).join('');
+  }
+  loadSrc(active);
+})();
+</script>

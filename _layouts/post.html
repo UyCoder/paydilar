@@ -2,7 +2,12 @@
 layout: default
 ---
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
+  .post-main { min-width: 0; }
   .post-hero-img {
     width: 100%;
     max-height: 420px;
@@ -12,15 +17,10 @@ layout: default
     margin-bottom: 0;
   }
   .post-wrap {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 36px 20px 60px;
     direction: rtl;
+    padding: 28px 0 0;
   }
-  .post-header {
-    margin-bottom: 28px;
-    text-align: right;
-  }
+  .post-header { margin-bottom: 28px; text-align: right; }
   .post-meta-line {
     display: flex;
     align-items: center;
@@ -38,10 +38,7 @@ layout: default
     font-weight: 600;
     border: 1px solid #b3e5fc;
   }
-  .post-date-txt {
-    font-size: 0.82rem;
-    color: #8a96a8;
-  }
+  .post-date-txt { font-size: 0.82rem; color: #8a96a8; }
   .post-main-title {
     font-size: 2rem;
     font-weight: 800;
@@ -51,19 +48,16 @@ layout: default
     text-align: center;
   }
   .post-content-body {
-    font-family: 'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur',
-                 'Noto Naskh Arabic', Arial, sans-serif;
+    font-family: 'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur', 'Noto Naskh Arabic', Arial, sans-serif;
     font-size: 1.08rem;
     line-height: 1.9;
     color: #2d3748;
   }
-  /* Paragraphs: justified both sides + 2-em first-line indent */
   .post-content-body p {
     text-align: justify;
     text-indent: 2em;
     margin-bottom: 18px;
   }
-  /* Headings inside the article: centered */
   .post-content-body h1,
   .post-content-body h2,
   .post-content-body h3,
@@ -94,15 +88,12 @@ layout: default
     font-style: italic;
     text-align: justify;
   }
-  .post-content-body blockquote p {
-    text-indent: 0;
-  }
+  .post-content-body blockquote p { text-indent: 0; }
+  .post-content-body ul,
+  .post-content-body ol { list-style: none; padding: 0; margin: 0 0 18px 0; }
+  .post-content-body li { text-align: justify; text-indent: 2em; margin-bottom: 10px; }
   .post-content-body pre,
-  .post-content-body code {
-    direction: ltr;
-    text-align: left;
-    font-family: 'Courier New', monospace;
-  }
+  .post-content-body code { direction: ltr; text-align: left; font-family: 'Courier New', monospace; }
   .post-content-body pre {
     background: #1a2235;
     color: #e2e8f0;
@@ -123,6 +114,7 @@ layout: default
     background: #e1f5fe;
     border-radius: 7px;
     transition: all 0.2s;
+    text-decoration: none;
   }
   .post-back:hover { background: #0277bd; color: #fff; }
 </style>
@@ -131,22 +123,171 @@ layout: default
 <img src="{{ page.image }}" alt="{{ page.title }}" class="post-hero-img">
 {% endif %}
 
-<div class="post-wrap">
-  <a href="{{ '/' | relative_url }}" class="post-back">
-    &#8594; باش بەتكە
-  </a>
+<div class="page-with-sidebar">
+  <div class="post-main">
+    <div class="post-wrap">
+      <a href="{{ '/' | relative_url }}" class="post-back">&#8594; باش بەتكە</a>
 
-  <header class="post-header">
-    <div class="post-meta-line">
-      {% if page.categories.size > 0 %}
-      <span class="post-cat-pill">{{ page.categories | first | replace: "_", " " }}</span>
-      {% endif %}
-      <span class="post-date-txt">{{ page.date | date: "%Y · %m · %d" }}</span>
+      <header class="post-header">
+        <div class="post-meta-line">
+          {% if page.categories.size > 0 %}
+          <span class="post-cat-pill">{{ page.categories | first | replace: "_", " " }}</span>
+          {% endif %}
+          <span class="post-date-txt">{{ page.date | date: "%Y · %m · %d" }}</span>
+        </div>
+        <h1 class="post-main-title">{{ page.title }}</h1>
+      </header>
+
+      <div class="post-content-body" id="report-content">
+        {{ content }}
+      </div>
     </div>
-    <h1 class="post-main-title">{{ page.title }}</h1>
-  </header>
+  </div>
+  {% include sidebar.html %}
+</div>
 
-  <div class="post-content-body">
-    {{ content }}
+<!-- =====================================================================
+     TTS & PDF CONTROLS  (provided code — unchanged)
+====================================================================== -->
+<div id="controlsContainer" class="fixed bottom-4 left-4 z-50 flex items-end gap-2" data-html2canvas-ignore="true">
+  <button type="button" onclick="toggleControls()" id="toggleBtn" class="bg-slate-800 text-white w-8 h-8 rounded-full shadow-xl flex items-center justify-center text-xs hover:bg-slate-700 transition" title="تەڭشەكلەر">⚙️</button>
+  <div id="controlPanelMain" class="hidden bg-slate-900/95 backdrop-blur-sm p-2 rounded-lg shadow-2xl border border-slate-700 flex flex-col gap-2 w-64">
+    <div class="flex gap-1">
+      <select id="voiceSelect" title="ئاۋاز تاللاش" class="bg-slate-700 text-white text-[10px] p-1 rounded w-full dir-ltr focus:outline-none focus:ring-1 focus:ring-sky-500">
+        <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+        <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+        <option value="ar-SA">العربية (ئەرەبچە)</option>
+        <option value="en-US">English (ئېنگلىزچە)</option>
+      </select>
+      <select id="rateSelect" title="تېزلىك تاللاش" class="bg-slate-700 text-white text-[10px] p-1 rounded w-14 text-center focus:outline-none focus:ring-1 focus:ring-sky-500">
+        <option value="1.0">1.0x</option>
+        <option value="1.5" selected>1.5x</option>
+        <option value="2.0">2.0x</option>
+      </select>
+    </div>
+    <div class="grid grid-cols-5 gap-1">
+      <button type="button" onclick="prevChunk()" class="bg-slate-600 hover:bg-slate-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئالدىنقى">⏮</button>
+      <button type="button" onclick="startReading()" class="bg-sky-600 hover:bg-sky-500 text-white p-1.5 rounded text-[10px] font-bold" title="ئوقۇش">▶</button>
+      <button type="button" onclick="nextChunk()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-1.5 rounded text-[10px] font-bold" title="كېيىنكى">⏭</button>
+      <button type="button" onclick="stopReading()" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded text-[10px] font-bold" title="توختا">■</button>
+      <button type="button" onclick="savePDF()" class="bg-pink-600 hover:bg-pink-500 text-white p-1.5 rounded text-[10px] font-bold" title="PDF">📄</button>
+    </div>
   </div>
 </div>
+
+<script>
+  const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+  const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+  function convertForTTS(text, map) {
+    return text.split('').map(c => map[c] || c).join('');
+  }
+
+  let chunks = [];
+  let chunkIndex = 0;
+  let isReading = false;
+
+  function toggleControls() {
+    const panel = document.getElementById('controlPanelMain');
+    const btn = document.getElementById('toggleBtn');
+    if (panel.classList.contains('hidden')) {
+      panel.classList.remove('hidden');
+      btn.innerHTML = '▼';
+    } else {
+      panel.classList.add('hidden');
+      btn.innerHTML = '⚙️';
+    }
+  }
+
+  function startReading() {
+    stopReading();
+    isReading = true;
+
+    const voiceVal = document.getElementById('voiceSelect').value;
+    const reportEl = document.getElementById('report-content');
+    let clone = reportEl.cloneNode(true);
+    let fullText = "";
+
+    if (voiceVal === 'ar-SA') {
+      const arSummary = clone.querySelector('#summary-ar p');
+      fullText = arSummary ? arSummary.innerText : "تېكىست تېپىلمىدى";
+    } else if (voiceVal === 'en-US') {
+      const enSummary = clone.querySelector('#summary-en p');
+      fullText = enSummary ? enSummary.innerText : "Text not found";
+    } else {
+      const noTts = clone.querySelectorAll('.no-tts');
+      noTts.forEach(el => el.remove());
+      fullText = clone.innerText;
+    }
+
+    let rawChunks = fullText.split(/\n+/);
+    chunks = [];
+    let lastChunk = "";
+    for (let i = 0; i < rawChunks.length; i++) {
+      let clean = rawChunks[i].trim();
+      if (clean.length > 0 && clean !== lastChunk) {
+        chunks.push(clean);
+        lastChunk = clean;
+      }
+    }
+
+    chunkIndex = 0;
+    speakNextChunk();
+  }
+
+  function speakNextChunk() {
+    if (!isReading) return;
+    if (chunkIndex >= chunks.length) { isReading = false; return; }
+
+    const voiceVal = document.getElementById('voiceSelect').value;
+    const rateVal = parseFloat(document.getElementById('rateSelect').value);
+    let chunkText = chunks[chunkIndex];
+    let finalText = chunkText;
+
+    if (voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+    else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+    const utterance = new SpeechSynthesisUtterance(finalText);
+    const voices = window.speechSynthesis.getVoices();
+    let chosenVoice = null;
+
+    if (voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+    else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+    else chosenVoice = voices.find(v => v.lang === voiceVal);
+
+    if (chosenVoice) utterance.voice = chosenVoice;
+    utterance.rate = rateVal;
+    utterance.onend = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+    utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function nextChunk() {
+    if (!isReading || chunks.length === 0) return;
+    window.speechSynthesis.cancel();
+  }
+
+  function prevChunk() {
+    if (!isReading || chunks.length === 0) return;
+    if (chunkIndex > 0) {
+      chunkIndex -= 2;
+      if (chunkIndex < -1) chunkIndex = -1;
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  function stopReading() {
+    isReading = false;
+    window.speechSynthesis.cancel();
+  }
+
+  function savePDF() {
+    const el = document.getElementById('report-content');
+    const d = new Date();
+    const f = (n) => n.toString().padStart(2, '0');
+    const fname = `Bilik_Report_${d.getFullYear()}-${f(d.getMonth()+1)}-${f(d.getDate())}_${f(d.getHours())}-${f(d.getMinutes())}-${f(d.getSeconds())}.pdf`;
+    const opt = { margin: [10,10,10,10], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
+    html2pdf().set(opt).from(el).save();
+  }
+</script>

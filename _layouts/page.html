@@ -1,15 +1,81 @@
---- 
-layout: default 
+---
+layout: default
 ---
 
-<section class="section">
-    <div class="container">
-        <div class="heading has-text-centered">
-            <h1 class="title is-3">{{page.title}}</h1>
-        </div>
-        <br>
-    </div>
-    <div class="container">
-        {{content}}
-    </div>
-</section>
+<style>
+  .page-content-wrap {
+    direction: rtl;
+    min-width: 0;
+  }
+  .page-content-wrap h1,
+  .page-content-wrap h2,
+  .page-content-wrap h3,
+  .page-content-wrap h4 {
+    text-align: center;
+    font-weight: 700;
+    margin: 28px 0 14px;
+    color: #1a2235;
+  }
+  .page-content-wrap h1 { font-size: 1.8rem; }
+  .page-content-wrap h2 { font-size: 1.35rem; border-bottom: 2px solid #e0e6ed; padding-bottom: 6px; }
+  .page-content-wrap p {
+    text-align: justify;
+    text-indent: 2em;
+    margin-bottom: 16px;
+    line-height: 1.9;
+    font-size: 1.05rem;
+    color: #2d3748;
+  }
+  .page-content-wrap ul,
+  .page-content-wrap ol {
+    list-style: none;
+    padding: 0; margin: 0 0 16px 0;
+  }
+  .page-content-wrap li {
+    text-align: justify;
+    text-indent: 2em;
+    margin-bottom: 10px;
+    line-height: 1.9;
+    font-size: 1.05rem;
+    color: #2d3748;
+  }
+  .page-content-wrap img {
+    max-width: 100%; height: auto; display: block;
+    border-radius: 10px; margin: 20px auto;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+  }
+  .page-content-wrap figure.image {
+    display: flex; justify-content: center;
+    margin: 20px auto;
+  }
+  .page-content-wrap figure.image img {
+    border-radius: 50%;
+    border: 3px solid #e1f5fe;
+  }
+  .page-content-wrap a { color: #0277bd; text-decoration: underline; }
+  .page-title-bar {
+    background: #fff;
+    border-bottom: 1px solid #e0e6ed;
+    padding: 22px 0 14px;
+    text-align: center;
+  }
+  .page-title-bar h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1a2235;
+    margin: 0;
+  }
+</style>
+
+<div class="page-title-bar">
+  <div style="max-width:1160px;margin:0 auto;padding:0 20px;">
+    <h1>{{ page.title }}</h1>
+  </div>
+</div>
+
+<div class="page-with-sidebar">
+  <div class="page-content-wrap">
+    {{ content }}
+  </div>
+  {% include sidebar.html %}
+</div>
