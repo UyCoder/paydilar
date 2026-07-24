@@ -178,6 +178,7 @@
   }
   .quick-links a:hover { background: var(--bg, #f2f5f9); color: var(--primary, #0277bd); padding-right: 22px; }
   .quick-links i { width: 16px; color: var(--primary, #0277bd); flex-shrink: 0; }
+  .think-tank-list a { padding: 5px 14px; font-size: 0.82rem; }
 </style>
 
 <aside class="sidebar">
@@ -247,22 +248,12 @@
     </a>
   </div>
 
-  <!-- Categories -->
-  <div class="widget">
-    <div class="widget-head"><i class="fa-solid fa-tags"></i> مەزمۇن تۈرلىرى</div>
-    <div class="cat-cloud">
-      {% for c in sb_cats limit: 24 %}
-      {% if c != "" %}
-      <a class="cat-chip" href="{{ '/allArticles/' | relative_url }}">{{ c | replace: "_", " " }}</a>
-      {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-
   <!-- Think tanks -->
   <div class="widget">
-    <div class="widget-head"><i class="fa-solid fa-building-columns"></i> دۇنياغا داڭلىق تەتقىقات مەركەزلىرى</div>
-    <ul class="quick-links">
+    <div class="widget-head"><i class="fa-solid fa-building-columns"></i> داڭلىق ئەقىل ئامبارلىرى</div>
+    <ul class="quick-links think-tank-list">
+      <li><a href="https://www.foreignaffairs.com" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Foreign Affairs</a></li>
+      <li><a href="https://foreignpolicy.com" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Foreign Policy</a></li>
       <li><a href="https://www.hoover.org" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Hoover Institution</a></li>
       <li><a href="https://www.csis.org" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> CSIS</a></li>
       <li><a href="https://www.rand.org" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> RAND Corporation</a></li>
@@ -321,9 +312,9 @@
   var tabs = document.getElementById('sbNewsTabs');
   if (!el || !tabs) return;
   var SOURCES = [
-    { id:'bbc',      label:'BBC',        rss:'https://feeds.bbci.co.uk/news/world/rss.xml',                               lang:'en' },
-    { id:'fp',       label:'FP',         rss:'https://foreignpolicy.com/feed/',                                            lang:'en' },
     { id:'fa',       label:'FA',         rss:'https://www.foreignaffairs.com/rss.xml',                                     lang:'en' },
+    { id:'fp',       label:'FP',         rss:'https://foreignpolicy.com/feed/',                                            lang:'en' },
+    { id:'bbc',      label:'BBC',        rss:'https://feeds.bbci.co.uk/news/world/rss.xml',                               lang:'en' },
     { id:'wsj',      label:'WSJ',        rss:'https://feeds.a.djnews.net/rss/RSSWorldNews',                                lang:'en' },
     { id:'econ',     label:'Economist',  rss:'https://www.economist.com/the-world-this-week/rss.xml',                      lang:'en' },
     { id:'gnews',    label:'G.News',     rss:'https://news.google.com/rss/search?q=world+politics&hl=en&gl=US&ceid=US:en', lang:'en' },
@@ -332,7 +323,7 @@
     { id:'almonitor',label:'Al-Monitor', rss:'https://www.al-monitor.com/rss',                                             lang:'en' },
     { id:'sana',     label:'SANA',       rss:'https://sana.sy/?feed=rss2',                                                 lang:'ar' }
   ];
-  var cache = {}, active = 'bbc';
+  var cache = {}, active = 'fa';
   tabs.innerHTML = SOURCES.map(function(s) {
     return '<button type="button" class="news-tab' + (s.id===active?' nt-active':'') + '" data-src="' + s.id + '">' + s.label + '</button>';
   }).join('');
