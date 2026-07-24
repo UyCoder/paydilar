@@ -16,7 +16,8 @@ title: باش بەت
       {% assign _fi = post.image %}
       {% unless _fi %}
         {% if post.content contains 'src="' %}
-          {% assign _fi = post.content | split: 'src="' | last | split: '"' | first %}
+          {% assign _img_ps = post.content | split: 'src="' %}
+          {% assign _fi = _img_ps[1] | split: '"' | first %}
           {% unless _fi contains '//' %}{% assign _fi = nil %}{% endunless %}
         {% endif %}
       {% endunless %}
@@ -128,7 +129,8 @@ title: باش بەت
         {% assign _post_img = post.image %}
         {% unless _post_img %}
           {% if post.content contains 'src="' %}
-            {% assign _post_img = post.content | split: 'src="' | last | split: '"' | first %}
+            {% assign _pimg_ps = post.content | split: 'src="' %}
+            {% assign _post_img = _pimg_ps[1] | split: '"' | first %}
             {% unless _post_img contains '//' %}{% assign _post_img = nil %}{% endunless %}
           {% endif %}
         {% endunless %}

@@ -117,7 +117,107 @@ layout: default
     text-decoration: none;
   }
   .post-back:hover { background: #0277bd; color: #fff; }
+
+  /* ── Reading progress bar ── */
+  #readProg {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    z-index: 10000; pointer-events: none;
+    background: linear-gradient(to left, #0277bd, #29b6f6);
+    width: 0%; transition: width 0.1s linear;
+  }
+
+  /* ── Post utility bar (share + tools) ── */
+  .post-util-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+    padding: 11px 0; margin: 16px 0 24px;
+    border-top: 1px solid #e0e6ed; border-bottom: 1px solid #e0e6ed;
+  }
+  .share-btns { display: flex; align-items: center; gap: 7px; }
+  .share-label { font-size: 0.8rem; color: #8a96a8; }
+  .share-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-size: 0.82rem; font-weight: 700;
+    color: #fff; text-decoration: none; transition: all 0.2s;
+  }
+  .share-x  { background: #000; font-size: 0.75rem; }
+  .share-x:hover { background: #333; color: #fff; }
+  .share-wa { background: #25D366; }
+  .share-wa:hover { background: #1da851; color: #fff; }
+  .share-tg { background: #0088cc; }
+  .share-tg:hover { background: #006fa8; color: #fff; }
+  .util-btns { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .util-btns button {
+    background: #f2f5f9; border: 1px solid #e0e6ed;
+    border-radius: 6px; padding: 4px 8px;
+    font-size: 0.78rem; cursor: pointer; color: #4a5568;
+    transition: all 0.2s;
+    font-family: 'Alkatip','UKIJ Tuz','Microsoft Uighur',Arial,sans-serif;
+  }
+  .util-btns button:hover { background: #e1f5fe; color: #0277bd; }
+  .util-btns button.active { background: #0277bd; color: #fff; border-color: #0277bd; }
+
+  /* ── DFN tooltip ── */
+  .post-content-body dfn {
+    text-decoration: underline dotted #0277bd;
+    cursor: help; font-style: normal;
+  }
+  #dfnTip {
+    display: none; position: absolute;
+    background: #1a2235; color: #e2e8f0;
+    padding: 11px 15px; border-radius: 9px;
+    font-size: 0.85rem; line-height: 1.8;
+    width: 250px; max-width: 88vw;
+    text-align: justify; text-indent: 2em; direction: rtl;
+    z-index: 9998; pointer-events: none; opacity: 0;
+    transition: opacity 0.18s;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.32);
+  }
+
+  /* ── Dark mode ── */
+  body.dark-mode { background: #0f1624 !important; color: #cbd5e0; }
+  body.dark-mode .site-nav { background: rgba(15,22,36,0.97) !important; border-color: #2d3748 !important; }
+  body.dark-mode .hikmet-bar { background: linear-gradient(135deg,#1a3a5c,#1e4d7a) !important; }
+  body.dark-mode .post-wrap { background: transparent; }
+  body.dark-mode .post-main-title { color: #e2e8f0; }
+  body.dark-mode .post-cat-pill { background: #1a3a5c; color: #63b3ed; border-color: #2d4a6e; }
+  body.dark-mode .post-date-txt { color: #718096; }
+  body.dark-mode .post-back { background: #1e2535; color: #63b3ed; }
+  body.dark-mode .post-util-bar { border-color: #2d3748; }
+  body.dark-mode .util-btns button { background: #1e2535; border-color: #2d3748; color: #a0aec0; }
+  body.dark-mode .util-btns button:hover { background: #1a3a5c; color: #63b3ed; }
+  body.dark-mode .post-content-body { color: #cbd5e0; }
+  body.dark-mode .post-content-body h1,
+  body.dark-mode .post-content-body h2,
+  body.dark-mode .post-content-body h3,
+  body.dark-mode .post-content-body h4 { color: #e2e8f0; }
+  body.dark-mode .post-content-body h2 { border-color: #2d3748; }
+  body.dark-mode .post-content-body a { color: #63b3ed; }
+  body.dark-mode .post-content-body blockquote { background: #1e2535; color: #a0aec0; }
+  body.dark-mode .widget { background: #1e2535 !important; border-color: #2d3748 !important; }
+  body.dark-mode .widget-head { color: #e2e8f0 !important; border-color: #2d3748 !important; }
+  body.dark-mode .about-title { color: #e2e8f0 !important; }
+  body.dark-mode .about-stats { border-color: #2d3748 !important; }
+  body.dark-mode .stat-num { color: #63b3ed !important; }
+  body.dark-mode .recent-item { border-color: #2d3748 !important; }
+  body.dark-mode .recent-item:hover { background: #252b3b !important; }
+  body.dark-mode .recent-list a { color: #cbd5e0 !important; }
+  body.dark-mode .price-row { border-color: #2d3748 !important; }
+  body.dark-mode .price-lbl { color: #a0aec0 !important; }
+  body.dark-mode .news-tab { background: #1e2535 !important; border-color: #2d3748 !important; color: #a0aec0 !important; }
+  body.dark-mode .news-row { border-color: #2d3748 !important; }
+  body.dark-mode .news-row:hover { background: #252b3b !important; }
+  body.dark-mode .news-t { color: #cbd5e0 !important; }
+  body.dark-mode .cat-chip { background: #1e2535 !important; color: #a0aec0 !important; border-color: #2d3748 !important; }
+  body.dark-mode .quick-links li { border-color: #2d3748 !important; }
+  body.dark-mode .quick-links a { color: #a0aec0 !important; }
+  body.dark-mode .quick-links a:hover { background: #252b3b !important; color: #63b3ed !important; }
+  body.dark-mode #readProg { background: linear-gradient(to left,#3182ce,#63b3ed); }
 </style>
+
+<div id="readProg"></div>
+<div id="dfnTip"></div>
 
 {% if page.image %}
 <img src="{{ page.image }}" alt="{{ page.title }}" class="post-hero-img">
@@ -136,6 +236,34 @@ layout: default
           <span class="post-date-txt">{{ page.date | date: "%Y · %m · %d" }}</span>
         </div>
         <h1 class="post-main-title">{{ page.title }}</h1>
+
+        <!-- Share + utility bar -->
+        <div class="post-util-bar">
+          <div class="share-btns">
+            <span class="share-label">ئۇلاشتۇرۇش:</span>
+            <a class="share-btn share-x"
+               href="https://twitter.com/intent/tweet?url={{ page.url | absolute_url | uri_escape }}&text={{ page.title | uri_escape }}"
+               target="_blank" rel="noopener" title="X / Twitter">𝕏</a>
+            <a class="share-btn share-wa"
+               href="https://wa.me/?text={{ page.title | uri_escape }}%20{{ page.url | absolute_url | uri_escape }}"
+               target="_blank" rel="noopener" title="WhatsApp">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a class="share-btn share-tg"
+               href="https://t.me/share/url?url={{ page.url | absolute_url | uri_escape }}&text={{ page.title | uri_escape }}"
+               target="_blank" rel="noopener" title="Telegram">
+              <i class="fa-brands fa-telegram"></i>
+            </a>
+          </div>
+          <div class="util-btns">
+            <button type="button" id="bookmarkBtn" onclick="toggleBookmark()" title="خەتكۈچ">🔖</button>
+            <button type="button" onclick="changeFontSize(-1)" title="خەت كىچىكلەت">A−</button>
+            <button type="button" onclick="changeFontSize(1)"  title="خەت چوڭايت">A+</button>
+            <button type="button" onclick="changeLineH()"      title="قۇر ئارلىقى">≡</button>
+            <button type="button" id="darkBtn" onclick="toggleDark()" title="قاراڭغۇ/ئورۇق">🌙</button>
+            <button type="button" onclick="copyPostLink(this)"  title="ئۇلانمىنى كۆچۈر">🔗</button>
+          </div>
+        </div>
       </header>
 
       <div class="post-content-body" id="report-content">
@@ -290,4 +418,145 @@ layout: default
     const opt = { margin: [10,10,10,10], filename: fname, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
     html2pdf().set(opt).from(el).save();
   }
+
+  /* ── Reading progress bar ── */
+  window.addEventListener('scroll', function() {
+    var prog = document.getElementById('readProg');
+    if (!prog) return;
+    var doc = document.documentElement;
+    var scrolled = window.pageYOffset || doc.scrollTop;
+    var total = Math.max(1, (doc.scrollHeight || doc.offsetHeight) - (window.innerHeight || doc.clientHeight));
+    prog.style.width = Math.min(100, (scrolled / total) * 100) + '%';
+  });
+
+  /* ── Dark mode ── */
+  function toggleDark() {
+    var on = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('pf_dark', on ? '1' : '0');
+    var btn = document.getElementById('darkBtn');
+    if (btn) btn.textContent = on ? '☀️' : '🌙';
+  }
+  (function() {
+    if (localStorage.getItem('pf_dark') === '1') {
+      document.body.classList.add('dark-mode');
+      var btn = document.getElementById('darkBtn');
+      if (btn) btn.textContent = '☀️';
+    }
+  })();
+
+  /* ── Font size & line height ── */
+  var _fs = parseInt(localStorage.getItem('pf_sz') || 17);
+  var _lh = parseInt(localStorage.getItem('pf_lh') || 0);
+  var _lhV = [1.9, 2.3, 2.8];
+  function _applyFont() {
+    var c = document.getElementById('report-content');
+    if (c) { c.style.fontSize = _fs + 'px'; c.style.lineHeight = _lhV[_lh]; }
+  }
+  function changeFontSize(d) {
+    _fs = Math.min(24, Math.max(13, _fs + d));
+    localStorage.setItem('pf_sz', _fs); _applyFont();
+  }
+  function changeLineH() {
+    _lh = (_lh + 1) % 3;
+    localStorage.setItem('pf_lh', _lh); _applyFont();
+  }
+  _applyFont();
+
+  /* ── Bookmark ── */
+  function toggleBookmark() {
+    var url = window.location.pathname;
+    var bms = JSON.parse(localStorage.getItem('pf_bookmarks') || '[]');
+    var idx = bms.findIndex(function(b) { return b.u === url; });
+    var btn = document.getElementById('bookmarkBtn');
+    if (idx >= 0) {
+      bms.splice(idx, 1);
+      if (btn) { btn.classList.remove('active'); btn.title = 'خەتكۈچ'; }
+    } else {
+      bms.push({ u: url, t: document.title, d: new Date().toISOString() });
+      if (btn) { btn.classList.add('active'); btn.title = 'خەتكۈچتىن چىقار'; }
+    }
+    localStorage.setItem('pf_bookmarks', JSON.stringify(bms));
+  }
+  (function() {
+    var url = window.location.pathname;
+    var bms = JSON.parse(localStorage.getItem('pf_bookmarks') || '[]');
+    if (bms.some(function(b) { return b.u === url; })) {
+      var btn = document.getElementById('bookmarkBtn');
+      if (btn) { btn.classList.add('active'); btn.title = 'خەتكۈچتىن چىقار'; }
+    }
+  })();
+
+  /* ── Copy link ── */
+  function copyPostLink(btn) {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+      var orig = btn.textContent;
+      btn.textContent = '✅';
+      setTimeout(function() { btn.textContent = orig; }, 1600);
+    });
+  }
+
+  /* ── Highlight search term from ?hl= URL param ── */
+  (function() {
+    var hl = new URLSearchParams(window.location.search).get('hl');
+    if (!hl || hl.length < 1) return;
+    var content = document.getElementById('report-content');
+    if (!content) return;
+    var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(n) {
+        var tag = n.parentElement && n.parentElement.tagName;
+        return (tag === 'SCRIPT' || tag === 'STYLE')
+          ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    }, false);
+    var hits = [];
+    var node;
+    while ((node = walker.nextNode())) {
+      if (node.textContent.indexOf(hl) >= 0) hits.push(node);
+    }
+    var firstMark = null;
+    hits.forEach(function(textNode) {
+      var text = textNode.textContent;
+      var frag = document.createDocumentFragment();
+      var last = 0, idx = text.indexOf(hl);
+      while (idx >= 0) {
+        if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+        var mark = document.createElement('mark');
+        mark.style.cssText = 'background:#fff176;color:#1a2235;border-radius:3px;padding:0 2px;font-weight:700;';
+        mark.textContent = text.slice(idx, idx + hl.length);
+        frag.appendChild(mark);
+        if (!firstMark) firstMark = mark;
+        last = idx + hl.length;
+        idx = text.indexOf(hl, last);
+      }
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+    if (firstMark) {
+      setTimeout(function() { firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
+    }
+  })();
+
+  /* ── DFN tooltip (glossary) ── */
+  (function() {
+    var tip = document.getElementById('dfnTip');
+    if (!tip) return;
+    document.querySelectorAll('.post-content-body dfn[title]').forEach(function(dfn) {
+      dfn.addEventListener('mouseenter', function() {
+        tip.textContent = dfn.getAttribute('title');
+        tip.style.display = 'block';
+        var rect = dfn.getBoundingClientRect();
+        var tipH = tip.offsetHeight || 80;
+        var top = rect.top + window.pageYOffset - tipH - 10;
+        if (top < window.pageYOffset + 8) top = rect.bottom + window.pageYOffset + 8;
+        var right = Math.max(8, document.documentElement.clientWidth - rect.right - 125 + rect.width / 2);
+        tip.style.top  = top + 'px';
+        tip.style.right = right + 'px';
+        tip.style.opacity = '1';
+      });
+      dfn.addEventListener('mouseleave', function() {
+        tip.style.opacity = '0';
+        setTimeout(function() { if (tip.style.opacity === '0') tip.style.display = 'none'; }, 200);
+      });
+    });
+  })();
 </script>

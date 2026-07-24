@@ -207,7 +207,7 @@
     border: none;
     outline: none;
     font-size: 1rem;
-    font-family: inherit;
+    font-family: 'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur', 'Noto Naskh Arabic', Arial, sans-serif;
     direction: rtl;
     background: transparent;
     color: var(--text-1);
@@ -253,7 +253,7 @@ var SEARCH_INDEX = [
     t: {{ post.title | jsonify }},
     u: "{{ post.url | relative_url }}",
     d: "{{ post.date | date: '%Y-%m-%d' }}",
-    e: {{ post.excerpt | strip_html | strip_newlines | truncate: 80 | jsonify }}
+    e: {{ post.content | strip_html | strip_newlines | truncate: 400 | jsonify }}
   }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ];
@@ -379,9 +379,9 @@ var SEARCH_INDEX = [
         return;
       }
       results.innerHTML = matched.map(function(p) {
-        return '<a class="search-result-item" href="' + p.u + '">' +
+        return '<a class="search-result-item" href="' + p.u + '?hl=' + encodeURIComponent(q) + '">' +
           '<span class="sr-title">' + p.t + '</span>' +
-          '<span class="sr-meta">' + p.d + (p.e ? ' · ' + p.e : '') + '</span>' +
+          '<span class="sr-meta">' + p.d + (p.e ? ' · ' + p.e.slice(0, 80) : '') + '</span>' +
           '</a>';
       }).join('');
     });
