@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>شەرقىي تۈركىستان نەيزىۋاز</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; background: #0a0a1a; font-family: 'Segoe UI', 'Microsoft Uighur', sans-serif; touch-action: none; }
+        canvas { display: block; width: 100vw; height: 100vh; }
+
+        #hud {
+            position: absolute; top: 0; left: 0; right: 0;
+            padding: 10px 16px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            pointer-events: none; z-index: 10;
+        }
+        .hp-col { display: flex; flex-direction: column; gap: 4px; min-width: 170px; }
+        .hp-col.right { align-items: flex-end; }
+        .hp-label { font-size: 0.78rem; color: rgba(255,255,255,0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.9); white-space: nowrap; }
+        .hp-bar-outer { height: 12px; background: rgba(0,0,0,0.55); border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); overflow: hidden; width: 180px; }
+        .hp-fill { height: 100%; border-radius: 6px; transition: width 0.35s ease; }
+        .hp-fill.player { background: linear-gradient(90deg, #22c55e, #86efac); }
+        .hp-fill.enemy  { background: linear-gradient(90deg, #ef4444, #fca5a5); }
+        .hearts { font-size: 1.1rem; letter-spacing: 2px; }
+
+        #score-box {
+            text-align: center; color: #ffd700;
+            font-size: 1.3rem; font-weight: 900;
+            text-shadow: 0 0 12px rgba(255,215,0,0.5);
+            padding-top: 2px;
+        }
+        #round-info { font-size: 0.75rem; color: rgba(255,215,0,0.7); text-align: center; }
+
+        #turn-bar {
+            position: absolute; top: 74px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+            color: white; padding: 5px 18px; border-radius: 20px;
+            font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.12);
+            pointer-events: none; z-index: 10; text-align: center; white-space: nowrap;
+        }
+
+        #power-wrap {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+            display: none; flex-direction: column; align-items: center; gap: 5px;
+            z-index: 10; pointer-events: none;
+        }
+        #power-label { color: white; font-size: 0.78rem; }
+        #power-outer {
+            width: 200px; height: 18px;
+            background: rgba(0,0,0,0.55); border-radius: 9px;
+            border: 1px solid rgba(255,255,255,0.25); overflow: hidden;
+        }
+        #power-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #22c55e 0%, #ffd700 55%, #ef4444 100%);
+            border-radius: 9px; transition: none;
+        }
+
+        #action-bar {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; z-index: 10;
+        }
+        .abtn {
+            padding: 11px 22px; font-size: 0.95rem; font-weight: 700;
+            border: none; border-radius: 25px; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4); font-family: inherit;
+            transition: transform 0.15s, box-shadow 0.15s; user-select: none;
+        }
+        .abtn:active { transform: scale(0.94); }
+        .abtn.throw { background: linear-gradient(135deg, #f7971e, #ffd200); color: #111; }
+        .abtn.dodge { background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: none; }
+
+        #msg {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 2.2rem; font-weight: 900; pointer-events: none; z-index: 20;
+            text-shadow: 0 0 25px currentColor; opacity: 0; text-align: center;
+            white-space: nowrap;
+        }
+        #msg.pop { animation: msgPop 1.3s ease-out forwards; }
+        @keyframes msgPop {
+            0%   { opacity:0; transform:translate(-50%,-50%) scale(0.4); }
+            18%  { opacity:1; transform:translate(-50%,-50%) scale(1.2); }
+            70%  { opacity:1; transform:translate(-50%,-50%) scale(1); }
+            100% { opacity:0; transform:translate(-50%,-70%) scale(0.9); }
+        }
+
+        #overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; text-align: center; padding: 20px;
+        }
+        #overlay.hidden { display: none; }
+        #overlay h1 { font-size: 2.6rem; color: #ffd700; text-shadow: 0 0 28px rgba(255,215,0,0.45); margin-bottom: 8px; }
+        .ov-sub { font-size: 1rem; color: rgba(255,255,255,0.8); line-height: 1.8; max-width: 480px; margin-bottom: 16px; }
+        .ov-hint { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+        .main-btn {
+            padding: 13px 44px; font-size: 1.3rem; font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #f7971e);
+            color: #111; border: none; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 8px 28px rgba(255,215,0,0.35); transition: all 0.25s;
+            font-family: inherit; margin: 5px;
+        }
+        .main-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(255,215,0,0.55); }
+        .sec-btn {
+            padding: 11px 30px; font-size: 1rem; font-weight: 700;
+            background: rgba(255,255,255,0.12); color: white;
+            border: 1px solid rgba(255,255,255,0.25); border-radius: 50px;
+            cursor: pointer; font-family: inherit; margin: 5px; transition: all 0.2s;
+        }
+        .sec-btn:hover { background: rgba(255,255,255,0.2); }
+
+        #back { position: absolute; bottom: 18px; left: 18px; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.85rem; z-index: 10; background: rgba(255,255,255,0.08); padding: 7px 14px; border-radius: 18px; transition: all 0.2s; }
+        #back:hover { background: rgba(255,255,255,0.18); color: white; }
+
+        @media (max-width:600px) {
+            #overlay h1 { font-size: 1.7rem; }
+            .ov-sub { font-size: 0.9rem; }
+            .main-btn { font-size: 1rem; padding: 11px 28px; }
+            .hp-bar-outer { width: 130px; }
+            #msg { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+    <div class="hp-col">
+        <div class="hp-label">🔴 خەن سۇلالىسى ئەسكىرى</div>
+        <div class="hp-bar-outer"><div class="hp-fill enemy" id="eBar" style="width:100%"></div></div>
+        <div class="hearts" id="eHearts">❤️❤️❤️❤️❤️</div>
+    </div>
+    <div id="score-box">
+        ⚔️ <span id="scoreVal">0</span>
+        <div id="round-info">دوڭشۇش 1</div>
+    </div>
+    <div class="hp-col right">
+        <div class="hp-label">🟢 ئەزىمەن · ئۇيغۇر نەيزىچى</div>
+        <div class="hp-bar-outer"><div class="hp-fill player" id="pBar" style="width:100%"></div></div>
+        <div class="hearts" id="pHearts">❤️❤️❤️❤️❤️</div>
+    </div>
+</div>
+
+<div id="turn-bar">⚔️ ھۇجۇم نۆۋىتىڭىز</div>
+
+<div id="power-wrap">
+    <div id="power-label">💪 كۈچ: 0%</div>
+    <div id="power-outer"><div id="power-fill"></div></div>
+</div>
+
+<div id="action-bar">
+    <button class="abtn throw" id="throwBtn">🗡️ نەيزە ئات</button>
+    <button class="abtn dodge" id="dodgeBtn" onclick="doDodge()">🛡️ ساقلىن</button>
+</div>
+
+<div id="msg"></div>
+
+<div id="overlay">
+    <h1>⚔️ شەرقىي تۈركىستان نەيزىۋاز</h1>
+    <p class="ov-sub">
+        ئۇيغۇر باتۇرى <strong style="color:#ffd700;">ئەزىمەن</strong> يۇرتىنى مۇداپىئە قىلىشقا ئاتلاندى!<br>
+        خەن سۇلالىسىنىڭ تاجاۋۇزچى ئەسكىرىگە قارشى نەيزە ئاتىشمىسىدا غەلىبە قازاناي!
+    </p>
+    <p class="ov-hint">
+        📱 يانفون: كۇنۇپكىنى بېسىپ تۇتۇپ نەيزە ئات · ⌨️ كومپيۇتىر: بوشلۇق كۇنۇپكىسى
+    </p>
+    <button class="main-btn" onclick="startGame()">🗡️ جەڭ باشلا!</button>
+</div>
+
+<a href="../index.html" id="back">← ئويۇنلارغا</a>
+
+<script>
+// ─────────────────────────────────────────────
+//  CANVAS SETUP
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+// roundRect polyfill
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
+        this.beginPath();
+        this.moveTo(x+r,y);
+        this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+        this.arcTo(x,y+h,x,y,r);     this.arcTo(x,y,x+w,y,r);
+        this.closePath();
+    };
+}
+
+// ─────────────────────────────────────────────
+//  CONSTANTS & STATE
+// ─────────────────────────────────────────────
+const MAX_HP = 5;
+const PL_RX  = 0.80;   // player x ratio
+const EN_RX  = 0.20;   // enemy x ratio
+
+let playerHP = MAX_HP, enemyHP = MAX_HP, score = 0, round = 1;
+let state    = 'idle'; // idle|ready|charging|flying|eturn|eflying|over
+let spear    = null;
+let power    = 0, isCharging = false, holdTimer = null, isHolding = false;
+let playerDodge = false, enemyDodge = false, dodgeCool = false;
+let pHitT = 0, eHitT = 0;
+let particles = [];
+let raf = null;
+
+// ─────────────────────────────────────────────
+//  AUDIO
+// ─────────────────────────────────────────────
+let ac = null;
+function getAC() { if (!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); return ac; }
+
+function sndWoosh() {
+    try {
+        const a = getAC(), o = a.createOscillator(), g = a.createGain();
+        o.connect(g); g.connect(a.destination);
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(500, a.currentTime);
+        o.frequency.exponentialRampToValueAtTime(80, a.currentTime+0.45);
+        g.gain.setValueAtTime(0.28, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime+0.45);
+        o.start(); o.stop(a.currentTime+0.45);
+    } catch(e){}
+}
+function sndHit() {
+    try {
+        const a = getAC(), buf = a.createBuffer(1, a.sampleRate*0.25, a.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+        const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+        f.type='lowpass'; f.frequency.value=900;
+        src.buffer=buf; src.connect(f); f.connect(g); g.connect(a.destination);
+        g.gain.setValueAtTime(0.7, a.currentTime);
+        src.start();
+    } catch(e){}
+}
+function sndMiss() {
+    try {
+        const a = getAC(), o = a.createOscillator(), g = a.createGain();
+        o.connect(g); g.connect(a.destination); o.type='sine';
+        o.frequency.setValueAtTime(220, a.currentTime);
+        o.frequency.exponentialRampToValueAtTime(110, a.currentTime+0.18);
+        g.gain.setValueAtTime(0.18, a.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, a.currentTime+0.18);
+        o.start(); o.stop(a.currentTime+0.18);
+    } catch(e){}
+}
+function sndVictory() {
+    try {
+        const a = getAC(), notes=[261,329,392,523,659];
+        notes.forEach((f,i)=>{
+            const o=a.createOscillator(), g=a.createGain();
+            o.connect(g); g.connect(a.destination); o.type='triangle'; o.frequency.value=f;
+            const t=a.currentTime+i*0.14;
+            g.gain.setValueAtTime(0.28,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.45);
+            o.start(t); o.stop(t+0.45);
+        });
+    } catch(e){}
+}
+function sndDefeat() {
+    try {
+        const a = getAC(), notes=[330,294,262,220,196];
+        notes.forEach((f,i)=>{
+            const o=a.createOscillator(), g=a.createGain();
+            o.connect(g); g.connect(a.destination); o.type='sine'; o.frequency.value=f;
+            const t=a.currentTime+i*0.2;
+            g.gain.setValueAtTime(0.22,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+            o.start(t); o.stop(t+0.55);
+        });
+    } catch(e){}
+}
+
+// ─────────────────────────────────────────────
+//  DRAWING — BACKGROUND
+// ─────────────────────────────────────────────
+function drawBG() {
+    const W=canvas.width, H=canvas.height;
+
+    // Sky
+    const sky = ctx.createLinearGradient(0,0,0,H*0.62);
+    sky.addColorStop(0,'#0d0525'); sky.addColorStop(0.5,'#1a0d45'); sky.addColorStop(1,'#7a3a0a');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+
+    // Stars
+    ctx.fillStyle='rgba(255,255,255,0.75)';
+    const stars=[[.08,.04],[.17,.10],[.32,.06],[.48,.03],[.63,.08],[.79,.05],[.92,.13],[.04,.17],[.43,.16],[.72,.18],[.55,.12],[.25,.19]];
+    stars.forEach(([rx,ry])=>{ ctx.beginPath(); ctx.arc(rx*W,ry*H,1.3,0,Math.PI*2); ctx.fill(); });
+
+    // Moon (crescent)
+    ctx.fillStyle='#fff8dc'; ctx.shadowColor='#fffde7'; ctx.shadowBlur=22;
+    ctx.beginPath(); ctx.arc(W*.1,H*.11,H*.052,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1a0d45'; ctx.shadowBlur=0;
+    ctx.beginPath(); ctx.arc(W*.114,H*.1,H*.042,0,Math.PI*2); ctx.fill();
+
+    // Mountains silhouette
+    ctx.fillStyle='#2e0e00';
+    ctx.beginPath(); ctx.moveTo(0,H*.58);
+    [[.06,.38],[.14,.48],[.22,.30],[.33,.44],[.45,.26],[.57,.41],[.68,.32],[.78,.46],[.88,.36],[1,.44],[1,.58]].forEach(([rx,ry])=>ctx.lineTo(rx*W,ry*H));
+    ctx.closePath(); ctx.fill();
+
+    // Distant dunes
+    ctx.fillStyle='#5a320a';
+    ctx.beginPath(); ctx.moveTo(0,H*.62);
+    [[.15,.55],[.35,.58],[.5,.52],[.7,.56],[.85,.54],[1,.57],[1,.62]].forEach(([rx,ry])=>ctx.lineTo(rx*W,ry*H));
+    ctx.closePath(); ctx.fill();
+
+    // Ground
+    const grd = ctx.createLinearGradient(0,H*.62,0,H);
+    grd.addColorStop(0,'#8B6500'); grd.addColorStop(.3,'#7a5500'); grd.addColorStop(1,'#4a3200');
+    ctx.fillStyle=grd; ctx.fillRect(0,H*.62,W,H*.38);
+
+    // Ground line detail
+    ctx.strokeStyle='rgba(255,180,0,0.12)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,H*.63); ctx.lineTo(W,H*.63); ctx.stroke();
+
+    // Ground cracks
+    ctx.strokeStyle='rgba(0,0,0,0.2)'; ctx.lineWidth=1;
+    [[.15,.65,.2,.68],[.45,.64,.5,.67],[.72,.66,.76,.69]].forEach(([x1,y1,x2,y2])=>{
+        ctx.beginPath(); ctx.moveTo(x1*W,y1*H); ctx.lineTo(x2*W,y2*H); ctx.stroke();
+    });
+
+    // East Turkestan flag (right side)
+    drawFlag(W*.86, H*.40, H*.0008);
+
+    // Chinese banner (left side)
+    drawChinaBanner(W*.14, H*.40, H*.0008);
+}
+
+function drawFlag(x,y,s) {
+    const pw=s*38000, ph=s*24000;
+    ctx.strokeStyle='#6b4c00'; ctx.lineWidth=s*2600;
+    ctx.beginPath(); ctx.moveTo(x,y+ph+s*60000); ctx.lineTo(x,y); ctx.stroke();
+    ctx.fillStyle='#1a4bbd';
+    ctx.fillRect(x,y,pw,ph);
+    // crescent
+    ctx.fillStyle='white'; ctx.shadowColor='white'; ctx.shadowBlur=s*4000;
+    ctx.beginPath(); ctx.arc(x+pw*.38,y+ph/2,ph*.33,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1a4bbd'; ctx.shadowBlur=0;
+    ctx.beginPath(); ctx.arc(x+pw*.47,y+ph/2,ph*.27,0,Math.PI*2); ctx.fill();
+    // star
+    ctx.fillStyle='white';
+    drawStar5(x+pw*.68,y+ph/2,ph*.2,ph*.09);
+}
+
+function drawChinaBanner(x,y,s) {
+    const pw=s*28000, ph=s*52000;
+    ctx.strokeStyle='#6b4c00'; ctx.lineWidth=s*2600;
+    ctx.beginPath(); ctx.moveTo(x,y+ph+s*6000); ctx.lineTo(x,y); ctx.stroke();
+    ctx.fillStyle='#cc0000';
+    ctx.fillRect(x-pw,y,pw,ph);
+    // Chinese character 漢 (simplified)
+    ctx.fillStyle='#ffd700'; ctx.font=`bold ${ph*.35}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('漢', x-pw/2, y+ph/2);
+    ctx.textAlign='start'; ctx.textBaseline='alphabetic';
+}
+
+function drawStar5(cx,cy,ro,ri) {
+    ctx.beginPath();
+    for(let i=0;i<10;i++){
+        const r=i%2===0?ro:ri, a=(i*Math.PI/5)-Math.PI/2;
+        i===0?ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    }
+    ctx.closePath(); ctx.fill();
+}
+
+// ─────────────────────────────────────────────
+//  DRAWING — CHARACTERS
+// ─────────────────────────────────────────────
+function groundY() { return canvas.height * 0.622; }
+function sc()      { return Math.min(canvas.width, canvas.height) / 600; }
+
+function drawUyghur(cx, gy, dodging, hit) {
+    const s = sc() * 60;
+    const dx = dodging ? s*1.5 : 0;
+    const dy = dodging ? -s*1.0 : 0;
+    if (hit && Math.floor(Date.now()/75)%2===0) ctx.globalAlpha=0.45;
+    const x=cx+dx, y=gy+dy;
+
+    // Shadow
+    ctx.fillStyle='rgba(0,0,0,0.22)';
+    ctx.beginPath(); ctx.ellipse(x,y,s*1.1,s*.28,0,0,Math.PI*2); ctx.fill();
+
+    // Boots
+    ctx.fillStyle='#2a1500';
+    ctx.fillRect(x-s*.95,y-s*1.6,s*.8,s*1.6);
+    ctx.fillRect(x+s*.08,y-s*1.6,s*.8,s*1.6);
+    ctx.fillRect(x-s*1.1,y-s*.3,s*1.1,s*.36);
+    ctx.fillRect(x+s*.08,y-s*.3,s*1.05,s*.36);
+
+    // Robe
+    const rb=ctx.createLinearGradient(x-s*1.3,0,x+s*1.3,0);
+    rb.addColorStop(0,'#1b5e20'); rb.addColorStop(.5,'#2e7d32'); rb.addColorStop(1,'#1b5e20');
+    ctx.fillStyle=rb;
+    ctx.beginPath();
+    ctx.moveTo(x-s*1.3,y-s*1.6);
+    ctx.lineTo(x-s*1.45,y-s*5.1);
+    ctx.lineTo(x+s*1.45,y-s*5.1);
+    ctx.lineTo(x+s*1.3,y-s*1.6);
+    ctx.closePath(); ctx.fill();
+
+    // Belt
+    ctx.fillStyle='#5d3a00';
+    ctx.fillRect(x-s*1.4,y-s*2.8,s*2.8,s*.55);
+    ctx.fillStyle='#ffd700';
+    ctx.fillRect(x-s*.38,y-s*3.0,s*.76,s*.85);
+
+    // Chest plate
+    ctx.fillStyle='#0d47a1';
+    ctx.beginPath(); ctx.roundRect(x-s*.95,y-s*5.1,s*1.9,s*2.1,s*.18); ctx.fill();
+    // Plate details
+    ctx.strokeStyle='#1565c0'; ctx.lineWidth=s*.08;
+    for(let i=0;i<3;i++){
+        ctx.beginPath();
+        ctx.moveTo(x-s*.75, y-s*4.8+i*s*.55);
+        ctx.lineTo(x+s*.75, y-s*4.8+i*s*.55);
+        ctx.stroke();
+    }
+
+    // Left arm (weapon arm, extends left)
+    ctx.fillStyle='#4e342e';
+    ctx.beginPath();
+    ctx.moveTo(x-s*1.3,y-s*4.7);
+    ctx.lineTo(x-s*2.8,y-s*4.0);
+    ctx.lineTo(x-s*2.6,y-s*3.4);
+    ctx.lineTo(x-s*1.1,y-s*4.0);
+    ctx.closePath(); ctx.fill();
+
+    // Right arm
+    ctx.beginPath();
+    ctx.moveTo(x+s*1.3,y-s*4.7);
+    ctx.lineTo(x+s*2.0,y-s*4.0);
+    ctx.lineTo(x+s*1.85,y-s*3.4);
+    ctx.lineTo(x+s*1.1,y-s*4.0);
+    ctx.closePath(); ctx.fill();
+
+    // Neck
+    ctx.fillStyle='#bf8650';
+    ctx.fillRect(x-s*.42,y-s*6.0,s*.84,s*1.05);
+
+    // Head
+    ctx.fillStyle='#bf8650';
+    ctx.beginPath(); ctx.arc(x,y-s*6.8,s*1.2,0,Math.PI*2); ctx.fill();
+
+    // Beard
+    ctx.fillStyle='#3a2000';
+    ctx.beginPath(); ctx.arc(x,y-s*5.9,s*.72,0,Math.PI); ctx.fill();
+
+    // Eyes
+    ctx.fillStyle='white';
+    ctx.beginPath();
+    ctx.ellipse(x-s*.42,y-s*6.9,s*.28,s*.22,0,0,Math.PI*2);
+    ctx.ellipse(x+s*.42,y-s*6.9,s*.28,s*.22,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle='#1a1a1a';
+    ctx.beginPath();
+    ctx.arc(x-s*.4,y-s*6.88,s*.14,0,Math.PI*2);
+    ctx.arc(x+s*.44,y-s*6.88,s*.14,0,Math.PI*2);
+    ctx.fill();
+
+    // Eyebrows (strong)
+    ctx.strokeStyle='#2a1800'; ctx.lineWidth=s*.16;
+    ctx.beginPath();
+    ctx.moveTo(x-s*.65,y-s*7.15); ctx.lineTo(x-s*.2,y-s*7.0);
+    ctx.moveTo(x+s*.2,y-s*7.0);   ctx.lineTo(x+s*.65,y-s*7.15);
+    ctx.stroke();
+
+    // Doppa hat (traditional Uyghur round hat)
+    ctx.fillStyle='#1a237e';
+    ctx.beginPath();
+    ctx.arc(x,y-s*7.8,s*1.3,Math.PI,0,false);
+    ctx.lineTo(x+s*1.3,y-s*6.7);
+    ctx.lineTo(x-s*1.3,y-s*6.7);
+    ctx.closePath(); ctx.fill();
+
+    // Doppa diamond pattern
+    ctx.fillStyle='white';
+    [[-s*.7,y-s*7.7],[0,y-s*8.1],[s*.7,y-s*7.7],[0,y-s*7.4]].forEach(([ox,oy])=>{
+        ctx.save(); ctx.translate(x+ox,oy); ctx.rotate(Math.PI/4);
+        ctx.fillRect(-s*.13,-s*.13,s*.26,s*.26); ctx.restore();
+    });
+
+    // Spear (only when not flying)
+    if (!(state==='flying' && spear?.owner==='p')) {
+        const sx=x-s*1.9, sy=y-s*4.2, ex=x-s*7.5, ey=y-s*4.9;
+        // Shaft
+        ctx.strokeStyle='#6d4c41'; ctx.lineWidth=s*.22; ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(ex,ey); ctx.stroke();
+        // Tip
+        ctx.fillStyle='#b0bec5'; ctx.strokeStyle='#78909c'; ctx.lineWidth=s*.09;
+        ctx.beginPath();
+        ctx.moveTo(ex-s*1.1,ey-s*.09);
+        ctx.lineTo(ex-s*.35,ey-s*.46);
+        ctx.lineTo(ex+s*.18,ey);
+        ctx.lineTo(ex-s*.35,ey+s*.46);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Green tassel
+        ctx.fillStyle='#4caf50';
+        ctx.beginPath();
+        ctx.moveTo(sx+s*.18,sy); ctx.lineTo(sx+s*.75,sy-s*.55); ctx.lineTo(sx+s*.92,sy+s*.18);
+        ctx.closePath(); ctx.fill();
+    }
+
+    // Charging glow
+    if (isCharging && state==='charging') {
+        const g=power/100;
+        ctx.shadowColor=`rgba(255,${Math.round(255*(1-g))},0,0.9)`;
+        ctx.shadowBlur=s*g*2.5;
+        ctx.strokeStyle=`rgba(255,200,0,${g*.6})`;
+        ctx.lineWidth=s*.3;
+        ctx.beginPath(); ctx.arc(x,y-s*4,s*1.5,0,Math.PI*2); ctx.stroke();
+        ctx.shadowBlur=0;
+    }
+
+    ctx.globalAlpha=1;
+}
+
+function drawHan(cx, gy, dodging, hit) {
+    const s = sc() * 60;
+    const dx = dodging ? -s*1.5 : 0;
+    const dy = dodging ? -s*1.0 : 0;
+    if (hit && Math.floor(Date.now()/75)%2===0) ctx.globalAlpha=0.45;
+    const x=cx+dx, y=gy+dy;
+
+    // Shadow
+    ctx.fillStyle='rgba(0,0,0,0.22)';
+    ctx.beginPath(); ctx.ellipse(x,y,s*1.1,s*.28,0,0,Math.PI*2); ctx.fill();
+
+    // Boots
+    ctx.fillStyle='#1a0a00';
+    ctx.fillRect(x-s*.88,y-s*1.6,s*.8,s*1.6);
+    ctx.fillRect(x+s*.08,y-s*1.6,s*.8,s*1.6);
+    ctx.fillRect(x-s*.88,y-s*.3,s*1.0,s*.36);
+    ctx.fillRect(x+s*.08,y-s*.3,s*1.1,s*.36);
+
+    // Robe
+    const rb=ctx.createLinearGradient(x-s*1.3,0,x+s*1.3,0);
+    rb.addColorStop(0,'#7f0000'); rb.addColorStop(.5,'#c62828'); rb.addColorStop(1,'#7f0000');
+    ctx.fillStyle=rb;
+    ctx.beginPath();
+    ctx.moveTo(x-s*1.3,y-s*1.6);
+    ctx.lineTo(x-s*1.45,y-s*5.1);
+    ctx.lineTo(x+s*1.45,y-s*5.1);
+    ctx.lineTo(x+s*1.3,y-s*1.6);
+    ctx.closePath(); ctx.fill();
+
+    // Belt
+    ctx.fillStyle='#3d2500';
+    ctx.fillRect(x-s*1.4,y-s*2.6,s*2.8,s*.5);
+    ctx.fillStyle='#ffd700';
+    ctx.fillRect(x-s*.36,y-s*2.8,s*.72,s*.75);
+
+    // Gold scale armor
+    ctx.fillStyle='#f9a825';
+    ctx.beginPath(); ctx.roundRect(x-s*1.05,y-s*5.1,s*2.1,s*2.3,s*.18); ctx.fill();
+    // Scales
+    ctx.fillStyle='#e65100';
+    for(let r=0;r<3;r++) for(let c=0;c<4;c++){
+        ctx.beginPath();
+        ctx.ellipse(x-s*.83+c*s*.55,y-s*4.65+r*s*.62,s*.32,s*.37,0,0,Math.PI);
+        ctx.fill();
+    }
+
+    // Right arm (weapon, extends right)
+    ctx.fillStyle='#4e342e';
+    ctx.beginPath();
+    ctx.moveTo(x+s*1.3,y-s*4.7);
+    ctx.lineTo(x+s*2.8,y-s*4.0);
+    ctx.lineTo(x+s*2.6,y-s*3.4);
+    ctx.lineTo(x+s*1.1,y-s*4.0);
+    ctx.closePath(); ctx.fill();
+
+    // Left arm
+    ctx.beginPath();
+    ctx.moveTo(x-s*1.3,y-s*4.7);
+    ctx.lineTo(x-s*2.0,y-s*4.0);
+    ctx.lineTo(x-s*1.85,y-s*3.4);
+    ctx.lineTo(x-s*1.1,y-s*4.0);
+    ctx.closePath(); ctx.fill();
+
+    // Neck
+    ctx.fillStyle='#bf8650';
+    ctx.fillRect(x-s*.42,y-s*6.0,s*.84,s*1.05);
+
+    // Head
+    ctx.fillStyle='#bf8650';
+    ctx.beginPath(); ctx.arc(x,y-s*6.8,s*1.2,0,Math.PI*2); ctx.fill();
+
+    // Mean eyes
+    ctx.fillStyle='white';
+    ctx.beginPath();
+    ctx.ellipse(x-s*.42,y-s*6.9,s*.28,s*.2,0,0,Math.PI*2);
+    ctx.ellipse(x+s*.42,y-s*6.9,s*.28,s*.2,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle='#1a0000';
+    ctx.beginPath();
+    ctx.arc(x-s*.4,y-s*6.88,s*.13,0,Math.PI*2);
+    ctx.arc(x+s*.44,y-s*6.88,s*.13,0,Math.PI*2);
+    ctx.fill();
+
+    // Evil slanted eyebrows
+    ctx.strokeStyle='#1a0000'; ctx.lineWidth=s*.2;
+    ctx.beginPath();
+    ctx.moveTo(x-s*.65,y-s*7.05); ctx.lineTo(x-s*.08,y-s*7.3);
+    ctx.moveTo(x+s*.08,y-s*7.3);  ctx.lineTo(x+s*.65,y-s*7.05);
+    ctx.stroke();
+
+    // Han helmet
+    const hg=ctx.createRadialGradient(x-s*.2,y-s*8.0,0,x,y-s*7.6,s*1.8);
+    hg.addColorStop(0,'#ffd700'); hg.addColorStop(.6,'#e65100'); hg.addColorStop(1,'#7f0000');
+    ctx.fillStyle=hg;
+    ctx.beginPath();
+    ctx.arc(x,y-s*7.6,s*1.4,Math.PI,0,false);
+    ctx.lineTo(x+s*1.65,y-s*6.65);
+    ctx.lineTo(x-s*1.65,y-s*6.65);
+    ctx.closePath(); ctx.fill();
+
+    // Helmet ridge
+    ctx.fillStyle='#ffd700';
+    ctx.beginPath();
+    ctx.moveTo(x-s*.18,y-s*9.0);
+    ctx.lineTo(x-s*.38,y-s*7.6);
+    ctx.lineTo(x+s*.38,y-s*7.6);
+    ctx.lineTo(x+s*.18,y-s*9.0);
+    ctx.closePath(); ctx.fill();
+
+    // Ear guards
+    ctx.fillStyle='#b71c1c';
+    ctx.fillRect(x-s*1.85,y-s*6.95,s*.55,s*1.1);
+    ctx.fillRect(x+s*1.3,y-s*6.95,s*.55,s*1.1);
+
+    // Red tassel on top
+    ctx.fillStyle='#ff1744';
+    ctx.beginPath();
+    ctx.moveTo(x-s*.18,y-s*9.0);
+    ctx.lineTo(x-s*.46,y-s*9.8);
+    ctx.lineTo(x+s*.46,y-s*9.8);
+    ctx.closePath(); ctx.fill();
+
+    // Spear (only when not flying)
+    if (!(state==='eflying' && spear?.owner==='e')) {
+        const sx=x+s*1.9, sy=y-s*4.2, ex=x+s*7.5, ey=y-s*4.9;
+        ctx.strokeStyle='#5d4037'; ctx.lineWidth=s*.22; ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(ex,ey); ctx.stroke();
+        // Tip (pointing right)
+        ctx.fillStyle='#90a4ae'; ctx.strokeStyle='#607d8b'; ctx.lineWidth=s*.09;
+        ctx.beginPath();
+        ctx.moveTo(ex+s*1.1,ey-s*.09);
+        ctx.lineTo(ex+s*.35,ey-s*.46);
+        ctx.lineTo(ex-s*.18,ey);
+        ctx.lineTo(ex+s*.35,ey+s*.46);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Red tassel
+        ctx.fillStyle='#b71c1c';
+        ctx.beginPath();
+        ctx.moveTo(sx-s*.18,sy); ctx.lineTo(sx-s*.75,sy-s*.55); ctx.lineTo(sx-s*.92,sy+s*.18);
+        ctx.closePath(); ctx.fill();
+    }
+
+    ctx.globalAlpha=1;
+}
+
+// ─────────────────────────────────────────────
+//  FLYING SPEAR
+// ─────────────────────────────────────────────
+function drawSpear(sp) {
+    ctx.save();
+    ctx.translate(sp.x, sp.y);
+    ctx.rotate(sp.angle);
+    const L=52;
+    // Trail
+    ctx.setLineDash([4,7]); ctx.strokeStyle='rgba(255,220,80,0.22)'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(-L/2,0); ctx.lineTo(-L/2-28,0); ctx.stroke();
+    ctx.setLineDash([]);
+    // Shaft
+    ctx.strokeStyle=sp.owner==='p'?'#6d4c41':'#5d4037'; ctx.lineWidth=4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-L/2,0); ctx.lineTo(L/2,0); ctx.stroke();
+    // Tip
+    ctx.fillStyle=sp.owner==='p'?'#b0bec5':'#90a4ae';
+    ctx.beginPath();
+    ctx.moveTo(L/2,-3.5); ctx.lineTo(L/2+13,0); ctx.lineTo(L/2,3.5); ctx.closePath(); ctx.fill();
+    // Tail feather
+    ctx.fillStyle=sp.owner==='p'?'#4caf50':'#b71c1c';
+    ctx.beginPath();
+    ctx.moveTo(-L/2,0); ctx.lineTo(-L/2-9,-5); ctx.lineTo(-L/2-7,5); ctx.closePath(); ctx.fill();
+    ctx.restore();
+}
+
+// ─────────────────────────────────────────────
+//  PARTICLES
+// ─────────────────────────────────────────────
+function spawnParticles(x,y,col,n) {
+    for(let i=0;i<n;i++){
+        const a=Math.random()*Math.PI*2, sp=2+Math.random()*6;
+        particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,col,sz:3+Math.random()*5});
+    }
+}
+function updateParticles() {
+    particles=particles.filter(p=>p.life>0);
+    particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.18; p.life-=0.028; p.sz*=0.96; });
+}
+function drawParticles() {
+    particles.forEach(p=>{ ctx.globalAlpha=p.life; ctx.fillStyle=p.col; ctx.beginPath(); ctx.arc(p.x,p.y,p.sz,0,Math.PI*2); ctx.fill(); });
+    ctx.globalAlpha=1;
+}
+
+// ─────────────────────────────────────────────
+//  MAIN RENDER
+// ─────────────────────────────────────────────
+function render() {
+    const W=canvas.width, H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    drawBG();
+    const gy=groundY();
+    drawHan(  W*EN_RX, gy, enemyDodge,  eHitT>0);
+    drawUyghur(W*PL_RX, gy, playerDodge, pHitT>0);
+    if(spear) drawSpear(spear);
+    drawParticles();
+    if(pHitT>0) pHitT--;
+    if(eHitT>0) eHitT--;
+}
+
+// ─────────────────────────────────────────────
+//  SPEAR PHYSICS
+// ─────────────────────────────────────────────
+function launchSpear(fromX,fromY,dir,pwr) {
+    const spd=5+pwr*.11;
+    const vx=dir*spd, vy=-2.8-pwr*.042;
+    return { x:fromX, y:fromY, vx, vy, angle:Math.atan2(vy,vx), g:.1, owner:dir<0?'p':'e' };
+}
+
+function updateSpear() {
+    if(!spear) return;
+    spear.x+=spear.vx; spear.y+=spear.vy;
+    spear.vy+=spear.g;
+    spear.angle=Math.atan2(spear.vy,spear.vx);
+    const W=canvas.width, H=canvas.height, gy=groundY(), hr=W*.042;
+
+    if(spear.owner==='p') {
+        const ex=W*EN_RX, ey=gy-canvas.height*.045;
+        if(Math.hypot(spear.x-ex,spear.y-ey)<hr) {
+            const dodged=enemyDodge;
+            spear=null;
+            if(dodged) {
+                sndMiss(); showMsg('⚡ ساقلاندى!','#64b5f6');
+                spawnParticles(ex,ey,'#64b5f6',8);
+            } else {
+                enemyHP=Math.max(0,enemyHP-1); eHitT=22;
+                sndHit(); score+=100; updateUI();
+                spawnParticles(ex,ey,'#ff5252',18);
+                showMsg('💥 تىگىپ كەتتى!','#ff5252');
+            }
+            if(enemyHP<=0){ endGame(true); return; }
+            setTimeout(enemyTurn,1200);
+            return;
+        }
+    } else {
+        const px=W*PL_RX, py=gy-canvas.height*.045;
+        if(Math.hypot(spear.x-px,spear.y-py)<hr) {
+            const dodged=playerDodge;
+            spear=null;
+            if(dodged) {
+                sndMiss(); showMsg('🛡️ ساقلاندىڭىز!','#4caf50');
+                spawnParticles(px,py,'#4caf50',8);
+            } else {
+                playerHP=Math.max(0,playerHP-1); pHitT=22;
+                sndHit(); updateUI();
+                spawnParticles(px,py,'#ff9800',18);
+                showMsg('😤 زەربە يېدى!','#ff9800');
+            }
+            if(playerHP<=0){ endGame(false); return; }
+            setPlayerReady();
+            return;
+        }
+    }
+
+    // Out of bounds
+    if(spear.x<-60||spear.x>W+60||spear.y>gy+40) {
+        const wasPlayer=spear.owner==='p';
+        spear=null; sndMiss();
+        wasPlayer ? setTimeout(enemyTurn,700) : setPlayerReady();
+    }
+}
+
+// ─────────────────────────────────────────────
+//  GAME LOOP
+// ─────────────────────────────────────────────
+function loop() {
+    updateSpear();
+    updateParticles();
+    render();
+    raf=requestAnimationFrame(loop);
+}
+
+// ─────────────────────────────────────────────
+//  UI HELPERS
+// ─────────────────────────────────────────────
+function updateUI() {
+    document.getElementById('pBar').style.width=(playerHP/MAX_HP*100)+'%';
+    document.getElementById('eBar').style.width=(enemyHP/MAX_HP*100)+'%';
+    document.getElementById('pHearts').textContent='❤️'.repeat(playerHP)+'🖤'.repeat(MAX_HP-playerHP);
+    document.getElementById('eHearts').textContent='❤️'.repeat(enemyHP)+'🖤'.repeat(MAX_HP-enemyHP);
+    document.getElementById('scoreVal').textContent=score;
+    document.getElementById('round-info').textContent='دوڭشۇش '+round;
+}
+
+function showMsg(text,color) {
+    const el=document.getElementById('msg');
+    el.textContent=text; el.style.color=color;
+    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+}
+
+function setTurnBar(text,color) {
+    const tb=document.getElementById('turn-bar');
+    tb.textContent=text; tb.style.borderColor=color||'rgba(255,255,255,0.12)';
+    tb.style.color=color||'white';
+}
+
+// ─────────────────────────────────────────────
+//  TURN MANAGEMENT
+// ─────────────────────────────────────────────
+function setPlayerReady() {
+    state='ready'; power=0; isCharging=false;
+    document.getElementById('throwBtn').style.display='';
+    document.getElementById('dodgeBtn').style.display='none';
+    document.getElementById('power-wrap').style.display='none';
+    setTurnBar('⚔️ ھۇجۇم نۆۋىتىڭىز — نەيزە ئاتىڭ!','#4caf50');
+}
+
+function setEnemyReady() {
+    state='eturn';
+    document.getElementById('throwBtn').style.display='none';
+    document.getElementById('dodgeBtn').style.display='';
+    document.getElementById('power-wrap').style.display='none';
+    setTurnBar('🛡️ دۈشمەن ھۇجۇم قىلىدۇ — ساقلىنىڭ!','#ef4444');
+}
+
+// ─────────────────────────────────────────────
+//  PLAYER THROW
+// ─────────────────────────────────────────────
+function startThrow() {
+    if(state!=='ready'||isHolding) return;
+    isHolding=true; isCharging=true; state='charging'; power=0;
+    document.getElementById('power-wrap').style.display='flex';
+    holdTimer=setInterval(()=>{
+        power=Math.min(100,power+2.2);
+        document.getElementById('power-fill').style.width=power+'%';
+        document.getElementById('power-label').textContent='💪 كۈچ: '+Math.round(power)+'%';
+        if(power>=100) releaseThrow();
+    },28);
+}
+
+function releaseThrow() {
+    if(!isHolding) return;
+    clearInterval(holdTimer); isHolding=false; isCharging=false;
+    document.getElementById('power-wrap').style.display='none';
+    if(power<8){ state='ready'; return; }
+    doThrow();
+}
+
+function doThrow() {
+    const W=canvas.width, H=canvas.height, gy=groundY();
+    const fromX=W*PL_RX-W*.055, fromY=gy-H*.075;
+    const jitter=(Math.random()-.5)*H*.06*(1-power/120);
+    spear=launchSpear(fromX,fromY-jitter,-1,power);
+    state='flying';
+    document.getElementById('throwBtn').style.display='none';
+    setTurnBar('🗡️ نەيزە ئۇچۇۋاتىدۇ...','#ffd700');
+    sndWoosh();
+    // Enemy may dodge
+    if(Math.random()<.18+(.12*(MAX_HP-enemyHP)/MAX_HP)) {
+        setTimeout(()=>{ enemyDodge=true; setTimeout(()=>enemyDodge=false,700); },280);
+    }
+    power=0;
+}
+
+// ─────────────────────────────────────────────
+//  DODGE
+// ─────────────────────────────────────────────
+function doDodge() {
+    if(state!=='eturn'&&state!=='eflying') return;
+    if(playerDodge||dodgeCool) return;
+    playerDodge=true; dodgeCool=true;
+    showMsg('🛡️ ساقلىنىش!','#81d4fa');
+    setTimeout(()=>{ playerDodge=false; setTimeout(()=>dodgeCool=false,400); },800);
+}
+
+// ─────────────────────────────────────────────
+//  ENEMY AI
+// ─────────────────────────────────────────────
+function enemyTurn() {
+    if(state==='over') return;
+    setEnemyReady();
+    const delay=900+Math.random()*600;
+    setTimeout(()=>{
+        if(state==='over') return;
+        const W=canvas.width, H=canvas.height, gy=groundY();
+        const fromX=W*EN_RX+W*.055, fromY=gy-H*.075;
+        const ePwr=35+Math.random()*65;
+        const acc=Math.max(.35,enemyHP/MAX_HP);
+        const jitter=(Math.random()-.5)*H*.12*(1-acc*.55);
+        spear=launchSpear(fromX,fromY+jitter,1,ePwr);
+        state='eflying';
+        setTurnBar('⚠️ نەيزە ئۇچۇۋاتىدۇ — ساقلىنىڭ!','#ff7043');
+        document.getElementById('dodgeBtn').style.display='none';
+        sndWoosh();
+    }, delay);
+}
+
+// ─────────────────────────────────────────────
+//  CONTROLS
+// ─────────────────────────────────────────────
+const throwBtn=document.getElementById('throwBtn');
+throwBtn.addEventListener('mousedown', startThrow);
+throwBtn.addEventListener('mouseup',   releaseThrow);
+throwBtn.addEventListener('mouseleave',()=>{ if(isHolding) releaseThrow(); });
+throwBtn.addEventListener('touchstart',e=>{ e.preventDefault(); startThrow(); },{passive:false});
+throwBtn.addEventListener('touchend',  e=>{ e.preventDefault(); releaseThrow(); },{passive:false});
+
+let spaceDown=false;
+document.addEventListener('keydown',e=>{
+    if(e.code==='Space'){
+        e.preventDefault();
+        if((state==='ready'||state==='charging')&&!spaceDown){ spaceDown=true; startThrow(); }
+        if(state==='eturn'||state==='eflying') doDodge();
+    }
+    if(e.code==='KeyD'||e.code==='ArrowLeft') doDodge();
+});
+document.addEventListener('keyup',e=>{
+    if(e.code==='Space'){ spaceDown=false; if(state==='charging') releaseThrow(); }
+});
+
+// ─────────────────────────────────────────────
+//  START / END
+// ─────────────────────────────────────────────
+function startGame() {
+    playerHP=MAX_HP; enemyHP=MAX_HP; score=0; round=1;
+    spear=null; particles=[]; playerDodge=false; enemyDodge=false;
+    dodgeCool=false; isCharging=false; isHolding=false; power=0;
+    pHitT=0; eHitT=0;
+    updateUI();
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('action-bar').style.display='flex';
+    if(raf) cancelAnimationFrame(raf);
+    setPlayerReady();
+    loop();
+}
+
+function endGame(won) {
+    state='over'; spear=null;
+    document.getElementById('action-bar').style.display='none';
+    if(raf) cancelAnimationFrame(raf); raf=null;
+    // final render
+    render();
+
+    const ov=document.getElementById('overlay');
+    ov.classList.remove('hidden');
+    if(won) {
+        sndVictory(); score+=round*200;
+        ov.innerHTML=`
+          <h1>🏆 غەلىبە!</h1>
+          <p class="ov-sub">ئەزىمەن خەن سۇلالىسىنىڭ تاجاۋۇزچىسىنى يەڭدى!<br>شەرقىي تۈركىستان مۇداپىئە بولدى!</p>
+          <div style="font-size:1.8rem;color:#ffd700;margin:8px 0;">⭐ ${score} نومۇر</div>
+          <button class="main-btn" onclick="startGame()">🔄 قايتا ئوين</button>
+          <button class="sec-btn" onclick="location.href='../index.html'">🏠 باش بەت</button>`;
+    } else {
+        sndDefeat();
+        ov.innerHTML=`
+          <h1 style="color:#ef4444;">💀 مەغلۇبىيەت</h1>
+          <p class="ov-sub">ئەزىمەن يىقىلدى...<br>ئەمما ئۇيغۇرلارنىڭ رۇھى ھەرگىز سىنمايدۇ!</p>
+          <div style="font-size:1.5rem;color:#ffd700;margin:8px 0;">نومۇر: ${score}</div>
+          <button class="main-btn" onclick="startGame()">🔄 قايتا سىنا</button>
+          <button class="sec-btn" onclick="location.href='../index.html'">🏠 باش بەت</button>`;
+    }
+
+    // Keep rendering particles
+    function finishAnim() { render(); if(particles.length>0) requestAnimationFrame(finishAnim); }
+    finishAnim();
+}
+
+// Idle preview loop
+state='idle';
+loop();
+</script>
+</body>
+</html>
