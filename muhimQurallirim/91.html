@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بىلىك مائارىپ تەھلىل قۇرالى v1.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'), local('UKIJ_Ekran'); }
+        @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'), local('UKIJ_Tuz'); }
+        body { font-family: "UKIJ Tuz", "Noto Naskh Arabic", sans-serif; background: #0f172a; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <!-- Global Tools Navigation -->
+    <nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;">
+        <style>
+            #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+            #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#f59e0b;letter-spacing:.1em;white-space:nowrap;}
+            #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+            #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+            #bilik-global-nav a.bgn.active{background:#d97706;color:#fff;border-color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.35);}
+        </style>
+        <div id="bilik-global-nav-wrap">
+            <span class="bgl">بىلىك قۇراللىرى:</span>
+            <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+            <a href="02.html" data-page="02.html" class="bgn">02 · ماقالە</a>
+            <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+            <a href="81.html" data-page="81.html" class="bgn">81 · سودا سۆھبىتى</a>
+            <a href="82.html" data-page="82.html" class="bgn">82 · ۋىديو ئانالىز</a>
+            <a href="83.html" data-page="83.html" class="bgn">83 · سلايد ياسىغۇچ</a>
+            <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+            <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+            <a href="87.html" data-page="87.html" class="bgn">87 · 6 مۇتەخەسسىس</a>
+            <a href="88.html" data-page="88.html" class="bgn">88 · خىتاي</a>
+            <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
+            <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
+            <a href="91.html" data-page="91.html" class="bgn">91 · مائارىپ</a>
+        </div>
+    </nav>
+    <script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
+
+    <!-- Header -->
+    <header class="h-14 border-b border-slate-700 bg-slate-900 flex items-center justify-between px-6 z-50 shadow-2xl flex-none">
+        <div class="flex items-center gap-4">
+            <div class="bg-emerald-500 text-slate-900 w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl">🎓</div>
+            <div>
+                <h1 class="text-lg font-bold text-white">مائارىپ تەھلىل قۇرالى <span class="text-emerald-400 text-xs">v1.0</span></h1>
+                <p class="text-[9px] text-slate-400 font-mono uppercase tracking-widest">Syria Uyghur Education Analysis Engine</p>
+            </div>
+        </div>
+        <div id="clock" class="text-xs text-emerald-400 font-mono"></div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Control Panel -->
+        <aside class="w-[480px] border-l border-slate-700 bg-slate-800/50 flex flex-col z-40 flex-none">
+
+            <div class="p-3 bg-slate-900/50 border-b border-slate-700">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] text-slate-400 font-bold">مائارىپ تەھلىل پىرومپتى (كۆچۈرۈڭ):</span>
+                    <button onclick="copyPrompt()" class="bg-slate-700 hover:bg-slate-600 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg border border-slate-500">كۆچۈرۈش 📋</button>
+                </div>
+                <textarea id="promptArea" readonly class="w-full h-44 bg-slate-900 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-slate-300 resize-none outline-none leading-relaxed border-dashed" dir="ltr"></textarea>
+            </div>
+
+            <div class="p-3 bg-slate-900/80 border-b border-slate-700 flex-1 flex flex-col min-h-0">
+                <label class="block text-[10px] font-bold text-emerald-500 mb-1">JSON نەتىجىسىنى چاپلاڭ:</label>
+                <textarea id="jsonInput" class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-emerald-400 outline-none focus:border-emerald-500 transition-all resize-none" placeholder='{}' dir="ltr"></textarea>
+            </div>
+
+            <div class="p-3 bg-slate-900/80 border-t border-slate-700 grid grid-cols-2 gap-2">
+                <button onclick="renderReport()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">⚡ كۆرسەت</button>
+                <button onclick="saveHTML()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">💾 HTML</button>
+            </div>
+        </aside>
+
+        <!-- Preview -->
+        <div class="flex-1 bg-slate-950 overflow-hidden relative">
+            <iframe id="reportPreview" class="w-full h-full border-none bg-white"></iframe>
+        </div>
+    </main>
+
+    <script>
+    const SYRIA_CONTEXT = `
+========================
+سۈرىيە ئۇيغۇر مائارىپى ھەققىدە ئارقا كۆرۈنۈش ئۇچۇرى (بۇ قىسىم ھەرگىز قىسقارتىلمايدۇ، ھەر قېتىم تولۇق ئىشلىتىلىدۇ):
+
+سۈرىيەدە ھازىرقى ئېرىشكەن قولالش سەۋەپلىك شەرقىي تۈسكىتانلىقلار ئۆز بالىلىرىنى مىللىي مائارىپتا ئوقتۇشۇقا مۇۋەپپەق بولدى. ھەم داۋاملاشتۇرۇۋاتىدۇ. ئەمما كۆپلىگەن خىرىسلار بار. ماددىي ۋە مەنىۋىي قوللاشقا مۇھتاج. چەتئەلدىكى باشقا ئۇيغۇر مۇتەخسىلەر ۋە تەتقىقاتچىلار بۇرۇن سۈيردىكى ئۇغيرۇلارنى خەلقئارا تېرورىزمغا چېتىلىپ قالدى دەپ قارىغان ئەمما ھازىر ئۇنداق ئەمەس. غەرب ۋە ئامېرىكا ئاقلىدى. شۇڭا ۋەتەندە ئىرقى قىغرىنچلىق بولۋاتقاندا چەتئەلدىكى بارلىق ئۇيغۇرلار سۈرىيەىكى ئڭيغۇرلاردىن پەخىرلەندى ۋە كۈچىيىشىكە كۈچ چىقىرىدغانلىقىنى ئىپادىلەپ تۇرۋاىتىدۇ.
+
+ئەمدى ئەسلى مەقسەتكە كەلسەك، مۇشۇ مائارىپنىڭ باش مەسئۇلىغا بىر سىستېملىق ئۇزۇن كىتاپ شەكىلدىكى پىلان تۈزۈپ بېرتىش كېرەك. بۇ پىلان ئۇزۇن مەزگىللىك دۆلەتلچىلكىنىڭ ئاساسىي مۇشۇ يەردە سېلىشقا ھەرىكەت قىلىدىغان بىر قوللانما بولسۇنكى بۇ قېرىدنشىمىز 1500 شەھىد بېرىپ ئېرېىشكەن بۇ چەتئەلدىكى بوشلۇقنى ئەمدى كېىينكى مۇستقەىل شەرقىيت ۈسكىتان ئۈچۈن قەدەم ئېلىشقا مۇۋەپپىق بولىشى كېەرەك.
+قېنى مۇشۇ قولالنىمىدى قانداق تۈزشۈش كېرەك. مۇندەرىجىسىنى تۈزپۈ بەر بەك كەڭرى بولسۇن
+
+قىسقا مەزگلىدە ئۇرۇش مەزگىلدىكى سۈپەتسىز مائارىپنى قادناق قىلىپ تېز سۈتئەتە دۆلەت سەۋىيەسىكى ئەرەبچە مائارىپقا يېتىشرۈش، تولۇق ئوتتۇرۇا ئۆتۈش ئىمتىھانى ئۈچۈن باشلانغۇچتىكى مىلىي مائرىپنى قانداق ئېلىپ بېترىش، بۇ جەريداندا ئىقتىسدانى چەئەلدىنى قادناق ئېلىش، ېئلىش يولىنرى، ئوقۇتقچىلارنى تەربىيەلش يولىرى، جەڭلا قىلىپ ئۆتكەن ئاتائانىلارنىڭ كاللىسدىى قادناق مللىي ۋە دننىي مائارىپنى برىلاشتۈرش ھەققدىكى پىكرنى قۇرۇپ چىقىش، قادناق قىلىپ ھەرساھە سۈريەنى مائرىپقا ھەرىكەتكە كەلتۈرۈش، ئوقۇرچى قوشۇنىنى قانداق بەرپا قىلىش، قاداق سىرتتىن ئوقۇتققچى ئەكىرىش، قانداق بار ئوقۇتچۇنى يۈكسەلتىش، قادناق ئەرب تىلى مائارىپنى چىڭ تۇتۇش، قدناق قىلىپ ماتىماتىككىدا كۈچلۈك مائارىپ قرۇۇرپ قىقىش، چقنادقا قىلىپ ياشلارنى تەربىيەلش، قدناق قىلىپ ھەتپىكى كۇرژۇم قلىپ پەترزەنتلىنى پىكىرنى ئېىچش، قدناق قىلپ سۈرىيەدە مائارىپتا مۇھىم ساھەدەلەر قۇرۇپ چىقىش، مۇسابىقىلەرگە قاتناشتۇرۇش، قادنا قىلىپ خىتاي بۇزۇش ئىستىخباراتلىرىدىن قوغداش، قنداق دۆلەتچىلىك پىركىدر مائرىپ بەرپا قىلىش، ققاندا قىلىپ دۇنيادنىڭ باشقا يەرلىرىدكىك ئۇيغۇر پەرزەنتلىرىمىز ئالاقىدە تەربىيلەش، قاندقا قىلىپ مۇستەقىل شەرقىيت ۈسكىتان قۇرلسا دكلاەت ئادىمى يېتىشرۈش، قايسى ساھەلەردە ئالىي مەكتەپ كەسپلەرگە يېتىشتۈش... دېگەندەك بىربىرىدىمۇىھم يۈزلەرچە سۇئاللارغا جاۋاب چىقىش كرەك.
+
+ھازىرقى ھالەتتە 5 چوڭ ئوغۇللار باشلانغۇچ مەكتپىى بار ۋە 1 تولۇقسىز ئوتتۇرا مەكتەپ بار. 5 ئوغۇللار مەكتىپىنىڭ 2 سى يېپىق قۇرئان كۇرسى شەكىلدە بولۇپ، ئىلگىركى سۈرىيەدىكى مىللىي مائارىپ تەرەققىياتى سەۋەپلىك، بىر قىسىم ئاتا-ئانىلارنىڭ قۇرئان يادلاشقا بولغان قىزغىنلىقى ۋە بىر قىسىم ئۇستازلارنىڭ تەلىپى سەۋەپلىك مەۋجۇد بولۇپ تۇرۋاتىدۇ. ئەمما يېپىق ئۇسۇلدا بىرنەچچە يىلدا باشقا پەنلەرنى ئۆگەتمەستىن پەقەتلا قۇرئان يادلاپ ئاندىن باشقا پەننى ئۆگىنىشىنى تەلەپ قىلىپ ياكى ۋەتەندە تۈرمىدە ئاتا-ئانىسى قالغان يېتىملەردىن بەزىلەرنى مۇشۇ 2 مەكتەپتە ھەپتىدە بىر قايتىپ تولۇق كۈن يېتىپ قوپۇپ قۇرئان يادلايدۇ. بۇنى توغرا ياكى خاتا دېمەستىن مۇشۇ ھالىتىدە قۇرئاننى تېزراق يادالاپ ئاندىن تولۇقسىز ئوتتۇرا مەكتەپكە يوللاشقا ئاپىرىش كېرەك. چۈنكى بۇ مائارىپنى ئۆزگەرتىش چوڭ جەمئىييەت مەسىلىسى كەلتۈرۈپ چىقىرىدۇ. 1 تولۇقسىز مەكتەپ بولسا ئىككى چوڭ ھالىتى بار. بىرى بۇندىن كېيىن باشلانغۇچنى تولۇق ئوقۇپ كەلمەكچى بولغان پەرزەنتلىرمىزگە ئەرەب تىلى ۋە تولقسىز مەكتەپ بىلىمىنى ئۆگىتىپ تېزدىن سۈرىيە تولۇق ئوتتۇراغا ئۆتۈش ئىمىتىھانىغا تولۇق ئۆتۈشكە كاپالەتلىك قىلىمىز. يەنە بىر قىىسمى مائارىپ تەرەققىياتى سەۋەپلىك ۋاقتى قۇرئان بىلەنلە ئۆتكەن بالىلىرمىزغا پەننىي بلىمنى ئۆگىتىمىز. باشلانغۇچ سەۋىيەدىن تولۇقسىزغىچە.
+قالغان 4 ئوغۇللار مەكتىپى بولسا نورمال بولۇپ، مۇشۇلارنى ناھايىتى گۈزەل ئانا تىلىمىزدا مائارىپ قىلىشمىز كېرەك. ھەمدە تولۇقسىزغا چىققىچە ئەرەب تىلىنى بەك چىڭ ئۆگىتىش كېرەك. چۈنكى تولۇقسىز تۈگەپ تولۇق ئوتتۇرانى چوقۇم ئەرەبچە ئىمتىھانىدىن ئۆتۈپ ئەرەب تىلىدا ئۆگىنەلىشى لازىم.
+ئۇندىن باشقا مەھەللىلەردە 10 دىن ئارتۇق قىزلار مەكتەپلىرىر بار. يەسلى ۋە باشلانغۇچ مەكتەپلەر. بۇ مائارىپ بەكلا تەرتىپلىك. چۈنكى ئاياللار ئوقۇتقۇچىلار قوشۇنىدا ۋەتەندە ئالىي مەكتەپ ئوقۇغان ھەمشىرىلىرىمىز بەك كۆپ. ئۇلار بەك بېرىلىپ مائارىپ ئېلىپ بارىدۇ. يەنە بىر ئەۋزەللىكى جامائەتتە ئادەم قىسلىقى سەۋەپلىك ئاياللار قوشۇنىغا پۇل ئاز كېتىدۇ. چۈنكى ئەرلىرى مائاش ئالغانلىقتىن ئاياللار ناھايىتى ئاز ئىقتىسادقىلا ئۆزىنى پىدا قىلىپ ناھاىيتىن سۈپەتلىك مائارىپ بېرىۋاتىدۇ. ھەمدە ھەممە مەكتەپلەر ئاياللارنىڭ ئائىلىسىگە يېقىنلا، شۇڭا چىقىپلا دەرس ئۆتۈپ بېرەلەيدۇ. نورمال تۇرمۇشىغا بەك چوڭ زىيان يەتمەيدۇ. ئەمما ئەر ئوقۇتقۇچىلار بولسا دەرس بېرىدۇ ئەمما ئۇلارنىڭ دۆلەت مۇداپىئە مىنسىترلىكىدە خىزمىتى بار. بارغانسىرى كۆپ مىنىستىرلىكتىن چاقىرىپ ئەسكىيرىي تەربىيلەشكە ئوقۇتقۇچىلارنى چاقىرىۋاتىدۇ، ھەمدە كام ئوقۇتقۇچىلارنى تولۇقلاش ئىمكانىيىتى يوق. ئەمما ئاياللار قوشىنىدا بۇ قىنيىنچىق يوق. ھەمدە ئەرلەر ئەگەر ئەسكىري ئورنىغا بارمىسا مائاشى ئازىيىپ كېتۋاتىدۇ، ھەمدە مائرىپتىن بۇ مائاشنى تولۇقلاش سەل تەس بولىۋاتىدۇ. چۈنكى ئەرلەرنىڭ مائاشى يۇقىرىراق بولىدۇ. شۇڭا ئەرلەر مائارىپىنىڭ پەقەتلا بار ئوقۇتقۇچىنى تۇتۇپ تۇرۇپ ئاندىن ئاز-ئازدىن سەۋىيە ئاشۇرۇش كېرەك. ئاياللارنى بوسلا تاللاش ئىمكانىيتىمز بار ھەمدە ئوقۇتقۇچى بولۇشقا رىغبىتى بار ئايال ئوقۇتقۇىچلار بەك كام ئەمسە. ئەمما ئەرلەردە ئەھاۋل پۈتەنلەي باشقىچە. شۇڭا بىز بۇ يىلى يەسلىگە نورمال ئوقۇغۇچى قۇبۇل قىلمىز، ئاياللار ئوقۇتىدۇ. بۇ بەك ياخىش ماڭىدۇ ئىنشائالاھ. ئەمما 1-يىللىقلارغا بۇرۇن ئوغۇللارنى ئوغۇللار مەكتىپىگە ئالساق ئوقۇتقۇچى كاملايتتى. بۇ يىلدىن باشلاپ تاكى 2-يىللىقنى تۈگەتكۈچى ئاياللار ئوقۇتۇپ بەرمەكچى. شۇڭا سېلىنمىنى ئايال ئوقۇتقۇچىلارغا سېلىش بەك ياخشى. ئەمما بىزگە ئىشىنىپ بەرگەن يېڭى ئوقۇغۇچىلارغا ئەرەب تىلىنى چىڭ تۇتماقچى. بۇرۇن بىزنىڭ مەكتەپلەردىك ئەرەب تىلى ئوقۇتشى سەل ئاجىز ئىكەنتۇق مەن بۇ مەۋسۇمدىن باشلاپ ئەرەب تىلى دەرىسنى كۆپەيتمەكچى ۋە سۈپىتىنى ياخشىلىماقچى. چۈنكى تولۇقسىزدا چوقۇم ئەرەب ئوقۇتقۇچىلارنى ئەكىلىپ سۈرىيە تولۇق ئوتتۇرا مائارىپىغا يېتىشتۈرىشىمىز كېرەك.
+مەن ئەڭ چىڭ مائارىپنىڭ قۇرۇلىشىدىن باشقا ئەڭ مۇھىم ئىشنى مائارىپنى ئوقۇتۇش سۈپىتىنى ئاشۇرۇشقا مەركەشلەشمەكچى. مەن قانداق قىلسام بولىدۇ بەك ئىلمىي خىزمەت لازىم.
+مائارىپنى ياخشىلاشقا كېتىدىغان ئەڭ مۇھىم ئىقتىساد ۋە ئوقۇتقۇچىلار قوشۇنى كەم.
+پۇل ئاز، ئادەم ئاز، شارائىت ناچار، خىتاينىڭ چەتئەلدىكى مىللىي مارئاىپنى يوقىتىش پىلانى كۈچلۈك، پەرزەنتلىرىمىز كۆپ مۇشۇندقا شارائىتتا قانداق بىر كۈچلۈك خىزمەت قىلىپ، بۇندىن كېيىنكى كۈچلۈك ئۇيغۇر ئەۋلادلارنى يېتىلىدۈرۈشكە بولىدىغانلىقى مېنى ئەڭ قىيناۋاتقان مەسىلە.
+ئوقۇتقۇچىلارنى تەربىيەلەش ئېلىپ بېرىش كېرەك. بار ئوقۇتچقۇىلارنى چوقۇم تەربىيلەپ كۈچىدىن پايدىلىنىش لازىم. ئۇلارنىڭ كۆپى ناھايىىت ئىخلاسمەن قېرىنداشلار. ئەمما سانى ئاز ۋە سەۋىيەسى سەل تۆۋەن.
+يەنە چوڭ تېما شۇكى ھازىرغىچە سۈرىيەدىكى مىللىي مائارىپ ئۇرۇش شارئىتىدا تەرەققىي قىلغان، بۇنىڭغا كۆپ كىشىلەرنىڭ خىزمىتى سىڭگەن گەرچە خاتالىق بولىسمۇ. ناھايىتى نازۇك مۇناسىۋەتلەر كۆپ، مەن چىقىپلا بەزى چوڭ ئۆزگىرىشلەرنى قىپ كەتسەم بەلىكىم مائارىپقا زېيىنى چوڭ بوپ قېلىشى مۇمكىن. مەسىلەن، بەزى ناچار ئىشلەيدىغان كىشىلەرنى ئىشتىن بوشاتسام ئورنىغا ئادەم قەتئىيلا يوق. شۇڭا 10 پىرسەنت كۈچىنى بەرگەن كىشىنى كۈچ بەردى دەپ ھېسابلاپ ئىشلىتىپ مائارىپنى ماڭدرۇۇۇپ تۇرۇش قىيننچىلىق بار. بەزى ناھايىتى كۈچلۈك پايۇدىس بار كىشلەر بار 200 پىرسنەت تىرىشچانلىق كۆرسىتىۋاتقان. ئەمما ئۇلار بەزى چوڭ باشلىقلار بىلەن ئارىسى ياخشى ئەمەس. ئۇلارنى تېزلا ئۆستۈرۋەتسەممۇ مەسىلە كېلىپ چىقىشى مۇمكىن. شۇڭا مائارىپ ناھايىىت مۇرەككەپ بىر ھالەتتە ئۇ قېرىندىشىم مائارىپ مەسئۇلىقىنى قولىغا ئالدى.
+ئەرەب تىلىنى چىڭ تۇتقاندىن كېيىن بىز سۈرىيەدە شەرقىي تۈسكىتانلىقالرنىڭ بالىلىرى ماتتمېتىكدا ئەۋزاللىك يارىتلاايمىز. چۈنكى خىتايدا ئالىي مەكتەپ ئوقۇغان ئۇستازلا كۆپ. ئۇلارنىڭ ماتىماتىكا ئاساسىي بەك لۈچلۈك. ئەمما ئوتتۇرا شەرق دۆلەتلىرىنىڭ ماتىماتىكاسى بەك ياخىشى ئەمەسكەن. بىز بۇندى كيېىن بۇنىڭدا ئەۋزەللىك بەرپا قىلالايمىز.
+
+يەنە بىر مۇھىم نۇقتا ھازىر مائارىپقا ئىقتىسادىي سېلنما ئاز بولشىغا قارىماستىن، ئاتا-ئانىلاردىن ھېچقانداق ھەق ئېلىنمايدۇ. ئاتا-ئانىلارغا بىۋاستە ھەق ئلىش ئېغىر كېلىشى مۇمكىن، ئەمما بۇ ئەڭ ئەقەللىي ساۋات. شۇڭا ئاستا-ئاستا بولسىمۇ ئاتا-ئانىلارغا مائارىپقا ھەق تاپشۇرۇشقا رىغبەتلەندۈرۈش كېرەك. بۇنىڭغا بەلكىم بىر نەچچە يىل كېتىشىمۇ مۇمكىن.
+
+يېڭى مائارىپ سىسىتېمىسىدا قۇرئان ۋە ھەدىسلەر ئەسكەرتىلمىسە خەلق ئىسلامدىن يىراقلاشقان مائارىپقا باشلاپ ماڭدى دەپ پىتنە تېرىشىمۇ مۇمكىن.
+شەرقىي تۈركسىتانلىقلارنىڭ سۈرىيەدىكى مائارىپى ناھايىتى قىينچىلىق ۋاقىتتا 7 ئوقۇغۇچى ۋە بىر ئوقۇتقۇچىدىن 13 يىلدىن كېيىن ھازىرقى 3500 پەرزەنتلىك چوڭ بىر سىستېمىغا ئايلاندى. بۇ ئاددىي ئەمەس. كۆپ مەسىلە بار ئەمما مائارىپ تەرەققىياتى سەۋەپلىك نۇرغۇن تەجىربىلەرگە ئېرىشتى.
+ئوغۇللار مائارىپوىنى تېخىمۇ ئۈنۈملۈك ئېلىپ بېرىش ئۈچۈن، مەھەللىلەردىن ئالىي مەكتەپ ئوقۇغان ۋە مېتودى بار ئوقۇتقۇچىلار قوشۇنىنىنىڭ ئۇچۇرىنى ئېلىپ، ئاندىن ھەربىر مەكتەپلەردە ئەگەر ئەسكىري ئورنىدىن بىرنەچچە ھەپتە ياكى بىرەنچچە ئايلىق يوق بوپ قالىدىغان پەنلەرنى جىددىي شۇ مەھەللىەرلدىكى بۇرۇن ئالغان ئوقۇتقۇچى ئۇچۇرلىرىدىن ئۇدۇللاپ، دەرس سائەتلىرىگە ئۇدۇللاپ ھەپتىلك ياكى ئايلىق ئوقۇتقۇچى يوقلۇق ئەھلۋالنى ھەلقىلىشقا بولىشى مۇمكىن. ھەربىر سائەتكە ھەق بەرسەك بولىدۇ.
+ئەسىكىرى ئورۇندىكى باشلىقلار بىلەن ئالاقىنى ياخشىلاش ئارقىلىق بەلكىم بەزى ئادەم چارقىتىشنىڭ سانىنى ئازايتقىلى، كېچىكتۈرگىلى، سەل ھەل قىلغىلى بولىشمۇ مۇمكىن، خۇددىي لوبىيچىلىقتەك.
+ئوقۇتقۇچىلارنى رىغبەتلەندۈرۈش ئۈچۈن ئانچە مۇنچە ساياھاەتكە ئاپىرىش، بۇنىڭ بىلەن تەڭ ھەربىر سىنىپتىكى ئەلاچى ئوقۇغچىنىمۇ بىردىن ئېلىۋېلىشقا بولىدۇ.
+دەرستىن سىرت ئەسكىري ئورۇنلاردىكى قوماندانلارنى تەسىرلىك جەڭنامىلەرنى سۆزلپە بېرىشكە تەكلىپ قىلىش، ھەپتە ئارىلىقىدىكى كۇرژىكلاردا ئەسكىي تەرەققىيات ۋە رازۋېكا بۆلىمىدىكى قېرىنداشلارنى لىكسىيەگە ۋە قىسقا ۋوركشوپقا چاقىرىش، بىخەتەرلىك بۆلمۈىدىكى قېرىندشلارنى لىكسىيەگە چاقىرىش، ئالىي مەكتەپتە ئوقۋۋاتنقاندالرنى لىكىسيەگە چاقىرىش، باش ئەمىرلەرنى قىسقا پائالىيەتلەرگە چاقىرىش، يىنىك ئاتلىكتا مۇسابىسىقى، ماقالە مۇسابىقىسى، زېھىن سىناش ئىمتىھانى، زېھى سىناش مۇسابىقىسى، پۇتبول مۇسابقىسى، تىكتاكتوپ مۇسابقىسى، ۋاسكىتبول مۇسابقىسى، مىللىي جانابزلىقنى تونۇشۇتۇرۇش لىكىسيە پائاىلىيتى، ئۇيغۇر مىللىي تبابىتىنى تونشتۇرۇشۇش پائالىيتى، ۋەتەندىكى مىللىي مائارىپنى تونۇشتۇرۇش پائالىيىتى، ۋەتەندىكى مىلىي نەقىشلەرنى تونشۇرۇرش، مىلىيچە چىريالىق خەت خۇشخەت دەرسى، باغۋەنچىلىق لىسكىيەسى، ئەرەب تىلى ئۆگىنىش تەسىرات لىسكىيەسى، مىلىلىي مائاراىپ تارىخى لىكسىيەسى، ئۇغيرۇ تارىخى لىكسىيەسى، سۈرىيە ئىنقلاپ تارىخى لىسكىيەسى، كۈنزىمىزدىكى پەن-تېخنكىا تەرەققىياتى لىسكىيەسى، ئۆگىنشى قىلىش ئۇسۇللىرى ھەققىدە لىكسيە.. مۇشۇنداق مىللىي مائارىپقا پايدىلىق باشلانغۇچ ئوقۇغچىلارغا پايدىلىق خىلمۇخىل لىكىسيەلەرنى ھەر ھەپتە دەم ېئلىش كۈنىگە توغرىلاشنى پىلالاۋاتىمەن. چۈنكى بۇ خەلقنىڭ ئارىسىدكى كۈچنى مائارىپغا ئىشلىتىش بولىدۇ. ھەمدە ئەرەب مەكتەپلەرگە بېرىۋەتكەن پەرزەنەتلىرمىزمۇ كېلىپ قاتناشسا مىللىي مائارىپ بىلەن تونۇشىدۇ ھەمدە بۇدنى كېينكى سۈرىيەدە مىللىي ماررىپتا ئوقۇغان بالىلار بىلەن ئەرەب مائارىپدا ئوقۇغان بالىلارنىڭ ئارىلىشىشى قوياقلىشىدۇ. ئۆز ئارا چۈشىنشى بىلەن بۇندىن كېيىنكى پەرزەنتلىرمىز چەتئەلدە يەنىلا بىر بىرىگە ھەمكارلشىشىپ داۋانى داۋاملاشتۇرىدۇ.
+
+تولۇقسىزغىچە بولغان مائارىپىمىزدا ئەرەب تىلىدىن باشقا يەنە تۈرك تىلى ۋە ئېنگزلى تىلىغىمۇ كۈچەش كېرەك. ئومۇمىي مائارىپىمىزغا بۇلارنىڭ ھەممىنسى ئېىپ بېرىش تەس. ئەمما تۈرك تىلى سۈىريەگە يېقىن ھەمدە تەرەقىياتى سۈرىيەدىن ئالدىدا ھەمدە تۈرك تىلى ئۇيغۇرلار ئۈچۈن خېلىلا ئاسان، تۈرك مەدەنىيتى ئۇيغۇرلارنى خېلىلا تارتىدۇ. ھەتتا سۈرىيە ياشلىرىدىمۇ تۈرك مەدەنىيتىىگە قىزىقش بار. ئېنگلزى تىلى بولسا بىز ئۈچۈن ئەڭ مۇھىم دۇنياۋىي تىل. ئېنگلزى تىلى بىلەن بىزنىڭ ئەۋلادرلىمزى ئەڭ كۆپ دۇنياۋىي تىلنى ئۆگىنەلەيدۇ، ھەمدە خىتاي تىلىمۇ بەك ئاز ساندىكىلەر ئۈچۈن ئۆگىنىش لىنيىس بولىش كېرەك. شۇنداق بولغاندا بىزنىڭ شەرىي تۈسكىتان ئەۋلادلىرى ئىچىدە ئۇيغۇر تىلى، ئەرەب تىلى، ئېنگلىزتىلى ، تۈرك تىلى، ۋە خىتاي تىلى بىلىدغانلارنى يېتىشتۈرۈش مۇھىم. بۇلارنى ئالدىنقى 3 نى مەلۇم شەكىلدە مائرىپ ئىچىدە ئېلىپ بېرىشقا بولىدۇ. ئەمما تۈرك تىل ۋە خىتاي تىلىنى رىغبەتلەندۈرۈشكە ۋە خۇسۇسىي كۇرسلارنى ئېچىپ ئاسانلاشتۇرۇشقا بولىدۇ.
+
+سىرتتىن مەن ياردەمگە چاقىرالايدىغان قاتلامدىن ھەرقايسى ئارقا سەپتە خىزمەت قىلىۋاتقان ئالىي مەكتەپ پۈتتۈرگەن قېرىنداشلار، دوختۇرلار قاتلىمى... بۇ قاتلاملاردىن پايدىلىنالشىىم مۇمكىن.
+نۆۋەتتە ئالىي مەكتەپ ئوقۇۋاتقان 25 ئەتراپىدا ئوقۇغۇچى بار. ئۇلارغا ئوقۇش جەريانىدا يېتەكچىلىك قىلغان بىرەر يېتەكچى يوق ئىكەن.
+سۈرىيە مائارىپ مىنىستىرى ۋە مائارىپ باشلىقلىرى بىلەن ئالاقە باغلاپ سۈرىيەنىڭ دۆلەتتىن ئالىدىغان بەزى ماددىي ۋە مەنىۋىي ياردەم ئېلىش پۇرستى بار ئىكەن.
+
+مائارىپتا يەسلىنى ئۇيغۇرچە، باشلانغۇچ 4-يىللىققىچە ئۇيغۇر ئوقۇتقۇچىلارلا ئوقۇتىدۇ. ئەرەب تىلىنى 3-يىللىقتىن باشلاپ ئۇيغۇر ئوقۇتقۇچى ئوقۇتىدۇ. ئاندىن 5-يىللىقتىن باشلاپ ئەرەب تىلىنىمۇ ئەرەب ئوقۇتقۇچى ئۆتۈشكە باشلايدۇ. دېمەك 4-يىللىق ئاساس قىلىنىپ ئۇيغۇر تىلدا ئاساس يېتىلىشى كېرەك، ھەمدە تاكى 6-يىللىق تۈگىگىچە ئەدەبىيات ئۆتۈلىدۇ. 5- ۋە 6-يىللىقتا ئۇيغۇر تارىخى دەرسى ئۆتۈلىدۇ. دېمەك بىزنىڭ مائارىپىمىزدا ئەدەبىيات ۋە ئۇيغۇر تارىخى دەرسى ئۆتۈلىدۇ. بۇ بەك مۇھىم. ئاندىن ئەرەب تىلى بەك چىڭ تۇتۇپ تاكى تولۇقسىز ئوتتۇرادىن باشلاپ بارلىق پەنلەردە ئەرەب ئۇستاز ئۆتسە بولىدىغان ئەمما تاكى تولۇق ئوتتۇرا ئىمتىھانىغىچە ئۇيغۇر يېتەكچى ئۇستاز بولىدۇ. ئاندىن تولۇق ئوتتۇرادا مىللىي مائارىپ يوق. تولۇقسىز ئوتتۇرا مەكتەپتە مىللىي مائارىپىمىز بار، ئەمما يېتەكلەشنى ۋە تولۇق ئوتتۇرا ئىمتىھانغا تەييارلىق قىلدۇرۇشنىلا ئاساس قىلىدۇ.
+========================
+`;
+
+    const EDU_PROMPT = `مەن ساڭا بىر ماقالە، كىتاپ، ئاۋاز ياكى ۋىديو مەزمۇنى بېرىمەن (نېمە بەرسەم شۇ). سەن بۇ مەزمۇننى «سۈرىيەدىكى شەرقىي تۈركىستان (ئۇيغۇر) مىللىي مائارىپى» نۇقتىسىدىن، تۆۋەندىكى تەرتىپ بويىچە، ھەرگىز قىسقارتىۋەتمەي، ھەر بىر بۆلەكنى ئۇزۇن ۋە ئەتراپلىق تەھلىل قىلىپ، پەقەت JSON شەكلىدىلا قايتۇرىسەن:
+
+1. content_summary: بەرگەن مەزمۇننىڭ قىسقىچە خۇلاسىسىنى 3 چوڭ ئابزاستا ياز (ھەربىر ئابزاس ئەڭ ئاز 8-10 جۈملىدىن تۇرسۇن).
+2. world_islamic_education_analysis: بۇ مەزمۇندىن دۇنيا ئىسلام دىنى مائارىپ نۇقتىسىدىن قانداق پايدىلار چىقىدىغانلىقىنى تەھلىل قىلىپ ياز.
+3. academic_pedagogy_analysis: بۇنىڭ زامانىۋى ئاكادېمىك مائارىپ ساھەسى (پىداگوگىكا) نۇقتىسىدىن 3 ئۇزۇن ئابزاسلىق تەھلىلىنى ياز.
+4. modern_islamic_education_analysis: بۇنىڭ ھازىرقى زامان ئىسلامىي مائارىپ نۇقتىسىدىن قانداق تەھلىلى بارلىقىنى ياز.
+5. daily_application_analysis: نۆۋەتتىكى مائارىپ باشلىقى بۇ مەزمۇننى كۈندىلىك قايسى مائارىپ ساھەسىدە ئىشلىتەلەيدۇ؟ مەسىلەن ئوقۇتقۇچىلارنى رىغبەتلەندۈرۈش، ئوقۇتۇش سۈپىتىنى ئاشۇرۇش، ئوقۇغۇچىلارنى رىغبەتلەندۈرۈش ئىشىغا قانداق ياردەم قىلىدىغانلىقىنى ئېنىق مىساللار بىلەن ياز.
+6. head_recommendation: سۈرىيەدىكى ئۇيغۇر مائارىپىدا 2800 ئوقۇغۇچىنى باشقۇرۇۋاتقان باش مائارىپ مەسئۇلىغا مۇشۇ مەزمۇنغا ئاساسەن قانداق تەكلىپ بېرىلىدىغانلىقىنى 7 ئۇزۇن ئابزاستا ياز. بۇ تەكلىپ چوقۇم ئەمەلىي، ئىجرا قىلغىلى بولىدىغان، تۆۋەندىكى ئارقا كۆرۈنۈش ئۇچۇرىدىكى نۆۋەتتىكى ئەھۋالغا (5 ئوغۇللار مەكتىپى، 1 تولۇقسىز ئوتتۇرا، 10 دىن ئارتۇق قىزلار مەكتىپى، ئوقۇتقۇچى ۋە ئىقتىسادنىڭ كەملىكى، ئەرەب تىلى، مائاش، ئەسكىرى مەجبۇرىيەت قاتارلىق مەسىلىلەرگە) ئېنىق ئۇچرىشىپ يېزىلسۇن.
+
+مۇشۇ ئارقا كۆرۈنۈش ئۇچۇرىنى چوقۇم تولۇق ئوقۇپ، تەھلىل ۋە تەكلىپلىرىڭنى شۇنىڭغا ئاساسلاندۇرغىن (بۇ ئۇچۇر ھەر تەھلىلدە ئۆزگەرمەيدۇ):
+${SYRIA_CONTEXT}
+
+نەتىجىنى پەقەت مۇشۇ JSON قېلىپىدىلا قايتۇر:
+{
+  "content_title": "...",
+  "content_type": "ماقالە/كىتاپ/ئاۋاز/ۋىديو",
+  "content_source": "...",
+  "content_summary": ["1-ئابزاس...", "2-ئابزاس...", "3-ئابزاس..."],
+  "world_islamic_education_analysis": ["1-ئابزاس...", "2-ئابزاس..."],
+  "academic_pedagogy_analysis": ["1-ئابزاس...", "2-ئابزاس...", "3-ئابزاس..."],
+  "modern_islamic_education_analysis": ["1-ئابزاس...", "2-ئابزاس..."],
+  "daily_application_analysis": ["1-ئابزاس...", "2-ئابزاس..."],
+  "head_recommendation": ["1-ئابزاس...", "2-ئابزاس...", "3-ئابزاس...", "4-ئابزاس...", "5-ئابزاس...", "6-ئابزاس...", "7-ئابزاس..."]
+}`;
+
+    document.getElementById('promptArea').value = EDU_PROMPT;
+
+    function copyPrompt() {
+        navigator.clipboard.writeText(document.getElementById('promptArea').value);
+        alert('پىرومپت كۆچۈرۈلدى! Gemini غا چاپلاڭ.');
+    }
+
+    let generatedHTML = '';
+
+    function renderReport() {
+        const raw = document.getElementById('jsonInput').value.trim();
+        if (!raw) return;
+        try {
+            const data = JSON.parse(raw.replace(/```json/g,'').replace(/```/g,'').trim());
+            generatedHTML = buildHTML(data);
+            document.getElementById('reportPreview').srcdoc = generatedHTML;
+        } catch(e) { alert('JSON خاتا: ' + e.message); }
+    }
+
+    function saveHTML() {
+        if (!generatedHTML) { alert('ئالدى كۆرسەتسىڭىز!'); return; }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([generatedHTML], {type:'text/html;charset=utf-8'}));
+        a.download = `MaaripTahlil_${Date.now()}.html`;
+        a.click();
+    }
+
+    function buildHTML(data) {
+        const fp = t => {
+            if(!t) return '';
+            if(Array.isArray(t)) return t.filter(p=>p.trim()).map(p=>`<p class="para" contenteditable="true">${p}</p>`).join('');
+            return t.split(/\\n+/).filter(p=>p.trim()).map(p=>`<p class="para" contenteditable="true">${p}</p>`).join('');
+        };
+
+        const d = new Date();
+        const months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+        const fPad = n => n.toString().padStart(2, '0');
+        const ugDate = `${d.getFullYear()}-يىلى ${months[d.getMonth()]}-ئاينىڭ ${d.getDate()}-كۈنى. سائەت ${fPad(d.getHours())}:${fPad(d.getMinutes())}`;
+
+        const contentBody = `
+            <div style="text-align:center; font-size:26px; font-family:'Amiri', serif; margin-bottom:10px;">﷽</div>
+            <div class="doc-header">
+                <div class="main-title">${data.content_title || 'مائارىپ تەھلىل دوكلاتى'}</div>
+                <div class="original-title">${data.content_type || ''} ${data.content_source ? ' · ' + data.content_source : ''}</div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📋 مەزمۇن خۇلاسىسى</div>
+                ${fp(data.content_summary)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">🕌 دۇنيا ئىسلام دىنى مائارىپىغا پايدىسى</div>
+                ${fp(data.world_islamic_education_analysis)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">📚 زامانىۋى ئاكادېمىك پىداگوگىكا تەھلىلى</div>
+                ${fp(data.academic_pedagogy_analysis)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">🕋 ھازىرقى زامان ئىسلامىي مائارىپ تەھلىلى</div>
+                ${fp(data.modern_islamic_education_analysis)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">🏫 كۈندىلىك مائارىپ ئىشلىتىش تەھلىلى</div>
+                ${fp(data.daily_application_analysis)}
+            </div>
+
+            <div class="section">
+                <div class="section-title">✉️ سۈرىيە مائارىپ مەسئۇلىغا تەكلىپ (2800 ئوقۇغۇچى)</div>
+                ${fp(data.head_recommendation)}
+            </div>
+        `;
+
+        return `<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${data.content_title || 'مائارىپ تەھلىل دوكلاتى'}</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'UKIJ Ekran';src:local('UKIJ Ekran'),local('UKIJ_Ekran');}
+@font-face{font-family:'UKIJ Tuz';src:local('UKIJ Tuz'),local('UKIJ_Tuz');}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;color:#1a202c;direction:rtl;padding:20px;padding-bottom:100px;font-size:15px;line-height:2;}
+.page{max-width:800px;margin:0 auto;position:relative;}
+.doc-header{background:transparent;padding:20px 0 30px;margin-bottom:20px;border-bottom:2px solid #e2e8f0;text-align:center;}
+.main-title{font-family:'UKIJ Tuz',serif;font-size:32px;font-weight:700;line-height:1.4;color:#000;margin-bottom:12px;text-align:center;}
+.original-title{font-size:15px;color:#64748b;margin-bottom:20px;text-align:center;font-style:italic;}
+.section{margin-bottom:32px;}
+.section-title{font-family:'UKIJ Tuz',sans-serif;font-size:22px;font-weight:700;color:#0f172a;padding-bottom:8px;margin-bottom:16px;border-bottom:2px solid #16a34a;display:flex;align-items:center;gap:8px;}
+.para{text-indent:2.5em;text-align:justify;margin-bottom:16px;line-height:1.6;font-size:20px;color:#000;font-family:'UKIJ Tuz',sans-serif;}
+.doc-footer{text-align:center;padding:30px 20px;color:#64748b;font-size:14px;font-family:'UKIJ Tuz',sans-serif;}
+.btn{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.2);display:flex;align-items:center;gap:6px;}
+.btn-print{background:#16a34a;color:#fff;}.btn-print:hover{background:#15803d;}
+[contenteditable="true"]:focus { outline: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
+.para:empty { display: none !important; }
+
+@media print{
+    .no-print{display:none!important;}
+    .page{max-width:100%;}
+    body{background:#fff;padding:0;}
+}
+@page{size:A4;margin:18mm 18mm 18mm 18mm;}
+</style>
+</head>
+<body>
+<div class="page" id="report-content">
+  ${contentBody}
+
+  <div class="doc-footer">
+    <img src="https://uycoder.github.io/paydilar/BiliklogoWithBlackLetters.png" alt="Bilik Logo" style="height:100px;width:auto;object-fit:contain;margin:0 auto 12px;display:block;" crossorigin="anonymous" onerror="this.style.display='none'">
+    <div style="color:#64748b;">${ugDate}</div>
+  </div>
+</div>
+
+<div class="no-print" style="position:fixed; bottom:20px; left:20px; z-index:9999;">
+    <button class="btn btn-print" onclick="window.print()">🖨️ بېسىش</button>
+</div>
+</body>
+</html>`;
+    }
+
+    // Clock
+    setInterval(()=>{
+        const d=new Date();
+        document.getElementById('clock').innerText=d.toLocaleDateString('ug-CN')+' '+d.toLocaleTimeString('ug-CN');
+    },1000);
+    </script>
+</body>
+</html>
