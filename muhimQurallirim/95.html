@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بىلىك ماركداۋن قۇرالى v1.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face { font-family: 'UKIJ Ekran'; src: local('UKIJ Ekran'), local('UKIJ_Ekran'); }
+        @font-face { font-family: 'UKIJ Tuz'; src: local('UKIJ Tuz'), local('UKIJ_Tuz'); }
+        body { font-family: "UKIJ Tuz", "Noto Naskh Arabic", sans-serif; background: #0f172a; color: #e2e8f0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <!-- Global Tools Navigation -->
+    <nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;">
+        <style>
+            #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+            #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#f59e0b;letter-spacing:.1em;white-space:nowrap;}
+            #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+            #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+            #bilik-global-nav a.bgn.active{background:#d97706;color:#fff;border-color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.35);}
+        </style>
+        <div id="bilik-global-nav-wrap">
+            <span class="bgl">بىلىك قۇراللىرى:</span>
+            <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+            <a href="02.html" data-page="02.html" class="bgn">02 · ماقالە</a>
+            <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+            <a href="81.html" data-page="81.html" class="bgn">81 · سودا سۆھبىتى</a>
+            <a href="82.html" data-page="82.html" class="bgn">82 · ۋىديو ئانالىز</a>
+            <a href="83.html" data-page="83.html" class="bgn">83 · سلايد ياسىغۇچ</a>
+            <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+            <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+            <a href="87.html" data-page="87.html" class="bgn">87 · 6 مۇتەخەسسىس</a>
+            <a href="88.html" data-page="88.html" class="bgn">88 · خىتاي</a>
+            <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
+            <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
+            <a href="91.html" data-page="91.html" class="bgn">91 · مائارىپ</a>
+            <a href="95.html" data-page="95.html" class="bgn">95 · ماركداۋن</a>
+        </div>
+    </nav>
+    <script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
+
+    <!-- Header -->
+    <header class="h-14 border-b border-slate-700 bg-slate-900 flex items-center justify-between px-6 z-50 shadow-2xl flex-none">
+        <div class="flex items-center gap-4">
+            <div class="bg-sky-500 text-slate-900 w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl">📝</div>
+            <div>
+                <h1 class="text-lg font-bold text-white">ماركداۋن قۇرالى <span class="text-sky-400 text-xs">v1.0</span></h1>
+                <p class="text-[9px] text-slate-400 font-mono uppercase tracking-widest">Markdown to Printable Document</p>
+            </div>
+        </div>
+        <div id="clock" class="text-xs text-sky-400 font-mono"></div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Control Panel -->
+        <aside class="w-[480px] border-l border-slate-700 bg-slate-800/50 flex flex-col z-40 flex-none">
+
+            <div class="p-3 bg-slate-900/50 border-b border-slate-700">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] text-slate-400 font-bold">بۇيرۇق (كۆچۈرۈڭ):</span>
+                    <button onclick="copyPrompt()" class="bg-slate-700 hover:bg-slate-600 text-white text-[10px] px-3 py-1 rounded-full transition shadow-lg border border-slate-500">كۆچۈرۈش 📋</button>
+                </div>
+                <textarea id="promptArea" readonly class="w-full h-28 bg-slate-900 border border-slate-700 rounded-xl p-2 text-[9px] font-mono text-slate-300 resize-none outline-none leading-relaxed border-dashed" dir="ltr"></textarea>
+            </div>
+
+            <div class="p-3 bg-slate-900/80 border-b border-slate-700 flex-1 flex flex-col min-h-0">
+                <label class="block text-[10px] font-bold text-sky-500 mb-1">Markdown تېكىستىنى چاپلاڭ:</label>
+                <textarea id="mdInput" class="w-full flex-1 bg-slate-950 border border-slate-700 rounded-xl p-2 text-[10px] font-mono text-sky-400 outline-none focus:border-sky-500 transition-all resize-none" placeholder="# ماقالە تېمىسى..." dir="rtl"></textarea>
+            </div>
+
+            <div class="p-3 bg-slate-900/80 border-t border-slate-700 grid grid-cols-2 gap-2">
+                <button onclick="renderReport()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">⚡ كۆرسەت</button>
+                <button onclick="saveHTML()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">💾 HTML</button>
+            </div>
+        </aside>
+
+        <!-- Preview -->
+        <div class="flex-1 bg-slate-950 overflow-hidden relative">
+            <iframe id="reportPreview" class="w-full h-full border-none bg-white"></iframe>
+        </div>
+    </main>
+
+    <script>
+    const MD_PROMPT = `مەن ساڭا بىر تېما بېرىمەن. سەن بۇ تېمىنى تولۇق، ئەتراپلىق ۋە ئىلمىي شەكىلدە تەھلىل قىلىپ، نەتىجىنى پەقەت Markdown فورماتىدىلا قايتۇرىسەن.
+
+قائىدىلەر:
+1. ئەڭ ئاۋۋال # بىلەن باش تېما (H1) ياز.
+2. مەزمۇننى ## ۋە ### تارماق تېمىلارغا (H2 / H3) بۆل.
+3. ھەربىر ئابزاسنى ئۇزۇن ۋە ئەتراپلىق ياز (كەم دېگەندە 5-6 جۈملە).
+4. مۇھىم سۆز-ئىبارىلەرنى **توم** قىلىپ بەلگىلە.
+5. مۇناسىۋەتلىك جايلاردا > بىلەن نەقىل ئېلىش (blockquote) ئىشلەت.
+6. زۆرۈر بولسا تىزىملىك (- ياكى 1.) ئىشلەت.
+7. ھەرگىز قىسقارتىۋەتمە، تولۇق ۋە كەڭ يازغىن.`;
+
+    document.getElementById('promptArea').value = MD_PROMPT;
+
+    function copyPrompt() {
+        navigator.clipboard.writeText(document.getElementById('promptArea').value);
+        alert('پىرومپت كۆچۈرۈلدى!');
+    }
+
+    let generatedHTML = '';
+
+    function extractTitleAndBody(raw) {
+        const lines = raw.split(/\r?\n/);
+        let title = 'ماركداۋن دوكلاتى';
+        for (let i = 0; i < lines.length; i++) {
+            const m = lines[i].match(/^\s*#\s+(.+)$/);
+            if (m) {
+                title = m[1].trim();
+                lines.splice(i, 1);
+                break;
+            }
+        }
+        return { title, body: lines.join('\n') };
+    }
+
+    function renderReport() {
+        const raw = document.getElementById('mdInput').value.trim();
+        if (!raw) return;
+        try {
+            const { title, body } = extractTitleAndBody(raw);
+            const htmlBody = marked.parse(body);
+            generatedHTML = buildHTML(title, htmlBody);
+            document.getElementById('reportPreview').srcdoc = generatedHTML;
+        } catch(e) { alert('خاتالىق: ' + e.message); }
+    }
+
+    function saveHTML() {
+        if (!generatedHTML) { alert('ئالدى كۆرسەتسىڭىز!'); return; }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([generatedHTML], {type:'text/html;charset=utf-8'}));
+        a.download = `Markdown_${Date.now()}.html`;
+        a.click();
+    }
+
+    function buildHTML(title, htmlBody) {
+        const d = new Date();
+        const months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+        const fPad = n => n.toString().padStart(2, '0');
+        const ugDate = `${d.getFullYear()}-يىلى ${months[d.getMonth()]}-ئاينىڭ ${d.getDate()}-كۈنى. سائەت ${fPad(d.getHours())}:${fPad(d.getMinutes())}`;
+
+        const contentBody = `
+            <div style="text-align:center; font-size:26px; font-family:'Amiri', serif; margin-bottom:10px;">﷽</div>
+            <div class="doc-header">
+                <div class="main-title" contenteditable="true">${title}</div>
+            </div>
+
+            <div class="content-body" contenteditable="true">
+                ${htmlBody}
+            </div>
+        `;
+
+        return `<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'UKIJ Ekran';src:local('UKIJ Ekran'),local('UKIJ_Ekran');}
+@font-face{font-family:'UKIJ Tuz';src:local('UKIJ Tuz'),local('UKIJ_Tuz');}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;color:#1a202c;direction:rtl;padding:20px;padding-bottom:100px;font-size:15px;line-height:2;}
+.page{max-width:800px;margin:0 auto;position:relative;}
+.doc-header{background:transparent;padding:20px 0 30px;margin-bottom:20px;border-bottom:2px solid #e2e8f0;text-align:center;}
+.main-title{font-family:'UKIJ Tuz',serif;font-size:32px;font-weight:700;line-height:1.4;color:#000;margin-bottom:12px;text-align:center;}
+.content-body{font-family:'UKIJ Tuz',sans-serif;}
+.content-body h1,.content-body h2,.content-body h3{font-weight:700;color:#0f172a;margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid #0ea5e9;}
+.content-body h1{font-size:26px;}
+.content-body h2{font-size:22px;}
+.content-body h3{font-size:19px;border-bottom:none;}
+.content-body p{text-indent:2.5em;text-align:justify;margin-bottom:16px;line-height:1.6;font-size:20px;color:#000;}
+.content-body ul,.content-body ol{margin:0 30px 20px;}
+.content-body li{margin-bottom:10px;font-size:19px;line-height:1.6;}
+.content-body blockquote{border-right:5px solid #0ea5e9;background:#f8fafc;margin:20px 0;padding:16px 20px;font-style:italic;color:#334155;border-radius:6px;}
+.content-body strong{background:#e0f2fe;padding:0 4px;border-radius:3px;color:#0f172a;}
+.content-body img{max-width:100%;height:auto;display:block;margin:24px auto;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.content-body hr{border:0;height:1px;background:linear-gradient(to right,transparent,#cbd5e1,transparent);margin:32px 0;}
+.content-body a{color:#0284c7;}
+.doc-footer{text-align:center;padding:30px 20px;color:#64748b;font-size:14px;font-family:'UKIJ Tuz',sans-serif;}
+.btn{padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:700;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.2);display:flex;align-items:center;gap:6px;}
+.btn-print{background:#0ea5e9;color:#fff;}.btn-print:hover{background:#0284c7;}
+[contenteditable="true"]:focus { outline: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
+#controlPanelMain{direction:ltr;}
+
+@media print{
+    .no-print{display:none!important;}
+    .page{max-width:100%;}
+    body{background:#fff;padding:0;}
+}
+@page{size:A4;margin:18mm 18mm 18mm 18mm;}
+</style>
+</head>
+<body>
+<div class="page" id="report-content">
+  ${contentBody}
+
+  <div class="doc-footer">
+    <img src="https://uycoder.github.io/paydilar/BiliklogoWithBlackLetters.png" alt="Bilik Logo" style="height:100px;width:auto;object-fit:contain;margin:0 auto 12px;display:block;" crossorigin="anonymous" onerror="this.style.display='none'">
+    <div style="color:#64748b;">${ugDate}</div>
+  </div>
+</div>
+
+<div class="no-print" id="controlsContainer" style="position:fixed; bottom:20px; left:20px; z-index:9999; display:flex; align-items:flex-end; gap:8px;">
+    <button onclick="toggleControls()" id="toggleBtn" style="background:#1e293b;color:#fff;width:32px;height:32px;border-radius:9999px;border:none;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;font-size:14px;" title="ئاۋازلىق ئوقۇش تەڭشەكلىرى">⚙️</button>
+
+    <div id="controlPanelMain" class="hidden" style="background:rgba(15,23,42,.95);backdrop-filter:blur(4px);padding:8px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.3);border:1px solid #334155;display:flex;flex-direction:column;gap:8px;width:230px;direction:ltr;">
+        <div style="display:flex;gap:4px;">
+            <select id="voiceSelect" style="background:#334155;color:#fff;font-size:10px;padding:4px;border-radius:6px;width:100%;border:none;">
+                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                <option value="ar-SA">العربية (ئەرەبچە)</option>
+                <option value="en-US">English (ئېنگلىزچە)</option>
+            </select>
+            <select id="rateSelect" style="background:#334155;color:#fff;font-size:10px;padding:4px;border-radius:6px;width:56px;text-align:center;border:none;">
+                <option value="1.0">1.0x</option>
+                <option value="1.5" selected>1.5x</option>
+                <option value="2.0">2.0x</option>
+            </select>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
+            <button onclick="prevChunk()" style="background:#475569;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="ئالدىنقى">⏮</button>
+            <button onclick="startReading()" style="background:#0284c7;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="ئوقۇش">▶</button>
+            <button onclick="nextChunk()" style="background:#4f46e5;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="كېيىنكى">⏭</button>
+            <button onclick="stopReading()" style="background:#dc2626;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="توختا">■</button>
+        </div>
+    </div>
+
+    <button class="btn btn-print" onclick="window.print()">🖨️ بېسىش</button>
+</div>
+
+<script>
+    const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+    const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+    function convertForTTS(text, map) {
+        return text.split('').map(c => map[c] || c).join('');
+    }
+
+    let chunks = [];
+    let chunkIndex = 0;
+    let isReading = false;
+
+    function toggleControls() {
+        const panel = document.getElementById('controlPanelMain');
+        const btn = document.getElementById('toggleBtn');
+        if (panel.classList.contains('hidden')) {
+            panel.classList.remove('hidden');
+            btn.innerHTML = '▼';
+        } else {
+            panel.classList.add('hidden');
+            btn.innerHTML = '⚙️';
+        }
+    }
+
+    function startReading() {
+        stopReading();
+        isReading = true;
+
+        const reportEl = document.getElementById('report-content');
+        const fullText = reportEl.innerText;
+
+        let rawChunks = fullText.split(/\\n+/);
+        chunks = [];
+        let lastChunk = "";
+        for (let i = 0; i < rawChunks.length; i++) {
+            let clean = rawChunks[i].trim();
+            if (clean.length > 0 && clean !== lastChunk) {
+                chunks.push(clean);
+                lastChunk = clean;
+            }
+        }
+
+        chunkIndex = 0;
+        speakNextChunk();
+    }
+
+    function speakNextChunk() {
+        if (!isReading) return;
+        if (chunkIndex >= chunks.length) {
+            isReading = false;
+            return;
+        }
+
+        const voiceVal = document.getElementById('voiceSelect').value;
+        const rateVal = parseFloat(document.getElementById('rateSelect').value);
+        let chunkText = chunks[chunkIndex];
+        let finalText = chunkText;
+
+        if(voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+        else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+        const utterance = new SpeechSynthesisUtterance(finalText);
+        const voices = window.speechSynthesis.getVoices();
+        let chosenVoice = null;
+
+        if(voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+        else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+        else chosenVoice = voices.find(v => v.lang === voiceVal);
+
+        if(chosenVoice) utterance.voice = chosenVoice;
+        utterance.rate = rateVal;
+
+        utterance.onend = function() {
+            if (isReading) {
+                chunkIndex++;
+                speakNextChunk();
+            }
+        };
+        utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function nextChunk() {
+        if (!isReading || chunks.length === 0) return;
+        window.speechSynthesis.cancel();
+    }
+
+    function prevChunk() {
+        if (!isReading || chunks.length === 0) return;
+        if (chunkIndex > 0) {
+            chunkIndex -= 2;
+            if (chunkIndex < -1) chunkIndex = -1;
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function stopReading() {
+        isReading = false;
+        window.speechSynthesis.cancel();
+    }
+<\/script>
+</body>
+</html>`;
+    }
+
+    // Clock
+    setInterval(()=>{
+        const d=new Date();
+        document.getElementById('clock').innerText=d.toLocaleDateString('ug-CN')+' '+d.toLocaleTimeString('ug-CN');
+    },1000);
+    </script>
+</body>
+</html>
