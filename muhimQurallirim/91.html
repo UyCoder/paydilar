@@ -40,6 +40,7 @@
             <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
             <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
             <a href="91.html" data-page="91.html" class="bgn">91 · مائارىپ</a>
+            <a href="95.html" data-page="95.html" class="bgn">95 · ماركداۋن</a>
         </div>
     </nav>
     <script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
@@ -252,6 +253,7 @@ body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;co
 .btn-print{background:#16a34a;color:#fff;}.btn-print:hover{background:#15803d;}
 [contenteditable="true"]:focus { outline: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
 .para:empty { display: none !important; }
+#controlPanelMain{direction:ltr;}
 
 @media print{
     .no-print{display:none!important;}
@@ -271,9 +273,137 @@ body{font-family:'UKIJ Tuz','Noto Naskh Arabic',sans-serif;background:#f0f4f8;co
   </div>
 </div>
 
-<div class="no-print" style="position:fixed; bottom:20px; left:20px; z-index:9999;">
+<div class="no-print" id="controlsContainer" style="position:fixed; bottom:20px; left:20px; z-index:9999; display:flex; align-items:flex-end; gap:8px;">
+    <button onclick="toggleControls()" id="toggleBtn" style="background:#1e293b;color:#fff;width:32px;height:32px;border-radius:9999px;border:none;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;font-size:14px;" title="ئاۋازلىق ئوقۇش تەڭشەكلىرى">⚙️</button>
+
+    <div id="controlPanelMain" class="hidden" style="background:rgba(15,23,42,.95);backdrop-filter:blur(4px);padding:8px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.3);border:1px solid #334155;display:flex;flex-direction:column;gap:8px;width:230px;direction:ltr;">
+        <div style="display:flex;gap:4px;">
+            <select id="voiceSelect" style="background:#334155;color:#fff;font-size:10px;padding:4px;border-radius:6px;width:100%;border:none;">
+                <option value="ug-UG0">ئۇيغۇرچە (ئەر)</option>
+                <option value="ug-UG">ئۇيغۇرچە (ئايال)</option>
+                <option value="ar-SA">العربية (ئەرەبچە)</option>
+                <option value="en-US">English (ئېنگلىزچە)</option>
+            </select>
+            <select id="rateSelect" style="background:#334155;color:#fff;font-size:10px;padding:4px;border-radius:6px;width:56px;text-align:center;border:none;">
+                <option value="1.0">1.0x</option>
+                <option value="1.5" selected>1.5x</option>
+                <option value="2.0">2.0x</option>
+            </select>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
+            <button onclick="prevChunk()" style="background:#475569;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="ئالدىنقى">⏮</button>
+            <button onclick="startReading()" style="background:#0284c7;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="ئوقۇش">▶</button>
+            <button onclick="nextChunk()" style="background:#4f46e5;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="كېيىنكى">⏭</button>
+            <button onclick="stopReading()" style="background:#dc2626;color:#fff;padding:6px;border-radius:6px;border:none;font-size:10px;font-weight:700;cursor:pointer;" title="توختا">■</button>
+        </div>
+    </div>
+
     <button class="btn btn-print" onclick="window.print()">🖨️ بېسىش</button>
 </div>
+
+<script>
+    const UY_TO_ULY_MAP = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'j','چ':'ch','خ':'x','د':'d','ر':'r','ز':'z','ژ':'zh','س':'s','ش':'sh','غ':'gh','ف':'f','ق':'q','ك':'k','گ':'g','ڭ':'ng','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'o','ۈ':'u','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+    const UY_TO_ULY_MAPT = {'ا':'a','ە':'e','ب':'b','پ':'p','ت':'t','ج':'c','چ':'ç','خ':'hh','د':'d','ر':'r','ز':'z','ژ':'j','س':'s','ش':'ş','غ':'gh','f':'f','ق':'k','ك':'k','گ':'g','ڭ':'n','ل':'l','م':'m','ن':'n','ھ':'h','و':'o','ۇ':'u','ۆ':'ö','ۈ':'ü','ي':'y','ۋ':'v','ې':'e','ى':'i','ئ':'','؟':'?'};
+
+    function convertForTTS(text, map) {
+        return text.split('').map(c => map[c] || c).join('');
+    }
+
+    let chunks = [];
+    let chunkIndex = 0;
+    let isReading = false;
+
+    function toggleControls() {
+        const panel = document.getElementById('controlPanelMain');
+        const btn = document.getElementById('toggleBtn');
+        if (panel.classList.contains('hidden')) {
+            panel.classList.remove('hidden');
+            btn.innerHTML = '▼';
+        } else {
+            panel.classList.add('hidden');
+            btn.innerHTML = '⚙️';
+        }
+    }
+
+    function startReading() {
+        stopReading();
+        isReading = true;
+
+        const voiceVal = document.getElementById('voiceSelect').value;
+        const reportEl = document.getElementById('report-content');
+        const fullText = reportEl.innerText;
+
+        let rawChunks = fullText.split(/\\n+/);
+        chunks = [];
+        let lastChunk = "";
+        for (let i = 0; i < rawChunks.length; i++) {
+            let clean = rawChunks[i].trim();
+            if (clean.length > 0 && clean !== lastChunk) {
+                chunks.push(clean);
+                lastChunk = clean;
+            }
+        }
+
+        chunkIndex = 0;
+        speakNextChunk();
+    }
+
+    function speakNextChunk() {
+        if (!isReading) return;
+        if (chunkIndex >= chunks.length) {
+            isReading = false;
+            return;
+        }
+
+        const voiceVal = document.getElementById('voiceSelect').value;
+        const rateVal = parseFloat(document.getElementById('rateSelect').value);
+        let chunkText = chunks[chunkIndex];
+        let finalText = chunkText;
+
+        if(voiceVal === 'ug-UG0') finalText = convertForTTS(chunkText, UY_TO_ULY_MAPT);
+        else if (voiceVal === 'ug-UG') finalText = convertForTTS(chunkText, UY_TO_ULY_MAP);
+
+        const utterance = new SpeechSynthesisUtterance(finalText);
+        const voices = window.speechSynthesis.getVoices();
+        let chosenVoice = null;
+
+        if(voiceVal === 'ug-UG0') chosenVoice = voices.find(v => v.lang === 'tr-TR');
+        else if (voiceVal === 'ug-UG') chosenVoice = voices.find(v => v.lang === 'uz-UZ' && v.name.includes('Madina')) || voices.find(v => v.lang.includes('tr'));
+        else chosenVoice = voices.find(v => v.lang === voiceVal);
+
+        if(chosenVoice) utterance.voice = chosenVoice;
+        utterance.rate = rateVal;
+
+        utterance.onend = function() {
+            if (isReading) {
+                chunkIndex++;
+                speakNextChunk();
+            }
+        };
+        utterance.onerror = function() { if (isReading) { chunkIndex++; speakNextChunk(); } };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function nextChunk() {
+        if (!isReading || chunks.length === 0) return;
+        window.speechSynthesis.cancel();
+    }
+
+    function prevChunk() {
+        if (!isReading || chunks.length === 0) return;
+        if (chunkIndex > 0) {
+            chunkIndex -= 2;
+            if (chunkIndex < -1) chunkIndex = -1;
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function stopReading() {
+        isReading = false;
+        window.speechSynthesis.cancel();
+    }
+<\/script>
 </body>
 </html>`;
     }

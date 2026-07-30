@@ -641,6 +641,124 @@
             }
         }
 
+        /* Phone-tuned polish */
+        @media (max-width: 600px) {
+            .header {
+                padding: 10px 15px;
+            }
+
+            .header-title h1 {
+                font-size: 19px;
+            }
+
+            .clock-display {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .container {
+                padding: 10px;
+                margin: 8px auto;
+                gap: 14px;
+            }
+
+            .glass-panel {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .setup-section h3 {
+                font-size: 18px;
+            }
+
+            .setup-section p {
+                font-size: 14px;
+            }
+
+            .prompt-box {
+                height: 90px;
+                font-size: 13px;
+                padding: 12px;
+            }
+
+            textarea#mdInput {
+                height: 140px;
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 15px;
+            }
+
+            .toggle-toc-btn {
+                font-size: 17px;
+                padding-bottom: 10px;
+            }
+
+            .toc-list a {
+                font-size: 14px;
+                padding: 7px 8px;
+            }
+
+            #articleContent {
+                font-size: 17px !important;
+                line-height: 1.9 !important;
+            }
+
+            #articleContent h1 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+
+            #articleContent h2 {
+                font-size: 1.3em;
+            }
+
+            #articleContent h3 {
+                font-size: 1.1em;
+            }
+
+            #articleContent p {
+                text-indent: 1.2em;
+                margin-bottom: 1em;
+            }
+
+            #articleContent blockquote {
+                padding: 14px;
+                margin: 18px 0;
+                font-size: 0.9em;
+            }
+
+            body {
+                padding-bottom: 80px;
+            }
+
+            .control-bar {
+                bottom: 12px;
+                padding: 6px;
+                max-width: 92%;
+            }
+
+            #togglePlayerBtn {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .control-bar-inner {
+                gap: 8px;
+                padding: 0 10px;
+            }
+
+            .control-bar-inner select,
+            .control-bar-inner button {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+        }
+
         /* Print Overrides */
         @media print {
             body {
@@ -835,6 +953,9 @@
     </div>
 
     <script>
+        // Preserve single line breaks (no blank line between paragraphs) instead of merging them into one paragraph
+        marked.setOptions({ breaks: true, gfm: true });
+
         // --- 0. Time & Helpers ---
         function updateClock() {
             const now = new Date();
