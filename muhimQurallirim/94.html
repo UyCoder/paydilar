@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ئالىي دەرىجىلىك سىلايد قورالى - Ultimate AI Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'UKIJ Tuz';
+            src: local('UKIJ Tuz'), local('Microsoft Uighur');
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --accent: #e84393;
+            --bg-editor: #f5f6fa;
+            --border: #dcdde1;
+            
+            --bg-color: #ffffff;
+            --bg-top: #ffffff;
+            --bg-bottom: #ebebeb;
+            --circle-color: rgba(255, 255, 255, 0.5);
+            --dot-color: rgba(0, 0, 0, 0.1);
+            --text-title: #2d3436;
+            --text-body: #636e72;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --color-highlight: #e84393;
+        }
+
+        body { font-family: 'UKIJ Tuz', Arial, sans-serif; background-color: var(--bg-editor); color: #2f3640; margin: 0; padding: 20px; }
+
+        /* ================================== */
+        /* 1. تەھرىرلەش ئېكرانى (Editor UI) */
+        /* ================================== */
+        .editor-container { max-width: 1350px; margin: 0 auto; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); padding: 40px; }
+        .editor-header { text-align: center; border-bottom: 2px dashed var(--border); padding-bottom: 20px; margin-bottom: 30px; }
+        .editor-header h1 { color: var(--primary); font-size: 2.2em; margin-bottom: 5px; }
+
+        .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #eef2f3 100%); padding: 25px; border-radius: 10px; margin-bottom: 40px; border-right: 5px solid var(--primary); }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom:15px; }
+        .form-group label { font-size: 1.05em; color: var(--primary); font-weight: bold; }
+        
+        .form-control { padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1.1em; transition: 0.3s; background:#fff;}
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1); outline: none;}
+        textarea.form-control { resize: vertical; min-height: 180px; line-height: 1.8; }
+
+        .slide-list { margin-top: 30px; }
+        .slide-item { background: #ffffff; border: 1px solid var(--border); padding: 30px; border-radius: 10px; margin-bottom: 30px; position: relative; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-top:4px solid var(--primary);}
+        .slide-item:hover { border-color: var(--primary); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .slide-number { position: absolute; top: -15px; right: -15px; background: var(--primary); color: #fff; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold; font-size: 1.2em; }
+        .btn-del { position: absolute; top: 25px; left: 25px; background: #fff; border: 1px solid #ff7675; color: #d63031; padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-del:hover { background: #d63031; color: #fff; }
+
+        .btn-add-slide { width: 100%; padding: 20px; background: #fdfefe; border: 2px dashed var(--primary); color: var(--primary); font-size: 1.2em; font-family: inherit; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-add-slide:hover { background: var(--primary); color: white; }
+
+        .action-bar { display: flex; justify-content: center; gap: 15px; margin-top: 50px; flex-wrap: wrap; padding-top: 30px; border-top: 1px dashed var(--border); }
+        .btn { padding: 15px 25px; font-family: inherit; font-size: 1.1em; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-play { background: linear-gradient(135deg, var(--primary), #34495e); color: #fff; font-size: 1.3em; padding: 18px 40px; box-shadow: 0 10px 20px rgba(44, 62, 80, 0.2); animation: pulse 2s infinite; }
+        .btn-play:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(44, 62, 80, 0.4); }
+        .btn-load { background: #7f8c8d; color: white; }
+        .btn-save { background: #27ae60; color: white; }
+        .btn-ai { background: #8e44ad; color: white; }
+        .btn-ai:hover { background: #9b59b6; }
+
+        .hint-text { font-size: 0.9em; color: #d63031; font-weight: normal; margin-top: 5px; display: block; line-height: 1.5; background: #fff5f5; padding: 10px; border-radius: 5px; border-right: 3px solid #ff7675;}
+        
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; cursor:pointer;}
+        .upload-btn-wrapper .f-btn { border: 1px solid gray; color: gray; background-color: white; padding: 8px 20px; border-radius: 8px; font-size: 1em; font-family: inherit;}
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer;}
+        
+        .flex-options { display: flex; gap:10px; flex-wrap: wrap; align-items:center; }
+        .small-prev { max-height: 50px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-right:10px;}
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(44, 62, 80, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(44, 62, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(44, 62, 80, 0); } }
+
+        /* ================================== */
+        /* 2. سلايد ئېكرانى (Presentation)    */
+        /* ================================== */
+        #presentation-mode {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--bg-color); z-index: 99999; overflow: hidden;
+            font-family: 'UKIJ Tuz', Arial, sans-serif;
+            perspective: 2000px;
+            cursor: none; /* يىغىندا مائۇس كۆرۈنمەسلىكى ئۈچۈن */
+        }
+        /* مائۇس قىمىرلىغاندا ۋاقىتلىق چىقىدۇ */
+        #presentation-mode:hover { cursor: default; }
+
+        .gradient-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(120deg, var(--bg-top) 0%, var(--bg-bottom) 100%); z-index: 0; transition: background 0.8s ease; }
+
+        /* لەيلەيدىغان كۆپۈكلەر ھەم چېكىتلەر */
+        .bubbles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; pointer-events: none; }
+        .bubble { position: absolute; border-radius: 50%; background: var(--circle-color); opacity: 0.5; }
+        .bubble:nth-child(1) { width: 150px; height: 150px; left: 10%; top: 20%; animation: float1 25s infinite ease-in-out; filter: blur(5px); }
+        .bubble:nth-child(2) { width: 350px; height: 350px; left: 70%; top: 50%; animation: float2 35s infinite ease-in-out alternate; filter: blur(25px); opacity: 0.6;}
+        .bubble:nth-child(3) { width: 90px; height: 90px; left: 40%; top: 80%; animation: float3 20s infinite ease-in-out; filter: blur(2px); }
+        .bubble:nth-child(4) { width: 220px; height: 220px; left: 85%; top: 10%; animation: float1 28s infinite ease-in-out reverse; filter: blur(15px); }
+        .bubble:nth-child(5) { width: 180px; height: 180px; left: 20%; top: 70%; animation: float2 32s infinite ease-in-out; filter: blur(10px); }
+
+        .bubble-dot { position: absolute; border-radius: 50%; background: var(--dot-color); opacity: 0.8; z-index: 1; pointer-events: none; }
+        .bubble-dot:nth-child(6) { width: 15px; height: 15px; left: 15%; top: 85%; animation: float2 14s infinite ease-in-out; }
+        .bubble-dot:nth-child(7) { width: 12px; height: 12px; left: 85%; top: 25%; animation: float3 11s infinite ease-in-out reverse; }
+        .bubble-dot:nth-child(8) { width: 25px; height: 25px; left: 45%; top: 65%; animation: float1 18s infinite ease-in-out alternate; }
+        .bubble-dot:nth-child(9) { width: 16px; height: 16px; left: 75%; top: 80%; animation: float2 16s infinite ease-in-out; }
+        .bubble-dot:nth-child(10) { width: 22px; height: 22px; left: 25%; top: 30%; animation: float3 22s infinite ease-in-out reverse; }
+
+        /* تەگلىكتە سۇس لەيلەيدىغان كىچىك لوگولار */
+        .bg-logo { position: absolute; opacity: 0; filter: grayscale(0.3) blur(0.3px); pointer-events: none; display: none; }
+        .bg-logo:nth-child(11) { width: 60px; left: 12%; top: 15%; opacity: 0.10; animation: float2 30s infinite ease-in-out; }
+        .bg-logo:nth-child(12) { width: 40px; left: 78%; top: 65%; opacity: 0.08; animation: float1 26s infinite ease-in-out reverse; }
+        .bg-logo:nth-child(13) { width: 90px; left: 55%; top: 12%; opacity: 0.07; animation: float3 34s infinite ease-in-out; }
+        .bg-logo:nth-child(14) { width: 50px; left: 30%; top: 75%; opacity: 0.09; animation: float1 22s infinite ease-in-out alternate; }
+
+        @keyframes float1 { 0% { transform: translate(0, 0) scale(1); } 33% { transform: translate(15vw, -20vh) scale(1.1); } 66% { transform: translate(-10vw, 20vh) scale(0.9); } 100% { transform: translate(0, 0) scale(1); } }
+        @keyframes float2 { 0% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-25vw, 15vh) rotate(180deg) scale(1.2); } 100% { transform: translate(0, 0) rotate(360deg) scale(1); } }
+        @keyframes float3 { 0% { transform: translate(0, 0); } 33% { transform: translate(-20vw, -25vh) scale(0.8); } 66% { transform: translate(25vw, -10vh) scale(1.15); } 100% { transform: translate(0, 0); } }
+
+        /* يەرلىك كىرگۈزۈلگەن لوگو ئۇسلۇبى */
+        #presentation-logo { position: absolute; z-index: 100001; opacity: 0.95; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+
+        /* ------------------------------------- */
+        /* يېپيېڭى SLIDER REVOLUTION ئانىماتسىيىسى */
+        /* ------------------------------------- */
+        .slide-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
+        .slide-container {
+            position: absolute; top: 50%; left: 50%; width: 85%; max-width: 1400px;
+            transform: translate(-50%, -50%) scale(0.85); opacity: 0; visibility: hidden;
+            max-height: 85vh; overflow-y: auto; border-radius: 20px; box-sizing: border-box;
+        }
+        /* كۆزگە كۆرۈنمەيدىغان سۈزگۈچ Scrollbar */
+        .slide-container::-webkit-scrollbar { width: 5px; }
+        .slide-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+
+        .slide-container.active { visibility: visible; z-index: 20; opacity: 1; transform: translate(-50%, -50%) scale(1);}
+        .slide-container.exiting { visibility: visible; z-index: 10; }
+
+        .slide-container.enter-next { animation: wipeInLeft 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+        .slide-container.exit-next { animation: wipeOutRight 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+        .slide-container.enter-prev { animation: wipeInRight 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+        .slide-container.exit-prev { animation: wipeOutLeft 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+
+        @keyframes wipeInLeft { 0% { transform: translate(-80%, -50%) scale(0.8); opacity: 0; clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } }
+        @keyframes wipeOutRight { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } 100% { transform: translate(-20%, -50%) scale(0.85); opacity: 0; clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); } }
+        @keyframes wipeInRight { 0% { transform: translate(-20%, -50%) scale(0.8); opacity: 0; clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } }
+        @keyframes wipeOutLeft { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } 100% { transform: translate(-80%, -50%) scale(0.85); opacity: 0; clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); } }
+
+        /* بۇرۇن ئىسلاندى: بۈگۈن قۇرلار قولدا (كۇنۇپكا بىلەن) بىر-بىرلەپ ئېچىلىدۇ، تۆۋەندىكى .line-unit سىستېمىسىغا قاراڭ */
+        .line-unit { opacity: 0; transform: translateY(40px); filter: blur(8px); transition: opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1), transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), filter 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
+        .line-unit.visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+        /* بۆلەكلەر بىلەن رەسىملەر كەلمەستە ئايرىم سىگىنال */
+        .slide-container.active .split-media { opacity: 0; animation: elementReveal 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.4s forwards; }
+
+        @keyframes elementReveal { 0% { opacity: 0; transform: translateY(40px); filter: blur(8px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+        /* ================= 8 خىل يۇقىرى لايىھە (Layouts) ================= */
+        /* 1. ئەينەك */
+        .layout-glass { padding: 60px 80px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: 0 20px 40px rgba(0,0,0,0.08); color: var(--text-title); }
+        /* 2. ئەركىن تەگلىك */
+        .layout-transparent { background: transparent; padding: 40px; color: var(--text-title); text-align: center; text-shadow: 0 4px 15px rgba(255,255,255,0.8); }
+        /* 3. يان رەڭدار تىرەك */
+        .layout-accent { padding: 50px 80px; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.95) 20%); border-right: 15px solid var(--color-highlight); box-shadow: -10px 15px 30px rgba(0,0,0,0.05); color: var(--text-title); }
+        /* 4. نېئون پارقىراق تېرەك */
+        .layout-neon { padding: 60px; background: rgba(0,0,0,0.6); border: 2px solid var(--color-highlight); box-shadow: 0 0 20px var(--color-highlight), inset 0 0 20px var(--color-highlight); color: #fff; border-radius: 20px; }
+        .layout-neon .slide-heading { color: #fff; border-bottom-color: rgba(255,255,255,0.3); }
+        .layout-neon .slide-text, .layout-neon .bismillah { color: #ecf0f1; text-shadow: none; }
+        /* 5. نيۇمورفىزم (يۇمشاق قاپارتقۇ) */
+        .layout-neumorph { padding: 60px; background: #e0e5ec; border-radius: 25px; box-shadow: 15px 15px 30px #a3b1c6, -15px -15px 30px #ffffff; color: #2c3e50; border: none; }
+        /* 6. قېنىق كارتون سەھىپە */
+        .layout-card-dark { padding: 70px; background: #1e272e; color: #f5f6fa; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-left: 8px solid var(--color-highlight); border-right: none;}
+        .layout-card-dark .slide-heading { color: #f5f6fa; border-bottom-color: rgba(255,255,255,0.1);}
+        .layout-card-dark .slide-text, .layout-card-dark .bismillah { color: #dcdde1; text-shadow:none;}
+        /* 7. نەقىل تېكىستى (Quotes) */
+        .layout-quote { padding: 80px; background: transparent; text-align: center; font-style: italic; position: relative;}
+        .layout-quote::before { content: '"'; font-size: 10em; font-family: serif; color: var(--color-highlight); position: absolute; top: -30px; left: 40px; opacity: 0.2;}
+        .layout-quote::after { content: '"'; font-size: 10em; font-family: serif; color: var(--color-highlight); position: absolute; bottom: -80px; right: 40px; opacity: 0.2;}
+        .layout-quote .slide-text { font-size: 2.8em; line-height: 1.5; font-weight: bold; }
+        /* 8. پارچىلانغان ئېكران (تېكىست + رەسىم) */
+        .layout-split { display: flex; flex-direction: row-reverse; background: var(--glass-bg); padding: 0; overflow: hidden; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 20px 40px rgba(0,0,0,0.1); height: 100%;}
+        .layout-split .split-text { flex: 1.2; padding: 50px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto;}
+        .layout-split .split-media { flex: 1; background: rgba(0,0,0,0.05); display: flex; justify-content: center; align-items: center; padding: 0; position:relative; overflow: hidden;}
+        .layout-split .split-media .inserted-img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; margin: 0; }
+
+        /* Typography & Details */
+        .slide-heading { font-size: 3.5em; font-weight: bold; margin-top: 0; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px dashed rgba(0,0,0,0.2); display: inline-block;}
+        .slide-text { font-size: 2.3em; line-height: 1.85; font-weight: 500; text-align: justify;}
+        .slide-text ul { padding-right: 40px; list-style-type: square; }
+        .slide-text li { margin-bottom: 15px; }
+        
+        .text-hl { color: white; background: var(--color-highlight); font-weight: bold; padding: 2px 12px; border-radius: 8px; box-shadow: 0 5px 10px rgba(0,0,0,0.15); display: inline-block; transform: scale(1.02); }
+        .text-underline { text-decoration: underline; text-decoration-color: var(--color-highlight); text-underline-offset: 6px; }
+        .text-italic { font-style: italic; opacity: 0.85; }
+        .text-danger { color: white; background: #e74c3c; padding: 2px 10px; border-radius: 6px; display: inline-block; box-shadow: 0 3px 6px rgba(231,76,60,0.3); }
+        .text-primary { color: var(--primary); font-weight: bold; border-bottom: 2px dashed var(--primary); }
+        
+        .inserted-img { border-radius: 12px; display: block; box-shadow: 0 10px 25px rgba(0,0,0,0.15); object-fit: contain; max-height:100%; max-width:100%; margin: 10px auto;}
+
+        .title-slide { text-align: center; justify-content: center; display: flex; flex-direction: column; align-items: center; }
+        .bismillah { font-family: 'Amiri', 'Traditional Arabic', serif; font-size: 3.5em; margin-bottom: 25px; color: var(--text-title); opacity: 0.9;}
+        .pres-maintitle { font-size: 5.5em; font-weight: bold; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 4px 15px rgba(255,255,255,0.5);}
+        .pres-subtitle { font-size: 2.5em; color: var(--color-highlight); margin-bottom: 40px; font-weight: bold; }
+        .pres-meta { display: inline-block; padding: 12px 35px; border-radius: 50px; background: rgba(0,0,0,0.05); font-size: 1.5em; font-weight: bold; border-right: 4px solid var(--text-title);}
+
+        /* ⚠️ تەلىپىڭىزگە ئاساسەن يېپىش ۋە كونترول كۇنۇپكىلىرى ئۆچۈرۈلدى ⚠️ */
+        .slide-controls { display: none !important; }
+        .close-btn { display: none !important; }
+
+        .progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 8px; background: rgba(0,0,0,0.05); z-index: 100000;}
+        .progress-fill { height: 100%; background: var(--color-highlight); width: 0%; transition: width 0.4s ease;}
+        .counter { position: absolute; bottom: 30px; left: 30px; font-size: 1.6em; font-family: monospace; font-weight: bold; color: rgba(0,0,0,0.4); z-index: 100000;}
+    </style>
+</head>
+<body>
+
+<!-- Global Tools Navigation -->
+<nav id="bilik-global-nav" dir="rtl" style="background:#020617;border-bottom:1px solid #1e293b;padding:6px 14px;z-index:9999;width:100%;box-sizing:border-box;">
+    <style>
+        #bilik-global-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+        #bilik-global-nav .bgl{font-size:10px;font-weight:700;color:#f59e0b;letter-spacing:.1em;white-space:nowrap;}
+        #bilik-global-nav a.bgn{display:inline-block;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;border:1px solid #334155;background:#0f172a;color:#94a3b8;white-space:nowrap;text-decoration:none;transition:background .2s,color .2s;}
+        #bilik-global-nav a.bgn:hover{background:#1e293b;color:#fff;}
+        #bilik-global-nav a.bgn.active{background:#d97706;color:#fff;border-color:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.35);}
+    </style>
+    <div id="bilik-global-nav-wrap">
+        <span class="bgl">بىلىك قۇراللىرى:</span>
+        <a href="01.html" data-page="01.html" class="bgn">01 · v8.5</a>
+        <a href="02.html" data-page="02.html" class="bgn">02 · ماقالە</a>
+        <a href="80.html" data-page="80.html" class="bgn">80 · v10</a>
+        <a href="81.html" data-page="81.html" class="bgn">81 · سودا سۆھبىتى</a>
+        <a href="82.html" data-page="82.html" class="bgn">82 · ۋىديو ئانالىز</a>
+        <a href="83.html" data-page="83.html" class="bgn">83 · سلايد ياسىغۇچ</a>
+        <a href="85.html" data-page="85.html" class="bgn">85 · 19 دۆلەت</a>
+        <a href="86.html" data-page="86.html" class="bgn">86 · 4 قاتلام</a>
+        <a href="87.html" data-page="87.html" class="bgn">87 · 6 مۇتەخەسسىس</a>
+        <a href="88.html" data-page="88.html" class="bgn">88 · خىتاي</a>
+        <a href="89.html" data-page="89.html" class="bgn">89 · مۇستەقىللىق</a>
+        <a href="90.html" data-page="90.html" class="bgn">90 · تەرجىمە</a>
+        <a href="91.html" data-page="91.html" class="bgn">91 · مائارىپ</a>
+        <a href="94.html" data-page="94.html" class="bgn">94 · Premium سلايد</a>
+        <a href="95.html" data-page="95.html" class="bgn">95 · ماركداۋن</a>
+    </div>
+</nav>
+<script>(function(){var p=window.location.pathname.split('/').pop();document.querySelectorAll('#bilik-global-nav a.bgn').forEach(function(a){if(a.getAttribute('data-page')===p)a.classList.add('active');});}());</script>
+
+<!-- 10 خىل ئالىي دەرىجىلىك ۋە قېنىق تېما رەڭ سەپلىمىسى -->
+<script>
+    const themes = {
+        // ئەسلىدىكى كۈندۈز تېمىلىرى
+        'silver': { top: '#ffffff', bottom: '#EBEBEB', circle: 'rgba(44, 62, 80, 0.05)', dot: 'rgba(44, 62, 80, 0.15)', title: '#2c3e50', highlight: '#b06a63', glassBorder: 'rgba(255,255,255,0.8)' },
+        'blue': { top: '#f0f9ff', bottom: '#e0f2fe', circle: 'rgba(2, 132, 199, 0.05)', dot: 'rgba(2, 132, 199, 0.15)', title: '#0369a1', highlight: '#0284c7', glassBorder: 'rgba(255,255,255,0.6)' },
+        'green': { top: '#f0fdf4', bottom: '#dcfce7', circle: 'rgba(22, 163, 74, 0.05)', dot: 'rgba(22, 163, 74, 0.15)', title: '#166534', highlight: '#2fa172', glassBorder: 'rgba(255,255,255,0.6)' },
+        'yellow': { top: '#fefce8', bottom: '#fef9c3', circle: 'rgba(202, 138, 4, 0.06)', dot: 'rgba(202, 138, 4, 0.15)', title: '#92400e', highlight: '#d6a13a', glassBorder: 'rgba(255,255,255,0.7)' },
+        'orange': { top: '#fff7ed', bottom: '#ffedd5', circle: 'rgba(194, 65, 12, 0.06)', dot: 'rgba(194, 65, 12, 0.15)', title: '#9a3412', highlight: '#dd8a4e', glassBorder: 'rgba(255,255,255,0.6)' },
+        'purple': { top: '#faf5ff', bottom: '#f3e8ff', circle: 'rgba(126, 34, 206, 0.05)', dot: 'rgba(126, 34, 206, 0.15)', title: '#5b21b6', highlight: '#a276c4', glassBorder: 'rgba(255,255,255,0.6)' },
+        'pink': { top: '#fff1f2', bottom: '#ffe4e6', circle: 'rgba(225, 29, 72, 0.05)', dot: 'rgba(225, 29, 72, 0.15)', title: '#9f1239', highlight: '#e08aa8', glassBorder: 'rgba(255,255,255,0.6)' },
+        // يېڭى قوشۇلغان 3 قېنىق (Dark) تېمىلار
+        'dark-navy': { top: '#0f172a', bottom: '#1e293b', circle: 'rgba(255,255,255,0.03)', dot: 'rgba(255,255,255,0.08)', title: '#f8fafc', highlight: '#38bdf8', glassBorder: 'rgba(255,255,255,0.1)', glassBg: 'rgba(15,23,42,0.8)' },
+        'dark-forest': { top: '#064e3b', bottom: '#14532d', circle: 'rgba(255,255,255,0.03)', dot: 'rgba(255,255,255,0.08)', title: '#f0fdf4', highlight: '#4ade80', glassBorder: 'rgba(255,255,255,0.1)', glassBg: 'rgba(6,78,59,0.8)' },
+        'dark-crimson': { top: '#4c0519', bottom: '#881337', circle: 'rgba(255,255,255,0.03)', dot: 'rgba(255,255,255,0.08)', title: '#fff1f2', highlight: '#fb7185', glassBorder: 'rgba(255,255,255,0.1)', glassBg: 'rgba(76,5,25,0.8)' }
+    };
+</script>
+
+<!-- ================= Editor Mode ================= -->
+<div class="editor-container" id="editor-mode">
+    <div class="editor-header">
+        <h1><i class="fas fa-magic"></i> Premium Slider - يۈكسەك دەرىجىلىك لايىھە قورالى</h1>
+    </div>
+
+    <div class="meta-grid">
+        <div class="form-group"><label>سلايد ئاساسىي ماۋزۇسى:</label><input type="text" id="meta-title" class="form-control" placeholder="..."></div>
+        <div class="form-group"><label>قوشۇمچە تېما:</label><input type="text" id="meta-subtitle" class="form-control" placeholder="..."></div>
+        <div class="form-group"><label>يېتەكلىگۈچى (لېكتور):</label><input type="text" id="meta-author" class="form-control" placeholder="..."></div>
+        
+        <div class="form-group">
+            <label>بۇلۇڭ لوگوسى تاللاڭ (لوكالدىن):</label>
+            <div class="upload-btn-wrapper">
+                <button class="f-btn"><i class="fas fa-image"></i> رەسىم يوللاش</button>
+                <input type="file" accept="image/*" onchange="encodeGlobalLogo(this)">
+            </div>
+            <div class="flex-options" style="margin-top:5px;">
+                <img id="logo-preview" class="small-prev" style="display:none;">
+                <button class="btn-del" style="position:static; padding:5px; font-size:0.9em;" onclick="clearGlobalLogo()">ئۆچۈرۈش</button>
+            </div>
+            <input type="hidden" id="meta-logo-b64">
+        </div>
+
+        <div class="form-group">
+            <label>لوگو ئورنى ۋە چوڭلۇقى:</label>
+            <div class="flex-options">
+                <select id="meta-logo-pos" class="form-control" style="flex:2;">
+                    <option value="top-left">سول ئۈستى</option>
+                    <option value="top-right">ئوڭ ئۈستى</option>
+                    <option value="bottom-left">سول ئاستى</option>
+                    <option value="bottom-right">ئوڭ ئاستى</option>
+                </select>
+                <input type="number" id="meta-logo-size" class="form-control" value="85" style="flex:1;" placeholder="كەڭلىك (px)">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>بەت ئالماشقاندىكى ئاۋاز:</label>
+            <div class="flex-options">
+                <label style="display:flex; align-items:center; gap:6px; font-weight:normal; cursor:pointer; font-size:1.05em;">
+                    <input type="checkbox" id="meta-sound-enabled" checked style="width:18px;height:18px;"> ئاۋازنى ئاچ
+                </label>
+                <div class="upload-btn-wrapper">
+                    <button class="f-btn"><i class="fas fa-music"></i> ئۆزلۈك ئاۋاز يوللاش</button>
+                    <input type="file" accept="audio/*" onchange="encodeCustomSound(this)">
+                </div>
+                <button class="btn-del" style="position:static; padding:5px 10px; font-size:0.85em;" onclick="clearCustomSound()">كۆڭۈلدىكى ئاۋازغا قايتۇر</button>
+                <button class="btn-del" style="position:static; padding:5px 10px; font-size:0.85em; border-color:#7f8c8d; color:#7f8c8d;" onclick="playDefaultChime()">سىناش <i class="fas fa-volume-up"></i></button>
+            </div>
+            <span id="custom-sound-name" style="font-size:0.85em; color:#7f8c8d; display:block; margin-top:3px;"></span>
+            <input type="hidden" id="meta-sound-b64">
+        </div>
+
+        <div class="form-group"><label>ئارقا كۆرۈنۈش تېمىسى (Theme):</label>
+            <select id="meta-theme" class="form-control">
+                <optgroup label="كۈندۈزلۈك تېمىلار">
+                    <option value="blue">ئىلمىي سۇس كۆك (بىلىم ۋە ئىشەنچ)</option>
+                    <option value="green">مەيىن يېشىل (ئۈمىد ۋە مېھىر)</option>
+                    <option value="yellow">ئىللىق سېرىق (ئېنېرگىيە)</option>
+                    <option value="orange">ئاكتىپ ئاپېلسىن (ھارارەت)</option>
+                    <option value="purple">نېلۇپەر رەڭ (تەپەككۇر)</option>
+                    <option value="pink">گۈلگۈن قىزىل (شەپقەت)</option>
+                    <option value="silver">ئالىي كۈمۈش (رەسمىي، تەمكىن)</option>
+                </optgroup>
+                <optgroup label="قېنىق (كەچلىك) تېمىلار">
+                    <option value="dark-navy">كېچە دېڭىزى / قېنىق لەھەڭ كۆك</option>
+                    <option value="dark-forest">سىرلىق قارا ئورمان يېشىلى</option>
+                    <option value="dark-crimson">ھەيۋەتلىك قېنىق قىزىل ياقۇت</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <div style="border-bottom: 2px solid var(--border); padding-bottom: 10px;">
+        <h2 style="margin: 0; color: var(--primary); font-size: 1.5em;"><i class="fas fa-layer-group"></i> مەزمۇن بەتلىرى</h2>
+    </div>
+
+    <div id="slides-editor-container" class="slide-list"></div>
+    <button class="btn-add-slide" onclick="addEditorSlide()"><i class="fas fa-plus"></i> سىلايد بەت قوشۇش</button>
+
+    <div class="action-bar">
+        <input type="file" id="file-upload" accept=".json" style="display: none;" onchange="loadFromJSON(event)">
+        <button class="btn btn-load" onclick="document.getElementById('file-upload').click()"><i class="fas fa-upload"></i> JSON ئوقۇش</button>
+        <button class="btn btn-save" onclick="saveToJSON()"><i class="fas fa-download"></i> JSON ساقلاش</button>
+        <button class="btn btn-ai" onclick="copyAIPrompt()"><i class="fas fa-robot"></i> سۈنئىي ئەقىل چۈشەندۈرۈشىنى كۆچۈرۈش</button>
+        <button class="btn btn-play" onclick="startPresentation()"><i class="fas fa-rocket"></i> سىلايد سەھنىسىگە ئۆتۈش (Play!)</button>
+    </div>
+</div>
+
+<!-- ================= Presentation Mode ================= -->
+<div id="presentation-mode">
+    <div class="gradient-bg" id="bg-grad"></div>
+    <div class="bubbles" id="bg-bubbles">
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble-dot"></div><div class="bubble-dot"></div><div class="bubble-dot"></div>
+        <div class="bubble-dot"></div><div class="bubble-dot"></div>
+        <img class="bg-logo"><img class="bg-logo"><img class="bg-logo"><img class="bg-logo">
+    </div>
+
+    <img id="presentation-logo" alt="لوگو" style="display:none; position:absolute; z-index:100001; opacity:0.95; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+
+    <div class="slide-layer" id="presentation-wrapper"></div>
+    
+    <div class="counter" id="slide-counter">1 / 1</div>
+    <div class="progress-bar-container"><div class="progress-fill" id="slide-progress"></div></div>
+</div>
+
+<script>
+    let slideData = [];
+    let currentSlideIndex = 0;
+    let revealedLineCount = 0;
+    let presentationSoundEnabled = true;
+    let presentationCustomSound = '';
+
+    window.onload = () => {
+        if(slideData.length === 0) {
+            slideData.push({ 
+                layout: "glass", 
+                title: "مۇقەددىمە سۆزى", 
+                content: "ئاللاھنىڭ ئىسمى بىلەن! \n\n- بىرىنچى گەپ...\n- **رەڭلىك نۇرلىنىدىغان** گەپ مۇنداق يېزىلىدۇ!\n- __ئاستى سىزىق__ ۋە !!خەتەرلىك قىزىل!! تېكىست.",
+                localImg: "", imgSize: 50
+            });
+            renderEditor();
+        }
+    };
+
+    function renderEditor() {
+        const container = document.getElementById('slides-editor-container');
+        container.innerHTML = '';
+        slideData.forEach((slide, index) => {
+            const hasImg = slide.localImg && slide.localImg.length > 10;
+            container.insertAdjacentHTML('beforeend', `
+                <div class="slide-item">
+                    <div class="slide-number">${index + 1}</div>
+                    <button class="btn-del" onclick="removeEditorSlide(${index})"><i class="fas fa-trash"></i></button>
+                    
+                    <div style="display:flex; gap:20px; margin-bottom:15px;">
+                        <div class="form-group" style="flex:2;">
+                            <label>بەت ماۋزۇسى:</label>
+                            <input type="text" class="form-control" value="${slide.title}" oninput="updateSlideData(${index}, 'title', this.value)">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>كۆرۈنۈش ئۇسلۇبى (Layouts - 8 خىل):</label>
+                            <select class="form-control" onchange="updateSlideData(${index}, 'layout', this.value)">
+                                <option value="glass" ${slide.layout==='glass'?'selected':''}>1. شېشىسىمان رامكا (Glass)</option>
+                                <option value="transparent" ${slide.layout==='transparent'?'selected':''}>2. تەگلىكتە ئەركىن سۆز</option>
+                                <option value="accent" ${slide.layout==='accent'?'selected':''}>3. ياندىكى تىرەك (Accent)</option>
+                                <option value="split" ${slide.layout==='split'?'selected':''}>4. ئىككى بۆلەك/رەسىملىك ئېكران (Split)</option>
+                                <option value="neon" ${slide.layout==='neon'?'selected':''}>5. نېئون نۇرى (Neon Border)</option>
+                                <option value="neumorph" ${slide.layout==='neumorph'?'selected':''}>6. يۇمشاق 3D شەكىل (Neumorphism)</option>
+                                <option value="card-dark" ${slide.layout==='card-dark'?'selected':''}>7. قېنىق كارتون سەھىپە (Dark Card)</option>
+                                <option value="quote" ${slide.layout==='quote'?'selected':''}>8. چوڭ نەقىل تېكىستى (Quotes)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:20px; margin-bottom:15px; background:#f8f9fa; padding:15px; border-radius:8px;">
+                        <div class="form-group" style="flex:1;">
+                            <label>لوكالدىن رەسىم يوللاش:</label>
+                            <div class="upload-btn-wrapper">
+                                <button class="f-btn"><i class="fas fa-camera"></i> كىتابقا/بەتكە رەسىم سېلىش</button>
+                                <input type="file" accept="image/*" onchange="encodeSlideImg(this, ${index})">
+                            </div>
+                        </div>
+                        <div class="form-group flex-options" style="flex:1.5;">
+                            ${hasImg ? `<img src="${slide.localImg}" class="small-prev"><button class="btn-del" style="position:static; padding:5px 10px; margin-right:10px; font-size:0.85em;" onclick="clearSlideImg(${index})">ئۆچۈرۈش</button>` : `<span style="color:#aaa;">تېخى رەسىم قوشۇلمىدى</span>`}
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>رەسىم چوڭلۇقى (%):</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="range" min="10" max="100" value="${slide.imgSize || 50}" oninput="updateSlideData(${index}, 'imgSize', this.value); this.nextElementSibling.innerText=this.value+'%';" style="flex:1;">
+                                <span style="font-weight:bold; color:var(--primary);">${slide.imgSize || 50}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ئاساسىي تېكىست: <span class="hint-text">گۈزەللەشتۈرۈش: **رەڭلىك نۇرخەت**، __ئاستى سىزىق__، *يانتۇ*، !!خەتەرلىك!!، [[كۆك گەپ]]، قۇرنى تىزىملىك قىلىش ئۈچۈن قۇر بېشىغا تىرە ( - ) قويۇڭ.</span></label>
+                        <textarea class="form-control" oninput="updateSlideData(${index}, 'content', this.value)">${slide.content}</textarea>
+                    </div>
+                </div>
+            `);
+        });
+    }
+
+    function addEditorSlide() { slideData.push({ layout: "glass", title: "", content: "", localImg: "", imgSize: 50 }); renderEditor(); window.scrollTo(0, document.body.scrollHeight); }
+    function removeEditorSlide(index) { if (confirm('راستىنلا ئۆچۈرەمسىز؟')) { slideData.splice(index, 1); renderEditor(); } }
+    function updateSlideData(index, key, value) { slideData[index][key] = value; }
+
+    /* رەسىملەرنى Base64 ئوقۇتۇش ۋە ساقلاش مېخانىزمى */
+    function encodeGlobalLogo(element) {
+        const file = element.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('meta-logo-b64').value = reader.result;
+            document.getElementById('logo-preview').src = reader.result;
+            document.getElementById('logo-preview').style.display = 'block';
+        }; reader.readAsDataURL(file);
+    }
+    function clearGlobalLogo() {
+        document.getElementById('meta-logo-b64').value = '';
+        document.getElementById('logo-preview').src = '';
+        document.getElementById('logo-preview').style.display = 'none';
+        document.getElementById('meta-logo').value = ''; // clears file path info
+    }
+
+    function encodeSlideImg(element, index) {
+        const file = element.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function() { updateSlideData(index, 'localImg', reader.result); renderEditor(); };
+        reader.readAsDataURL(file);
+    }
+    function clearSlideImg(index) { slideData[index].localImg = ""; renderEditor(); }
+
+    /* بەت ئالماشقان ئاۋاز: ئۆزلۈك ئاۋاز يوللاش ۋە باشقۇرۇش */
+    function encodeCustomSound(element) {
+        const file = element.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('meta-sound-b64').value = reader.result;
+            document.getElementById('custom-sound-name').innerText = '✓ ' + file.name;
+        }; reader.readAsDataURL(file);
+    }
+    function clearCustomSound() {
+        document.getElementById('meta-sound-b64').value = '';
+        document.getElementById('custom-sound-name').innerText = '';
+    }
+
+    /* كۆڭۈلدىكى ئىسىل ئاۋاز مېخانىزمى (Web Audio API ئارقىلىق، سىرتقى ھۆججەت كېرەك ئەمەس) */
+    let audioCtx = null;
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+    function playDefaultChime() {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+        const notes = [1046.5, 1568.0]; // C6 ۋە G6 - يۇمشاق، ئىسىل بەش پەرەز ئارىلىقى
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            const start = now + i * 0.1;
+            gain.gain.setValueAtTime(0, start);
+            gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.0);
+            osc.connect(gain).connect(ctx.destination);
+            osc.start(start); osc.stop(start + 1.05);
+        });
+    }
+    function playSlideChangeSound() {
+        if (!presentationSoundEnabled) return;
+        if (presentationCustomSound) {
+            const audio = new Audio(presentationCustomSound);
+            audio.volume = 0.7;
+            audio.play().catch(() => {});
+        } else {
+            playDefaultChime();
+        }
+    }
+
+    /* JSON سىستېمىسى */
+    function saveToJSON() {
+        const data = { 
+            meta: { 
+                mainTitle: document.getElementById('meta-title').value, subTitle: document.getElementById('meta-subtitle').value, author: document.getElementById('meta-author').value, theme: document.getElementById('meta-theme').value,
+                logoBase64: document.getElementById('meta-logo-b64').value, logoPos: document.getElementById('meta-logo-pos').value, logoSize: document.getElementById('meta-logo-size').value,
+                soundEnabled: document.getElementById('meta-sound-enabled').checked, soundBase64: document.getElementById('meta-sound-b64').value
+            }, slides: slideData
+        };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "Slide_Advanced_Export.json"); dl.click();
+    }
+
+    function loadFromJSON(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.meta) { 
+                    document.getElementById('meta-title').value = data.meta.mainTitle||''; document.getElementById('meta-subtitle').value = data.meta.subTitle||''; document.getElementById('meta-author').value = data.meta.author||''; document.getElementById('meta-theme').value = data.meta.theme||'blue';
+                    document.getElementById('meta-logo-pos').value = data.meta.logoPos||'top-left'; document.getElementById('meta-logo-size').value = data.meta.logoSize||'85';
+                    if(data.meta.logoBase64) { document.getElementById('meta-logo-b64').value = data.meta.logoBase64; document.getElementById('logo-preview').src = data.meta.logoBase64; document.getElementById('logo-preview').style.display = 'block'; }
+                    document.getElementById('meta-sound-enabled').checked = data.meta.soundEnabled !== false;
+                    if(data.meta.soundBase64) { document.getElementById('meta-sound-b64').value = data.meta.soundBase64; document.getElementById('custom-sound-name').innerText = '✓ يوللانغان ئاۋاز يۈكلەندى'; }
+                    else { document.getElementById('meta-sound-b64').value = ''; document.getElementById('custom-sound-name').innerText = ''; }
+                }
+                if (data.slides) { slideData = data.slides; } renderEditor();
+            } catch (err) { alert("ئوقۇيالمىدى ياكى بوزۇلغان ھۆججەت!"); }
+        }; reader.readAsText(file); event.target.value = '';
+    }
+
+    /* سۈنئىي ئەقىل پرومپت تەلەپنامىسىنى كۆچۈرۈش ئىقتىدارى */
+    function copyAIPrompt() {
+        const promptTxt = `مەن بىر ئىسىل كۆرۈنۈشلۈك ۋە كۆپ خىل ئىقتىدارلىق HTML سىلايد قورالىنى ئىشلىتىۋاتىمەن. سەن ماڭا تېمىغا ئاساسەن يىغىن/دەرس سىلايد مەزمۇنى يېزىپ بېرىشىڭ ۋە ئۇنى مۇشۇ قورالىم ئوقۇيالايدىغان JSON فورماتىدىلا چىقىرىپ بېرىشىڭ كېرەك.
+بۇ سىلايد سىستېمىسىدىكى مەزمۇن ئىقتىدارلىرى مۇنۇلار:
+1. ھەرخىل ئۇسلۇب (Layout): "glass" (شېشىسىمان رامكا), "transparent" (تەگلىكتە ئەركىن), "accent" (ياندىكى رەڭلىك تىرەك), "split" (يېرىم بۆلەكلىك ئېكران), "neon" (نېئون نۇرى), "neumorph" (يۇمشاق 3D شەكىل), "card-dark" (قېنىق كارتون), "quote" (چوڭ نەقىل).
+2. گۈزەللەشتۈرۈش تېكىست بەلگىلىرى: رەڭلىك نۇر بۆلىكى ئۈچۈن **سۆز** ئىشلىتىلىدۇ. يەنە __ئاستى سىزىق__, *يانتۇ*, !!قىزىل/خەتەر!!, [[كۆك كۆرسەتمە]] لار بار. تىزىملىك قۇرۇش ئۈچۈن قۇر بېشىدا ( - ) ئىشلىتىلىدۇ.
+
+سەن چىقىرىدىغان JSON نىڭ ئۆلچەملىك فورماتى مۇنداق بولۇشى شەرت:
+{
+  "meta": { "mainTitle": "باش تېما", "subTitle": "قوشۇمچە گەپ", "author": "تۈزگۈچى", "theme": "blue" (تېما رەڭگى: blue, green, yellow, orange, purple, pink, silver, dark-navy, dark-forest, dark-crimson نىڭ بىرى) },
+  "slides": [
+    { "layout": "glass", "title": "1-بەت ماۋزۇسى", "content": "مەزمۇنلار كېلىدۇ...\n- تىزىملىك \n ئۇزۇن گەپتىكى **مۇھىم** ئورۇن..." }
+  ]
+}
+ھەرگىز كود سىرتىغا باشقا گەپ قوشما! مۇشۇ فورماتتىلا قايتۇر.`;
+        navigator.clipboard.writeText(promptTxt).then(() => {
+            alert("✅ مۇۋەپپەقىيەتلىك! ئىقتىدار چۈشەندۈرۈشى ۋە مەخسۇس JSON قېلىپى كومپيۇتېرىڭىزغا كۆچۈرۈلدى. ئەمدى ئۇنى خالىغان AI تىل مودېلىغا چاپلاپ سىلايدلارنى ئاپتوماتىك ياساتسىڭىز بولىدۇ!");
+        });
+    }
+
+    /* Markdown style Formatting */
+    function formatText(str) {
+        let formatted = str
+            .replace(/\*\*(.*?)\*\*/g, '<span class="text-hl">$1</span>')
+            .replace(/__(.*?)__/g, '<span class="text-underline">$1</span>')
+            .replace(/\*(.*?)\*/g, '<span class="text-italic">$1</span>')
+            .replace(/!!(.*?)!!/g, '<span class="text-danger">$1</span>')
+            .replace(/\[\[(.*?)\]\]/g, '<span class="text-primary">$1</span>');
+            
+        let lines = formatted.split('\n'); let html = ''; let inList = false;
+        lines.forEach(line => {
+            let t = line.trim();
+            if (t.startsWith('- ') || t.startsWith('-')) {
+                if(!inList) { html += '<ul>'; inList = true; }
+                html += '<li class="line-unit">' + t.replace(/^-/, '').trim() + '</li>';
+            } else {
+                if(inList) { html += '</ul>'; inList = false; }
+                if(t !== '') html += '<p class="line-unit">' + t + '</p>';
+            }
+        });
+        if(inList) html += '</ul>'; return html;
+    }
+
+    function applyThemeToVars(themeKey) {
+        const t = themes[themeKey] || themes['blue'];
+        const root = document.documentElement;
+        root.style.setProperty('--bg-top', t.top); root.style.setProperty('--bg-bottom', t.bottom);
+        root.style.setProperty('--circle-color', t.circle); root.style.setProperty('--dot-color', t.dot);
+        root.style.setProperty('--text-title', t.title); root.style.setProperty('--color-highlight', t.highlight); 
+        root.style.setProperty('--glass-border', t.glassBorder);
+        if(t.glassBg) root.style.setProperty('--glass-bg', t.glassBg); else root.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.75)');
+    }
+
+    // Presentation Logic
+    function startPresentation() {
+        const pMode = document.getElementById('presentation-mode');
+        applyThemeToVars(document.getElementById('meta-theme').value);
+
+        // Logo Configuration Setup
+        const logoB64 = document.getElementById('meta-logo-b64').value;
+        const lPos = document.getElementById('meta-logo-pos').value;
+        const lSize = document.getElementById('meta-logo-size').value || '85';
+        const logoEl = document.getElementById('presentation-logo');
+        if(logoB64 && logoB64.length > 10) { 
+            logoEl.src = logoB64; 
+            logoEl.style.width = lSize + 'px';
+            // قاچىلىنىش ئورنىنى تازىلاش
+            logoEl.style.top = 'auto'; logoEl.style.bottom = 'auto'; logoEl.style.left = 'auto'; logoEl.style.right = 'auto';
+            if(lPos === 'top-left') { logoEl.style.top = '35px'; logoEl.style.left = '40px'; }
+            else if(lPos === 'top-right') { logoEl.style.top = '35px'; logoEl.style.right = '40px'; }
+            else if(lPos === 'bottom-left') { logoEl.style.bottom = '35px'; logoEl.style.left = '40px'; }
+            else if(lPos === 'bottom-right') { logoEl.style.bottom = '35px'; logoEl.style.right = '40px'; }
+            logoEl.style.display = 'block';
+        } else { logoEl.style.display = 'none'; }
+
+        // ئارقا تەگلىكتىكى سۇس لەيلىگۈچى كىچىك لوگولار
+        document.querySelectorAll('.bg-logo').forEach(el => {
+            if(logoB64 && logoB64.length > 10) { el.src = logoB64; el.style.display = 'block'; }
+            else { el.style.display = 'none'; }
+        });
+
+        // بەت ئالماشقان ئاۋاز تەڭشىكى
+        presentationSoundEnabled = document.getElementById('meta-sound-enabled').checked;
+        presentationCustomSound = document.getElementById('meta-sound-b64').value;
+
+        const wrapper = document.getElementById('presentation-wrapper');
+        let slidesHTML = `
+            <div class="slide-container title-slide layout-transparent" id="slide-0">
+                <div class="line-unit">
+                    <div class="bismillah">﷽</div>
+                    <div class="pres-maintitle">${(document.getElementById('meta-title').value).replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="line-unit">
+                    <div class="pres-subtitle">${document.getElementById('meta-subtitle').value}</div>
+                    ${document.getElementById('meta-author').value ? `<div class="pres-meta">${document.getElementById('meta-author').value}</div>`:''}
+                </div>
+            </div>
+        `;
+
+        slideData.forEach((slide, idx) => {
+            let contentHTML = formatText(slide.content);
+            let imgCode = (slide.localImg && slide.localImg.length>10) ? `<img src="${slide.localImg}" class="inserted-img" style="width:${slide.imgSize || 50}%;">` : '';
+            let imgCodeSplit = (slide.localImg && slide.localImg.length>10) ? `<img src="${slide.localImg}" class="inserted-img">` : '';
+            
+            let layoutClass = 'layout-glass'; // Default
+            if (slide.layout === 'transparent') layoutClass = 'layout-transparent title-slide';
+            else if (slide.layout === 'accent') layoutClass = 'layout-accent';
+            else if (slide.layout === 'neon') layoutClass = 'layout-neon';
+            else if (slide.layout === 'neumorph') layoutClass = 'layout-neumorph';
+            else if (slide.layout === 'card-dark') layoutClass = 'layout-card-dark';
+            else if (slide.layout === 'quote') layoutClass = 'layout-quote title-slide';
+            else if (slide.layout === 'split') layoutClass = 'layout-split';
+
+            // Custom injection for Split layout
+            if(slide.layout === 'split') {
+                slidesHTML += `
+                    <div class="slide-container ${layoutClass}" id="slide-${idx+1}">
+                        <div class="split-media">${imgCodeSplit}</div>
+                        <div class="split-text">
+                            ${slide.title ? `<div class="slide-heading line-unit">${slide.title}</div>` : ''}
+                            <div class="slide-text">${contentHTML}</div>
+                        </div>
+                    </div>`;
+            } else {
+                slidesHTML += `
+                    <div class="slide-container ${layoutClass}" id="slide-${idx+1}">
+                        ${slide.title ? `<div class="slide-heading line-unit">${slide.title}</div>` : ''}
+                        <div class="slide-text">${contentHTML}</div>
+                        ${imgCode ? `<div class="line-unit">${imgCode}</div>` : ''}
+                    </div>`;
+            }
+        });
+
+        slidesHTML += `
+            <div class="slide-container title-slide layout-transparent" id="slide-${slideData.length+1}">
+                <div class="line-unit"><div class="pres-maintitle" style="font-size:7em; color:var(--color-highlight);">تۈگىدى</div></div>
+                <div class="line-unit"><div class="pres-subtitle">دىققەت بىلەن ئاڭلىغىنىڭىزغا كۆپ رەھمەت!</div></div>
+            </div>
+        `;
+
+        wrapper.innerHTML = slidesHTML;
+        document.getElementById('editor-mode').style.display = 'none';
+        pMode.style.display = 'block';
+        
+        // ⚠️ ئەسكەرتىش بويىچە يېپىش ۋە كونترول كۇنۇپكىلىرى ئۆچۈرۈلگەن تۈپەيلى، ئىشلەتكۈچىگە تېز ئەسكەرتىش
+        pMode.title = "ئاگاھلاندۇرۇش: كۇنۇپكا تاختىسىدىكى → ← (ئوقلارنى) بېسىپ ئالماشتۇرۇڭ. يىغىن ئاخىرلاشقاندا قايتىش ئۈچۈن 'Esc' نى بېسىڭ.";
+
+        if (pMode.requestFullscreen) pMode.requestFullscreen().catch(e=>{});
+        currentSlideIndex = 0; updatePresentationView('init');
+    }
+
+    function exitPresentation() {
+        document.getElementById('presentation-mode').style.display = 'none';
+        document.getElementById('editor-mode').style.display = 'block';
+        if (document.fullscreenElement) { document.exitFullscreen().catch(e=>{}); }
+    }
+
+    let oldIndex = 0;
+    function goToSlide(direction) {
+        const total = document.querySelectorAll('#presentation-wrapper .slide-container').length;
+        if(direction === 'next' && currentSlideIndex < total - 1) {
+            oldIndex = currentSlideIndex; currentSlideIndex++; updatePresentationView('next');
+        } else if(direction === 'prev' && currentSlideIndex > 0) {
+            oldIndex = currentSlideIndex; currentSlideIndex--; updatePresentationView('prev');
+        }
+    }
+
+    function updatePresentationView(direction) {
+        const slides = document.querySelectorAll('#presentation-wrapper .slide-container');
+        slides.forEach(slide => { slide.classList.remove('active', 'exiting', 'enter-next', 'exit-next', 'enter-prev', 'exit-prev'); });
+        if (direction === 'init') { slides[currentSlideIndex].classList.add('active'); }
+        else {
+            slides[oldIndex].classList.add('exiting', `exit-${direction}`); slides[currentSlideIndex].classList.add('active', `enter-${direction}`);
+            playSlideChangeSound();
+        }
+
+        // يېڭى بەتنىڭ قۇرلىرىنى تازىلاپ، تۇنجى قۇرنىلا دەرھال كۆرسىتىش
+        const activeSlide = slides[currentSlideIndex];
+        const lines = activeSlide.querySelectorAll('.line-unit');
+        lines.forEach(l => l.classList.remove('visible'));
+        if (lines.length > 0) { lines[0].classList.add('visible'); revealedLineCount = 1; }
+        else { revealedLineCount = 0; }
+
+        const total = slides.length;
+        document.getElementById('slide-progress').style.width = ((currentSlideIndex + 1) / total) * 100 + '%';
+        document.getElementById('slide-counter').innerText = `${currentSlideIndex + 1} / ${total}`;
+    }
+
+    /* كۇنۇپكا بېسىلغاندا ئالدى بىلەن نۆۋەتتىكى بەتنىڭ كۆرۈنمىگەن قۇرلىرىنى بىر-بىرلەپ ئاچىدۇ، ھەممە قۇر ئاچىلغاندىن كېيىن ئاندىن كېيىنكى بەتكە ئۆتىدۇ */
+    function presentationAdvance() {
+        const activeSlide = document.querySelector('#presentation-wrapper .slide-container.active');
+        const lines = activeSlide ? activeSlide.querySelectorAll('.line-unit') : [];
+        if (revealedLineCount < lines.length) {
+            lines[revealedLineCount].classList.add('visible');
+            revealedLineCount++;
+            return;
+        }
+        goToSlide('next');
+    }
+    function presentationRetreat() {
+        const activeSlide = document.querySelector('#presentation-wrapper .slide-container.active');
+        const lines = activeSlide ? activeSlide.querySelectorAll('.line-unit') : [];
+        if (revealedLineCount > 1) {
+            revealedLineCount--;
+            lines[revealedLineCount].classList.remove('visible');
+            return;
+        }
+        goToSlide('prev');
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (document.getElementById('presentation-mode').style.display === 'block') {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
+                event.preventDefault(); presentationAdvance();
+            }
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'PageUp') {
+                event.preventDefault(); presentationRetreat();
+            }
+            if (event.key === 'Escape') { exitPresentation(); }
+        }
+    });
+
+</script>
+
+</body>
+</html>
