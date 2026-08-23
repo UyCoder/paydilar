@@ -183,6 +183,9 @@
         .layout-split .split-text { flex: 1.2; padding: 50px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto;}
         .layout-split .split-media { flex: 1; background: rgba(0,0,0,0.05); display: flex; justify-content: center; align-items: center; padding: 0; position:relative; overflow: hidden;}
         .layout-split .split-media .inserted-img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; margin: 0; }
+        /* 9. پۈتۈن بەت رەسىم (تېكىستسىز) */
+        .layout-imgonly { background: transparent; padding: 0; display: flex; justify-content: center; align-items: center; box-shadow: none; border: none; }
+        .layout-imgonly .inserted-img { box-shadow: none; border-radius: 0; margin: 0; }
 
         /* Typography & Details */
         .slide-heading { font-size: 3.5em; font-weight: bold; margin-top: 0; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px dashed rgba(0,0,0,0.2); display: inline-block;}
@@ -304,7 +307,7 @@
             <label>بەت ئالماشقاندىكى ئاۋاز:</label>
             <div class="flex-options">
                 <label style="display:flex; align-items:center; gap:6px; font-weight:normal; cursor:pointer; font-size:1.05em;">
-                    <input type="checkbox" id="meta-sound-enabled" checked style="width:18px;height:18px;"> ئاۋازنى ئاچ
+                    <input type="checkbox" id="meta-sound-enabled" style="width:18px;height:18px;"> ئاۋازنى ئاچ
                 </label>
                 <div class="upload-btn-wrapper">
                     <button class="f-btn"><i class="fas fa-music"></i> ئۆزلۈك ئاۋاز يوللاش</button>
@@ -346,10 +349,32 @@
 
     <div class="action-bar">
         <input type="file" id="file-upload" accept=".json" style="display: none;" onchange="loadFromJSON(event)">
-        <button class="btn btn-load" onclick="document.getElementById('file-upload').click()"><i class="fas fa-upload"></i> JSON ئوقۇش</button>
+        <button class="btn btn-load" onclick="openJsonImportModal()"><i class="fas fa-upload"></i> JSON ئوقۇش</button>
         <button class="btn btn-save" onclick="saveToJSON()"><i class="fas fa-download"></i> JSON ساقلاش</button>
         <button class="btn btn-ai" onclick="copyAIPrompt()"><i class="fas fa-robot"></i> سۈنئىي ئەقىل چۈشەندۈرۈشىنى كۆچۈرۈش</button>
         <button class="btn btn-play" onclick="startPresentation()"><i class="fas fa-rocket"></i> سىلايد سەھنىسىگە ئۆتۈش (Play!)</button>
+    </div>
+</div>
+
+<!-- JSON ئوقۇش تاللاش رامكىسى -->
+<div id="json-import-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100000; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:14px; padding:30px; width:90%; max-width:600px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
+        <div id="json-import-choice">
+            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-upload"></i> JSON قانداق ئوقۇلسۇن؟</h2>
+            <div style="display:flex; gap:15px; margin-top:20px; flex-wrap:wrap;">
+                <button class="btn btn-ai" style="flex:1;" onclick="showJsonPasteBox()"><i class="fas fa-paste"></i> JSON تېكىستىنى چاپلاش</button>
+                <button class="btn btn-load" style="flex:1;" onclick="document.getElementById('file-upload').click(); closeJsonImportModal();"><i class="fas fa-folder-open"></i> ھۆججەت تاللاش</button>
+            </div>
+            <button class="btn" style="width:100%; margin-top:20px; background:#eee; color:#333;" onclick="closeJsonImportModal()">بىكار قىلىش</button>
+        </div>
+        <div id="json-import-paste" style="display:none;">
+            <h2 style="margin-top:0; color:var(--primary);"><i class="fas fa-paste"></i> JSON تېكىستىنى بۇ يەرگە چاپلاڭ</h2>
+            <textarea id="json-paste-area" class="form-control" style="min-height:250px; font-family:monospace; direction:ltr; text-align:left;" placeholder='{ "meta": {...}, "slides": [...] }'></textarea>
+            <div style="display:flex; gap:15px; margin-top:15px;">
+                <button class="btn btn-save" style="flex:1;" onclick="loadFromPastedJSON()"><i class="fas fa-check"></i> ئوقۇش</button>
+                <button class="btn" style="flex:1; background:#eee; color:#333;" onclick="closeJsonImportModal()">بىكار قىلىش</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -376,7 +401,7 @@
     let slideData = [];
     let currentSlideIndex = 0;
     let revealedLineCount = 0;
-    let presentationSoundEnabled = true;
+    let presentationSoundEnabled = false;
     let presentationCustomSound = '';
 
     window.onload = () => {
@@ -407,7 +432,7 @@
                             <input type="text" class="form-control" value="${slide.title}" oninput="updateSlideData(${index}, 'title', this.value)">
                         </div>
                         <div class="form-group" style="flex:1;">
-                            <label>كۆرۈنۈش ئۇسلۇبى (Layouts - 8 خىل):</label>
+                            <label>كۆرۈنۈش ئۇسلۇبى (Layouts - 9 خىل):</label>
                             <select class="form-control" onchange="updateSlideData(${index}, 'layout', this.value)">
                                 <option value="glass" ${slide.layout==='glass'?'selected':''}>1. شېشىسىمان رامكا (Glass)</option>
                                 <option value="transparent" ${slide.layout==='transparent'?'selected':''}>2. تەگلىكتە ئەركىن سۆز</option>
@@ -417,6 +442,7 @@
                                 <option value="neumorph" ${slide.layout==='neumorph'?'selected':''}>6. يۇمشاق 3D شەكىل (Neumorphism)</option>
                                 <option value="card-dark" ${slide.layout==='card-dark'?'selected':''}>7. قېنىق كارتون سەھىپە (Dark Card)</option>
                                 <option value="quote" ${slide.layout==='quote'?'selected':''}>8. چوڭ نەقىل تېكىستى (Quotes)</option>
+                                <option value="imgonly" ${slide.layout==='imgonly'?'selected':''}>9. پۈتۈن بەت رەسىم (تېكىستسىز)</option>
                             </select>
                         </div>
                     </div>
@@ -541,23 +567,44 @@
         const dl = document.createElement('a'); dl.setAttribute("href", dataStr); dl.setAttribute("download", "Slide_Advanced_Export.json"); dl.click();
     }
 
+    function applyLoadedJSONData(data) {
+        if (data.meta) {
+            document.getElementById('meta-title').value = data.meta.mainTitle||''; document.getElementById('meta-subtitle').value = data.meta.subTitle||''; document.getElementById('meta-author').value = data.meta.author||''; document.getElementById('meta-theme').value = data.meta.theme||'blue';
+            document.getElementById('meta-logo-pos').value = data.meta.logoPos||'top-left'; document.getElementById('meta-logo-size').value = data.meta.logoSize||'85';
+            if(data.meta.logoBase64) { document.getElementById('meta-logo-b64').value = data.meta.logoBase64; document.getElementById('logo-preview').src = data.meta.logoBase64; document.getElementById('logo-preview').style.display = 'block'; }
+            document.getElementById('meta-sound-enabled').checked = data.meta.soundEnabled === true;
+            if(data.meta.soundBase64) { document.getElementById('meta-sound-b64').value = data.meta.soundBase64; document.getElementById('custom-sound-name').innerText = '✓ يوللانغان ئاۋاز يۈكلەندى'; }
+            else { document.getElementById('meta-sound-b64').value = ''; document.getElementById('custom-sound-name').innerText = ''; }
+        }
+        if (data.slides) { slideData = data.slides; } renderEditor();
+    }
+
     function loadFromJSON(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (data.meta) { 
-                    document.getElementById('meta-title').value = data.meta.mainTitle||''; document.getElementById('meta-subtitle').value = data.meta.subTitle||''; document.getElementById('meta-author').value = data.meta.author||''; document.getElementById('meta-theme').value = data.meta.theme||'blue';
-                    document.getElementById('meta-logo-pos').value = data.meta.logoPos||'top-left'; document.getElementById('meta-logo-size').value = data.meta.logoSize||'85';
-                    if(data.meta.logoBase64) { document.getElementById('meta-logo-b64').value = data.meta.logoBase64; document.getElementById('logo-preview').src = data.meta.logoBase64; document.getElementById('logo-preview').style.display = 'block'; }
-                    document.getElementById('meta-sound-enabled').checked = data.meta.soundEnabled !== false;
-                    if(data.meta.soundBase64) { document.getElementById('meta-sound-b64').value = data.meta.soundBase64; document.getElementById('custom-sound-name').innerText = '✓ يوللانغان ئاۋاز يۈكلەندى'; }
-                    else { document.getElementById('meta-sound-b64').value = ''; document.getElementById('custom-sound-name').innerText = ''; }
-                }
-                if (data.slides) { slideData = data.slides; } renderEditor();
-            } catch (err) { alert("ئوقۇيالمىدى ياكى بوزۇلغان ھۆججەت!"); }
+            try { applyLoadedJSONData(JSON.parse(e.target.result)); }
+            catch (err) { alert("ئوقۇيالمىدى ياكى بوزۇلغان ھۆججەت!"); }
         }; reader.readAsText(file); event.target.value = '';
+    }
+
+    /* JSON ئوقۇش تاللاش رامكىسى: تېكىست چاپلاش ياكى ھۆججەت تاللاش */
+    function openJsonImportModal() {
+        document.getElementById('json-import-choice').style.display = 'block';
+        document.getElementById('json-import-paste').style.display = 'none';
+        document.getElementById('json-paste-area').value = '';
+        document.getElementById('json-import-modal').style.display = 'flex';
+    }
+    function closeJsonImportModal() { document.getElementById('json-import-modal').style.display = 'none'; }
+    function showJsonPasteBox() {
+        document.getElementById('json-import-choice').style.display = 'none';
+        document.getElementById('json-import-paste').style.display = 'block';
+    }
+    function loadFromPastedJSON() {
+        const txt = document.getElementById('json-paste-area').value.trim();
+        if (!txt) { alert("ئالدى بىلەن JSON تېكىستىنى چاپلاڭ!"); return; }
+        try { applyLoadedJSONData(JSON.parse(txt)); closeJsonImportModal(); }
+        catch (err) { alert("ئوقۇيالمىدى! JSON فورماتى خاتا بولۇشى مۇمكىن."); }
     }
 
     /* سۈنئىي ئەقىل پرومپت تەلەپنامىسىنى كۆچۈرۈش ئىقتىدارى */
@@ -566,6 +613,7 @@
 بۇ سىلايد سىستېمىسىدىكى مەزمۇن ئىقتىدارلىرى مۇنۇلار:
 1. ھەرخىل ئۇسلۇب (Layout): "glass" (شېشىسىمان رامكا), "transparent" (تەگلىكتە ئەركىن), "accent" (ياندىكى رەڭلىك تىرەك), "split" (يېرىم بۆلەكلىك ئېكران), "neon" (نېئون نۇرى), "neumorph" (يۇمشاق 3D شەكىل), "card-dark" (قېنىق كارتون), "quote" (چوڭ نەقىل).
 2. گۈزەللەشتۈرۈش تېكىست بەلگىلىرى: رەڭلىك نۇر بۆلىكى ئۈچۈن **سۆز** ئىشلىتىلىدۇ. يەنە __ئاستى سىزىق__, *يانتۇ*, !!قىزىل/خەتەر!!, [[كۆك كۆرسەتمە]] لار بار. تىزىملىك قۇرۇش ئۈچۈن قۇر بېشىدا ( - ) ئىشلىتىلىدۇ.
+3. مۇھىم: چىقىرىدىغان بارلىق بەتلەرنىڭ "layout" قىممىتىنى چوقۇم "glass" قىلىپ بەر (باشقا ئۇسلۇبلارنى ھەرگىز ئىشلەتمە)، ئۇسلۇبنى كېيىن مەن ئۆزۈم تەڭشەيمەن.
 
 سەن چىقىرىدىغان JSON نىڭ ئۆلچەملىك فورماتى مۇنداق بولۇشى شەرت:
 {
@@ -672,6 +720,7 @@
             else if (slide.layout === 'card-dark') layoutClass = 'layout-card-dark';
             else if (slide.layout === 'quote') layoutClass = 'layout-quote title-slide';
             else if (slide.layout === 'split') layoutClass = 'layout-split';
+            else if (slide.layout === 'imgonly') layoutClass = 'layout-imgonly title-slide';
 
             // Custom injection for Split layout
             if(slide.layout === 'split') {
@@ -682,6 +731,11 @@
                             ${slide.title ? `<div class="slide-heading line-unit">${slide.title}</div>` : ''}
                             <div class="slide-text">${contentHTML}</div>
                         </div>
+                    </div>`;
+            } else if(slide.layout === 'imgonly') {
+                slidesHTML += `
+                    <div class="slide-container ${layoutClass}" id="slide-${idx+1}">
+                        <div class="line-unit">${imgCode}</div>
                     </div>`;
             } else {
                 slidesHTML += `
