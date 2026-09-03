@@ -36,12 +36,38 @@
             --shift-color: #2563eb;
         }
 
+        [data-theme="boy"][data-stage="1"], [data-theme="girl"][data-stage="1"] {
+            --bg-gradient: linear-gradient(135deg, #064e3b, #059669, #84cc16);
+            --main-color: #059669; --main-dark: #047857; --text-color: #064e3b;
+            --keyboard-bg: rgba(236, 253, 245, 0.92); --key-border: #a7f3d0; --key-shadow: #34d399;
+            --reward-color: #65a30d; --shift-color: #166534;
+        }
+        [data-theme="boy"][data-stage="2"], [data-theme="girl"][data-stage="2"] {
+            --bg-gradient: linear-gradient(135deg, #082f49, #0284c7, #38bdf8);
+            --main-color: #0284c7; --main-dark: #0369a1; --text-color: #082f49;
+            --keyboard-bg: rgba(240, 249, 255, 0.92); --key-border: #bae6fd; --key-shadow: #38bdf8;
+            --reward-color: #0369a1; --shift-color: #1d4ed8;
+        }
+        [data-theme="boy"][data-stage="3"], [data-theme="girl"][data-stage="3"] {
+            --bg-gradient: linear-gradient(135deg, #3b0764, #7e22ce, #c084fc);
+            --main-color: #7e22ce; --main-dark: #6b21a8; --text-color: #3b0764;
+            --keyboard-bg: rgba(250, 245, 255, 0.92); --key-border: #e9d5ff; --key-shadow: #c084fc;
+            --reward-color: #a21caf; --shift-color: #4338ca;
+        }
+        [data-theme="boy"][data-stage="4"], [data-theme="girl"][data-stage="4"] {
+            --bg-gradient: linear-gradient(135deg, #713f12, #d97706, #facc15);
+            --main-color: #d97706; --main-dark: #b45309; --text-color: #713f12;
+            --keyboard-bg: rgba(255, 251, 235, 0.94); --key-border: #fde68a; --key-shadow: #fbbf24;
+            --reward-color: #b45309; --shift-color: #92400e;
+        }
+
         * { box-sizing: border-box; font-family: 'UKIJ Tuz Tom', 'Noto Sans Arabic', sans-serif; }
 
         body {
             background: var(--bg-gradient);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
+            transition: background 1.8s ease, color 1.8s ease;
             color: var(--text-color);
             margin: 0; padding: 20px; display: flex; justify-content: center;
             align-items: center; min-height: 100vh; overflow-x: hidden; position: relative;
@@ -53,7 +79,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* سېھىرلىك لەيلەپ يۈرۈيدىغان كۆك ئاي ۋە يۇلتۇزلار */
+        /* سېھىرلىك لەيلەپ يۈرۈيدىغان ئاي ۋە يۇلتۇزلار */
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0; overflow: hidden;
@@ -61,13 +87,33 @@
         .star {
             position: absolute; color: rgba(255, 255, 255, 0.6);
             filter: drop-shadow(0 0 15px rgba(255,255,255,0.9));
-            animation: float 8s infinite ease-in-out alternate;
+            animation: float 8s infinite ease-in-out alternate, twinkle 3s infinite ease-in-out;
+            will-change: transform, opacity;
+        }
+        .star.moon {
+            color: #fff7c2; filter: drop-shadow(0 0 12px rgba(255,239,150,0.95)) drop-shadow(0 0 35px rgba(255,255,255,0.55));
+            animation: moonFloat 12s infinite ease-in-out alternate;
+            opacity: 0.95;
+        }
+        .star.moon::after {
+            content: ''; position: absolute; width: 24%; height: 24%; border-radius: 50%;
+            top: 28%; left: 24%; background: rgba(255,255,255,0.22); box-shadow: 18px 10px 0 rgba(255,255,255,0.14);
         }
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg) scale(0.9); }
             100% { transform: translateY(-40px) rotate(25deg) scale(1.1); }
         }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 1; }
+        }
+        @keyframes moonFloat {
+            0% { transform: translate(0, 8px) rotate(-8deg) scale(0.96); }
+            100% { transform: translate(-18px, -35px) rotate(8deg) scale(1.04); }
+        }
         .star svg { width: 100%; height: 100%; }
+        .star:nth-child(3n) { animation-duration: 6s, 2.2s; }
+        .star:nth-child(4n) { animation-duration: 10s, 4.5s; }
 
         /* ئاساسىي ئەينەك كۆرۈنۈشلىك رامكا (Glassmorphism) */
         .screen {
@@ -148,6 +194,17 @@
             margin-bottom: 30px; line-height: 1.6; padding: 25px; background: #ffffff;
             border-radius: 20px; border: 3px solid rgba(0,0,0,0.05); box-shadow: inset 0 10px 20px rgba(0,0,0,0.03);
         }
+
+        .typed-output {
+            min-height: 72px; margin: -15px 0 20px; padding: 14px 20px;
+            background: rgba(255,255,255,0.72); border: 2px solid rgba(37,99,235,0.15);
+            border-radius: 16px; direction: rtl; text-align: center; font-size: 34px;
+            line-height: 1.4; font-weight: bold; box-shadow: inset 0 4px 10px rgba(0,0,0,0.04);
+        }
+        .typed-output-title { display: block; color: #64748b; font-size: 15px; margin-bottom: 4px; }
+        .typed-char { color: var(--main-dark); }
+        .typed-char.incorrect-typed { color: var(--error-color); text-decoration: line-through; animation: shake 0.3s; display: inline-block; }
+        .typing-feedback { min-height: 28px; margin: -12px 0 18px; color: var(--error-color); text-align: center; font-size: 18px; font-weight: bold; }
         
         .char { display: inline; color: #94a3b8; transition: color 0.1s; font-weight: bold; }
         .char.correct { color: var(--main-dark); }
@@ -171,6 +228,11 @@
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-title { font-size: 38px; color: var(--reward-color); margin-bottom: 25px; font-weight: 900; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .modal-quote { font-size: 26px; color: var(--text-color); margin-bottom: 40px; line-height: 1.8; font-weight: bold; }
+        .enter-hint { color: var(--main-dark); background: rgba(37,99,235,0.1); border: 2px solid var(--main-color); border-radius: 14px; padding: 14px 28px; font-size: 22px; font-weight: bold; box-shadow: 0 5px 12px rgba(37,99,235,0.15); }
+
+        .combo-display { min-width: 150px; color: var(--reward-color); background: rgba(255,255,255,0.75); border: 2px solid rgba(217,119,6,0.25); border-radius: 14px; padding: 10px 16px; text-align: center; font-size: 19px; font-weight: 900; }
+        .combo-display.pulse { animation: comboPulse 0.35s ease-out; }
+        @keyframes comboPulse { 50% { transform: scale(1.12); box-shadow: 0 0 18px rgba(217,119,6,0.35); } }
 
         /* 3D مېخانىكىلىق كۇنۇپكا تاختىسى */
         .keyboard { display: flex; flex-direction: column; gap: 10px; background: var(--keyboard-bg); padding: 25px; border-radius: 25px; align-items: center; direction: ltr; box-shadow: inset 0 5px 15px rgba(0,0,0,0.05); }
@@ -211,6 +273,19 @@
         .stat-value { font-size: 48px; font-weight: 900; color: var(--main-color); margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .chart-container { width: 100%; height: 320px; margin-bottom: 35px; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .btn-group { display: flex; gap: 20px; }
+
+        @media (max-width: 700px) {
+            body { padding: 10px; }
+            .screen { padding: 22px 14px; border-radius: 24px; }
+            .header { flex-wrap: wrap; gap: 14px; }
+            .controls, .header > div:last-child { width: 100%; justify-content: center; flex-wrap: wrap; }
+            .typing-area { font-size: 38px; padding: 18px 12px; }
+            .keyboard { padding: 12px 6px; gap: 6px; overflow-x: auto; }
+            .key-row { gap: 5px; }
+            .key { width: 40px; height: 48px; font-size: 18px; }
+            .key-space { width: 250px; }
+            .btn-group { flex-direction: column; gap: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -246,6 +321,7 @@
                 <select id="level-select" class="level-selector" onchange="changeLevel(this.value)"></select>
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="combo-display" id="combo-display">زەنجىر: 0</div>
                 <div class="timer" id="timer-display">02:00</div>
             </div>
         </div>
@@ -253,13 +329,18 @@
         <div id="mini-reward-zone">...</div>
 
         <div class="typing-area" id="typing-area"></div>
+        <div class="typed-output" id="typed-output">
+            <span class="typed-output-title">يېزىلغان خەت</span>
+            <span id="typed-text"></span>
+        </div>
+        <div class="typing-feedback" id="typing-feedback" aria-live="polite"></div>
         <div class="keyboard" id="keyboard"></div>
 
         <!-- قۇر تۈگىگەندىكى رىغبەت كۆزنىكى -->
         <div id="line-modal" class="modal-overlay">
             <div class="modal-title">🌟 ماشااللە! ئاللاھ ئىلىمىڭىزنى زىيادە قىلسۇن!</div>
             <div class="modal-quote" id="modal-quote-text"></div>
-            <button class="btn" style="width: 350px;" onclick="loadNextLine()">كېيىنكى قۇرنى باشلاش</button>
+            <div class="enter-hint">كېيىنكى قۇرنى باشلاش ئۈچۈن كۇنۇپكا تاختىسىدىن Enter نى بېسىڭ</div>
         </div>
     </div>
 
@@ -354,14 +435,15 @@
             const container = document.getElementById('stars-bg');
             const svgMoon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
             const svgStar = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
-            for(let i=0; i<15; i++) {
+            for(let i=0; i<24; i++) {
                 const shape = document.createElement('div');
-                shape.className = 'star';
-                shape.innerHTML = (i % 4 === 0) ? svgMoon : svgStar;
-                const size = Math.random() * 30 + 20;
+                const isMoon = i === 2 || i === 17;
+                shape.className = isMoon ? 'star moon' : 'star';
+                shape.innerHTML = isMoon ? svgMoon : svgStar;
+                const size = isMoon ? Math.random() * 30 + 58 : Math.random() * 24 + 12;
                 shape.style.width = `${size}px`; shape.style.height = `${size}px`;
                 shape.style.left = `${Math.random() * 100}%`; shape.style.top = `${Math.random() * 100}%`;
-                shape.style.animationDuration = `${Math.random() * 5 + 6}s`;
+                if(!isMoon) shape.style.animationDuration = `${Math.random() * 5 + 6}s, ${Math.random() * 3 + 2}s`;
                 shape.style.animationDelay = `${Math.random() * 3}s`;
                 container.appendChild(shape);
             }
@@ -440,6 +522,10 @@
         let miniRewardTimeout;
         let currentLine = "";
         let charIndex = 0;
+        let pendingIncorrect = false;
+        let pendingIncorrectChar = '';
+        let combo = 0;
+        let bestCombo = 0;
         let isPaused = false;
         let lastQuoteIndex = -1;
         let stats = { correct: 0, wrong: 0, typedEntries: 0, mistakesMap: {} };
@@ -495,6 +581,10 @@
             renderKeyboard();
             
             stats = { correct: 0, wrong: 0, typedEntries: 0, mistakesMap: {} };
+            combo = 0;
+            bestCombo = 0;
+            updateVisualStage();
+            updateComboDisplay();
             timeLeft = sessionTime;
             updateTimerDisplay();
             
@@ -521,6 +611,8 @@
             isPaused = false;
             currentLine = getShortLine();
             charIndex = 0;
+            pendingIncorrect = false;
+            pendingIncorrectChar = '';
             
             const container = document.getElementById('typing-area');
             container.innerHTML = '';
@@ -531,7 +623,45 @@
                 if(i === 0) span.classList.add('current');
                 container.appendChild(span);
             }
+            renderTypedText();
+            setTypingFeedback('');
             highlightNextKey();
+        }
+
+        function renderTypedText() {
+            const typedText = document.getElementById('typed-text');
+            typedText.innerHTML = '';
+            for(let i = 0; i < charIndex; i++) {
+                const span = document.createElement('span');
+                span.className = 'typed-char';
+                span.innerText = currentLine[i];
+                typedText.appendChild(span);
+            }
+            if(pendingIncorrect) {
+                const span = document.createElement('span');
+                span.className = 'typed-char incorrect-typed';
+                span.innerText = pendingIncorrectChar;
+                typedText.appendChild(span);
+            }
+        }
+
+        function setTypingFeedback(message) {
+            document.getElementById('typing-feedback').innerText = message;
+        }
+
+        function updateComboDisplay() {
+            const comboDisplay = document.getElementById('combo-display');
+            comboDisplay.innerText = `زەنجىر: ${combo} | ئەڭ يۇقىرى: ${bestCombo}`;
+            comboDisplay.classList.remove('pulse');
+            if(combo > 0) {
+                void comboDisplay.offsetWidth;
+                comboDisplay.classList.add('pulse');
+            }
+        }
+
+        function updateVisualStage() {
+            const stage = Math.floor(stats.correct / 8) % 5;
+            document.documentElement.setAttribute('data-stage', stage);
         }
 
         function renderKeyboard() {
@@ -597,11 +727,35 @@
         }
 
         function handleKeyPress(e) {
+            if(e.key === 'Enter' && isPaused && document.getElementById('line-modal').classList.contains('show')) {
+                e.preventDefault();
+                loadNextLine();
+                return;
+            }
             if(isPaused) return;
-            if(e.ctrlKey || e.altKey || e.metaKey || (e.key.length > 1 && e.key !== ' ' && e.key !== 'Spacebar')) return;
+            if(e.ctrlKey || e.altKey || e.metaKey) return;
+            if(e.key === 'Backspace') {
+                e.preventDefault();
+                if(pendingIncorrect) {
+                    pendingIncorrect = false;
+                    pendingIncorrectChar = '';
+                    const currentSpan = document.getElementById('typing-area').children[charIndex];
+                    currentSpan.className = 'char current';
+                    setTypingFeedback('خاتا خەت ئۆچۈرۈلدى، ئەمدى توغرا ھەرپنى بېسىڭ.');
+                    renderTypedText();
+                    highlightNextKey();
+                }
+                return;
+            }
+            if(e.key.length > 1 && e.key !== ' ' && e.key !== 'Spacebar') return;
             if(e.key === ' ' || e.key === 'Spacebar') e.preventDefault();
             
             if(charIndex >= currentLine.length) return;
+
+            if(pendingIncorrect) {
+                setTypingFeedback('ئالدى بىلەن خاتا خەتنى Backspace بىلەن ئۆچۈرۈڭ.');
+                return;
+            }
 
             const expectedChar = currentLine[charIndex];
             let typedChar = e.key;
@@ -615,13 +769,23 @@
                 playTypeSound(); // توغرا باسقاندا ئوماق ئاۋاز چىقىدۇ
                 currentSpan.className = 'char correct';
                 stats.correct++;
+                combo++;
+                bestCombo = Math.max(bestCombo, combo);
+                updateVisualStage();
+                updateComboDisplay();
                 charIndex++;
                 
                 if(typedChar === ' ' && Math.random() > 0.4) { showMiniReward(); }
             } else {
                 playErrorSound(); // خاتا باسقاندىكى ئاۋاز
                 currentSpan.className = 'char incorrect';
+                pendingIncorrect = true;
+                pendingIncorrectChar = typedChar;
                 stats.wrong++;
+                combo = 0;
+                updateComboDisplay();
+                setTypingFeedback('خاتا خەت! ئۇنى Backspace بىلەن ئۆچۈرۈپ، ئاندىن توغرىسىنى بېسىڭ.');
+                renderTypedText();
                 if(expectedChar !== ' ') {
                     stats.mistakesMap[expectedChar] = (stats.mistakesMap[expectedChar] || 0) + 1;
                     let keyId = charToKeyId[expectedChar];
@@ -643,6 +807,8 @@
                 playRewardSound(); // قۇر تۈگىگەندىكى جىرىڭلىغان سېھىرلىك ئاۋاز
                 showLineMotivation();
             }
+
+            renderTypedText();
         }
 
         function showLineMotivation() {
