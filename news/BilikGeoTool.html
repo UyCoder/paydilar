@@ -228,11 +228,15 @@
       border: 1px solid rgba(200, 168, 75, .28);
       border-radius: var(--r);
       padding: 5px;
-      min-width: 175px;
+      min-width: 185px;
+      max-height: 80vh;
+      overflow-y: auto;
       box-shadow: var(--sh);
       display: none;
       animation: fadeIn .2s;
     }
+    .ddm::-webkit-scrollbar { width: 5px; }
+    .ddm::-webkit-scrollbar-thumb { background: rgba(200, 168, 75, .35); border-radius: 4px; }
 
     .ddm.open {
       display: block;
@@ -1688,23 +1692,43 @@
             <polyline points="2 17 12 22 22 17" />
             <polyline points="2 12 12 17 22 12" />
           </svg><span>قاتلام</span></button>
-        <div class="ddm" id="layer-dd">
-          <div class="ddi on" onclick="setLayer('dark',this)"><span class="dot" style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
+        <div class="ddm" id="layer-dd" style="min-width:215px">
+          <div style="padding:4px 8px;font-size:.7em;color:var(--gold);font-weight:700;border-bottom:1px solid var(--bdr);margin-bottom:3px">🌓 ئاساسىي خەرىتىلەر</div>
+          <div class="ddi" onclick="setLayer('dark',this)"><span class="dot" style="background:#1a2a44"></span>قاراڭغۇ (ئەقلىي)</div>
           <div class="ddi" onclick="setLayer('nolabels',this)"><span class="dot" style="background:#0f172a"></span>قاراڭغۇ (خەتسىز ساپ)</div>
           <div class="ddi" onclick="setLayer('light',this)"><span class="dot" style="background:#ddd8cc"></span>يورۇق</div>
-          <div class="ddi" onclick="setLayer('lightnolabels',this)"><span class="dot" style="background:#f1f5f9"></span>يورۇق (خەتسىز ساپ)</div>
+          <div class="ddi on" onclick="setLayer('lightnolabels',this)"><span class="dot" style="background:#f1f5f9"></span>يورۇق (خەتسىز ساپ)</div>
           <div class="ddi" onclick="setLayer('voyager',this)"><span class="dot" style="background:#e8e4d8"></span>سىلىق (يورۇق)</div>
-          <div class="ddi" onclick="setLayer('street',this)"><span class="dot" style="background:#4a7a2a"></span>ئۆلچەملىك</div>
-          <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot" style="background:#1a3050"></span>سۈنئىي ھەمراھ</div>
-          <div class="ddi" onclick="setLayer('esri-sat',this)"><span class="dot" style="background:#0a2040"></span>Esri سۈنئىي ھەمراھ</div>
-          <div class="ddi" onclick="setLayer('topo',this)"><span class="dot" style="background:#6a9a5a"></span>توپوگرافىيە</div>
-          <div class="ddi" onclick="setLayer('wikimedia-topo',this)"><span class="dot" style="background:#7a9a6a"></span>Wikimedia توپو</div>
-          <div class="ddi" onclick="setLayer('esri-street',this)"><span class="dot" style="background:#2b5a9a"></span>Esri شەھەر</div>
-          <div class="ddi" onclick="setLayer('esri-topo',this)"><span class="dot" style="background:#8a6a2a"></span>Esri توپو</div>
+          <div class="ddi" onclick="setLayer('street',this)"><span class="dot" style="background:#4a7a2a"></span>ئۆلچەملىك (OSM)</div>
+          <div class="ddi" onclick="setLayer('osm-hot',this)"><span class="dot" style="background:#b33e24"></span>ئىنسانپەرۋەرلىك (HOT)</div>
+
+          <div style="padding:4px 8px;font-size:.7em;color:var(--gold);font-weight:700;border-bottom:1px solid var(--bdr);margin:6px 0 3px">🛰 سۈنئىي ھەمراھ ۋە كائىنات</div>
+          <div class="ddi" onclick="setLayer('satellite',this)"><span class="dot" style="background:#1a3050"></span>Esri سۈنئىي ھەمراھ</div>
+          <div class="ddi" onclick="setLayer('esri-sat',this)"><span class="dot" style="background:#0a2040"></span>Esri Clarity (سۈزۈك)</div>
           <div class="ddi" onclick="setLayer('usgs-sat',this)"><span class="dot" style="background:#000033"></span>USGS سۈنئىي ھەمراھ</div>
-          <div class="ddi" onclick="setLayer('cartodb-antique',this)"><span class="dot" style="background:#d4b896"></span>ئانتىك خەرىتە</div>
+          <div class="ddi" onclick="setLayer('nasa-night',this)"><span class="dot" style="background:#050716"></span>NASA كېچىلىك چىراغلار</div>
+          <div class="ddi" onclick="setLayer('nasa-blue',this)"><span class="dot" style="background:#123258"></span>NASA كۆك يەر شارى</div>
+
+          <div style="padding:4px 8px;font-size:.7em;color:var(--gold);font-weight:700;border-bottom:1px solid var(--bdr);margin:6px 0 3px">🏔 تاغ ۋە توپوگرافىيە</div>
+          <div class="ddi" onclick="setLayer('topo',this)"><span class="dot" style="background:#6a9a5a"></span>توپوگرافىيە (OpenTopo)</div>
+          <div class="ddi" onclick="setLayer('wikimedia-topo',this)"><span class="dot" style="background:#7a9a6a"></span>Wikimedia توپو</div>
+          <div class="ddi" onclick="setLayer('esri-topo',this)"><span class="dot" style="background:#8a6a2a"></span>Esri توپو</div>
+          <div class="ddi" onclick="setLayer('usgs-topo',this)"><span class="dot" style="background:#557744"></span>USGS رەسمىي توپو</div>
+          <div class="ddi" onclick="setLayer('esri-hillshade',this)"><span class="dot" style="background:#c0b8aa"></span>تاغ سايىلىرى (Hillshade)</div>
+          <div class="ddi" onclick="setLayer('esri-hillshade-dark',this)"><span class="dot" style="background:#222428"></span>قاراڭغۇ تاغ سايىلىرى</div>
+          <div class="ddi" onclick="setLayer('esri-terrain-base',this)"><span class="dot" style="background:#88a070"></span>قۇرۇقلۇق قەۋىتى (Terrain)</div>
           <div class="ddi" onclick="setLayer('stamen-terrain',this)"><span class="dot" style="background:#5a8a4a"></span>NatGeo خەرىتە</div>
-          <div class="ddi" onclick="setLayer('natgeo-nolabels',this)"><span class="dot" style="background:#3a6a3a"></span>NatGeo (خەتسىز)</div>
+          <div class="ddi" onclick="setLayer('natgeo-nolabels',this)"><span class="dot" style="background:#3a6a3a"></span>NatGeo (خەتسىز ساپ)</div>
+          <div class="ddi" onclick="setLayer('cartodb-antique',this)"><span class="dot" style="background:#d4b896"></span>ئانتىك سايىلىك خەرىتە</div>
+
+          <div style="padding:4px 8px;font-size:.7em;color:var(--gold);font-weight:700;border-bottom:1px solid var(--bdr);margin:6px 0 3px">🌊 ئوكيان، يول ۋە سەنئەت</div>
+          <div class="ddi" onclick="setLayer('esri-ocean',this)"><span class="dot" style="background:#1b4d7e"></span>Esri دېڭىز-ئوكيان تەگلىكى</div>
+          <div class="ddi" onclick="setLayer('cyclosm',this)"><span class="dot" style="background:#3b82f6"></span>CyclOSM تەبىئەت ۋە يوللار</div>
+          <div class="ddi" onclick="setLayer('esri-street',this)"><span class="dot" style="background:#2b5a9a"></span>Esri شەھەر كوچىلىرى</div>
+          <div class="ddi" onclick="setLayer('watercolor',this)"><span class="dot" style="background:#e09f67"></span>سۇ بوياق خەرىتىسى (Watercolor)</div>
+
+          <div style="border-top:1px solid var(--bdr);margin:6px 0 3px"></div>
+          <div class="ddi" onclick="promptCartoKey();closeAllDD()"><span class="dot" style="background:var(--gold)"></span>🔑 CARTO ئاچقۇچى تەڭشەش</div>
         </div>
       </div>
       <div class="tsep"></div>
@@ -2163,22 +2187,32 @@
     // TILE LAYERS
     // ============================================================
     const TILES = {
-      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      nolabels: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
-      light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      lightnolabels: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
-      voyager: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+      dark: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      nolabels: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      light: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      lightnolabels: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      voyager: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'osm-hot': 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+      cyclosm: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
       satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       'esri-sat': 'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      'usgs-sat': 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
+      'nasa-night': 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg',
+      'nasa-blue': 'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg',
       topo: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
       'wikimedia-topo': 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png',
-      'esri-street': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'esri-topo': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-      'usgs-sat': 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
-      'cartodb-antique': 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+      'usgs-topo': 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+      'esri-hillshade': 'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
+      'esri-hillshade-dark': 'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade_Dark/MapServer/tile/{z}/{y}/{x}',
+      'esri-terrain-base': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
       'stamen-terrain': 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
-      'natgeo-nolabels': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}'
+      'natgeo-nolabels': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
+      'cartodb-antique': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+      'esri-ocean': 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+      'esri-street': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+      watercolor: 'https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg'
     };
 
 
@@ -2269,13 +2303,70 @@
        if (cb && !showCoords) cb.style.display = 'none';
     }
 
+    let currentLayerName = 'lightnolabels';
+    function promptCartoKey() {
+      const cur = localStorage.getItem('carto_api_key') || '';
+      const val = prompt('CARTO API ئاچقۇچىنى كىرگۈزۈڭ (carto.com/basemaps/apikey دىن ھەقسىز ئالغىلى بولىدۇ):\nئەسكەرتىش: ئاچقۇچ كىرگۈزگەندە CARTO نىڭ ئەسلىدىكى پۈتۈنلەي خەتسىز چېگرا خەرىتىلىرى سۇ بەلگىسىسىز تولۇق ئىشلەيدۇ.\nئۆچۈرۈش ئۈچۈن قۇرۇق قالدۇرۇڭ.', cur);
+      if (val !== null) {
+        if (val.trim()) {
+          localStorage.setItem('carto_api_key', val.trim());
+          alert('CARTO ئاچقۇچى ساقلاندى! ئەمدى خەتسىز خەرىتىلەر CARTO ئارقىلىق سۇ بەلگىسىسىز يۈكلىنىدۇ.');
+        } else {
+          localStorage.removeItem('carto_api_key');
+          alert('CARTO ئاچقۇچى ئۆچۈرۈلدى.');
+        }
+        setLayer(currentLayerName || 'lightnolabels', null);
+      }
+    }
+
     function setLayer(name, el) {
       if (tileLayer) map.removeLayer(tileLayer);
-      tileLayer = L.tileLayer(TILES[name] || TILES.dark, { maxZoom: 19, crossOrigin: true });
+      currentLayerName = name;
+      let opts = { maxZoom: 19, crossOrigin: true };
+      if (['nasa-night', 'nasa-blue'].includes(name)) {
+        opts = { maxNativeZoom: 8, maxZoom: 19, crossOrigin: true };
+      } else if (name === 'watercolor') {
+        opts = { maxNativeZoom: 16, maxZoom: 19, crossOrigin: true };
+      }
+
+      const cartoKey = (localStorage.getItem('carto_api_key') || '').trim();
+      const cartoParam = cartoKey ? `?key=${encodeURIComponent(cartoKey)}` : '';
+
+      if (name === 'nolabels') {
+        if (cartoKey) {
+          tileLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png${cartoParam}`, opts);
+        } else {
+          tileLayer = L.tileLayer(TILES.nolabels, opts);
+        }
+      } else if (name === 'lightnolabels') {
+        if (cartoKey) {
+          tileLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png${cartoParam}`, opts);
+        } else {
+          tileLayer = L.tileLayer(TILES['natgeo-nolabels'], opts);
+        }
+      } else if (name === 'dark') {
+        tileLayer = L.layerGroup([
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', opts),
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', opts)
+        ]);
+      } else if (name === 'light') {
+        tileLayer = L.layerGroup([
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', opts),
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', opts)
+        ]);
+      } else {
+        tileLayer = L.tileLayer(TILES[name] || TILES['natgeo-nolabels'], opts);
+      }
+
       tileLayer.addTo(map);
       document.querySelectorAll('.ddi').forEach(d => d.classList.remove('on'));
-      if (el) el.classList.add('on');
-      isDarkMap = ['dark', 'nolabels', 'satellite'].includes(name);
+      if (el) {
+        el.classList.add('on');
+      } else {
+        const ddiEl = document.querySelector(`.ddi[onclick*=\"'${name}'\"]`);
+        if (ddiEl) ddiEl.classList.add('on');
+      }
+      isDarkMap = ['dark', 'nolabels', 'satellite', 'esri-sat', 'usgs-sat', 'esri-hillshade-dark', 'nasa-night'].includes(name);
       document.body.classList.toggle('is-light', !isDarkMap);
       closeAllDD();
     }
@@ -3404,7 +3495,6 @@
       document.getElementById('fa-r')?.classList.add('on');
       document.getElementById('cs-gold')?.classList.add('on');
       renderKBs();
-      toggleMiniMap();
       
       const dtbEl = document.getElementById('dtb');
       const dtbH = document.getElementById('dtb-handle');
@@ -3506,7 +3596,7 @@
     // ============================================================
     function saveState() {
       const cvs = getCvs();
-      const layerKey = Object.keys(TILES).find(k => tileLayer && TILES[k] === tileLayer._url) || 'dark';
+      const layerKey = currentLayerName || Object.keys(TILES).find(k => tileLayer && TILES[k] === tileLayer._url) || 'lightnolabels';
       const c = map.getCenter();
       
       const drawingsData = [];

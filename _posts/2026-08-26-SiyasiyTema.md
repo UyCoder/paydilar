@@ -7,6 +7,8 @@ categories: [ئىزدىنىش، سىياسيەت، تەربىيە]
 
 _تەخمىنەن ئوقۇش ۋاقتى 21 مىنۇت_
 
+**بسم الله الرحمن الرحيم**
+
 # ئالىي ھوقۇقنىڭ مونوپول قىلىنىشى ۋە باشقۇرۇش سەنئىتى
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/siyasiMonupul00.png">

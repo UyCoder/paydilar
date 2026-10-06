@@ -7,6 +7,7 @@ categories: [ئىزدىنىش، مائارىپ، تەربىيە]
 
 _تەخمىنەن ئوقۇش ۋاقتى 17 مىنۇت_
 
+**بسم الله الرحمن الرحيم**
 
 <img src="https://raw.githubusercontent.com/UyCoder/paydilar/master/pics/kidQuran01.jpg">
 
