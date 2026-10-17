@@ -20,34 +20,266 @@
 
         mermaid.initialize({
             startOnLoad: false,
-            theme: 'default',
-            securityLevel: 'loose',
-            fontFamily: "'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur', Arial, sans-serif"
+            theme: 'base',
+            themeVariables: {
+                darkMode: false,
+                background: '#ffffff',
+                mainBkg: '#f0f9ff',
+                nodeBorder: '#0284c7',
+                clusterBkg: '#f8fafc',
+                clusterBorder: '#cbd5e1',
+                lineColor: '#334155',
+                textColor: '#0f172a',
+                titleColor: '#0369a1',
+                edgeLabelBackground: '#ffffff',
+                primaryColor: '#f0f9ff',
+                primaryTextColor: '#0f172a',
+                primaryBorderColor: '#38bdf8',
+                secondaryColor: '#fef3c7',
+                secondaryTextColor: '#78350f',
+                secondaryBorderColor: '#f59e0b',
+                tertiaryColor: '#f0fdf4',
+                tertiaryTextColor: '#14532d',
+                tertiaryBorderColor: '#22c55e',
+                fontFamily: "'Alkatip', 'UKIJ Tuz', 'Microsoft Uighur', Arial, sans-serif",
+                fontSize: '15px'
+            },
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            securityLevel: 'loose'
         });
 
         var nodesToRender = [];
-        containers.forEach(function(container) {
+        var blockRecords = [];
+
+        containers.forEach(function(container, index) {
             var rawCode = container.textContent.trim();
             var wrapper = document.createElement('div');
             wrapper.className = 'mermaid-block no-tts';
+            wrapper.id = 'mermaid-block-' + index;
+
+            // Toolbar
+            var toolbar = document.createElement('div');
+            toolbar.className = 'mermaid-toolbar';
+
+            var group = document.createElement('div');
+            group.className = 'mermaid-tools-group';
+
+            var btnZoomIn = document.createElement('button');
+            btnZoomIn.type = 'button';
+            btnZoomIn.className = 'mermaid-btn mermaid-btn-zoom-in';
+            btnZoomIn.title = 'چوڭايتىش (Zoom In)';
+            btnZoomIn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>';
+
+            var btnZoomOut = document.createElement('button');
+            btnZoomOut.type = 'button';
+            btnZoomOut.className = 'mermaid-btn mermaid-btn-zoom-out';
+            btnZoomOut.title = 'كىچىكلىتىش (Zoom Out)';
+            btnZoomOut.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>';
+
+            var btnReset = document.createElement('button');
+            btnReset.type = 'button';
+            btnReset.className = 'mermaid-btn mermaid-btn-reset';
+            btnReset.title = 'ئەسلىگە قايتۇرۇش (Reset)';
+            btnReset.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>';
+
+            var zoomLevel = document.createElement('span');
+            zoomLevel.className = 'mermaid-zoom-level';
+            zoomLevel.textContent = '100%';
+
+            group.appendChild(btnZoomIn);
+            group.appendChild(btnZoomOut);
+            group.appendChild(btnReset);
+            group.appendChild(zoomLevel);
+
+            var btnFullscreen = document.createElement('button');
+            btnFullscreen.type = 'button';
+            btnFullscreen.className = 'mermaid-btn mermaid-btn-fullscreen';
+            btnFullscreen.title = 'پۈتۈن ئىكراندا كۆرۈش (Fullscreen)';
+            btnFullscreen.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg> <span>پۈتۈن ئىكران</span>';
+
+            toolbar.appendChild(group);
+            toolbar.appendChild(btnFullscreen);
+
+            // Viewport & Content
+            var viewport = document.createElement('div');
+            viewport.className = 'mermaid-viewport';
+
+            var content = document.createElement('div');
+            content.className = 'mermaid-content';
 
             var pre = document.createElement('pre');
             pre.className = 'mermaid';
             pre.textContent = rawCode;
 
-            wrapper.appendChild(pre);
+            content.appendChild(pre);
+            viewport.appendChild(content);
+
+            wrapper.appendChild(toolbar);
+            wrapper.appendChild(viewport);
+
             container.parentNode.replaceChild(wrapper, container);
             nodesToRender.push(pre);
+
+            blockRecords.push({
+                wrapper: wrapper,
+                viewport: viewport,
+                content: content,
+                pre: pre,
+                btnZoomIn: btnZoomIn,
+                btnZoomOut: btnZoomOut,
+                btnReset: btnReset,
+                btnFullscreen: btnFullscreen,
+                zoomLevel: zoomLevel
+            });
         });
 
         if (nodesToRender.length > 0) {
             mermaid.run({
                 nodes: nodesToRender
+            }).then(function() {
+                setupInteractiveFeatures(blockRecords);
             }).catch(function(err) {
                 console.warn('Mermaid render warning:', err);
+                setupInteractiveFeatures(blockRecords);
             });
         }
     }
+
+    function setupInteractiveFeatures(records) {
+        records.forEach(function(rec) {
+            var svg = rec.content.querySelector('svg');
+            if (!svg) return;
+
+            var naturalWidth = 0;
+            if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+                naturalWidth = svg.viewBox.baseVal.width;
+            } else if (svg.getAttribute('viewBox')) {
+                var parts = svg.getAttribute('viewBox').split(/[\s,]+/);
+                if (parts.length === 4) naturalWidth = parseFloat(parts[2]);
+            }
+            if (!naturalWidth || isNaN(naturalWidth)) {
+                naturalWidth = svg.getBoundingClientRect().width || 700;
+            }
+
+            var currentZoom = 1.0;
+
+            function applyZoom(z) {
+                currentZoom = Math.min(Math.max(z, 0.4), 4.0);
+                var targetWidth = Math.round(naturalWidth * currentZoom);
+                svg.style.width = targetWidth + 'px';
+                svg.style.maxWidth = 'none';
+                svg.style.height = 'auto';
+                rec.zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+            }
+
+            // Set initial crisp size
+            applyZoom(1.0);
+
+            rec.btnZoomIn.addEventListener('click', function() {
+                applyZoom(currentZoom + 0.25);
+            });
+
+            rec.btnZoomOut.addEventListener('click', function() {
+                applyZoom(currentZoom - 0.25);
+            });
+
+            rec.btnReset.addEventListener('click', function() {
+                applyZoom(1.0);
+                rec.viewport.scrollLeft = (rec.viewport.scrollWidth - rec.viewport.clientWidth) / 2;
+                rec.viewport.scrollTop = (rec.viewport.scrollHeight - rec.viewport.clientHeight) / 2;
+            });
+
+            rec.btnFullscreen.addEventListener('click', function() {
+                toggleFullscreen(rec.wrapper);
+            });
+
+            // Mouse Drag Pan
+            var isDown = false;
+            var startX, startY, scrollLeft, scrollTop;
+
+            rec.viewport.addEventListener('mousedown', function(e) {
+                if (e.button !== 0) return;
+                isDown = true;
+                rec.viewport.classList.add('is-dragging');
+                startX = e.pageX - rec.viewport.offsetLeft;
+                startY = e.pageY - rec.viewport.offsetTop;
+                scrollLeft = rec.viewport.scrollLeft;
+                scrollTop = rec.viewport.scrollTop;
+            });
+
+            window.addEventListener('mouseup', function() {
+                if (isDown) {
+                    isDown = false;
+                    rec.viewport.classList.remove('is-dragging');
+                }
+            });
+
+            rec.viewport.addEventListener('mousemove', function(e) {
+                if (!isDown) return;
+                e.preventDefault();
+                var x = e.pageX - rec.viewport.offsetLeft;
+                var y = e.pageY - rec.viewport.offsetTop;
+                rec.viewport.scrollLeft = scrollLeft - (x - startX);
+                rec.viewport.scrollTop = scrollTop - (y - startY);
+            });
+
+            // Ctrl + Wheel Zoom
+            rec.viewport.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    if (e.deltaY < 0) {
+                        applyZoom(currentZoom + 0.15);
+                    } else {
+                        applyZoom(currentZoom - 0.15);
+                    }
+                }
+            }, { passive: false });
+        });
+    }
+
+    function toggleFullscreen(wrapper) {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else if (wrapper.requestFullscreen) {
+            wrapper.requestFullscreen().catch(function() {
+                wrapper.classList.toggle('is-fullscreen');
+            });
+        } else {
+            wrapper.classList.toggle('is-fullscreen');
+        }
+    }
+
+    document.addEventListener('fullscreenchange', function() {
+        var fsEl = document.fullscreenElement;
+        document.querySelectorAll('.mermaid-block').forEach(function(b) {
+            var label = b.querySelector('.mermaid-btn-fullscreen span');
+            if (b === fsEl) {
+                b.classList.add('is-fullscreen');
+                if (label) label.textContent = 'چېكىنىش';
+            } else {
+                b.classList.remove('is-fullscreen');
+                if (label) label.textContent = 'پۈتۈن ئىكران';
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            var fs = document.querySelector('.mermaid-block.is-fullscreen');
+            if (fs) {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    fs.classList.remove('is-fullscreen');
+                    var label = fs.querySelector('.mermaid-btn-fullscreen span');
+                    if (label) label.textContent = 'پۈتۈن ئىكران';
+                }
+            }
+        }
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initMermaid);
