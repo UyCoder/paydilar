@@ -54,3 +54,36 @@ body {
 .column.is-4 {
   flex: auto !important;
 }
+
+/* Mermaid Diagram Styling */
+.mermaid-block {
+  direction: ltr !important;
+  text-align: center !important;
+  margin: 30px auto !important;
+  padding: 24px 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  overflow-x: auto !important;
+  max-width: 100% !important;
+}
+
+.mermaid-block pre.mermaid,
+.mermaid-block pre {
+  background: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  font-family: inherit !important;
+}
+
+.mermaid-block svg {
+  max-width: 100% !important;
+  height: auto !important;
+  display: inline-block !important;
+}
